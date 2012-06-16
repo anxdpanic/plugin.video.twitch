@@ -28,6 +28,7 @@ def downloadWebData(url):
 def createMainListing():
 	addDir('Games','','games','')
 	addDir('Following','','following','')
+	addDir('Search','','search','')
 	addDir('Settings','','settings','')
 	xbmcplugin.endOfDirectory(thisPlugin)
 	
@@ -56,6 +57,20 @@ def createChannelListing():
 		dir = re.compile("(?<=<a href=').+?(?='>)").findall(x)[0]
 		addDir(name,dir,'channel','')
 	xbmcplugin.endOfDirectory(thisPlugin)
+	
+def search():
+        keyboard = xbmc.Keyboard('', 'Search for Streams')
+        keyboard.doModal()
+        if keyboard.isConfirmed() and keyboard.getText():
+          search_string = urllib.quote_plus(keyboard.getText())
+          sdata = downloadWebData('http://api.swiftype.com/api/v1/public/engines/search.json?callback=jQuery1337&q='+search_string+'&engine_key=9NXQEpmQPwBEz43TM592&page=1&per_page=20')
+          sdata = sdata.replace('jQuery1337','');
+          sdata = sdata[1:len(sdata)-1]
+          jdata = json.loads(sdata)
+          records = jdata['records']['broadcasts']
+          for x in records:
+			addLink(x['title'],x['user'],'play',x['thumbnail'],x['user'])
+          xbmcplugin.endOfDirectory(thisPlugin)
 	
 def createList(url):
 	url=url.replace(' ','%20')
@@ -177,6 +192,8 @@ elif mode == 'following':
 	createFollowingList()
 elif mode == 'settings':
 	settings.openSettings()
+elif mode == 'search':
+	search()
 else:
 	createMainListing()
 
