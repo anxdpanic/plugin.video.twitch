@@ -51,11 +51,12 @@ def createFollowingList():
 	
 def createChannelListing():
 	link=downloadWebData(url='http://de.twitch.tv/directory')
-	match=re.compile("(?<=<h5 class='title'>).+?(?=</h5>)", re.MULTILINE|re.DOTALL).findall(link)
+	match=re.compile("(?<=<div class='game clearfix'>).+?(?=</div>)", re.MULTILINE|re.DOTALL).findall(link)##(?<=<h5 class='title'>).+?(?=</h5>)
 	for x in match:
 		name = re.compile('(?<=\>).+?(?=</a>)').findall(x)[0]
 		dir = re.compile("(?<=<a href=').+?(?='>)").findall(x)[0]
-		addDir(name,dir,'channel','')
+		image = re.compile('(?<=setPlaceholder\(this\);" src="http://).+?(?=" />)').findall(x)[0]
+		addDir(name,dir,'channel',image)
 	xbmcplugin.endOfDirectory(thisPlugin)
 	
 def search():
@@ -104,6 +105,9 @@ def addLiveLink(name,title,url,mode,iconimage,description,showcontext=True):
 def addDir(name,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)
         ok=True
+        iconimage = urllib.quote(iconimage)
+        iconimage = 'http://' + iconimage
+        print "Bild: " + iconimage
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": name } )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
