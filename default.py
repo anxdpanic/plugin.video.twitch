@@ -49,12 +49,12 @@ def createFollowingList():
 			addLink(name,loginname,'play',image,loginname)
 	xbmcplugin.endOfDirectory(thisPlugin)
 	
-def createChannelListing():
+def createListOfGames():
 	link=downloadWebData(url='http://de.twitch.tv/directory')
-	match=re.compile("(?<=<div class='game clearfix'>).+?(?=</div>)", re.MULTILINE|re.DOTALL).findall(link)##(?<=<h5 class='title'>).+?(?=</h5>)
+	match=re.compile("(?<=<div class='boxart'>).+?</div>.+?(?=</div>)", re.MULTILINE|re.DOTALL).findall(link)
 	for x in match:
-		name = re.compile('(?<=\>).+?(?=</a>)').findall(x)[0]
-		dir = re.compile("(?<=<a href=').+?(?='>)").findall(x)[0]
+		name = re.compile("(?<=<h5 class='title'>).+?(?=</h5>)").findall(x)[0]
+		dir = 'http://de.twitch.tv/directory/' + urllib.quote(name)
 		image = re.compile('(?<=setPlaceholder\(this\);" src="http://).+?(?=" />)').findall(x)[0]
 		addDir(name,dir,'channel',image)
 	xbmcplugin.endOfDirectory(thisPlugin)
@@ -73,16 +73,14 @@ def search():
 			addLink(x['title'],x['user'],'play',x['thumbnail'],x['user'])
           xbmcplugin.endOfDirectory(thisPlugin)
 	
-def createList(url):
-	url=url.replace(' ','%20')
-	url='http://de.twitch.tv'+url
-	link=downloadWebData(url)
-	match=re.compile('(?<=<p class=\'title\'>).+?(?=</a></p>)').findall(link)
-	for x in match:
-		name = re.compile('(?<=\>).+?\Z').findall(x)[0]
-		channelname = re.compile('(?<=<a href="/).+?(?=">)').findall(x)[0]
-		addLink(name,'...','play','',channelname)
-	xbmcplugin.endOfDirectory(thisPlugin)	
+def createListForGame(url):
+    link=downloadWebData(url)
+    match=re.compile('(?<=<p class=\'title\'>).+?(?=</a></p>)').findall(link)
+    for x in match:
+        name = re.compile('(?<=\>).+?\Z').findall(x)[0]
+        channelname = re.compile('(?<=<a href="/).+?(?=">)').findall(x)[0]
+        addLink(name,'...','play','',channelname)
+    xbmcplugin.endOfDirectory(thisPlugin)	
 	
 def addLink(name,url,mode,iconimage,channelname):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&channelname="+channelname
@@ -170,6 +168,7 @@ def playLive(name, play=False, password=None):
         swf = ' swfUrl=%s swfVfy=1 live=1' % swf_url
         Pageurl = ' Pageurl=http://www.justin.tv/'+name
         url = rtmp+token+swf+Pageurl
+        print url#Debug
         if play == True:
             info = xbmcgui.ListItem(name)
             playlist = xbmc.PlayList(1)
@@ -187,9 +186,9 @@ channelname=params.get('channelname')
 if type(url)==type(str()):
 	url=urllib.unquote_plus(url)
 if mode == 'games':
-	createChannelListing()  
+	createListOfGames()  
 elif mode == 'channel':
-	createList(url)
+	createListForGame(url)
 elif mode == 'play':
 	playLive(channelname)
 elif mode == 'following':
