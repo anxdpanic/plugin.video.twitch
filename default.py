@@ -9,21 +9,21 @@ try:
     import json
 except:
     import simplejson as json
-try:
-    import StorageServer
-except:
-    import storageserverdummy as StorageServer
 
 thisPlugin = int(sys.argv[1])
 settings = xbmcaddon.Addon(id='plugin.video.twitch')
+httpHeaderUserAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0'
 
 def downloadWebData(url):
-	req = urllib2.Request(url)
-	req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-	response = urllib2.urlopen(req)
-	data=response.read()
-	response.close()
-	return data
+    try:
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', httpHeaderUserAgent)
+        response = urllib2.urlopen(req)
+        data=response.read()
+        response.close()
+        return data
+    except urllib2.URLError, e:
+        xbmc.executebuiltin("XBMC.Notification(TwitchTv, HTTP Error,5000,"+ICON+")")
 	
 def createMainListing():
 	addDir('Games','','games','')
@@ -32,13 +32,13 @@ def createMainListing():
 	addDir('Settings','','settings','')
 	xbmcplugin.endOfDirectory(thisPlugin)
 	
-def createFollowingList():
+def createFollowingListXML():
 	username = settings.getSetting('username').lower()
 	if not username:
 		settings.openSettings()
 		username = settings.getSetting('username').lower()
-	link=downloadWebData(url='http://api.justin.tv/api/user/favorites/'+username+'.xml?limit=20&offset=0')
-	channels=re.compile('(?<=<channel>).+?(?=</channel>)', re.MULTILINE|re.DOTALL).findall(link)
+	htmlData=downloadWebData(url='http://api.justin.tv/api/user/favorites/'+username+'.xml?limit=40&offset=0')
+	channels=re.compile('(?<=<channel>).+?(?=</channel>)', re.MULTILINE|re.DOTALL).findall(htmlData)
 	onlineStreams = downloadWebData(url='http://api.justin.tv/api/stream/list.xml')
 	for x in channels:
 		name = re.compile('(?<=<title>).+?(?=</title>)').findall(x)[0]
@@ -48,11 +48,26 @@ def createFollowingList():
 		if isOnline:
 			addLink(name,loginname,'play',image,loginname)
 	xbmcplugin.endOfDirectory(thisPlugin)
+
+def createFollowingList():
+    xmlDataOnlineStreams = downloadWebData(url='http://api.justin.tv/api/stream/list.xml')
+    username = settings.getSetting('username').lower()
+    if not username:
+        settings.openSettings()
+        username = settings.getSetting('username').lower()
+    jsonData=json.loads(downloadWebData(url='http://api.justin.tv/api/user/favorites/'+username+'.json?limit=40&offset=0'))
+    for x in jsonData:
+        name = x['login']
+        image = x['image_url_huge']
+        loginname = x['title']
+        if xmlDataOnlineStreams.count('<login>'+name+'</login>') > 0:
+            addLink(name,loginname,'play',image,loginname)
+    xbmcplugin.endOfDirectory(thisPlugin)
 	
 def createListOfGames():
-	link=downloadWebData(url='http://de.twitch.tv/directory')
-	match=re.compile("(?<=<div class='boxart'>).+?</div>.+?(?=</div>)", re.MULTILINE|re.DOTALL).findall(link)
-	for x in match:
+	htmlData=downloadWebData(url='http://de.twitch.tv/directory')
+	gameDiv=re.compile("(?<=<div class='boxart'>).+?</div>.+?(?=</div>)", re.MULTILINE|re.DOTALL).findall(htmlData)
+	for x in gameDiv:
 		name = re.compile("(?<=<h5 class='title'>).+?(?=</h5>)").findall(x)[0]
 		dir = 'http://de.twitch.tv/directory/' + urllib.quote(name)
 		image = re.compile('(?<=setPlaceholder\(this\);" src="http://).+?(?=" />)').findall(x)[0]
@@ -60,26 +75,30 @@ def createListOfGames():
 	xbmcplugin.endOfDirectory(thisPlugin)
 	
 def search():
-        keyboard = xbmc.Keyboard('', 'Search for Streams')
-        keyboard.doModal()
-        if keyboard.isConfirmed() and keyboard.getText():
-          search_string = urllib.quote_plus(keyboard.getText())
-          sdata = downloadWebData('http://api.swiftype.com/api/v1/public/engines/search.json?callback=jQuery1337&q='+search_string+'&engine_key=9NXQEpmQPwBEz43TM592&page=1&per_page=20')
-          sdata = sdata.replace('jQuery1337','');
-          sdata = sdata[1:len(sdata)-1]
-          jdata = json.loads(sdata)
-          records = jdata['records']['broadcasts']
-          for x in records:
-			addLink(x['title'],x['user'],'play',x['thumbnail'],x['user'])
-          xbmcplugin.endOfDirectory(thisPlugin)
+    keyboard = xbmc.Keyboard('', 'Search for Streams')
+    keyboard.doModal()
+    if keyboard.isConfirmed() and keyboard.getText():
+        search_string = urllib.quote_plus(keyboard.getText())
+        sdata = downloadWebData('http://api.swiftype.com/api/v1/public/engines/search.json?callback=jQuery1337&q='+search_string+'&engine_key=9NXQEpmQPwBEz43TM592&page=1&per_page=20')
+        sdata = sdata.replace('jQuery1337','');
+        sdata = sdata[1:len(sdata)-1]
+        jdata = json.loads(sdata)
+        records = jdata['records']['broadcasts']
+        for x in records:
+            addLink(x['title'],x['user'],'play',x['thumbnail'],x['user'])
+        xbmcplugin.endOfDirectory(thisPlugin)
 	
 def createListForGame(url):
-    link=downloadWebData(url)
-    match=re.compile('(?<=<p class=\'title\'>).+?(?=</a></p>)').findall(link)
-    for x in match:
-        name = re.compile('(?<=\>).+?\Z').findall(x)[0]
-        channelname = re.compile('(?<=<a href="/).+?(?=">)').findall(x)[0]
-        addLink(name,'...','play','',channelname)
+    htmlData=downloadWebData(url)
+    videoDiv=re.compile("(?<=<div class='video  clearfix).+?(?=</div>)", re.MULTILINE|re.DOTALL).findall(htmlData)
+    for x in videoDiv:
+        image = re.compile('(?<=http://)static-cdn.jtvnw.net/previews/.+?(?=")', re.MULTILINE|re.DOTALL).findall(x)[0]
+        image = urllib.quote(image)
+        image = 'http://' + image
+        nameAndLink = re.compile("(?<=<p class='title'>).+?(?=</a></p>)", re.MULTILINE|re.DOTALL).findall(x)[0]
+        name = re.compile('(?<=\>).+?\Z', re.MULTILINE|re.DOTALL).findall(nameAndLink)[0]
+        channelname = re.compile('(?<=<a href="/).+?(?=">)').findall(nameAndLink)[0]
+        addLink(name,'...','play',image,channelname)
     xbmcplugin.endOfDirectory(thisPlugin)	
 	
 def addLink(name,url,mode,iconimage,channelname):
@@ -91,21 +110,11 @@ def addLink(name,url,mode,iconimage,channelname):
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz)
         return ok
 		
-def addLiveLink(name,title,url,mode,iconimage,description,showcontext=True):
-        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)
-        ok=True
-        liz=xbmcgui.ListItem(title, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-        liz.setInfo( type="Video", infoLabels={ "Title": title, "Plot": description } )
-        liz.setProperty('IsPlayable', 'true')
-        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz)
-        return ok
-		
 def addDir(name,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)
         ok=True
         iconimage = urllib.quote(iconimage)
         iconimage = 'http://' + iconimage
-        print "Bild: " + iconimage
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": name } )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
@@ -114,7 +123,7 @@ def addDir(name,url,mode,iconimage):
 def get_request(url, headers=None):
         try:
             if headers is None:
-                headers = {'User-agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0',
+                headers = {'User-agent' : httpHeaderUserAgent,
                            'Referer' : 'http://www.justin.tv/'}
             req = urllib2.Request(url,None,headers)
             response = urllib2.urlopen(req)
@@ -144,7 +153,7 @@ def parameters_string_to_dict(parameters):
 def getSwfUrl(channel_name):
         """Helper method to grab the swf url, resolving HTTP 301/302 along the way"""
         base_url = 'http://www.justin.tv/widgets/live_embed_player.swf?channel=%s' % channel_name
-        headers = {'User-agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0',
+        headers = {'User-agent' : httpHeaderUserAgent,
                    'Referer' : 'http://www.justin.tv/'+channel_name}
         req = urllib2.Request(base_url, None, headers)
         response = urllib2.urlopen(req)
@@ -152,7 +161,7 @@ def getSwfUrl(channel_name):
 		
 def playLive(name, play=False, password=None):
         swf_url = getSwfUrl(name)
-        headers = {'User-agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0',
+        headers = {'User-agent' : httpHeaderUserAgent,
                    'Referer' : swf_url}
         url = 'http://usher.justin.tv/find/'+name+'.json?type=live&group='
         data = json.loads(get_request(url,headers))
@@ -168,7 +177,6 @@ def playLive(name, play=False, password=None):
         swf = ' swfUrl=%s swfVfy=1 live=1' % swf_url
         Pageurl = ' Pageurl=http://www.justin.tv/'+name
         url = rtmp+token+swf+Pageurl
-        print url#Debug
         if play == True:
             info = xbmcgui.ListItem(name)
             playlist = xbmc.PlayList(1)
