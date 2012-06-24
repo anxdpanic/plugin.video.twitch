@@ -8,3 +8,5 @@
 0.1.4
 - better code quality
 - thumbnails in game sections
+0.1.5
+- added "next page" in game sections

@@ -31,23 +31,6 @@ def createMainListing():
 	addDir('Search','','search','')
 	addDir('Settings','','settings','')
 	xbmcplugin.endOfDirectory(thisPlugin)
-	
-def createFollowingListXML():
-	username = settings.getSetting('username').lower()
-	if not username:
-		settings.openSettings()
-		username = settings.getSetting('username').lower()
-	htmlData=downloadWebData(url='http://api.justin.tv/api/user/favorites/'+username+'.xml?limit=40&offset=0')
-	channels=re.compile('(?<=<channel>).+?(?=</channel>)', re.MULTILINE|re.DOTALL).findall(htmlData)
-	onlineStreams = downloadWebData(url='http://api.justin.tv/api/stream/list.xml')
-	for x in channels:
-		name = re.compile('(?<=<title>).+?(?=</title>)').findall(x)[0]
-		image = re.compile('(?<=<image_url_huge>).+?(?=</image_url_huge>)').findall(x)[0]
-		loginname = re.compile('(?<=<login>).+?(?=</login>)').findall(x)[0]
-		isOnline = onlineStreams.count(loginname) > 0
-		if isOnline:
-			addLink(name,loginname,'play',image,loginname)
-	xbmcplugin.endOfDirectory(thisPlugin)
 
 def createFollowingList():
     xmlDataOnlineStreams = downloadWebData(url='http://api.justin.tv/api/stream/list.xml')
@@ -64,15 +47,16 @@ def createFollowingList():
             addLink(name,loginname,'play',image,loginname)
     xbmcplugin.endOfDirectory(thisPlugin)
 	
-def createListOfGames():
-	htmlData=downloadWebData(url='http://de.twitch.tv/directory')
-	gameDiv=re.compile("(?<=<div class='boxart'>).+?</div>.+?(?=</div>)", re.MULTILINE|re.DOTALL).findall(htmlData)
-	for x in gameDiv:
-		name = re.compile("(?<=<h5 class='title'>).+?(?=</h5>)").findall(x)[0]
-		dir = 'http://de.twitch.tv/directory/' + urllib.quote(name)
-		image = re.compile('(?<=setPlaceholder\(this\);" src="http://).+?(?=" />)').findall(x)[0]
-		addDir(name,dir,'channel',image)
-	xbmcplugin.endOfDirectory(thisPlugin)
+def createListOfGames(index=0):
+    htmlData=downloadWebData(url='http://de.twitch.tv/directory?page='+str(index+1))
+    gameDiv=re.compile("(?<=<div class='boxart'>).+?</div>.+?(?=</div>)", re.MULTILINE|re.DOTALL).findall(htmlData)
+    for x in gameDiv:
+        name = re.compile("(?<=<h5 class='title'>).+?(?=</h5>)").findall(x)[0]
+        dir = 'http://de.twitch.tv/directory/?category=' + urllib.quote_plus(name)
+        image = re.compile('(?<=setPlaceholder\(this\);" src="http://).+?(?=" />)').findall(x)[0]
+        addDir(name,dir,'channel',image)
+    addDir('next page...','','games','',index+1)
+    xbmcplugin.endOfDirectory(thisPlugin)
 	
 def search():
     keyboard = xbmc.Keyboard('', 'Search for Streams')
@@ -88,8 +72,9 @@ def search():
             addLink(x['title'],x['user'],'play',x['thumbnail'],x['user'])
         xbmcplugin.endOfDirectory(thisPlugin)
 	
-def createListForGame(url):
-    htmlData=downloadWebData(url)
+def createListForGame(url, index=0):
+    htmlData=downloadWebData(url+ '&page=' + str(index+1))
+    print url+ '&page=' + str(index+1)
     videoDiv=re.compile("(?<=<div class='video  clearfix).+?(?=</div>)", re.MULTILINE|re.DOTALL).findall(htmlData)
     for x in videoDiv:
         image = re.compile('(?<=http://)static-cdn.jtvnw.net/previews/.+?(?=")', re.MULTILINE|re.DOTALL).findall(x)[0]
@@ -99,6 +84,7 @@ def createListForGame(url):
         name = re.compile('(?<=\>).+?\Z', re.MULTILINE|re.DOTALL).findall(nameAndLink)[0]
         channelname = re.compile('(?<=<a href="/).+?(?=">)').findall(nameAndLink)[0]
         addLink(name,'...','play',image,channelname)
+    addDir('next page...',url,'channel','',index+1)
     xbmcplugin.endOfDirectory(thisPlugin)	
 	
 def addLink(name,url,mode,iconimage,channelname):
@@ -110,8 +96,8 @@ def addLink(name,url,mode,iconimage,channelname):
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz)
         return ok
 		
-def addDir(name,url,mode,iconimage):
-        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)
+def addDir(name,url,mode,iconimage,index=0):
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&siteIndex="+str(index)
         ok=True
         iconimage = urllib.quote(iconimage)
         iconimage = 'http://' + iconimage
@@ -190,13 +176,18 @@ def playLive(name, play=False, password=None):
 params=parameters_string_to_dict(sys.argv[2])
 mode=params.get('mode')
 url=params.get('url')
+sIndex=params.get('siteIndex')
+try:
+    index = int(sIndex)
+except Exception:
+    index = 0
 channelname=params.get('channelname')
 if type(url)==type(str()):
 	url=urllib.unquote_plus(url)
 if mode == 'games':
-	createListOfGames()  
+	createListOfGames(index)  
 elif mode == 'channel':
-	createListForGame(url)
+	createListForGame(url, index)
 elif mode == 'play':
 	playLive(channelname)
 elif mode == 'following':
