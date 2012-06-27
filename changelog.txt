@@ -10,3 +10,5 @@
 - thumbnails in game sections
 0.1.5
 - added "next page" in game sections
+0.1.6
+- localized strings
