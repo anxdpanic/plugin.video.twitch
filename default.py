@@ -13,6 +13,7 @@ except:
 thisPlugin = int(sys.argv[1])
 settings = xbmcaddon.Addon(id='plugin.video.twitch')
 httpHeaderUserAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0'
+translation = settings.getLocalizedString
 
 def downloadWebData(url):
     try:
@@ -23,13 +24,13 @@ def downloadWebData(url):
         response.close()
         return data
     except urllib2.URLError, e:
-        xbmc.executebuiltin("XBMC.Notification(TwitchTv, HTTP Error,5000,"+ICON+")")
+        xbmc.executebuiltin("XBMC.Notification(TwitchTv,HTTP ERROR: "+str(e.code)+")")
 	
 def createMainListing():
-	addDir('Games','','games','')
-	addDir('Following','','following','')
-	addDir('Search','','search','')
-	addDir('Settings','','settings','')
+	addDir(translation(30001),'','games','')
+	addDir(translation(30002),'','following','')
+	addDir(translation(30003),'','search','')
+	addDir(translation(30004),'','settings','')
 	xbmcplugin.endOfDirectory(thisPlugin)
 
 def createFollowingList():
@@ -54,12 +55,14 @@ def createListOfGames(index=0):
         name = re.compile("(?<=<h5 class='title'>).+?(?=</h5>)").findall(x)[0]
         dir = 'http://de.twitch.tv/directory/?category=' + urllib.quote_plus(name)
         image = re.compile('(?<=setPlaceholder\(this\);" src="http://).+?(?=" />)').findall(x)[0]
+        image = urllib.quote(image)
+        image = 'http://' + image
         addDir(name,dir,'channel',image)
     addDir('next page...','','games','',index+1)
     xbmcplugin.endOfDirectory(thisPlugin)
 	
 def search():
-    keyboard = xbmc.Keyboard('', 'Search for Streams')
+    keyboard = xbmc.Keyboard('', translation(30101))
     keyboard.doModal()
     if keyboard.isConfirmed() and keyboard.getText():
         search_string = urllib.quote_plus(keyboard.getText())
@@ -99,8 +102,6 @@ def addLink(name,url,mode,iconimage,channelname):
 def addDir(name,url,mode,iconimage,index=0):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&siteIndex="+str(index)
         ok=True
-        iconimage = urllib.quote(iconimage)
-        iconimage = 'http://' + iconimage
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": name } )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
@@ -121,8 +122,8 @@ def get_request(url, headers=None):
             if hasattr(e, 'code'):
                 if str(e.code) == '403':
                     if 'archive' in url:
-                        xbmc.executebuiltin("XBMC.Notification(TwitchTv,No archives found for "+name+",5000,"+ICON+")")
-                xbmc.executebuiltin("XBMC.Notification(TwitchTv,HTTP ERROR: "+str(e.code)+",5000,"+ICON+")")
+                        xbmc.executebuiltin("XBMC.Notification(TwitchTv,No archives found for "+name+")")
+                xbmc.executebuiltin("XBMC.Notification(TwitchTv,HTTP ERROR: "+str(e.code)+")")
 
 	
 def parameters_string_to_dict(parameters):
@@ -152,12 +153,12 @@ def playLive(name, play=False, password=None):
         url = 'http://usher.justin.tv/find/'+name+'.json?type=live&group='
         data = json.loads(get_request(url,headers))
         if data == []:
-            xbmc.executebuiltin("XBMC.Notification(Twitch.tv,No Live Data Not Found)")
+            xbmc.executebuiltin("XBMC.Notification(Twitch.tv,No Live Data Found)")
             return
         try:
             token = ' jtv='+data[0]['token'].replace('\\','\\5c').replace(' ','\\20').replace('"','\\22')
         except:
-            xbmc.executebuiltin("XBMC.Notification(Twitch.tv,User Token Error ,5000,"+ICON+")")
+            xbmc.executebuiltin("XBMC.Notification(Twitch.tv,User Token Error)")
             return
         rtmp = data[0]['connect']+'/'+data[0]['play']
         swf = ' swfUrl=%s swfVfy=1 live=1' % swf_url

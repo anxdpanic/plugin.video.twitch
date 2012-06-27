@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+  <!-- main menu -->
+  <string id="30001">Games</string>
+  <string id="30002">Following</string>
+  <string id="30003">Search</string>
+  <string id="30004">Settings</string>
+  
+  <!-- search -->
+  <string id="30101">Search for channels</string>
+</strings>
