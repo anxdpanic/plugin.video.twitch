@@ -8,4 +8,7 @@
   
   <!-- search -->
   <string id="30101">Suche nach Kanälen</string>
+  
+   <!--general --> 
+  <string id="31001">nächste Seite...</string>
 </strings>

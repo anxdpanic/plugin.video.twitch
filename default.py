@@ -58,7 +58,7 @@ def createListOfGames(index=0):
         image = urllib.quote(image)
         image = 'http://' + image
         addDir(name,dir,'channel',image)
-    addDir('next page...','','games','',index+1)
+    addDir(translation(31001),'','games','',index+1)
     xbmcplugin.endOfDirectory(thisPlugin)
 	
 def search():
@@ -87,7 +87,7 @@ def createListForGame(url, index=0):
         name = re.compile('(?<=\>).+?\Z', re.MULTILINE|re.DOTALL).findall(nameAndLink)[0]
         channelname = re.compile('(?<=<a href="/).+?(?=">)').findall(nameAndLink)[0]
         addLink(name,'...','play',image,channelname)
-    addDir('next page...',url,'channel','',index+1)
+    addDir(translation(31001),url,'channel','',index+1)
     xbmcplugin.endOfDirectory(thisPlugin)	
 	
 def addLink(name,url,mode,iconimage,channelname):

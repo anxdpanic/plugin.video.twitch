@@ -6,6 +6,9 @@
   <string id="30003">Search</string>
   <string id="30004">Settings</string>
   
-  <!-- search -->
+  <!--search -->
   <string id="30101">Search for channels</string>
+  
+  <!--general --> 
+  <string id="31001">next page...</string>
 </strings>
