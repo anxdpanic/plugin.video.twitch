@@ -34,17 +34,17 @@ def createMainListing():
 	xbmcplugin.endOfDirectory(thisPlugin)
 
 def createFollowingList():
-    xmlDataOnlineStreams = downloadWebData(url='http://api.justin.tv/api/stream/list.xml')
     username = settings.getSetting('username').lower()
     if not username:
         settings.openSettings()
         username = settings.getSetting('username').lower()
     jsonData=json.loads(downloadWebData(url='http://api.justin.tv/api/user/favorites/'+username+'.json?limit=40&offset=0'))
+    xmlDataOnlineStreams = downloadWebData(url='http://api.justin.tv/api/stream/list.xml')
     for x in jsonData:
-        name = x['login']
+        name = x['title']
         image = x['image_url_huge']
-        loginname = x['title']
-        if xmlDataOnlineStreams.count('<login>'+name+'</login>') > 0:
+        loginname = x['login']
+        if xmlDataOnlineStreams.count('<login>'+loginname+'</login>') > 0:
             addLink(name,loginname,'play',image,loginname)
     xbmcplugin.endOfDirectory(thisPlugin)
 	
