@@ -12,3 +12,5 @@
 - added "next page" in game sections
 0.1.6
 - localized strings
+0.1.7
+- fixed bug in following list

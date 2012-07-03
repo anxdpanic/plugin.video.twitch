@@ -41,7 +41,7 @@ def createFollowingList():
     jsonData=json.loads(downloadWebData(url='http://api.justin.tv/api/user/favorites/'+username+'.json?limit=40&offset=0'))
     xmlDataOnlineStreams = downloadWebData(url='http://api.justin.tv/api/stream/list.xml')
     for x in jsonData:
-        name = x['title']
+        name = x['status']
         image = x['image_url_huge']
         loginname = x['login']
         if xmlDataOnlineStreams.count('<login>'+loginname+'</login>') > 0:
