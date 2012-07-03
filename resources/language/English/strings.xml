@@ -10,5 +10,12 @@
   <string id="30101">Search for channels</string>
   
   <!--general --> 
+  <string id="31000">TwitchTV</string>
   <string id="31001">next page...</string>
+
+   <!--notifications --> 
+  <string id="32001">Http error</string>
+  <string id="32002">No Live Data Found</string>
+  <string id="32003">No archives found for</string>
+  <string id="32004">User Token Error</string>
 </strings>

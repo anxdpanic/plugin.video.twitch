@@ -24,7 +24,7 @@ def downloadWebData(url):
         response.close()
         return data
     except urllib2.URLError, e:
-        xbmc.executebuiltin("XBMC.Notification(TwitchTv,HTTP ERROR: "+str(e.code)+")")
+        xbmc.executebuiltin("XBMC.Notification("+translation(31000)+"," + translation(32001) +")")
 	
 def createMainListing():
 	addDir(translation(30001),'','games','')
@@ -38,18 +38,25 @@ def createFollowingList():
     if not username:
         settings.openSettings()
         username = settings.getSetting('username').lower()
-    jsonData=json.loads(downloadWebData(url='http://api.justin.tv/api/user/favorites/'+username+'.json?limit=40&offset=0'))
+    jsonString = downloadWebData(url='http://api.justin.tv/api/user/favorites/'+username+'.json?limit=40&offset=0')
     xmlDataOnlineStreams = downloadWebData(url='http://api.justin.tv/api/stream/list.xml')
+    if jsonString is None or xmlDataOnlineStreams is None:
+        return
+    jsonData=json.loads(jsonString)
     for x in jsonData:
         name = x['status']
         image = x['image_url_huge']
         loginname = x['login']
+        if len(name) <= 0:
+            name = loginname
         if xmlDataOnlineStreams.count('<login>'+loginname+'</login>') > 0:
             addLink(name,loginname,'play',image,loginname)
     xbmcplugin.endOfDirectory(thisPlugin)
 	
 def createListOfGames(index=0):
     htmlData=downloadWebData(url='http://de.twitch.tv/directory?page='+str(index+1))
+    if htmlData is None:
+        return
     gameDiv=re.compile("(?<=<div class='boxart'>).+?</div>.+?(?=</div>)", re.MULTILINE|re.DOTALL).findall(htmlData)
     for x in gameDiv:
         name = re.compile("(?<=<h5 class='title'>).+?(?=</h5>)").findall(x)[0]
@@ -77,7 +84,8 @@ def search():
 	
 def createListForGame(url, index=0):
     htmlData=downloadWebData(url+ '&page=' + str(index+1))
-    print url+ '&page=' + str(index+1)
+    if htmlData is None:
+        return
     videoDiv=re.compile("(?<=<div class='video  clearfix).+?(?=</div>)", re.MULTILINE|re.DOTALL).findall(htmlData)
     for x in videoDiv:
         image = re.compile('(?<=http://)static-cdn.jtvnw.net/previews/.+?(?=")', re.MULTILINE|re.DOTALL).findall(x)[0]
@@ -122,8 +130,8 @@ def get_request(url, headers=None):
             if hasattr(e, 'code'):
                 if str(e.code) == '403':
                     if 'archive' in url:
-                        xbmc.executebuiltin("XBMC.Notification(TwitchTv,No archives found for "+name+")")
-                xbmc.executebuiltin("XBMC.Notification(TwitchTv,HTTP ERROR: "+str(e.code)+")")
+                        xbmc.executebuiltin("XBMC.Notification("+translation(31000)+"," +translation(32003)+ " " +name+")")
+                xbmc.executebuiltin("XBMC.Notification("+translation(31000)+"," + translation(32001) +")")
 
 	
 def parameters_string_to_dict(parameters):
@@ -153,12 +161,12 @@ def playLive(name, play=False, password=None):
         url = 'http://usher.justin.tv/find/'+name+'.json?type=live&group='
         data = json.loads(get_request(url,headers))
         if data == []:
-            xbmc.executebuiltin("XBMC.Notification(Twitch.tv,No Live Data Found)")
+            xbmc.executebuiltin("XBMC.Notification("+translation(31000)+","+translation(32002)+")")
             return
         try:
             token = ' jtv='+data[0]['token'].replace('\\','\\5c').replace(' ','\\20').replace('"','\\22')
         except:
-            xbmc.executebuiltin("XBMC.Notification(Twitch.tv,User Token Error)")
+            xbmc.executebuiltin("XBMC.Notification("+translation(31000)+","+translation(32004)+")")
             return
         rtmp = data[0]['connect']+'/'+data[0]['play']
         swf = ' swfUrl=%s swfVfy=1 live=1' % swf_url
