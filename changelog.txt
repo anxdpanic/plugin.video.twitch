@@ -14,3 +14,6 @@
 - localized strings
 0.1.7
 - fixed bug in following list
+0.1.8
+- better error handling
+- localized strings in all notifications
