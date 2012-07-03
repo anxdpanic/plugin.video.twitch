@@ -9,7 +9,7 @@
   </extension>
   <extension point='xbmc.addon.metadata'>
     <platform>all</platform>
-    <language></language>
+    <language>en</language>
     <summary lang='de'>TwitchTV video plugin</summary>
     <description lang='de'>Schaue die besten Gaming-Streams auf XBMC!</description>
     <summary lang='en'>TwitchTV video plugin</summary>
