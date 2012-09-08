@@ -17,3 +17,6 @@
 0.1.8
 - better error handling
 - localized strings in all notifications
+0.2.0
+- added selection of prefered video settings
+- added fallback-function, if selected video does not support video settings
