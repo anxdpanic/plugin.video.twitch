@@ -18,6 +18,8 @@
   <string id="32002">No Live Data Found</string>
   <string id="32003">No archives found for</string>
   <string id="32004">User Token Error</string>
+  <string id="32005">Changed video settings</string>
+  <string id="32006">Selected video settings are not available</string>
   
   <!--settings -->
   <string id="33000">Video Quality</string>

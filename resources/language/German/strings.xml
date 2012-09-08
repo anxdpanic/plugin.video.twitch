@@ -18,6 +18,8 @@
   <string id="32002">Keine Live-Daten gefunden</string>
   <string id="32003">Keine Archive gefunden für</string>
   <string id="32004">User Token Fehler</string>
+  <string id="32005">Geaenderte Video Einstellung</string>
+  <string id="32006">Gewaehlte Qualitaet nicht verfuegbar...Eventuell Premium Content?</string>
   
     <!--settings -->
   <string id="33000">Video Qualität</string>

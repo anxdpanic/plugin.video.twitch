@@ -153,6 +153,24 @@ def getSwfUrl(channel_name):
         req = urllib2.Request(base_url, None, headers)
         response = urllib2.urlopen(req)
         return response.geturl()
+		
+def getBestJtvTokenPossible(name):
+        swf_url = getSwfUrl(name)
+        headers = {'User-agent' : httpHeaderUserAgent,
+                   'Referer' : swf_url}
+        url = 'http://usher.justin.tv/find/'+name+'.json?type=any&group='
+        data = json.loads(get_request(url,headers))
+        bestVideoHeight = -1
+        bestIndex = -1
+        index = 0
+        for x in data:
+            value = x.get('token', '')
+            videoHeight = int(x['video_height'])
+            if (value != '') and (videoHeight > bestVideoHeight):
+                bestVideoHeight = x['video_height']
+                bestIndex = index  
+            index = index + 1
+        return data[bestIndex]
 
 def playLive(name, play=False, password=None):
         swf_url = getSwfUrl(name)
@@ -178,10 +196,16 @@ def playLive(name, play=False, password=None):
             return
         try:
             token = ' jtv='+data[tokenIndex]['token'].replace('\\','\\5c').replace(' ','\\20').replace('"','\\22')
+            rtmp = data[tokenIndex]['connect']+'/'+data[tokenIndex]['play']
         except:
-            xbmc.executebuiltin("XBMC.Notification("+translation(31000)+","+translation(32004)+")")
-            return
-        rtmp = data[tokenIndex]['connect']+'/'+data[tokenIndex]['play']
+            xbmc.executebuiltin("XBMC.Notification("+translation(32005)+","+translation(32006)+")")
+            jtvtoken = getBestJtvTokenPossible(name)
+            if jtvtoken == '':
+                xbmc.executebuiltin("XBMC.Notification("+translation(31000)+","+translation(32004)+")")
+                return
+            token = ' jtv='+jtvtoken['token'].replace('\\','\\5c').replace(' ','\\20').replace('"','\\22')
+            rtmp = jtvtoken['connect']+'/'+jtvtoken['play']
+        
         swf = ' swfUrl=%s swfVfy=1 live=1' % swf_url
         Pageurl = ' Pageurl=http://www.justin.tv/'+name
         url = rtmp+token+swf+Pageurl
