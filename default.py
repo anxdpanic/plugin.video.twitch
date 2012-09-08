@@ -152,23 +152,36 @@ def getSwfUrl(channel_name):
                    'Referer' : 'http://www.justin.tv/'+channel_name}
         req = urllib2.Request(base_url, None, headers)
         response = urllib2.urlopen(req)
-        return response.geturl()		
-		
+        return response.geturl()
+
 def playLive(name, play=False, password=None):
         swf_url = getSwfUrl(name)
         headers = {'User-agent' : httpHeaderUserAgent,
                    'Referer' : swf_url}
-        url = 'http://usher.justin.tv/find/'+name+'.json?type=live&group='
+        chosenQuality = settings.getSetting('video')
+        print 'Video Quality Type   ' + settings.getSetting('video')
+        videoTypeName = 'any'
+        if chosenQuality == '0':
+            videoTypeName = 'any'
+        elif chosenQuality == '1':
+            videoTypeName = '720p'
+        elif chosenQuality == '2':
+            videoTypeName = '480p'
+        elif chosenQuality == '3':
+            videoTypeName = '360p'
+        print 'Video Quality Type   ' + videoTypeName
+        url = 'http://usher.justin.tv/find/'+name+'.json?type='+videoTypeName+'&private_code=null&group='
         data = json.loads(get_request(url,headers))
+        tokenIndex = 0
         if data == []:
             xbmc.executebuiltin("XBMC.Notification("+translation(31000)+","+translation(32002)+")")
             return
         try:
-            token = ' jtv='+data[0]['token'].replace('\\','\\5c').replace(' ','\\20').replace('"','\\22')
+            token = ' jtv='+data[tokenIndex]['token'].replace('\\','\\5c').replace(' ','\\20').replace('"','\\22')
         except:
             xbmc.executebuiltin("XBMC.Notification("+translation(31000)+","+translation(32004)+")")
             return
-        rtmp = data[0]['connect']+'/'+data[0]['play']
+        rtmp = data[tokenIndex]['connect']+'/'+data[tokenIndex]['play']
         swf = ' swfUrl=%s swfVfy=1 live=1' % swf_url
         Pageurl = ' Pageurl=http://www.justin.tv/'+name
         url = rtmp+token+swf+Pageurl
