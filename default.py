@@ -27,6 +27,7 @@ def downloadWebData(url):
         xbmc.executebuiltin("XBMC.Notification("+translation(31000)+"," + translation(32001) +")")
 	
 def createMainListing():
+    addDir(translation(30005),'','featured','')
     addDir(translation(30001),'','games','')
     addDir(translation(30002),'','following','')
     addDir(translation(30003),'','search','')
@@ -51,6 +52,24 @@ def createFollowingList():
             name = loginname
         if xmlDataOnlineStreams.count('<login>'+loginname+'</login>') > 0:
             addLink(name,loginname,'play',image,loginname)
+    xbmcplugin.endOfDirectory(thisPlugin)
+	
+def createListOfFeaturedStreams():
+    jsonString=downloadWebData(url='https://api.twitch.tv/kraken/streams/featured')
+    jsonData=json.loads(jsonString)
+    for x in jsonData['featured']:
+        try:
+            image = x['stream']['channel']['logo']
+            image = image.replace("http://","",1)
+            image = urllib.quote(image)
+            image = 'http://' + image
+        except:
+            image = ""
+        name = x['stream']['channel']['status']
+        if name == '':
+            name = x['stream']['channel']['display_name']
+        channelname = x['stream']['channel']['name']
+        addLink(name,'...','play',image,channelname)
     xbmcplugin.endOfDirectory(thisPlugin)
  
 def createListOfGames(index=0):
@@ -244,6 +263,8 @@ if type(url)==type(str()):
 	url=urllib.unquote_plus(url)
 if mode == 'games':
 	createListOfGames(index)  
+elif mode == 'featured':
+	createListOfFeaturedStreams()
 elif mode == 'channel':
 	createListForGame(url, index)
 elif mode == 'play':
