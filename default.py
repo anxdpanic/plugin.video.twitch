@@ -221,9 +221,7 @@ def playLive(name, play=False, password=None):
         url = 'http://usher.justin.tv/find/'+name+'.json?type='+videoTypeName+'&private_code=null&group='
         data = json.loads(get_request(url,headers))
         tokenIndex = 0
-        if data == []:
-            xbmc.executebuiltin("XBMC.Notification("+translation(31000)+","+translation(32002)+")")
-            return
+
         try:
             '''trying to get a token in desired quality'''
             token = ' jtv='+data[tokenIndex]['token'].replace('\\','\\5c').replace(' ','\\20').replace('"','\\22')
