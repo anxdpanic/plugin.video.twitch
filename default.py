@@ -27,11 +27,11 @@ def downloadWebData(url):
         xbmc.executebuiltin("XBMC.Notification("+translation(31000)+"," + translation(32001) +")")
 	
 def createMainListing():
-	addDir(translation(30001),'','games','')
-	addDir(translation(30002),'','following','')
-	addDir(translation(30003),'','search','')
-	addDir(translation(30004),'','settings','')
-	xbmcplugin.endOfDirectory(thisPlugin)
+    addDir(translation(30001),'','games','')
+    addDir(translation(30002),'','following','')
+    addDir(translation(30003),'','search','')
+    addDir(translation(30004),'','settings','')
+    xbmcplugin.endOfDirectory(thisPlugin)
 
 def createFollowingList():
     username = settings.getSetting('username').lower()
@@ -52,22 +52,31 @@ def createFollowingList():
         if xmlDataOnlineStreams.count('<login>'+loginname+'</login>') > 0:
             addLink(name,loginname,'play',image,loginname)
     xbmcplugin.endOfDirectory(thisPlugin)
-	
+ 
 def createListOfGames(index=0):
-    htmlData=downloadWebData(url='http://de.twitch.tv/directory?page='+str(index+1))
-    if htmlData is None:
-        return
-    gameDiv=re.compile("(?<=<div class='boxart'>).+?</div>.+?(?=</div>)", re.MULTILINE|re.DOTALL).findall(htmlData)
-    for x in gameDiv:
-        name = re.compile("(?<=<h5 class='title'>).+?(?=</h5>)").findall(x)[0]
-        dir = 'http://de.twitch.tv/directory/?category=' + urllib.quote_plus(name)
-        image = re.compile('(?<=setPlaceholder\(this\);" src="http://).+?(?=" />)').findall(x)[0]
-        image = urllib.quote(image)
-        image = 'http://' + image
+    jsonString=downloadWebData(url='https://api.twitch.tv/kraken/games/top?limit=20&offset='+str(index*20))
+    jsonData=json.loads(jsonString)
+    for x in jsonData['top']:
+        try:
+            name = x['game']['name']
+            print "Debug : " + name
+            dir = 'http://de.twitch.tv/directory/?category=' + urllib.quote(name)
+            image = ''
+        except:
+            print "Error in encoding? - Urllib Fixme!"
+            continue
+        try:
+            image = x['game']['images']['screen']
+            image = image.replace("http://","",1)
+            image = urllib.quote(image)
+            image = 'http://' + image
+        except:
+            image = ''
         addDir(name,dir,'channel',image)
-    addDir(translation(31001),'','games','',index+1)
+    if len(jsonData['top']) >= 20:
+        addDir(translation(31001),'','games','',index+1)
     xbmcplugin.endOfDirectory(thisPlugin)
-	
+
 def search():
     keyboard = xbmc.Keyboard('', translation(30101))
     keyboard.doModal()
@@ -146,7 +155,7 @@ def parameters_string_to_dict(parameters):
         return paramDict
 		
 def getSwfUrl(channel_name):
-        """Helper method to grab the swf url, resolving HTTP 301/302 along the way"""
+        ''' Helper method to grab the swf url, resolving HTTP 301/302 along the way'''
         base_url = 'http://www.justin.tv/widgets/live_embed_player.swf?channel=%s' % channel_name
         headers = {'User-agent' : httpHeaderUserAgent,
                    'Referer' : 'http://www.justin.tv/'+channel_name}
@@ -155,6 +164,7 @@ def getSwfUrl(channel_name):
         return response.geturl()
 		
 def getBestJtvTokenPossible(name):
+        '''Helper method to find another jtv token'''
         swf_url = getSwfUrl(name)
         headers = {'User-agent' : httpHeaderUserAgent,
                    'Referer' : swf_url}
@@ -177,7 +187,6 @@ def playLive(name, play=False, password=None):
         headers = {'User-agent' : httpHeaderUserAgent,
                    'Referer' : swf_url}
         chosenQuality = settings.getSetting('video')
-        print 'Video Quality Type   ' + settings.getSetting('video')
         videoTypeName = 'any'
         if chosenQuality == '0':
             videoTypeName = 'any'
@@ -187,7 +196,6 @@ def playLive(name, play=False, password=None):
             videoTypeName = '480p'
         elif chosenQuality == '3':
             videoTypeName = '360p'
-        print 'Video Quality Type   ' + videoTypeName
         url = 'http://usher.justin.tv/find/'+name+'.json?type='+videoTypeName+'&private_code=null&group='
         data = json.loads(get_request(url,headers))
         tokenIndex = 0
@@ -195,6 +203,7 @@ def playLive(name, play=False, password=None):
             xbmc.executebuiltin("XBMC.Notification("+translation(31000)+","+translation(32002)+")")
             return
         try:
+            '''trying to get a token in desired quality'''
             token = ' jtv='+data[tokenIndex]['token'].replace('\\','\\5c').replace(' ','\\20').replace('"','\\22')
             rtmp = data[tokenIndex]['connect']+'/'+data[tokenIndex]['play']
         except:
