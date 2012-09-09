@@ -84,7 +84,7 @@ def createListOfGames(index=0):
         except:
             continue
         try:
-            image = x['game']['images']['screen']
+            image = x['game']['images']['super']
             image = image.replace("http://","",1)
             image = urllib.quote(image)
             image = 'http://' + image
@@ -125,7 +125,7 @@ def createListForGame(gameName, index=0):
             name = x['channel']['display_name']
         channelname = x['channel']['name']
         addLink(name,'...','play',image,channelname)
-    if (jsonData['streams'] >= ITEMS_PER_SITE):
+    if len(jsonData['streams']) >= ITEMS_PER_SITE:
         addDir(translation(31001),url,'channel','',index+1)
     xbmcplugin.endOfDirectory(thisPlugin)
 	
