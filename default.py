@@ -14,6 +14,7 @@ thisPlugin = int(sys.argv[1])
 settings = xbmcaddon.Addon(id='plugin.video.twitch')
 httpHeaderUserAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0'
 translation = settings.getLocalizedString
+ITEMS_PER_SITE=20
 
 def downloadWebData(url):
     try:
@@ -73,7 +74,7 @@ def createListOfFeaturedStreams():
     xbmcplugin.endOfDirectory(thisPlugin)
  
 def createListOfGames(index=0):
-    jsonString=downloadWebData(url='https://api.twitch.tv/kraken/games/top?limit=20&offset='+str(index*20))
+    jsonString=downloadWebData(url='https://api.twitch.tv/kraken/games/top?limit='+str(ITEMS_PER_SITE)+'&offset='+str(index*ITEMS_PER_SITE))
     jsonData=json.loads(jsonString)
     for x in jsonData['top']:
         try:
@@ -90,7 +91,7 @@ def createListOfGames(index=0):
         except:
             image = ''
         addDir(name,game,'channel',image)
-    if len(jsonData['top']) >= 20:
+    if len(jsonData['top']) >= ITEMS_PER_SITE:
         addDir(translation(31001),'','games','',index+1)
     xbmcplugin.endOfDirectory(thisPlugin)
 
@@ -99,7 +100,7 @@ def search():
     keyboard.doModal()
     if keyboard.isConfirmed() and keyboard.getText():
         search_string = urllib.quote_plus(keyboard.getText())
-        sdata = downloadWebData('http://api.swiftype.com/api/v1/public/engines/search.json?callback=jQuery1337&q='+search_string+'&engine_key=9NXQEpmQPwBEz43TM592&page=1&per_page=20')
+        sdata = downloadWebData('http://api.swiftype.com/api/v1/public/engines/search.json?callback=jQuery1337&q='+search_string+'&engine_key=9NXQEpmQPwBEz43TM592&page=1&per_page='+str(ITEMS_PER_SITE))
         sdata = sdata.replace('jQuery1337','');
         sdata = sdata[1:len(sdata)-1]
         jdata = json.loads(sdata)
@@ -109,7 +110,7 @@ def search():
         xbmcplugin.endOfDirectory(thisPlugin)
 	
 def createListForGame(gameName, index=0):
-    jsonString=downloadWebData(url='https://api.twitch.tv/kraken/streams?game='+gameName+'&limit=20&offset='+str(index*20))
+    jsonString=downloadWebData(url='https://api.twitch.tv/kraken/streams?game='+gameName+'&limit='+str(ITEMS_PER_SITE)+'&offset='+str(index*ITEMS_PER_SITE))
     jsonData=json.loads(jsonString)
     for x in jsonData['streams']:
         try:
@@ -124,7 +125,8 @@ def createListForGame(gameName, index=0):
             name = x['channel']['display_name']
         channelname = x['channel']['name']
         addLink(name,'...','play',image,channelname)
-    addDir(translation(31001),url,'channel','',index+1)
+    if (jsonData['streams'] >= ITEMS_PER_SITE):
+        addDir(translation(31001),url,'channel','',index+1)
     xbmcplugin.endOfDirectory(thisPlugin)
 	
 def addLink(name,url,mode,iconimage,channelname):
