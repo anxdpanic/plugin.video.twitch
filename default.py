@@ -60,7 +60,7 @@ def createListOfGames(index=0):
         try:
             name = x['game']['name']
             print "Debug : " + name
-            dir = 'http://de.twitch.tv/directory/?category=' + urllib.quote(name)
+            game = urllib.quote(name)
             image = ''
         except:
             print "Error in encoding? - Urllib Fixme!"
@@ -72,7 +72,7 @@ def createListOfGames(index=0):
             image = 'http://' + image
         except:
             image = ''
-        addDir(name,dir,'channel',image)
+        addDir(name,game,'channel',image)
     if len(jsonData['top']) >= 20:
         addDir(translation(31001),'','games','',index+1)
     xbmcplugin.endOfDirectory(thisPlugin)
@@ -91,21 +91,24 @@ def search():
             addLink(x['title'],x['user'],'play',x['thumbnail'],x['user'])
         xbmcplugin.endOfDirectory(thisPlugin)
 	
-def createListForGame(url, index=0):
-    htmlData=downloadWebData(url+ '&page=' + str(index+1))
-    if htmlData is None:
-        return
-    videoDiv=re.compile("(?<=<div class='video  clearfix).+?(?=</div>)", re.MULTILINE|re.DOTALL).findall(htmlData)
-    for x in videoDiv:
-        image = re.compile('(?<=http://)static-cdn.jtvnw.net/previews/.+?(?=")', re.MULTILINE|re.DOTALL).findall(x)[0]
-        image = urllib.quote(image)
-        image = 'http://' + image
-        nameAndLink = re.compile("(?<=<p class='title'>).+?(?=</a></p>)", re.MULTILINE|re.DOTALL).findall(x)[0]
-        name = re.compile('(?<=\>).+?\Z', re.MULTILINE|re.DOTALL).findall(nameAndLink)[0]
-        channelname = re.compile('(?<=<a href="/).+?(?=">)').findall(nameAndLink)[0]
+def createListForGame(gameName, index=0):
+    jsonString=downloadWebData(url='https://api.twitch.tv/kraken/streams?game='+gameName+'&limit=20&offset='+str(index*20))
+    jsonData=json.loads(jsonString)
+    for x in jsonData['streams']:
+        try:
+            image = x['channel']['logo']
+            image = image.replace("http://","",1)
+            image = urllib.quote(image)
+            image = 'http://' + image
+        except:
+            image = ""
+        name = x['channel']['status']
+        if name == '':
+            name = x['channel']['display_name']
+        channelname = x['channel']['name']
         addLink(name,'...','play',image,channelname)
     addDir(translation(31001),url,'channel','',index+1)
-    xbmcplugin.endOfDirectory(thisPlugin)	
+    xbmcplugin.endOfDirectory(thisPlugin)
 	
 def addLink(name,url,mode,iconimage,channelname):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&channelname="+channelname
