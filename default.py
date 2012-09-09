@@ -77,12 +77,10 @@ def createListOfGames(index=0):
     jsonData=json.loads(jsonString)
     for x in jsonData['top']:
         try:
-            name = x['game']['name']
-            print "Debug : " + name
+            name = str(x['game']['name'])
             game = urllib.quote(name)
             image = ''
         except:
-            print "Error in encoding? - Urllib Fixme!"
             continue
         try:
             image = x['game']['images']['screen']
