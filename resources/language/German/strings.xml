@@ -21,6 +21,10 @@
   <string id="32004">User Token Fehler</string>
   <string id="32005">Geaenderte Video Einstellung</string>
   <string id="32006">Gewaehlte Qualitaet nicht verfuegbar...Eventuell Premium Content?</string>
+  <string id="32007">TwitchApi Fehler</string>
+  <string id="32008">JSON Fehler</string>
+  <string id="32009">Fehlerhaftes Datenformat</string>
+  <string id="32010">Bitte Internet-Verbindung pruefen</string>
   
     <!--settings -->
   <string id="33000">Video Qualität</string>

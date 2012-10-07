@@ -5,6 +5,7 @@ import urllib2,urllib,re
 import xbmcaddon
 import os
 import xbmcvfs
+import socket
 try:
     import json
 except:
@@ -24,8 +25,11 @@ def downloadWebData(url):
         data=response.read()
         response.close()
         return data
+    except urllib2.HTTPError, e:
+        # HTTP errors usualy contain error information in JSON Format
+        return e.fp.read()
     except urllib2.URLError, e:
-        xbmc.executebuiltin("XBMC.Notification("+translation(31000)+"," + translation(32001) +")")
+        xbmc.executebuiltin("XBMC.Notification("+translation(32001)+"," + translation(32010) +")")
 	
 def createMainListing():
     addDir(translation(30005),'','featured','')
@@ -40,11 +44,19 @@ def createFollowingList():
     if not username:
         settings.openSettings()
         username = settings.getSetting('username').lower()
-    jsonString = downloadWebData(url='http://api.justin.tv/api/user/favorites/'+username+'.json?limit=40&offset=0')
+    jsonString = downloadWebData(url='http://api.justin.tv/api/user/favorites/'+username+'.json')
+    #Using xml in this case, because it's alot faster than parsing throw the big json result
     xmlDataOnlineStreams = downloadWebData(url='http://api.justin.tv/api/stream/list.xml')
     if jsonString is None or xmlDataOnlineStreams is None:
         return
-    jsonData=json.loads(jsonString)
+    try:
+        jsonData=json.loads(jsonString)
+    except:
+        xbmc.executebuiltin('XBMC.Notification("'+translation(32008)+'","'+translation(32008)+'")')
+        return  
+    if type(jsonData) is dict and 'error' in jsonData.keys():
+        xbmc.executebuiltin('XBMC.Notification("'+translation(32007)+'","'+jsonData['error']+'")')
+        return
     for x in jsonData:
         name = x['status']
         image = x['image_url_huge']
@@ -57,7 +69,14 @@ def createFollowingList():
 	
 def createListOfFeaturedStreams():
     jsonString=downloadWebData(url='https://api.twitch.tv/kraken/streams/featured')
+    if jsonString is None:
+        return
     jsonData=json.loads(jsonString)
+    try:
+        jsonData=json.loads(jsonString)
+    except:
+        xbmc.executebuiltin('XBMC.Notification("'+translation(32008)+'","'+translation(32008)+'")')
+        return
     for x in jsonData['featured']:
         try:
             image = x['stream']['channel']['logo']
@@ -75,7 +94,14 @@ def createListOfFeaturedStreams():
  
 def createListOfGames(index=0):
     jsonString=downloadWebData(url='https://api.twitch.tv/kraken/games/top?limit='+str(ITEMS_PER_SITE)+'&offset='+str(index*ITEMS_PER_SITE))
+    if jsonString is None:
+        return
     jsonData=json.loads(jsonString)
+    try:
+        jsonData=json.loads(jsonString)
+    except:
+        xbmc.executebuiltin('XBMC.Notification("'+translation(32008)+'","'+translation(32008)+'")')
+        return
     for x in jsonData['top']:
         try:
             name = str(x['game']['name'])
@@ -108,10 +134,18 @@ def search():
         for x in records:
             addLink(x['title'],x['user'],'play',x['thumbnail'],x['user'])
         xbmcplugin.endOfDirectory(thisPlugin)
+
 	
 def createListForGame(gameName, index=0):
     jsonString=downloadWebData(url='https://api.twitch.tv/kraken/streams?game='+gameName+'&limit='+str(ITEMS_PER_SITE)+'&offset='+str(index*ITEMS_PER_SITE))
+    if jsonString is None:
+        return
     jsonData=json.loads(jsonString)
+    try:
+        jsonData=json.loads(jsonString)
+    except:
+        xbmc.executebuiltin('XBMC.Notification("'+translation(32008)+'","'+translation(32008)+'")')
+        return
     for x in jsonData['streams']:
         try:
             image = x['channel']['logo']
@@ -150,7 +184,7 @@ def get_request(url, headers=None):
         try:
             if headers is None:
                 headers = {'User-agent' : httpHeaderUserAgent,
-                           'Referer' : 'http://www.justin.tv/'}
+                           'Referer' : 'http://www.twitch.tv/'}
             req = urllib2.Request(url,None,headers)
             response = urllib2.urlopen(req)
             link=response.read()
@@ -166,7 +200,7 @@ def get_request(url, headers=None):
 
 	
 def parameters_string_to_dict(parameters):
-        ''' Convert parameters encoded in a URL to a dict. '''
+        # Convert parameters encoded in a URL to a dict.
         paramDict = {}
         if parameters:
             paramPairs = parameters[1:].split("&")
@@ -177,7 +211,7 @@ def parameters_string_to_dict(parameters):
         return paramDict
 		
 def getSwfUrl(channel_name):
-        ''' Helper method to grab the swf url, resolving HTTP 301/302 along the way'''
+        # Helper method to grab the swf url, resolving HTTP 301/302 along the way
         base_url = 'http://www.justin.tv/widgets/live_embed_player.swf?channel=%s' % channel_name
         headers = {'User-agent' : httpHeaderUserAgent,
                    'Referer' : 'http://www.justin.tv/'+channel_name}
@@ -186,14 +220,14 @@ def getSwfUrl(channel_name):
         return response.geturl()
 		
 def getBestJtvTokenPossible(name):
-        '''Helper method to find another jtv token'''
+        # Helper method to find another jtv token
         swf_url = getSwfUrl(name)
         headers = {'User-agent' : httpHeaderUserAgent,
                    'Referer' : swf_url}
         url = 'http://usher.justin.tv/find/'+name+'.json?type=any&group='
         data = json.loads(get_request(url,headers))
         bestVideoHeight = -1
-        bestIndex = -1
+        bestIndex = 0
         index = 0
         for x in data:
             value = x.get('token', '')
@@ -223,7 +257,7 @@ def playLive(name, play=False, password=None):
         tokenIndex = 0
 
         try:
-            '''trying to get a token in desired quality'''
+            # trying to get a token in desired quality
             token = ' jtv='+data[tokenIndex]['token'].replace('\\','\\5c').replace(' ','\\20').replace('"','\\22')
             rtmp = data[tokenIndex]['connect']+'/'+data[tokenIndex]['play']
         except:
@@ -254,7 +288,7 @@ url=params.get('url')
 sIndex=params.get('siteIndex')
 try:
     index = int(sIndex)
-except Exception:
+except:
     index = 0
 channelname=params.get('channelname')
 if type(url)==type(str()):
