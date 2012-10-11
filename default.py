@@ -35,6 +35,7 @@ def createMainListing():
     addDir(translation(30005),'','featured','')
     addDir(translation(30001),'','games','')
     addDir(translation(30002),'','following','')
+    addDir(translation(30006),'','teams','')
     addDir(translation(30003),'','search','')
     addDir(translation(30004),'','settings','')
     xbmcplugin.endOfDirectory(thisPlugin)
@@ -89,6 +90,53 @@ def createListOfFeaturedStreams():
         if name == '':
             name = x['stream']['channel']['display_name']
         channelname = x['stream']['channel']['name']
+        addLink(name,'...','play',image,channelname)
+    xbmcplugin.endOfDirectory(thisPlugin)
+
+def createListOfTeams():
+    jsonString=downloadWebData(url='https://spreadsheets.google.com/feeds/list/0ArmMFLQnLIp8dFJ5bW9aOW03VHY5aUhsUFNXSUl1SXc/od6/public/basic?alt=json')
+    if jsonString is None:
+        return
+    jsonData=json.loads(jsonString)
+    try:
+        jsonData=json.loads(jsonString)
+    except:
+        xbmc.executebuiltin('XBMC.Notification("'+translation(32008)+'","'+translation(32008)+'")')
+        return
+    for x in jsonData['feed']['entry']:
+        teamData = x['content']['$t'].split(',')
+        try:
+            image = teamData[1][7:]
+            image = image.replace("http://","",1)
+            image = urllib.quote(image)
+            image = 'http://' + image
+        except:
+            image = ""
+        name = x['title']['$t']
+        channelname = teamData[0][7:]
+        addDir(name,channelname,'team',image,)
+    xbmcplugin.endOfDirectory(thisPlugin)
+
+def createListOfTeamStreams(team=''):
+    jsonString=downloadWebData(url='http://api.twitch.tv/api/team/'+team+'/live_channels.json')
+    if jsonString is None:
+        return
+    jsonData=json.loads(jsonString)
+    try:
+        jsonData=json.loads(jsonString)
+    except:
+        xbmc.executebuiltin('XBMC.Notification("'+translation(32008)+'","'+translation(32008)+'")')
+        return
+    for x in jsonData['channels']:
+        try:
+            image = x['channel']['image']['size600']
+            image = image.replace("http://","",1)
+            image = urllib.quote(image)
+            image = 'http://' + image
+        except:
+            image = ""
+        name = x['channel']['display_name']+' - '+x['channel']['title']
+        channelname = x['channel']['name']
         addLink(name,'...','play',image,channelname)
     xbmcplugin.endOfDirectory(thisPlugin)
  
@@ -303,6 +351,10 @@ elif mode == 'play':
 	playLive(channelname)
 elif mode == 'following':
 	createFollowingList()
+elif mode == 'teams':
+        createListOfTeams()
+elif mode == 'team':
+        createListOfTeamStreams(url)
 elif mode == 'settings':
 	settings.openSettings()
 elif mode == 'search':
