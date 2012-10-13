@@ -30,6 +30,20 @@ def downloadWebData(url):
         return e.fp.read()
     except urllib2.URLError, e:
         xbmc.executebuiltin("XBMC.Notification("+translation(32001)+"," + translation(32010) +")")
+
+def getJsonFromTwitchApi(url):
+    jsonString=downloadWebData(url)
+    if jsonString is None:
+        return None
+    try:
+        jsonData=json.loads(jsonString)
+    except:
+        xbmc.executebuiltin('XBMC.Notification("'+translation(32008)+'","'+translation(32008)+'")')
+        return None
+    if type(jsonData) is dict and 'error' in jsonData.keys():
+        xbmc.executebuiltin('XBMC.Notification("'+translation(32007)+'","'+jsonData['error']+'")')
+        return None
+    return jsonData
 	
 def createMainListing():
     addDir(translation(30005),'','featured','')
@@ -45,18 +59,10 @@ def createFollowingList():
     if not username:
         settings.openSettings()
         username = settings.getSetting('username').lower()
-    jsonString = downloadWebData(url='http://api.justin.tv/api/user/favorites/'+username+'.json')
     #Using xml in this case, because it's alot faster than parsing throw the big json result
     xmlDataOnlineStreams = downloadWebData(url='http://api.justin.tv/api/stream/list.xml')
-    if jsonString is None or xmlDataOnlineStreams is None:
-        return
-    try:
-        jsonData=json.loads(jsonString)
-    except:
-        xbmc.executebuiltin('XBMC.Notification("'+translation(32008)+'","'+translation(32008)+'")')
-        return  
-    if type(jsonData) is dict and 'error' in jsonData.keys():
-        xbmc.executebuiltin('XBMC.Notification("'+translation(32007)+'","'+jsonData['error']+'")')
+    jsonData = getJsonFromTwitchApi(url='http://api.justin.tv/api/user/favorites/'+username+'.json')
+    if jsonData is None:
         return
     for x in jsonData:
         name = x['status']
@@ -69,14 +75,8 @@ def createFollowingList():
     xbmcplugin.endOfDirectory(thisPlugin)
 	
 def createListOfFeaturedStreams():
-    jsonString=downloadWebData(url='https://api.twitch.tv/kraken/streams/featured')
-    if jsonString is None:
-        return
-    jsonData=json.loads(jsonString)
-    try:
-        jsonData=json.loads(jsonString)
-    except:
-        xbmc.executebuiltin('XBMC.Notification("'+translation(32008)+'","'+translation(32008)+'")')
+    jsonData = getJsonFromTwitchApi(url='https://api.twitch.tv/kraken/streams/featured')
+    if jsonData is None:
         return
     for x in jsonData['featured']:
         try:
@@ -118,14 +118,8 @@ def createListOfTeams():
     xbmcplugin.endOfDirectory(thisPlugin)
 
 def createListOfTeamStreams(team=''):
-    jsonString=downloadWebData(url='http://api.twitch.tv/api/team/'+team+'/live_channels.json')
-    if jsonString is None:
-        return
-    jsonData=json.loads(jsonString)
-    try:
-        jsonData=json.loads(jsonString)
-    except:
-        xbmc.executebuiltin('XBMC.Notification("'+translation(32008)+'","'+translation(32008)+'")')
+    jsonData = getJsonFromTwitchApi(url='http://api.twitch.tv/api/team/'+team+'/live_channels.json')
+    if jsonData is None:
         return
     for x in jsonData['channels']:
         try:
@@ -141,14 +135,8 @@ def createListOfTeamStreams(team=''):
     xbmcplugin.endOfDirectory(thisPlugin)
  
 def createListOfGames(index=0):
-    jsonString=downloadWebData(url='https://api.twitch.tv/kraken/games/top?limit='+str(ITEMS_PER_SITE)+'&offset='+str(index*ITEMS_PER_SITE))
-    if jsonString is None:
-        return
-    jsonData=json.loads(jsonString)
-    try:
-        jsonData=json.loads(jsonString)
-    except:
-        xbmc.executebuiltin('XBMC.Notification("'+translation(32008)+'","'+translation(32008)+'")')
+    jsonData = getJsonFromTwitchApi(url='https://api.twitch.tv/kraken/games/top?limit='+str(ITEMS_PER_SITE)+'&offset='+str(index*ITEMS_PER_SITE))
+    if jsonData is None:
         return
     for x in jsonData['top']:
         try:
