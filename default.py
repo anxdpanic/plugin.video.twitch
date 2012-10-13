@@ -98,7 +98,6 @@ def createListOfTeams():
     jsonString=downloadWebData(url='https://spreadsheets.google.com/feeds/list/0ArmMFLQnLIp8dFJ5bW9aOW03VHY5aUhsUFNXSUl1SXc/od6/public/basic?alt=json')
     if jsonString is None:
         return
-    jsonData=json.loads(jsonString)
     try:
         jsonData=json.loads(jsonString)
     except:
@@ -130,7 +129,10 @@ def createListOfTeamStreams(team=''):
             image = 'http://' + image
         except:
             image = ""
-        name = x['channel']['display_name']+' - '+x['channel']['title']
+        if x['channel']['title'] is None:
+            name = x['channel']['display_name']
+        else:
+            name = x['channel']['display_name']+' - '+x['channel']['title']
         channelname = x['channel']['name']
         addLink(name,'...','play',image,channelname)
     xbmcplugin.endOfDirectory(thisPlugin)
