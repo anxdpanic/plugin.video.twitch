@@ -94,6 +94,7 @@ def createListOfFeaturedStreams():
     xbmcplugin.endOfDirectory(thisPlugin)
 
 def createListOfTeams():
+    #Temporary solution until twitch api method is available
     jsonString=downloadWebData(url='https://spreadsheets.google.com/feeds/list/0ArmMFLQnLIp8dFJ5bW9aOW03VHY5aUhsUFNXSUl1SXc/od6/public/basic?alt=json')
     if jsonString is None:
         return
