@@ -10,12 +10,14 @@ try:
     import json
 except:
     import simplejson as json
+from xbmcswift2 import Plugin
 
-thisPlugin = int(sys.argv[1])
 settings = xbmcaddon.Addon(id='plugin.video.twitch')
 httpHeaderUserAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0'
 translation = settings.getLocalizedString
 ITEMS_PER_SITE=20
+
+plugin = Plugin()
 
 def downloadWebData(url):
     try:
@@ -45,16 +47,30 @@ def getJsonFromTwitchApi(url):
         return None
     return jsonData
 	
+@plugin.route('/')
 def createMainListing():
-    addDir(translation(30005),'','featured','')
-    addDir(translation(30001),'','games','')
-    addDir(translation(30002),'','following','')
-    addDir(translation(30006),'','teams','')
-    addDir(translation(30003),'','search','')
-    addDir(translation(30004),'','settings','')
-    xbmcplugin.endOfDirectory(thisPlugin)
+    items = [
+        {'label': translation(30002), 'path': plugin.url_for(
+            endpoint='createFollowingList'
+        )},
+        {'label': translation(30005), 'path': plugin.url_for(
+            endpoint='createListOfFeaturedStreams'
+        )},
+        {'label': translation(30006), 'path': plugin.url_for(
+            endpoint='createListOfFeaturedStreams'
+        )},
+        {'label': translation(30001), 'path': plugin.url_for(
+            endpoint='createListOfGames', sindex = '0'
+        )},
+        {'label': translation(30003), 'path': plugin.url_for(
+            endpoint='search'
+        )}
+    ]
+    return items  #
 
+@plugin.route('/createFollowingList/')
 def createFollowingList():
+    items = []
     username = settings.getSetting('username').lower()
     if not username:
         settings.openSettings()
@@ -70,11 +86,12 @@ def createFollowingList():
         loginname = x['login']
         if len(name) <= 0:
             name = loginname
-        if xmlDataOnlineStreams.count('<login>'+loginname+'</login>') > 0:
-            addLink(name,loginname,'play',image,loginname)
-    xbmcplugin.endOfDirectory(thisPlugin)
+        items.append({'label' : loginname, 'path' : '...'}) # TODO fixme
+    return items    
 	
+@plugin.route('/createListOfFeaturedStreams/')
 def createListOfFeaturedStreams():
+    items = []
     jsonData = getJsonFromTwitchApi(url='https://api.twitch.tv/kraken/streams/featured')
     if jsonData is None:
         return
@@ -90,11 +107,13 @@ def createListOfFeaturedStreams():
         if name == '':
             name = x['stream']['channel']['display_name']
         channelname = x['stream']['channel']['name']
-        addLink(name,'...','play',image,channelname)
-    xbmcplugin.endOfDirectory(thisPlugin)
+        items.append({'label' : name, 'path' : '...'}) # TODO fixme
+    return items
 
+@plugin.route('/createListOfTeams/')
 def createListOfTeams():
     #Temporary solution until twitch api method is available
+    items = []
     jsonString=downloadWebData(url='https://spreadsheets.google.com/feeds/list/0ArmMFLQnLIp8dFJ5bW9aOW03VHY5aUhsUFNXSUl1SXc/od6/public/basic?alt=json')
     if jsonString is None:
         return
@@ -114,11 +133,13 @@ def createListOfTeams():
             image = ""
         name = x['title']['$t']
         channelname = teamData[0][7:]
-        addDir(name,channelname,'team',image,)
-    xbmcplugin.endOfDirectory(thisPlugin)
+        items.append({'label' : name, 'path' : '...'}) # TODO fixme
+    return items
 
-def createListOfTeamStreams(team=''):
-    jsonData = getJsonFromTwitchApi(url='http://api.twitch.tv/api/team/'+team+'/live_channels.json')
+@plugin.route('/createListOfTeamStreams/<team>/')
+def createListOfTeamStreams(team):
+    items = []
+    jsonData = getJsonFromTwitchApi(url='http://api.twitch.tv/api/team/'+urllib.quote_plus(team)+'/live_channels.json')
     if jsonData is None:
         return
     for x in jsonData['channels']:
@@ -134,10 +155,13 @@ def createListOfTeamStreams(team=''):
         else:
             name = x['channel']['display_name']+' - '+x['channel']['title']
         channelname = x['channel']['name']
-        addLink(name,'...','play',image,channelname)
-    xbmcplugin.endOfDirectory(thisPlugin)
+        items.append({'label': channelname, 'path': '...'}) #TODO Fixme
+    return items
  
-def createListOfGames(index=0):
+@plugin.route('/createListOfGames/<sindex>/')
+def createListOfGames(sindex):
+    index = int(sindex)
+    items = []
     jsonData = getJsonFromTwitchApi(url='https://api.twitch.tv/kraken/games/top?limit='+str(ITEMS_PER_SITE)+'&offset='+str(index*ITEMS_PER_SITE))
     if jsonData is None:
         return
@@ -155,12 +179,14 @@ def createListOfGames(index=0):
             image = 'http://' + image
         except:
             image = ''
-        addDir(name,game,'channel',image)
+        items.append({'label': name, 'path': plugin.url_for('createListForGame', gameName = name, sindex='0')})
     if len(jsonData['top']) >= ITEMS_PER_SITE:
-        addDir(translation(31001),'','games','',index+1)
-    xbmcplugin.endOfDirectory(thisPlugin)
+        items.append({'label': translation(31001), 'path': plugin.url_for('createListOfGames', sindex=str(index+1))})
+    return items
 
+@plugin.route('/search/')
 def search():
+    items = []
     keyboard = xbmc.Keyboard('', translation(30101))
     keyboard.doModal()
     if keyboard.isConfirmed() and keyboard.getText():
@@ -172,11 +198,15 @@ def search():
         records = jdata['records']['broadcasts']
         for x in records:
             addLink(x['title'],x['user'],'play',x['thumbnail'],x['user'])
-        xbmcplugin.endOfDirectory(thisPlugin)
+            items.append({'label': x['title'], 'path': '...'}) # TODO Fixme !!!
+        return items
 
-	
-def createListForGame(gameName, index=0):
-    jsonString=downloadWebData(url='https://api.twitch.tv/kraken/streams?game='+gameName+'&limit='+str(ITEMS_PER_SITE)+'&offset='+str(index*ITEMS_PER_SITE))
+@plugin.route('/createListForGame/<gameName>/<sindex>/')	
+def createListForGame(gameName, sindex):
+    index = int(sindex)
+    items = []
+    print('https://api.twitch.tv/kraken/streams?game='+urllib.quote_plus(gameName)+'&limit='+str(ITEMS_PER_SITE)+'&offset='+str(index*ITEMS_PER_SITE) + '\n\n')
+    jsonString=downloadWebData(url='https://api.twitch.tv/kraken/streams?game='+urllib.quote_plus(gameName)+'&limit='+str(ITEMS_PER_SITE)+'&offset='+str(index*ITEMS_PER_SITE))
     if jsonString is None:
         return
     jsonData=json.loads(jsonString)
@@ -196,28 +226,10 @@ def createListForGame(gameName, index=0):
         name = x['channel']['status']
         if name == '':
             name = x['channel']['display_name']
-        channelname = x['channel']['name']
-        addLink(name,'...','play',image,channelname)
+        items.append({'label': name, 'path': '...'}) #TODO Fixme
     if len(jsonData['streams']) >= ITEMS_PER_SITE:
-        addDir(translation(31001),url,'channel','',index+1)
-    xbmcplugin.endOfDirectory(thisPlugin)
-	
-def addLink(name,url,mode,iconimage,channelname):
-        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&channelname="+channelname
-        ok=True
-        liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
-        liz.setInfo( type="Video", infoLabels={ "Title": name } )
-        liz.setProperty('IsPlayable', 'true')
-        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz)
-        return ok
-		
-def addDir(name,url,mode,iconimage,index=0):
-        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&siteIndex="+str(index)
-        ok=True
-        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-        liz.setInfo( type="Video", infoLabels={ "Title": name } )
-        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
-        return ok
+        items.append({'label': translation(31001), 'path': plugin.url_for('createListForGame', gameName = gameName, sindex=str(index+1))})
+    return items
 		
 def get_request(url, headers=None):
         try:
@@ -236,18 +248,6 @@ def get_request(url, headers=None):
                     if 'archive' in url:
                         xbmc.executebuiltin("XBMC.Notification("+translation(31000)+"," +translation(32003)+ " " +name+")")
                 xbmc.executebuiltin("XBMC.Notification("+translation(31000)+"," + translation(32001) +")")
-
-	
-def parameters_string_to_dict(parameters):
-        # Convert parameters encoded in a URL to a dict.
-        paramDict = {}
-        if parameters:
-            paramPairs = parameters[1:].split("&")
-            for paramsPair in paramPairs:
-                paramSplits = paramsPair.split('=')
-                if (len(paramSplits)) == 2:
-                    paramDict[paramSplits[0]] = paramSplits[1]
-        return paramDict
 		
 def getSwfUrl(channel_name):
         # Helper method to grab the swf url, resolving HTTP 301/302 along the way
@@ -321,35 +321,6 @@ def playLive(name, play=False, password=None):
             item = xbmcgui.ListItem(path=url)
             xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
 
-params=parameters_string_to_dict(sys.argv[2])
-mode=params.get('mode')
-url=params.get('url')
-sIndex=params.get('siteIndex')
-try:
-    index = int(sIndex)
-except:
-    index = 0
-channelname=params.get('channelname')
-if type(url)==type(str()):
-	url=urllib.unquote_plus(url)
-if mode == 'games':
-	createListOfGames(index)  
-elif mode == 'featured':
-	createListOfFeaturedStreams()
-elif mode == 'channel':
-	createListForGame(url, index)
-elif mode == 'play':
-	playLive(channelname)
-elif mode == 'following':
-	createFollowingList()
-elif mode == 'teams':
-        createListOfTeams()
-elif mode == 'team':
-        createListOfTeamStreams(url)
-elif mode == 'settings':
-	settings.openSettings()
-elif mode == 'search':
-	search()
-else:
-	createMainListing()
 
+if __name__ == '__main__':
+    plugin.run()
