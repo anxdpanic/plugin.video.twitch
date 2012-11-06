@@ -124,8 +124,8 @@ def createListOfFeaturedStreams():
             name = x['stream']['channel']['display_name']
         channelname = x['stream']['channel']['name']
         items.append({'label': name, 'path': plugin.url_for(
-                endpoint='playLive', name=channelname
-            )})
+                endpoint='playLive', name=channelname, thumbnail = x['stream']['channel']['logo']
+            )}, 'is_playable': True)
     return items
 
 
