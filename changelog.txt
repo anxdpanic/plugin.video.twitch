@@ -24,3 +24,6 @@
 - added featured streams section
 0.2.2
 - added teams section - thx to kokarn
+0.2.3
+- code refactor
+- integration of xbmcswift2
