@@ -277,7 +277,7 @@ def playLive(name):
         videoTypeName = '360p'
     url = 'http://usher.justin.tv/find/' + name + '.json?type=' + \
         videoTypeName + '&private_code=null&group='
-    data = json.loads(get_request(url, headers))
+    data = json.loads(downloadWebData(url))
     tokenIndex = 0
 
     try:
