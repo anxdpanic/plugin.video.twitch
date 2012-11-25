@@ -27,3 +27,6 @@
 0.2.3
 - code refactor
 - integration of xbmcswift2
+0.2.4
+- fixed bug in following section
+- fixed bug in function getBestJtvTokenPossible

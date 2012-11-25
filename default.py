@@ -248,7 +248,7 @@ def getBestJtvTokenPossible(name):
     url = 'http://usher.justin.tv/find/' + name + '.json?type=any&group='
     data = json.loads(downloadWebData(url))
     bestVideoHeight = -1
-    bestIndex = 0
+    bestIndex = -1
     index = 0
     for x in data:
         value = x.get('token', '')
@@ -257,6 +257,8 @@ def getBestJtvTokenPossible(name):
             bestVideoHeight = x['video_height']
             bestIndex = index
         index = index + 1
+    if bestIndex == -1:
+        return None
     return data[bestIndex]
 
 
@@ -288,7 +290,7 @@ def playLive(name):
     except:
         showNotification(translation(32005),translation(32006))
         jtvtoken = getBestJtvTokenPossible(name)
-        if jtvtoken == '':
+        if jtvtoken is None:
             showNotification(translation(31000),translation(32004))
             return
         token = ' jtv=' + jtvtoken['token'].replace('\\', '\\5c').replace(' ', '\\20').replace('"', '\\22')
