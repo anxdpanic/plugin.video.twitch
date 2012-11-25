@@ -147,7 +147,7 @@ def createFollowingList():
         username = settings.getSetting('username').lower()
     #Using xml in this case, because it's alot faster than parsing throw the big json result
     xmlDataOnlineStreams = downloadWebData('http://api.justin.tv/api/stream/list.xml')
-    jsonData = getJsonFromTwitchApi('http://api.justin.tv/api/user/favorites/' + username + '.json')
+    jsonData = getJsonFromTwitchApi('http://api.justin.tv/api/user/favorites/' + username + '.json?limit=100')
     if jsonData is None:
         return
     for x in jsonData:
