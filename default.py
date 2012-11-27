@@ -151,16 +151,14 @@ def createFollowingList():
     if jsonData is None:
         return
     for x in jsonData:
-        name = x['status']
-        image = x['image_url_huge']
         loginname = x['login']
-        if len(name) <= 0:
-            name = loginname
         if xmlDataOnlineStreams.count('<login>'+loginname+'</login>') > 0:
-            items.append({'label': name, 'path': plugin.url_for(
-                endpoint='playLive', name=loginname), 'icon' : image, 'is_playable' : True})
-    return items
-
+            name = loginname
+            if type(x['status']) is unicode and len(x['status']) > 0:
+                name = x['status']
+            image = x['image_url_huge']
+            items.append({'label': name.strip(), 'path': plugin.url_for(endpoint='playLive', name=loginname), 'icon' : image, 'is_playable' : True})
+    return items    
 
 @plugin.route('/createListOfTeams/')
 def createListOfTeams():
