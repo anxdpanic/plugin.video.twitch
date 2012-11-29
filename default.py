@@ -83,11 +83,12 @@ def createListOfFeaturedStreams():
     if jsonData is None:
         return
     for x in jsonData['featured']:
+        loginname = x['stream']['channel']['display_name']
         name = x['stream']['channel']['status']
         if name == '':
             name = x['stream']['channel']['display_name']
         channelname = x['stream']['channel']['name']
-        items.append({'label': name, 'path': plugin.url_for(endpoint='playLive', name=channelname),
+        items.append({'label': "[" + loginname.strip() + "] " + name, 'path': plugin.url_for(endpoint='playLive', name=channelname),
          'is_playable': True, 'icon' : x['stream']['channel']['logo']})
     return items
 
@@ -145,22 +146,17 @@ def createFollowingList():
     if not username:
         settings.openSettings()
         username = settings.getSetting('username').lower()
-    #Using xml in this case, because it's alot faster than parsing throw the big json result
-    xmlDataOnlineStreams = downloadWebData('http://api.justin.tv/api/stream/list.xml')
-    jsonData = getJsonFromTwitchApi('http://api.justin.tv/api/user/favorites/' + username + '.json?limit=100')
+    jsonData = getJsonFromTwitchApi('http://api.justin.tv/api/user/favorites/' + username + '.json?limit=100&offset=0&live=true')
     if jsonData is None:
         return
     for x in jsonData:
-        name = x['status']
-        image = x['image_url_huge']
         loginname = x['login']
-        if len(name) <= 0:
-            name = loginname
-        if xmlDataOnlineStreams.count('<login>'+loginname+'</login>') > 0:
-            items.append({'label': name, 'path': plugin.url_for(
-                endpoint='playLive', name=loginname), 'icon' : image, 'is_playable' : True})
-    return items
-
+        name = loginname
+        if type(x['status']) is unicode and len(x['status']) > 0:
+            name = x['status']
+        image = x['image_url_huge']
+        items.append({'label': "[" + loginname.strip() + "] " + name.strip(), 'path': plugin.url_for(endpoint='playLive', name=loginname), 'icon' : image, 'is_playable' : True})
+    return items    
 
 @plugin.route('/createListOfTeams/')
 def createListOfTeams():
