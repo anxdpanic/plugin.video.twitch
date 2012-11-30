@@ -33,6 +33,12 @@
   <string id="33002">720p</string>
   <string id="33003">480p</string>
   <string id="33004">360p</string>
+  <string id="33010">Stream-Bezeichnung</string>
+  <string id="33011">Streamer - Stream Title</string>
+  <string id="33012">Viewers - Streamer - Stream Title</string>
+  <string id="33013">Stream Title</string>
+  <string id="33014">Streamer</string>
+  <string id="33015">Streamer - Game</string>
 
   <string id="33100">Benutzername</string>
 </strings>

@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import sys
 import urllib2
 import urllib
@@ -50,6 +53,30 @@ def getJsonFromTwitchApi(url):
         return None
     return jsonData
 
+def getTitle(streamer, title, viewers):
+        titleDisplay = settings.getSetting('titledisplay')
+        if streamer is None:
+            streamer = '-'
+        if title is None:
+            title = 'no title'
+        if viewers is None:
+            viewers = '0'    
+
+        streamTitle = streamer + ' - ' + title
+        if titleDisplay == '0':
+            #Streamer - Stream Title
+            streamTitle = streamer + ' - ' + title
+        elif titleDisplay == '1':
+            #Viewers - Streamer - Stream Title
+            streamTitle = str(viewers) + ' - ' + streamer + ' - ' + title
+        elif titleDisplay == '2':
+            #Stream Title
+            streamTitle = title
+        elif titleDisplay == '3':
+            #Streamer
+            streamTitle = streamer
+        return streamTitle
+
 
 @plugin.route('/')
 def createMainListing():
@@ -83,13 +110,15 @@ def createListOfFeaturedStreams():
     if jsonData is None:
         return
     for x in jsonData['featured']:
-        loginname = x['stream']['channel']['display_name']
-        name = x['stream']['channel']['status']
-        if name == '':
-            name = x['stream']['channel']['display_name']
-        channelname = x['stream']['channel']['name']
-        items.append({'label': "[" + loginname.strip() + "] " + name, 'path': plugin.url_for(endpoint='playLive', name=channelname),
-         'is_playable': True, 'icon' : x['stream']['channel']['logo']})
+        try:
+            streamData = x['stream']
+            channelData = x['stream']['channel']
+            loginname = channelData['name']
+            title = getTitle(streamer=channelData.get('name'), title=channelData.get('status'), viewers=streamData.get('viewers'))
+            items.append({'label': title, 'path': plugin.url_for(endpoint='playLive', name=loginname),
+             'is_playable': True, 'icon' : channelData['logo']})
+        except:
+            pass
     return items
 
 
@@ -124,14 +153,13 @@ def createListForGame(gameName, sindex):
     if jsonData is None:
         return
     for x in jsonData['streams']:
+        channelData = x['channel']
         try:
-            image = x['channel']['logo']
+            image = channelData['logo']
         except:
             image = ""
-        name = x['channel']['status']
-        if name == '':
-            name = x['channel']['display_name']
-        items.append({'label': name, 'path': plugin.url_for(endpoint='playLive', name=x['channel']['name']),
+        title = getTitle(streamer=channelData.get('name'), title=channelData.get('status'), viewers=x.get('viewers'))
+        items.append({'label': title, 'path': plugin.url_for(endpoint='playLive', name=channelData['name']),
                     'is_playable' : True, 'icon' : image})
     if len(jsonData['streams']) >= ITEMS_PER_SITE:
         items.append({'label': translation(31001), 'path': plugin.url_for(
@@ -151,11 +179,9 @@ def createFollowingList():
         return
     for x in jsonData:
         loginname = x['login']
-        name = loginname
-        if type(x['status']) is unicode and len(x['status']) > 0:
-            name = x['status']
         image = x['image_url_huge']
-        items.append({'label': "[" + loginname.strip() + "] " + name.strip(), 'path': plugin.url_for(endpoint='playLive', name=loginname), 'icon' : image, 'is_playable' : True})
+        title = getTitle(streamer=x.get('login'), title=x.get('status'), viewers=x.get('views_count'))
+        items.append({'label': title , 'path': plugin.url_for(endpoint='playLive', name=loginname), 'icon' : image, 'is_playable' : True})
     return items    
 
 @plugin.route('/createListOfTeams/')
