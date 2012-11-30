@@ -160,31 +160,23 @@ def createFollowingList():
 
 @plugin.route('/createListOfTeams/')
 def createListOfTeams():
-    #Temporary solution until twitch api method is available
     items = []
-    jsonString = downloadWebData(url='https://spreadsheets.google.com/feeds/list/0ArmMFLQnLIp8dFJ5bW9aOW03VHY5aUhsUFNXSUl1SXc/od6/public/basic?alt=json')
-    if jsonString is None:
+    jsonData = getJsonFromTwitchApi('https://api.twitch.tv/kraken/teams/')
+    if jsonData is None:
         return
-    try:
-        jsonData = json.loads(jsonString)
-    except:
-        showNotification(translation(32008),translation(32008))
-        return
-    for x in jsonData['feed']['entry']:
-        teamData = x['content']['$t'].split(',')
+    for x in jsonData['teams']:
         try:
-            image = teamData[1][7:]
+            image = x['logo']
         except:
             image = ""
-        name = x['title']['$t']
-        channelname = teamData[0][7:]
-        items.append({'label': name, 'path': plugin.url_for(endpoint='createListOfTeamStreams', team=channelname), 'icon' : image})
+        name = x['name']
+        items.append({'label': name, 'path': plugin.url_for(endpoint='createListOfTeamStreams', team=name), 'icon' : image})
     return items
 
 
 @plugin.route('/createListOfTeamStreams/<team>/')
 def createListOfTeamStreams(team):
-    items = []
+    items = []      
     jsonData = getJsonFromTwitchApi(url='http://api.twitch.tv/api/team/' + urllib.quote_plus(team) + '/live_channels.json')
     if jsonData is None:
         return
