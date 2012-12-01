@@ -211,12 +211,14 @@ def createListOfTeamStreams(team):
             image = x['channel']['image']['size600']
         except:
             image = ""
-        if x['channel']['title'] is None:
-            name = x['channel']['display_name']
-        else:
-            name = x['channel']['display_name'] + ' - ' + x['channel']['title']
-        channelname = x['channel']['name']
-        items.append({'label': name, 'path': plugin.url_for(endpoint='playLive', name=channelname), 'is_playable' : True, 'icon' : image})
+        try:
+            channelData = x['channel']
+            title = getTitle(streamer=channelData.get('display_name'), title=channelData.get('title'), viewers=channelData.get('current_viewers'))
+            channelname = x['channel']['name']
+            items.append({'label': title, 'path': plugin.url_for(endpoint='playLive', name=channelname), 'is_playable' : True, 'icon' : image})
+        except:
+            # malformed data element
+            pass
     return items
 
 
