@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
+import xbmcplugin
+import xbmcgui
 import sys
 import urllib2
 import urllib
@@ -312,14 +313,12 @@ def playLive(name):
         token = ' jtv=' + jtvtoken['token'].replace('\\', '\\5c').replace(' ', '\\20').replace('"', '\\22')
         rtmp = jtvtoken['connect'] + '/' + jtvtoken['play']
 
-    swf = ' swfUrl=%s swfVfy=1 live=1' % swf_url
+    swf = ' swfUrl=%s swfVfy=1 live=true' % swf_url
     Pageurl = ' Pageurl=http://www.justin.tv/' + name
-    url = rtmp + token + swf + Pageurl
-    item = {
-        'label': name,
-        'path': url,
-    }
-    return plugin.play_video(item)
+    url = rtmp+token+swf+Pageurl
+    print "Debug " + url
+    item = xbmcgui.ListItem(path=url)
+    xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
 
 
 if __name__ == '__main__':
