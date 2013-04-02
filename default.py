@@ -316,7 +316,6 @@ def playLive(name):
     swf = ' swfUrl=%s swfVfy=1 live=true' % swf_url
     Pageurl = ' Pageurl=http://www.justin.tv/' + name
     url = rtmp+token+swf+Pageurl
-    print "Debug " + url
     item = xbmcgui.ListItem(path=url)
     xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
 

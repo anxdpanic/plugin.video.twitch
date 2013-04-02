@@ -36,3 +36,5 @@
 - new translation: Polish
 - changed getting live favorite channels from on single .json query (user/favorite with live=true variable set)
 - channel listing in format "[channel_name] channel_status_text"
+0.2.6
+- bug fix: crashes or wrong error messages, when opening streams
