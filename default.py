@@ -1,12 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import xbmcplugin
-import xbmcgui
 import sys
 import urllib2
 import urllib
 import re
-import xbmcaddon
 import os
 import socket
 try:
@@ -15,12 +12,10 @@ except:
     import simplejson as json
 from xbmcswift2 import Plugin
 
-settings = xbmcaddon.Addon(id='plugin.video.twitch')
 httpHeaderUserAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0'
-translation = settings.getLocalizedString
 ITEMS_PER_SITE = 20
 plugin = Plugin()
-
+translation = plugin.get_string
 
 def downloadWebData(url):
     try:
