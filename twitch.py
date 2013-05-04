@@ -90,6 +90,7 @@ class TwitchVideoResolver(object):
             expiration = int(re.match(PATTERN_EXPIRATION, stream[Keys.TOKEN]).group(1))
         else:
             jtv = expiration = ""
+            
         streamVars[Keys.JTV_MATCH] = (" jtv=" +jtv) if re.match(PATTERN_IP, streamVars[Keys.RTMP]) else ""
         quality = int(stream.get(Key.VIDEO_HEIGHT,0))
         return {Keys.QUALITY: quality,  Keys.RTMP_URL: Template(FORMAT_RTMP_URL).substitute(streamVars)}
