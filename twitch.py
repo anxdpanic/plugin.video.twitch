@@ -32,19 +32,20 @@ class TwitchTV(object):
 
     def getFeaturedStream(self):
         url = ''.join([Urls.STREAMS,Keys.FEATURED])
-        items = self.scraper.getJson(url)
-        return items[Keys.FEATURED] if items else []
+        return self._fetchItems(url, Keys.FEATURED)
     
     def getGames(self, offset=10, limit=10):
         url = ''.join([Urls.GAMES,Keys.TOP,Urls.OPTIONS_LIMIT_OFFSET.format(limit,offset)])
-        items = self.scraper.getJson(url)
-        return items[Keys.TOP] if items[Keys.TOP] else []
+        return self._fetchItems(url, Keys.TOP)
     
     def getGameStreams(self, gameName, offset = 10, limit = 10):
         options = Urls.OPTIONS_LIMIT_OFFSET_GAME.format(limit, offset, urllib.quote_plus(gameName))
         url = ''.join([Urls.BASE, Keys.STREAMS, options])
+        return self._fetchItems(url, Keys.STREAMS)
+    
+    def _fetchItems(self, url, key):
         items = self.scraper.getJson(url)
-        return items[Keys.STREAMS] if items else []
+        return items[key] if items else []
     
 class TwitchVideoResolver(object):
 
