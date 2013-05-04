@@ -101,15 +101,12 @@ def createListOfGames(index):
     return items
 
 def convertGameToItem(game):
-    try:
-        name = str(game['game']['name'])
-        image = game['game']['logo']['large']
-        image = ''
-        return {'label': name,
-               'path': plugin.url_for('createListForGame', gameName = name, index = '0'),
-               'icon' : image}
-    except:
-        return None # Hacky -> ignore Games with Unicodename like 'Pokémon' FIXME
+    name = game['game']['name']
+    image = game['game']['logo']['large']
+    image = ''
+    return {'label': name,
+           'path': plugin.url_for('createListForGame', gameName = name, index = '0'),
+           'icon' : image}
 
 @plugin.route('/createListForGame/<gameName>/<index>/')
 def createListForGame(gameName, index):
