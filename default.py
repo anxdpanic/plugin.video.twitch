@@ -164,7 +164,7 @@ def getTitleTemplate(titleSetting):
 
 def cleanTitleValue(value):
     if isinstance(value, basestring):
-        return unicode(value).replace('\r\n', ' ').strip().encode('utf-8','replace')
+        return unicode(value).replace('\r\n', ' ').strip().encode('utf-8')
     else:
         return value
 
@@ -179,13 +179,15 @@ def convertChannelToItem(channel):
     channelName = channel[Keys.NAME]
     videobanner = channel.get(Keys.VIDEO_BANNER, '')
     logo = channel.get(Keys.LOGO,'')
+
     return {'label': title,
             'path': plugin.url_for(endpoint = 'playLive', name = channelName),
             'is_playable': True, 
             'icon' : videobanner if videobanner else logo}
 
+
 def convertGameToItem(game):
-    name = game[Keys.NAME]
+    name = game[Keys.NAME].encode('utf-8')
     image = game[Keys.LOGO].get(Keys.LARGE, '')
     return {'label': name,
             'path': plugin.url_for('createListForGame', gameName = name, index = '0'),

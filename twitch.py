@@ -38,7 +38,6 @@ class TwitchTV(object):
     def getGames(self, offset = 10, limit = 10):
         options = Urls.OPTIONS_LIMIT_OFFSET.format(limit, offset)
         url = ''.join([Urls.GAMES, Keys.TOP, options])
-        has
         return self._fetchItems(url, Keys.TOP)
 
     def getGameStreams(self, gameName, offset = 10, limit = 10):
@@ -141,6 +140,7 @@ class Keys(object):
     '''
     CHANNEL = 'channel'
     CONNECT = 'connect'
+    BACKGROUND = 'background'
     DISPLAY_NAME = 'display_name'
     FEATURED = 'featured'
     FOLLOWS = 'follows'
