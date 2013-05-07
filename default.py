@@ -12,33 +12,40 @@ class Templates(object):
     TITLE = "{title}"
     STREAMER = "{streamer}"
     STREAMER_TITLE = "{streamer} - {title}"
-    VIEWERS_STREAMER_TITLE= "{viewers} - {streamer} - {title}"
+    VIEWERS_STREAMER_TITLE = "{viewers} - {streamer} - {title}"
+    ELLIPSIS = '...'
 
 ITEMS_PER_PAGE = 20
 LINE_LENGTH = 60
-ELLIPSIS = '...'
+
 plugin = Plugin()
 twitch = TwitchTV()
 
 @plugin.route('/')
 def createMainListing():
     items = [
-        {'label': plugin.get_string(30005),
+        {
+         'label': plugin.get_string(30005),
          'path': plugin.url_for(endpoint = 'createListOfFeaturedStreams')
         },
-        {'label': plugin.get_string(30001),
+        {
+         'label': plugin.get_string(30001),
          'path': plugin.url_for(endpoint = 'createListOfGames', index = '0')
         },
-        {'label': plugin.get_string(30002),
+        {
+         'label': plugin.get_string(30002),
          'path': plugin.url_for(endpoint = 'createFollowingList')
         },
-        {'label': plugin.get_string(30006),
+        {
+         'label': plugin.get_string(30006),
          'path': plugin.url_for(endpoint = 'createListOfTeams', index = '0')
         },
-        {'label': plugin.get_string(30003),
+        {
+         'label': plugin.get_string(30003),
          'path': plugin.url_for(endpoint = 'search')
         },
-        {'label': plugin.get_string(30004),
+        {
+         'label': plugin.get_string(30004),
          'path': plugin.url_for(endpoint = 'showSettings')
         }
     ]
@@ -48,7 +55,8 @@ def createMainListing():
 @plugin.route('/createListOfFeaturedStreams/')
 def createListOfFeaturedStreams():
     streams = twitch.getFeaturedStream()
-    return [convertChannelToItem(item[Keys.STREAM][Keys.CHANNEL]) for item in streams]
+    return [convertChannelToListItem(element[Keys.STREAM][Keys.CHANNEL])
+            for element in streams]
 
 
 @plugin.route('/createListOfGames/<index>/')
@@ -56,12 +64,12 @@ def createListOfGames(index):
     index = int(index)
     limit = ITEMS_PER_PAGE
     offset = str(index * ITEMS_PER_PAGE)
-     
-    games = twitch.getGames(offset,limit)
-    items = [convertGameToItem(item[Keys.GAME]) for item in games]
-    if len(games) >= ITEMS_PER_PAGE: #TODO : pagination occurs even if noOfStreams % ITEMS_PER_PAGE == 0
-        items.append({'label': plugin.get_string(31001),
-                      'path': plugin.url_for('createListOfGames', index = str(index + 1))})
+
+    games = twitch.getGames(offset, limit)
+    items = [convertGameToListItem(element[Keys.GAME]) for element in games]
+    #TODO : pagination occurs even if noOfStreams % ITEMS_PER_PAGE == 0
+    if len(games) >= ITEMS_PER_PAGE:
+        items.append(linkt_to_next_page('createListOfGames',index))
     return items
 
 
@@ -70,11 +78,11 @@ def createListForGame(gameName, index):
     index = int(index)
     limit = ITEMS_PER_PAGE
     offset = index * ITEMS_PER_PAGE
-    items = [convertChannelToItem(item[Keys.CHANNEL])for item 
+    items = [convertChannelToListItem(item[Keys.CHANNEL])for item
              in twitch.getGameStreams(gameName, offset, limit)]
-    if len(items) >= ITEMS_PER_PAGE: #TODO: won't always work as expected, no pagination only if <
-        items.append({'label': plugin.get_string(31001),
-                      'path': plugin.url_for('createListForGame', gameName = gameName, index = str(index + 1))})
+    #TODO: won't always work as expected, no pagination only if <
+    if len(items) >= ITEMS_PER_PAGE: 
+        items.append(link_to_next_page('createListForGame',index))
     return items
 
 
@@ -83,7 +91,7 @@ def createFollowingList():
     items = []
     username = getUserName()
     streams = twitch.getFollowingStreams(username)
-    return [convertChannelToItem(stream[Keys.CHANNEL]) for stream in streams]    
+    return [convertChannelToListItem(stream[Keys.CHANNEL]) for stream in streams]
 
 
 @plugin.route('/createListOfTeams/')
@@ -100,17 +108,17 @@ def search():
 
 
 @plugin.route('/searchresults/<query>/<index>/')
-def searchresults(query,index = '0'):
+def searchresults(query, index = '0'):
     index = int(index)
     limit = ITEMS_PER_PAGE
     offset = str(index * ITEMS_PER_PAGE)
     items = [convertGameStreamToItem(gameStream) for gameStream
              in twitch.searchStreams(query, offset, limit)]
-    if len(items) >= ITEMS_PER_PAGE: #TODO: won't always work as expected, no pagination only if <
-        items.append({'label': plugin.get_string(31001),
-                      'path': plugin.url_for('searchresults', query = query, index = str(index + 1))})
+    #TODO: won't always work as expected, no pagination only if <
+    if len(items) >= ITEMS_PER_PAGE:
+        items.append(link_to_next_page('searchresults', index))
     return items
-    
+
 
 @plugin.route('/showSettings/')
 def showSettings():
@@ -124,16 +132,16 @@ def playLive(name):
     resolver = TwitchVideoResolver()
     rtmpUrl = resolver.getRTMPUrl(name, videoQuality)
     plugin.set_resolved_url(rtmpUrl)
-    
+
 
 def getTitle(titleValues):
     titleSetting = int(plugin.get_setting('titledisplay'))
     template = getTitleTemplate(titleSetting)
-    
-    for key,value in titleValues.iteritems():
-        titleValues[key] = cleanTitleValue(value)  
+
+    for key, value in titleValues.iteritems():
+        titleValues[key] = cleanTitleValue(value)
     title = template.format(**titleValues)
-    
+
     return truncateTitle(title)
 
 def getUserName():
@@ -170,34 +178,46 @@ def cleanTitleValue(value):
 
 
 def truncateTitle(title):
-    return title[:LINE_LENGTH] + (title[LINE_LENGTH:] and ELLIPSIS)
+    return title[:LINE_LENGTH] + (title[LINE_LENGTH:] and Template.ELLIPSIS)
 
 
-def convertChannelToItem(channel):
+def convertChannelToListItem(channel):
     titleValues = extractTitleValues(channel)
     title = getTitle(titleValues)
     channelName = channel[Keys.NAME]
     videobanner = channel.get(Keys.VIDEO_BANNER, '')
-    logo = channel.get(Keys.LOGO,'')
+    logo = channel.get(Keys.LOGO, '')
 
-    return {'label': title,
+    return {
+            'label': title,
             'path': plugin.url_for(endpoint = 'playLive', name = channelName),
-            'is_playable': True, 
-            'icon' : videobanner if videobanner else logo}
+            'is_playable': True,
+            'icon' : videobanner if videobanner else logo
+            }
 
 
-def convertGameToItem(game):
+def convertGameToListItem(game):
     name = game[Keys.NAME].encode('utf-8')
     image = game[Keys.LOGO].get(Keys.LARGE, '')
-    return {'label': name,
+    return {
+            'label': name,
             'path': plugin.url_for('createListForGame', gameName = name, index = '0'),
-            'icon' : image}
-    
+            'icon' : image
+            }
+
 
 def extractTitleValues(channel):
-    return {'streamer':channel.get(Keys.DISPLAY_NAME,'Unnamed Streamer'),
+    return {
+            'streamer':channel.get(Keys.DISPLAY_NAME, 'Unnamed Streamer'),
             'title': channel.get(Keys.STATUS, 'Untitled Stream'),
-            'viewers':channel.get(Keys.VIEWERS, 'Unknown Number of Viewers')}
+            'viewers':channel.get(Keys.VIEWERS, 'Unknown Number of Viewers')
+            }
+    
+def link_to_next_page(target, currentIndex):
+    return {
+            'label': plugin.get_string(31001),
+            'path': plugin.url_for(target, index = currentIndex+1)
+            }
 
 
 if __name__ == '__main__':
