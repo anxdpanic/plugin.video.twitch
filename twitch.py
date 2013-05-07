@@ -11,7 +11,9 @@ except:
 USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0'
 
 class JSONScraper(object):
-
+    '''
+    Encapsulates execution request and parsing of response
+    '''
     def _downloadWebData(self, url, headers = None):
         print url
         req = urllib2.Request(url)
@@ -27,7 +29,10 @@ class JSONScraper(object):
 
 
 class TwitchTV(object):
-
+    '''
+    Uses Twitch API to fetch json-encoded objects
+    every method returns a dict containing the objects' values
+    '''
     def __init__(self):
         self.scraper = JSONScraper()
 
@@ -53,10 +58,10 @@ class TwitchTV(object):
         return self._fetchItems(url, Keys.STREAMS)
     
     def getFollowingStreams(self, username):
-        #Get Channels
+        #Get ChannelNames
         followingChannels = self.getFollowingChannels(username)
         channelNames = self._filterChannelNames(followingChannels)
-        #get Streams
+        #get Streams of that Channels
         options = '?channel=' + ','.join(channelNames)
         url = ''.join([Urls.BASE, Keys.STREAMS, options])
         return self._fetchItems(url, Keys.STREAMS)
@@ -72,13 +77,32 @@ class TwitchTV(object):
     def _fetchItems(self, url, key):
         items = self.scraper.getJson(url)
         return items[key] if items else []
-    
-    def getTeams(self):
-        return self._fetchItems(Urls.TEAMS, Keys.TEAMS)
+
 
 class TwitchVideoResolver(object):
-
-    def getSwfUrl(self, channelName):
+    '''
+    Resolves the RTMP-Link to a given Channelname
+    Uses Justin.TV API
+    '''
+    
+    def getRTMPUrl(self, channelName, maxQuality):
+        swfUrl = self._getSwfUrl(channelName)
+        streamQualities = self._getStreamsForChannel(channelName)
+        # check that api response isn't empty (i.e. stream is offline)
+        if streamQualities: 
+            items = [
+                     self._parseStreamValues(stream, swfUrl)
+                     for stream in streamQualities
+                     if self._streamIsAccessible(stream)
+                     ]
+            if items:
+                return self._bestMatchForChosenQuality(items, maxQuality)[Keys.RTMP_URL]
+            else:
+                raise Exception('No Stream-URL could be found')
+        else:
+            raise Exception('No Stream available, probably offline')
+    
+    def _getSwfUrl(self, channelName):
         url = Urls.TWITCH_SWF + channelName
         headers = {Keys.USER_AGENT: USER_AGENT,
                    Keys.REFERER: Urls.TWITCH_TV + channelName}
@@ -86,29 +110,18 @@ class TwitchVideoResolver(object):
         response = urllib2.urlopen(req)
         return response.geturl()
 
-    def getRTMPUrl(self, channelName, maxQuality):
-        swfUrl = self.getSwfUrl(channelName)
-        streamQualities = self.getStreamsForChannel(channelName)
-        if streamQualities: # check that api response isn't empty (i.e. stream is offline)
-            items = [self.parseStreamValues(stream, swfUrl) for stream in
-                      streamQualities if self.streamIsAccessible(stream)]
-            if items:
-                return self.bestMatchForChosenQuality(items, maxQuality)[Keys.RTMP_URL]
-        return None
-
-    def streamIsAccessible(self, stream):
+    def _streamIsAccessible(self, stream):
         if not stream[Keys.TOKEN] and re.match(Patterns.IP, stream.get(Keys.CONNECT)):
             #log "skipping quality ${stream.type} because stream has no token and requires one" 
             return False # skip qualities where we get no token (subscription) and stream's a non-cdn server
         return True
 
-
-    def getStreamsForChannel(self, channelName):
+    def _getStreamsForChannel(self, channelName):
         scraper = JSONScraper()
         url = Urls.TWITCH_API.format(channel = channelName)
         return scraper.getJson(url)
 
-    def parseStreamValues(self, stream, swfUrl):
+    def _parseStreamValues(self, stream, swfUrl):
         streamVars = {Keys.SWF_URL : swfUrl}
         streamVars[Keys.RTMP] = stream[Keys.CONNECT]
         streamVars[Keys.PLAYPATH] = stream.get(Keys.PLAY)
@@ -125,7 +138,7 @@ class TwitchVideoResolver(object):
         return {Keys.QUALITY: quality,
                 Keys.RTMP_URL: Urls.FORMAT_FOR_RTMP.format(**streamVars)}
 
-    def bestMatchForChosenQuality(self, streams, maxQuality):
+    def _bestMatchForChosenQuality(self, streams, maxQuality):
         bestStream = streams[0]
         for stream in streams[1:]:
             if bestStream[Keys.QUALITY] < stream[Keys.QUALITY] <= maxQuality:

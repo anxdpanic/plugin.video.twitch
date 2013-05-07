@@ -67,7 +67,7 @@ def createListOfGames(index):
 
     games = twitch.getGames(offset, limit)
     items = [convertGameToListItem(element[Keys.GAME]) for element in games]
-    #TODO : pagination occurs even if noOfStreams % ITEMS_PER_PAGE == 0
+
     if len(games) >= ITEMS_PER_PAGE:
         items.append(linkt_to_next_page('createListOfGames',index))
     return items
@@ -80,7 +80,7 @@ def createListForGame(gameName, index):
     offset = index * ITEMS_PER_PAGE
     items = [convertChannelToListItem(item[Keys.CHANNEL])for item
              in twitch.getGameStreams(gameName, offset, limit)]
-    #TODO: won't always work as expected, no pagination only if <
+
     if len(items) >= ITEMS_PER_PAGE: 
         items.append(linkToNextPage('createListForGame',index))
     return items
@@ -114,7 +114,7 @@ def searchresults(query, index = '0'):
     offset = str(index * ITEMS_PER_PAGE)
     items = [convertGameStreamToItem(gameStream) for gameStream
              in twitch.searchStreams(query, offset, limit)]
-    #TODO: won't always work as expected, no pagination only if <
+
     if len(items) >= ITEMS_PER_PAGE:
         items.append(linkToNextPage('searchresults', index))
     return items
