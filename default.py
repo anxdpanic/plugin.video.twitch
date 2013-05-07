@@ -82,7 +82,7 @@ def createListForGame(gameName, index):
              in twitch.getGameStreams(gameName, offset, limit)]
     #TODO: won't always work as expected, no pagination only if <
     if len(items) >= ITEMS_PER_PAGE: 
-        items.append(link_to_next_page('createListForGame',index))
+        items.append(linkToNextPage('createListForGame',index))
     return items
 
 
@@ -116,7 +116,7 @@ def searchresults(query, index = '0'):
              in twitch.searchStreams(query, offset, limit)]
     #TODO: won't always work as expected, no pagination only if <
     if len(items) >= ITEMS_PER_PAGE:
-        items.append(link_to_next_page('searchresults', index))
+        items.append(linkToNextPage('searchresults', index))
     return items
 
 
@@ -213,7 +213,7 @@ def extractTitleValues(channel):
             'viewers':channel.get(Keys.VIEWERS, 'Unknown Number of Viewers')
             }
     
-def link_to_next_page(target, currentIndex):
+def linkToNextPage(target, currentIndex):
     return {
             'label': plugin.get_string(31001),
             'path': plugin.url_for(target, index = currentIndex+1)
