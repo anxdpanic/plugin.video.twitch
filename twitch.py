@@ -71,6 +71,11 @@ class TwitchTV(object):
         url = Urls.FOLLOWED_CHANNELS.format(quotedUsername)
         return self._fetchItems(url, Keys.FOLLOWS)
     
+    def getTeams(self, limit = 10, offset = 10):
+        options = Urls.OPTIONS_LIMIT_OFFSET.format(limit, offset)
+        url = ''.join([Urls.TEAMS,options])
+        return self._fetchItems(url, Keys.TEAMS)
+    
     def _filterChannelNames(self, channels):
         return [item[Keys.CHANNEL][Keys.NAME] for item in channels]
     
@@ -207,3 +212,12 @@ class Urls(object):
     TWITCH_API = "http://usher.justin.tv/find/{channel}.json?type=any&group=&channel_subscription="
     TWITCH_SWF = "http://www.justin.tv/widgets/live_embed_player.swf?channel="
     FORMAT_FOR_RTMP = "{rtmp}/{playpath} swfUrl={swfUrl} swfVfy=1 {token} live=1" #Pageurl missing here
+    
+class TwitchException(Exception):
+    
+    def __init__(self, code):
+        Exception.__init__(self)
+        self.code = code
+        
+    def __str__(self):
+        return repr(self.code)
