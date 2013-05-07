@@ -127,13 +127,11 @@ class TwitchVideoResolver(object):
         streamVars[Keys.PLAYPATH] = stream.get(Keys.PLAY)
 
         if stream[Keys.TOKEN]:
-            jtv = stream[Keys.TOKEN].replace('\"', '\\\"')
-            jtv = jtv.replace(' ', '\\\\20')
-            expiration = int(re.match(Patterns.EXPIRATION, stream[Keys.TOKEN]).group(1))
+            token = stream[Keys.TOKEN].replace('\\', '\\5c').replace(' ', '\\20').replace('"', '\\22')
         else:
-            jtv = expiration = ''
+            token = ''
 
-        streamVars[Keys.JTV_MATCH] = (' jtv=' + jtv) if re.match(Patterns.IP, streamVars[Keys.RTMP]) else ''
+        streamVars[Keys.TOKEN] = (' jtv=' + token) if token else ''
         quality = int(stream.get(Keys.VIDEO_HEIGHT, 0))
         return {Keys.QUALITY: quality,
                 Keys.RTMP_URL: Urls.FORMAT_FOR_RTMP.format(**streamVars)}
@@ -158,7 +156,6 @@ class Keys(object):
     FEATURED = 'featured'
     FOLLOWS = 'follows'
     GAME = 'game'
-    JTV_MATCH = 'jtvMatch'
     LOGO = 'logo'
     LARGE = 'large'
     NAME = 'name'
@@ -209,4 +206,4 @@ class Urls(object):
 
     TWITCH_API = "http://usher.justin.tv/find/{channel}.json?type=any&group=&channel_subscription="
     TWITCH_SWF = "http://www.justin.tv/widgets/live_embed_player.swf?channel="
-    FORMAT_FOR_RTMP = "{rtmp} playpath={playpath} swfUrl={swfUrl} swfVfy=1 {jtvMatch} live=1"
+    FORMAT_FOR_RTMP = "{rtmp}/{playpath} swfUrl={swfUrl} swfVfy=1 {token} live=1" #Pageurl missing here
