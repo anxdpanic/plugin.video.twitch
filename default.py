@@ -178,7 +178,7 @@ def cleanTitleValue(value):
 
 
 def truncateTitle(title):
-    return title[:LINE_LENGTH] + (title[LINE_LENGTH:] and Template.ELLIPSIS)
+    return title[:LINE_LENGTH] + (title[LINE_LENGTH:] and Templates.ELLIPSIS)
 
 
 def convertChannelToListItem(channel):
