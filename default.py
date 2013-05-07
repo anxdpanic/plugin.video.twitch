@@ -27,27 +27,27 @@ def createMainListing():
         {
          'label': plugin.get_string(30005),
          'path': plugin.url_for(endpoint = 'createListOfFeaturedStreams')
-        },
+         },
         {
          'label': plugin.get_string(30001),
          'path': plugin.url_for(endpoint = 'createListOfGames', index = '0')
-        },
+         },
         {
          'label': plugin.get_string(30002),
          'path': plugin.url_for(endpoint = 'createFollowingList')
-        },
+         },
         {
          'label': plugin.get_string(30006),
          'path': plugin.url_for(endpoint = 'createListOfTeams', index = '0')
-        },
+         },
         {
          'label': plugin.get_string(30003),
          'path': plugin.url_for(endpoint = 'search')
-        },
+         },
         {
          'label': plugin.get_string(30004),
          'path': plugin.url_for(endpoint = 'showSettings')
-        }
+         }
     ]
     return items
 
