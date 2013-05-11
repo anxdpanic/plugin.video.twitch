@@ -122,61 +122,27 @@ def playLive(name):
     
 @plugin.route('/createListOfTeams/<index>/')
 def createListOfTeams(index):
-    index, offset, limit = calculatePaginationValues(index)
-    items = [convertTeamToListItem(item)for item
-             in twitchtv.getTeams(offset, limit)]
-
-    items.append(linkToNextPage('createListOfTeams',index))
+    items = [convertTeamToListItem(item)for item in twitchtv.getTeams()]
     return items
 
 @plugin.route('/createListOfTeamStreams/<team>/')
 def createListOfTeamStreams(team):
-    items = []
-    jsonData = getJsonFromTwitchApi(url='http://api.twitchtv.tv/api/team/' + urllib.quote_plus(team) + '/live_channels.json')
-    if jsonData is None:
-        return
-    for x in jsonData['channels']:
-        try:
-            image = x['channel']['image']['size600']
-        except:
-            image = ""
-        try:
-            channelData = x['channel']
-            title = formatTitle(streamer=channelData.get('display_name'), title=channelData.get('title'), viewers=channelData.get('current_viewers'))
-            channelname = x['channel']['name']
-            items.append({'label': title, 'path': plugin.url_for(endpoint='playLive', name=channelname), 'is_playable' : True, 'icon' : image})
-        except:
-            # malformed data element
-            pass
-    return items
+    return [convertTeamChannelToListItem(channel[Keys.CHANNEL]) 
+            for channel in twitchtv.getTeamStreams(team)]
 
-def getJsonFromTwitchApi(url):
-    jsonString = downloadWebData(url)
-    if jsonString is None:
-        return None
-    try:
-        jsonData = json.loads(jsonString)
-    except:
-        showNotification(translation(32008), translation(32008))
-        return None
-    if type(jsonData) is dict and 'error' in jsonData.keys():
-        showNotification(translation(32007),jsonData['error'])
-        return None
-    return jsonData
+def convertTeamChannelToListItem(teamChannel):
+    images = teamChannel.get('image','')
+    image = '' if not images else images.get('size600','')
 
-
-def downloadWebData(url):
-    try:
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        data = response.read()
-        response.close()
-        return data
-    except urllib2.HTTPError, e:
-        # HTTP errors usualy contain error information in JSON Format
-        return e.fp.read()
-    except urllib2.URLError, e:
-        showNotification(translation(32001), translation(32010))
+    channelname = teamChannel['name']
+    title = formatTitle({'streamer':teamChannel.get('display_name'), 
+                        'title':teamChannel.get('title'), 
+                        'viewers':teamChannel.get('current_viewers')})
+    
+    return {'label': title,
+            'path': plugin.url_for(endpoint='playLive', name=channelname),
+            'is_playable' : True,
+            'icon' : image}
 
 def calculatePaginationValues(index):
     index = int(index)
@@ -238,17 +204,19 @@ def truncateTitle(title):
 
 
 def convertChannelToListItem(channel):
-    titleValues = extractTitleValues(channel)
     videobanner = channel.get(Keys.VIDEO_BANNER, '')
     logo = channel.get(Keys.LOGO, '')
     return {
-            'label': formatTitle(titleValues),
+            'label': getTitleForChannel(channel),
             'path': plugin.url_for(endpoint = 'playLive', name = channel[Keys.NAME]),
             'is_playable': True,
             'icon' : videobanner if videobanner else logo
             }
 
-
+def getTitleForChannel(channel):
+    titleValues = extractTitleValues(channel)
+    return formatTitle(titleValues)
+    
 def convertGameToListItem(game):
     name = game[Keys.NAME].encode('utf-8')
     image = game[Keys.LOGO].get(Keys.LARGE, '')

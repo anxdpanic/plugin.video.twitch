@@ -41,19 +41,19 @@ class TwitchTV(object):
         return self._fetchItems(url, Keys.FEATURED)
 
     def getGames(self, offset = 10, limit = 10):
-        options = Urls.OPTIONS_LIMIT_OFFSET.format(limit, offset)
+        options = Urls.OPTIONS_OFFSET_LIMIT.format(offset, limit)
         url = ''.join([Urls.GAMES, Keys.TOP, options])
         return self._fetchItems(url, Keys.TOP)
 
     def getGameStreams(self, gameName, offset = 10, limit = 10):
         quotedName = quote_plus(gameName)
-        options = Urls.OPTIONS_LIMIT_OFFSET_GAME.format(limit, offset, quotedName)
+        options = Urls.OPTIONS_OFFSET_LIMIT_GAME.format(offset, limit, quotedName)
         url = ''.join([Urls.BASE, Keys.STREAMS, options])
         return self._fetchItems(url, Keys.STREAMS)
 
     def searchStreams(self, query, offset = 10, limit = 10):
         quotedQuery = quote_plus(query)
-        options = Urls.OPTIONS_LIMIT_OFFSET_QUERY.format(limit, offset, quotedQuery)
+        options = Urls.OPTIONS_OFFSET_LIMIT_QUERY.format(offset, limit, quotedQuery)
         url = ''.join([Urls.SEARCH, Keys.STREAMS, options])
         return self._fetchItems(url, Keys.STREAMS)
     
@@ -71,11 +71,20 @@ class TwitchTV(object):
         url = Urls.FOLLOWED_CHANNELS.format(quotedUsername)
         return self._fetchItems(url, Keys.FOLLOWS)
     
-    def getTeams(self, limit = 10, offset = 10):
-        options = Urls.OPTIONS_LIMIT_OFFSET.format(limit, offset)
-        url = ''.join([Urls.TEAMS,options])
-        return self._fetchItems(url, Keys.TEAMS)
+    def getTeams(self):
+        return self._fetchItems(Urls.TEAMS, Keys.TEAMS)
     
+    def getTeamStreams(self, teamName):
+        '''
+        Consider this method to be unstable, because the 
+        requested resource is not part of the official Twitch API
+        Use with caution
+        '''
+        quotedTeamName = quote_plus(teamName)
+        url = Urls.TEAMSTREAM.format(quotedTeamName)
+        return self._fetchItems(url, Keys.CHANNELS)
+        
+        
     def _filterChannelNames(self, channels):
         return [item[Keys.CHANNEL][Keys.NAME] for item in channels]
     
@@ -155,6 +164,7 @@ class Keys(object):
     string-constants
     '''
     CHANNEL = 'channel'
+    CHANNELS = 'channels'
     CONNECT = 'connect'
     BACKGROUND = 'background'
     DISPLAY_NAME = 'display_name'
@@ -205,9 +215,11 @@ class Urls(object):
     SEARCH = BASE + 'search/'
     TEAMS = BASE + 'teams'
     
-    OPTIONS_LIMIT_OFFSET = '?limit={}&offset={}'
-    OPTIONS_LIMIT_OFFSET_GAME = OPTIONS_LIMIT_OFFSET + '&game={}'
-    OPTIONS_LIMIT_OFFSET_QUERY = OPTIONS_LIMIT_OFFSET + '&q={}'
+    TEAMSTREAM = 'http://api.twitch.tv/api/team/{}/live_channels.json'
+    
+    OPTIONS_OFFSET_LIMIT = '?offset={}&limit={}'
+    OPTIONS_OFFSET_LIMIT_GAME = OPTIONS_OFFSET_LIMIT + '&game={}'
+    OPTIONS_OFFSET_LIMIT_QUERY = OPTIONS_OFFSET_LIMIT + '&q={}'
 
     TWITCH_API = "http://usher.justin.tv/find/{channel}.json?type=any&group=&channel_subscription="
     TWITCH_SWF = "http://www.justin.tv/widgets/live_embed_player.swf?channel="
