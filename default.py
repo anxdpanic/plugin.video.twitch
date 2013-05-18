@@ -1,8 +1,28 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from twitch import TwitchTV, TwitchVideoResolver, Keys
+from twitch import TwitchTV, TwitchVideoResolver, Keys, TwitchException
 from xbmcswift2 import Plugin #@UnresolvedImport
 import sys
+from functools import wraps
+
+def handleTwitchException(exception):
+    codeTranslations = {TwitchException.NO_STREAM_URL   : 32004,
+                        TwitchException.STREAM_OFFLINE  : 32002,
+                        TwitchException.HTTP_ERROR      : 32001,
+                        TwitchException.JSON_ERROR      : 32008 }
+    code = exception.code
+    title = 31000
+    msg = codeTranslations[code]
+    showNotification(plugin.get_string(title), plugin.get_string(msg))
+
+def managedTwitchExceptions(func):
+    @wraps(func)
+    def wrapper(*args,**kwargs):
+        try:
+            return func(*args, **kwargs)
+        except TwitchException as e:
+            handleTwitchException(e)
+    return wrapper
 
 class Templates(object):
     TITLE = "{title}"
@@ -48,15 +68,15 @@ def createMainListing():
     ]
     return items
 
-
 @plugin.route('/createListOfFeaturedStreams/')
+@managedTwitchExceptions
 def createListOfFeaturedStreams():
     streams = twitchtv.getFeaturedStream()
     return [convertChannelToListItem(element[Keys.STREAM][Keys.CHANNEL])
             for element in streams]
 
-
 @plugin.route('/createListOfGames/<index>/')
+@managedTwitchExceptions
 def createListOfGames(index):
     index, offset, limit = calculatePaginationValues(index)
 
@@ -66,8 +86,8 @@ def createListOfGames(index):
     items.append(linkToNextPage('createListOfGames', index))
     return items
 
-
 @plugin.route('/createListForGame/<gameName>/<index>/')
+@managedTwitchExceptions
 def createListForGame(gameName, index):
     index, offset, limit = calculatePaginationValues(index)
     items = [convertChannelToListItem(item[Keys.CHANNEL])for item
@@ -76,15 +96,15 @@ def createListForGame(gameName, index):
     items.append(linkToNextPage('createListForGame', index, gameName = gameName))
     return items
 
-
 @plugin.route('/createFollowingList/')
+@managedTwitchExceptions
 def createFollowingList():
     username = getUserName()
     streams = twitchtv.getFollowingStreams(username)
     return [convertChannelToListItem(stream[Keys.CHANNEL]) for stream in streams]
 
-
 @plugin.route('/search/')
+@managedTwitchExceptions
 def search():
     query = plugin.keyboard('', plugin.get_string(30101))
     if query:
@@ -93,8 +113,8 @@ def search():
         target = plugin.url_for(endpoint = 'createMainListing')
     plugin.redirect(target)
 
-
 @plugin.route('/searchresults/<query>/<index>/')
+@managedTwitchExceptions
 def searchresults(query, index = '0'):
     index, offset, limit = calculatePaginationValues(index)
     streams = twitchtv.searchStreams(query, offset, limit)
@@ -103,26 +123,27 @@ def searchresults(query, index = '0'):
     items.append(linkToNextPage('searchresults', index, query = query))
     return items
 
-
 @plugin.route('/showSettings/')
 def showSettings():
     #there is probably a better way to do this
     plugin.open_settings()
 
-
 @plugin.route('/playLive/<name>/')
+@managedTwitchExceptions
 def playLive(name):
     videoQuality = getVideoQuality()
     resolver = TwitchVideoResolver()
     rtmpUrl = resolver.getRTMPUrl(name, videoQuality)
     plugin.set_resolved_url(rtmpUrl)
-    
+
 @plugin.route('/createListOfTeams/<index>/')
+@managedTwitchExceptions
 def createListOfTeams():
     items = [convertTeamToListItem(item)for item in twitchtv.getTeams()]
     return items
 
 @plugin.route('/createListOfTeamStreams/<team>/')
+@managedTwitchExceptions
 def createListOfTeamStreams(team):
     return [convertTeamChannelToListItem(channel[Keys.CHANNEL]) 
             for channel in twitchtv.getTeamStreams(team)]
@@ -172,7 +193,7 @@ def getVideoQuality():
 
 
 def showNotification(title, msg):
-    plugin.notify(msg, title)
+    plugin.notify(title, msg)
 
 
 def getTitleTemplate(titleSetting):
@@ -237,7 +258,6 @@ def linkToNextPage(target, currentIndex, **kwargs):
             'label': plugin.get_string(31001),
             'path': plugin.url_for(target, index = str(currentIndex+1), **kwargs)
             }
-
 
 if __name__ == '__main__':
     plugin.run()

@@ -14,7 +14,6 @@ class JSONScraper(object):
     Encapsulates execution request and parsing of response
     '''
     def _downloadWebData(self, url, headers = None):
-        print url
         req = urllib2.Request(url)
         req.add_header(Keys.USER_AGENT, USER_AGENT)
         response = urllib2.urlopen(req)
@@ -23,8 +22,14 @@ class JSONScraper(object):
         return data
 
     def getJson(self, url, headers = None):
-        jsonString = self._downloadWebData(url, headers)
-        return json.loads(jsonString)
+        try:
+            jsonString = self._downloadWebData(url, headers)
+        except:
+            raise TwitchException(TwitchException.HTTP_ERROR)
+        try:
+            return json.loads(jsonString)
+        except:
+            raise TwitchException(TwitchException.JSON_ERROR)
 
 
 class TwitchTV(object):
@@ -77,7 +82,6 @@ class TwitchTV(object):
         '''
         Consider this method to be unstable, because the 
         requested resource is not part of the official Twitch API
-        Use with caution
         '''
         quotedTeamName = quote_plus(teamName)
         url = Urls.TEAMSTREAM.format(quotedTeamName)
@@ -111,9 +115,9 @@ class TwitchVideoResolver(object):
             if items:
                 return self._bestMatchForChosenQuality(items, maxQuality)[Keys.RTMP_URL]
             else:
-                raise Exception('No Stream-URL could be found')
+                raise TwitchException(TwitchException.NO_STREAM_URL)
         else:
-            raise Exception('No Stream available, probably offline')
+            raise TwitchException(TwitchException.STREAM_OFFLINE)
     
     def _getSwfUrl(self, channelName):
         url = Urls.TWITCH_SWF + channelName
@@ -225,6 +229,11 @@ class Urls(object):
     FORMAT_FOR_RTMP = "{rtmp}/{playpath} swfUrl={swfUrl} swfVfy=1 {token} live=1" #Pageurl missing here
     
 class TwitchException(Exception):
+
+    NO_STREAM_URL = 0
+    STREAM_OFFLINE = 1
+    HTTP_ERROR = 2
+    JSON_ERROR = 3
     
     def __init__(self, code):
         Exception.__init__(self)
