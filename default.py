@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from converter import JsonListItemConverter 
+from functools import wraps
 from twitch import TwitchTV, TwitchVideoResolver, Keys, TwitchException
 from xbmcswift2 import Plugin #@UnresolvedImport
 import sys
-from functools import wraps
-from converter import JsonListItemConverter 
 
 ITEMS_PER_PAGE = 20
 LINE_LENGTH = 60
