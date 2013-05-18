@@ -184,9 +184,9 @@ def getTitleTemplate(titleSetting):
 
 def extractTitleValues(channel):
     return {
-            'streamer':channel.get(Keys.DISPLAY_NAME, 'Unnamed Streamer'),
-            'title': channel.get(Keys.STATUS, 'Untitled Stream'),
-            'viewers':channel.get(Keys.VIEWERS, 'Unknown Number of Viewers')
+            'streamer':channel.get(Keys.DISPLAY_NAME, plugin.get_string(34000)),
+            'title': channel.get(Keys.STATUS, plugin.get_string(34001)),
+            'viewers':channel.get(Keys.VIEWERS, plugin.get_string(34002))
             }
 
 def cleanTitleValue(value):
