@@ -63,14 +63,14 @@ class TwitchTV(object):
     
     def getFollowingStreams(self, username):
         #Get ChannelNames
-        followingChannels = self.getFollowingChannels(username)
+        followingChannels = self.getFollowingChannelNames(username)
         channelNames = self._filterChannelNames(followingChannels)
         #get Streams of that Channels
         options = '?channel=' + ','.join(channelNames)
         url = ''.join([Urls.BASE, Keys.STREAMS, options])
         return self._fetchItems(url, Keys.STREAMS)
         
-    def getFollowingChannels(self, username):
+    def getFollowingChannelNames(self, username):
         quotedUsername = quote_plus(username)
         url = Urls.FOLLOWED_CHANNELS.format(quotedUsername)
         return self._fetchItems(url, Keys.FOLLOWS)
