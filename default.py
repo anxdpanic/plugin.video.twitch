@@ -1,10 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import sys
-import urllib
-import urllib2
-from xbmcswift2 import Plugin
 from twitch import TwitchTV, TwitchVideoResolver, Keys
+from xbmcswift2 import Plugin #@UnresolvedImport
+import sys
 
 class Templates(object):
     TITLE = "{title}"
@@ -75,13 +73,12 @@ def createListForGame(gameName, index):
     items = [convertChannelToListItem(item[Keys.CHANNEL])for item
              in twitchtv.getGameStreams(gameName, offset, limit)]
 
-    items.append(linkToNextPage('createListForGame',index, gameName = gameName))
+    items.append(linkToNextPage('createListForGame', index, gameName = gameName))
     return items
 
 
 @plugin.route('/createFollowingList/')
 def createFollowingList():
-    items = []
     username = getUserName()
     streams = twitchtv.getFollowingStreams(username)
     return [convertChannelToListItem(stream[Keys.CHANNEL]) for stream in streams]
@@ -121,7 +118,7 @@ def playLive(name):
     plugin.set_resolved_url(rtmpUrl)
     
 @plugin.route('/createListOfTeams/<index>/')
-def createListOfTeams(index):
+def createListOfTeams():
     items = [convertTeamToListItem(item)for item in twitchtv.getTeams()]
     return items
 
@@ -175,7 +172,7 @@ def getVideoQuality():
 
 
 def showNotification(title, msg):
-     plugin.notify(msg, title)
+    plugin.notify(msg, title)
 
 
 def getTitleTemplate(titleSetting):

@@ -2,7 +2,6 @@
 import urllib2
 from urllib import quote_plus
 import re
-from string import Template
 try:
     import json
 except:
