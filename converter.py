@@ -2,16 +2,17 @@ from twitch import Keys
 
 class JsonListItemConverter(object):
     
-    def __init__(self, plugin, title_length):
-        self.plugin = plugin
-        self.titleBuilder = TitleBuilder(plugin, title_length)
+    def __init__(self, PLUGIN, title_length):
+        self.plugin = PLUGIN
+        self.titleBuilder = TitleBuilder(PLUGIN, title_length)
         
     def convertGameToListItem(self, game):
         name = game[Keys.NAME].encode('utf-8')
         image = game[Keys.LOGO].get(Keys.LARGE, '')
         return {
                 'label': name,
-                'path': self.plugin.url_for('createListForGame', gameName = name, index = '0'),
+                'path': self.plugin.url_for('createListForGame',
+                                            gameName = name, index = '0'),
                 'icon' : image
                 }
     
@@ -19,7 +20,8 @@ class JsonListItemConverter(object):
         name = team['name']
         return {
                 'label': name,
-                'path': self.plugin.url_for(endpoint='createListOfTeamStreams', team=name),
+                'path': self.plugin.url_for(endpoint='createListOfTeamStreams',
+                                            team=name),
                 'icon' : team.get(Keys.LOGO,'')
                 }
         
@@ -40,9 +42,12 @@ class JsonListItemConverter(object):
         
     def extractTitleValues(self, channel):
         return {
-                'streamer':channel.get(Keys.DISPLAY_NAME, self.plugin.get_string(34000)),
-                'title': channel.get(Keys.STATUS, self.plugin.get_string(34001)),
-                'viewers':channel.get(Keys.VIEWERS, self.plugin.get_string(34002))
+                'streamer': channel.get(Keys.DISPLAY_NAME,
+                                        self.plugin.get_string(34000)),
+                'title': channel.get(Keys.STATUS,
+                                     self.plugin.get_string(34001)),
+                'viewers':channel.get(Keys.VIEWERS,
+                                      self.plugin.get_string(34002))
                 }
 
     def convertChannelToListItem(self, channel):
@@ -50,7 +55,8 @@ class JsonListItemConverter(object):
         logo = channel.get(Keys.LOGO, '')
         return {
                 'label': self.getTitleForChannel(channel),
-                'path': self.plugin.url_for(endpoint = 'playLive', name = channel[Keys.NAME]),
+                'path': self.plugin.url_for(endpoint = 'playLive',
+                                            name = channel[Keys.NAME]),
                 'is_playable': True,
                 'icon' : videobanner if videobanner else logo
                 }
@@ -68,8 +74,8 @@ class TitleBuilder(object):
         VIEWERS_STREAMER_TITLE = "{viewers} - {streamer} - {title}"
         ELLIPSIS = '...'
         
-    def __init__(self, plugin, line_length):
-        self.plugin = plugin
+    def __init__(self, PLUGIN, line_length):
+        self.plugin = PLUGIN
         self.line_length = line_length
         
     def formatTitle(self, titleValues):
@@ -96,4 +102,6 @@ class TitleBuilder(object):
             return value
     
     def truncateTitle(self, title):
-        return title[:self.line_length] + (title[self.line_length:] and TitleBuilder.Templates.ELLIPSIS)
+        shortTitle = title[:self.line_length]
+        ending = (title[self.line_length:] and TitleBuilder.Templates.ELLIPSIS)
+        return shortTitle + ending
