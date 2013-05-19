@@ -128,9 +128,8 @@ class TwitchVideoResolver(object):
         return response.geturl()
 
     def _streamIsAccessible(self, stream):
-        if not stream[Keys.TOKEN] and re.match(Patterns.IP, stream.get(Keys.CONNECT)):
-            #log "skipping quality ${stream.type} because stream has no token and requires one" 
-            return False # skip qualities where we get no token (subscription) and stream's a non-cdn server
+        if not stream[Keys.TOKEN] and re.match(Patterns.IP, stream.get(Keys.CONNECT)): 
+            return False
         return True
 
     def _getStreamsForChannel(self, channelName):
@@ -211,17 +210,17 @@ class Urls(object):
     TWITCH_TV = 'http://www.twitch.tv/'
 
     BASE = 'https://api.twitch.tv/kraken/'
-    FOLLOWED_CHANNELS =  BASE + 'users/{}/follows/channels'
+    FOLLOWED_CHANNELS =  BASE + 'users/{0}/follows/channels'
     GAMES = BASE + 'games/'
     STREAMS = BASE + 'streams/'
     SEARCH = BASE + 'search/'
     TEAMS = BASE + 'teams'
     
-    TEAMSTREAM = 'http://api.twitch.tv/api/team/{}/live_channels.json'
+    TEAMSTREAM = 'http://api.twitch.tv/api/team/{0}/live_channels.json'
     
-    OPTIONS_OFFSET_LIMIT = '?offset={}&limit={}'
-    OPTIONS_OFFSET_LIMIT_GAME = OPTIONS_OFFSET_LIMIT + '&game={}'
-    OPTIONS_OFFSET_LIMIT_QUERY = OPTIONS_OFFSET_LIMIT + '&q={}'
+    OPTIONS_OFFSET_LIMIT = '?offset={0}&limit={1}'
+    OPTIONS_OFFSET_LIMIT_GAME = OPTIONS_OFFSET_LIMIT + '&game={2}'
+    OPTIONS_OFFSET_LIMIT_QUERY = OPTIONS_OFFSET_LIMIT + '&q={2}'
 
     TWITCH_API = "http://usher.justin.tv/find/{channel}.json?type=any&group=&channel_subscription="
     TWITCH_SWF = "http://www.justin.tv/widgets/live_embed_player.swf?channel="
