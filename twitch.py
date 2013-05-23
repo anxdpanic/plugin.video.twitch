@@ -153,10 +153,12 @@ class TwitchVideoResolver(object):
                 Keys.RTMP_URL: Urls.FORMAT_FOR_RTMP.format(**streamVars)}
 
     def _bestMatchForChosenQuality(self, streams, maxQuality):
-        streams = [stream for stream in streams 
-                   if stream[Keys.QUALITY] <= maxQuality]
-        streams.sort(key=lambda t: t[Keys.QUALITY], reverse=True)
-        return streams[0]
+        streams.sort(key=lambda t: t[Keys.QUALITY])
+        bestMatch = streams[0]
+        for stream in streams:
+            if stream[Keys.QUALITY] <= maxQuality:
+                bestMatch = stream
+        return bestMatch
 
 
 class Keys(object):
