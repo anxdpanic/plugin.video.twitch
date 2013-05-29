@@ -128,7 +128,7 @@ class TwitchVideoResolver(object):
         return response.geturl()
 
     def _streamIsAccessible(self, stream):
-        if not stream[Keys.TOKEN] and re.match(Patterns.IP, stream.get(Keys.CONNECT)): 
+        if not stream.get(Keys.TOKEN) and re.match(Patterns.IP, stream.get(Keys.CONNECT)): 
             return False
         return True
 
