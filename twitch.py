@@ -128,6 +128,9 @@ class TwitchVideoResolver(object):
         return response.geturl()
 
     def _streamIsAccessible(self, stream):
+        if stream['needed_info'] == "channel_subscription":
+            return False
+
         if not stream.get(Keys.TOKEN) and re.match(Patterns.IP, stream.get(Keys.CONNECT)): 
             return False
         return True
