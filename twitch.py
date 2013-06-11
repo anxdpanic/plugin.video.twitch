@@ -128,12 +128,11 @@ class TwitchVideoResolver(object):
         return response.geturl()
 
     def _streamIsAccessible(self, stream):
-        if stream['needed_info'] == "channel_subscription":
-            return False
-
-        if not stream.get(Keys.TOKEN) and re.match(Patterns.IP, stream.get(Keys.CONNECT)): 
-            return False
-        return True
+        stream_is_public = (stream.get(Keys.NEEDED_INFO) != "channel_subscription")
+        stream_has_token = stream.get(Keys.TOKEN)
+        url_is_fine = not re.match(Patterns.IP, stream.get(Keys.CONNECT))
+        
+        return stream_is_public and stream_has_token and url_is_fine
 
     def _getStreamsForChannel(self, channelName):
         scraper = JSONScraper()
@@ -169,6 +168,7 @@ class Keys(object):
     Should not be instantiated, just used to categorize 
     string-constants
     '''
+
     CHANNEL = 'channel'
     CHANNELS = 'channels'
     CONNECT = 'connect'
@@ -180,6 +180,7 @@ class Keys(object):
     LOGO = 'logo'
     LARGE = 'large'
     NAME = 'name'
+    NEEDED_INFO = 'needed_info'
     PLAY = 'play'
     PLAYPATH = 'playpath'
     QUALITY = 'quality'
