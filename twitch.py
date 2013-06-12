@@ -216,7 +216,7 @@ class Urls(object):
     TWITCH_TV = 'http://www.twitch.tv/'
 
     BASE = 'https://api.twitch.tv/kraken/'
-    FOLLOWED_CHANNELS =  BASE + 'users/{0}/follows/channels'
+    FOLLOWED_CHANNELS =  BASE + 'users/{0}/follows/channels?limit=100'
     GAMES = BASE + 'games/'
     STREAMS = BASE + 'streams/'
     SEARCH = BASE + 'search/'
