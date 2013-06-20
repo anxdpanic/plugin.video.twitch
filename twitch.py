@@ -130,8 +130,11 @@ class TwitchVideoResolver(object):
     def _streamIsAccessible(self, stream):
         stream_is_public = (stream.get(Keys.NEEDED_INFO) != "channel_subscription")
         stream_has_token = stream.get(Keys.TOKEN)
+
+        if stream.get(Keys.CONNECT) is None:
+            return False
         url_is_fine = not re.match(Patterns.IP, stream.get(Keys.CONNECT))
-        
+
         return stream_is_public and stream_has_token and url_is_fine
 
     def _getStreamsForChannel(self, channelName):
