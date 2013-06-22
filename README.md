@@ -14,14 +14,12 @@ FAQ
 
 * I can't find the Twitch.tv add-on in the xbmc add-on manager!
 
-> Make sure you are using at least XBMC 11 Eden.
+> Make sure you are using at least XBMC 12 Frodo.
 
 What's next?
 ----------------
 
 Things that need to be done next:
 
-* Finish code refactoring
-* Test all features of the plug-in
 * Implement a user authentication
 * Implementation of a section for archived videos
