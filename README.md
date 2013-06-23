@@ -10,6 +10,7 @@ FAQ
 
 > In most cases this is caused by a too old librtmp version. Updating it could solve the problem: 
 
+> [Link: librtmp - Help Thread at xbmc.org](http://forum.xbmc.org/showthread.php?tid=162307 "http://forum.xbmc.org/showthread.php?tid=162307")
 > [Link: How to update librtmp](http://wiki.xbmc.org/index.php?title=HOW-TO:Update_librtmp "http://wiki.xbmc.org/index.php?title=HOW-TO:Update_librtmp")
 
 * I can't find the Twitch.tv add-on in the xbmc add-on manager!
