@@ -131,7 +131,8 @@ class TwitchVideoResolver(object):
 
         if stream.get(Keys.CONNECT) is None:
             return False
-        url_is_fine = not re.match(Patterns.IP, stream.get(Keys.CONNECT))
+
+        url_is_fine = re.match(Patterns.IP, stream.get(Keys.CONNECT))
 
         return stream_is_public and stream_has_token and url_is_fine
 
