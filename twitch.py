@@ -5,7 +5,7 @@ import re
 try:
     import json
 except:
-    import simplejson as json
+    import simplejson as json  # @UnresolvedImport
 
 USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0'
 
@@ -102,15 +102,26 @@ class TwitchVideoResolver(object):
     Uses Justin.TV API
     '''
 
+    def __init__(self, logger):
+        object.__init__(self)
+        self.logger = logger
+
     def getRTMPUrl(self, channelName, maxQuality):
         swfUrl = self._getSwfUrl(channelName)
         streamQualities = self._getStreamsForChannel(channelName)
+        
+        self.logger.debug("=== URL and available Streams ===")
+        self.logger.debug(json.dumps(swfUrl, sort_keys=True, indent=4))
+        self.logger.debug(json.dumps(streamQualities, sort_keys=True, indent=4))
+        
         # check that api response isn't empty (i.e. stream is offline)
         if streamQualities:
             items = [self._parseStreamValues(stream, swfUrl)
                      for stream in streamQualities
                      if self._streamIsAccessible(stream)]
             if items:
+                self.logger.debug("=== Accessible Streams ===")
+                self.logger.debug(json.dumps(items, sort_keys=True, indent=4))
                 return self._bestMatchForChosenQuality(items, maxQuality)[Keys.RTMP_URL]
             else:
                 raise TwitchException(TwitchException.NO_STREAM_URL)
@@ -131,9 +142,8 @@ class TwitchVideoResolver(object):
 
         if stream.get(Keys.CONNECT) is None:
             return False
-        url_is_fine = not re.match(Patterns.IP, stream.get(Keys.CONNECT))
 
-        return stream_is_public and stream_has_token and url_is_fine
+        return stream_is_public and stream_has_token
 
     def _getStreamsForChannel(self, channelName):
         scraper = JSONScraper()

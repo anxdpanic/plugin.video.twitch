@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 from converter import JsonListItemConverter
 from functools import wraps
@@ -131,7 +130,7 @@ def showSettings():
 @managedTwitchExceptions
 def playLive(name):
     videoQuality = getVideoQuality()
-    resolver = TwitchVideoResolver()
+    resolver = TwitchVideoResolver(PLUGIN.log)
     rtmpUrl = resolver.getRTMPUrl(name, videoQuality)
     PLUGIN.set_resolved_url(rtmpUrl)
 
@@ -158,15 +157,15 @@ def calculatePaginationValues(index):
 
 
 def getUserName():
-    username = PLUGIN.get_setting('username').lower()
+    username = PLUGIN.get_setting('username', converter=unicode).lower()
     if not username:
         PLUGIN.open_settings()
-        username = PLUGIN.get_setting('username').lower()
+        username = PLUGIN.get_setting('username', converter=unicode).lower()
     return username
 
 
 def getVideoQuality():
-    chosenQuality = PLUGIN.get_setting('video')
+    chosenQuality = PLUGIN.get_setting('video', converter=unicode)
     qualities = {'0': sys.maxint, '1': 720, '2': 480, '3': 360}
     return qualities.get(chosenQuality, sys.maxint)
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from twitch import Keys
 
 
@@ -8,7 +9,7 @@ class JsonListItemConverter(object):
         self.titleBuilder = TitleBuilder(PLUGIN, title_length)
 
     def convertGameToListItem(self, game):
-        name = game[Keys.NAME].encode('utf-8')
+        name = game[Keys.NAME]
         image = game[Keys.LOGO].get(Keys.LARGE, '')
         return {'label': name,
                 'path': self.plugin.url_for('createListForGame',
@@ -66,18 +67,18 @@ class JsonListItemConverter(object):
 class TitleBuilder(object):
 
     class Templates(object):
-        TITLE = "{title}"
-        STREAMER = "{streamer}"
-        STREAMER_TITLE = "{streamer} - {title}"
-        VIEWERS_STREAMER_TITLE = "{viewers} - {streamer} - {title}"
-        ELLIPSIS = '...'
+        TITLE = u"{title}"
+        STREAMER = u"{streamer}"
+        STREAMER_TITLE = u"{streamer} - {title}"
+        VIEWERS_STREAMER_TITLE = u"{viewers} - {streamer} - {title}"
+        ELLIPSIS = u'...'
 
     def __init__(self, PLUGIN, line_length):
         self.plugin = PLUGIN
         self.line_length = line_length
 
     def formatTitle(self, titleValues):
-        titleSetting = int(self.plugin.get_setting('titledisplay'))
+        titleSetting = int(self.plugin.get_setting('titledisplay', converter=unicode))
         template = self.getTitleTemplate(titleSetting)
 
         for key, value in titleValues.iteritems():
@@ -95,7 +96,7 @@ class TitleBuilder(object):
 
     def cleanTitleValue(self, value):
         if isinstance(value, basestring):
-            return unicode(value).replace('\r\n', ' ').strip().encode('utf-8')
+            return unicode(value).replace('\r\n', ' ').strip()
         else:
             return value
 
