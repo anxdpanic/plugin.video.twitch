@@ -14,6 +14,11 @@ class JSONScraper(object):
     '''
     Encapsulates execution request and parsing of response
     '''
+    
+    def __init__(self, logger):
+        object.__init__(self)
+        self.logger = logger
+        
     def _downloadWebData(self, url, headers=None):
         req = urllib2.Request(url)
         req.add_header(Keys.USER_AGENT, USER_AGENT)
@@ -28,7 +33,9 @@ class JSONScraper(object):
         except:
             raise TwitchException(TwitchException.HTTP_ERROR)
         try:
-            return json.loads(jsonString)
+            jsonDict = json.loads(jsonString)
+            self.logger.debug(json.dumps(jsonDict, indent=4, sort_keys=True))
+            return jsonDict
         except:
             raise TwitchException(TwitchException.JSON_ERROR)
 
@@ -38,8 +45,9 @@ class TwitchTV(object):
     Uses Twitch API to fetch json-encoded objects
     every method returns a dict containing the objects\' values
     '''
-    def __init__(self):
-        self.scraper = JSONScraper()
+    def __init__(self, logger):
+        self.logger = logger
+        self.scraper = JSONScraper(logger)
 
     def getFeaturedStream(self):
         url = ''.join([Urls.STREAMS, Keys.FEATURED])
@@ -112,7 +120,6 @@ class TwitchVideoResolver(object):
         
         self.logger.debug("=== URL and available Streams ===")
         self.logger.debug(json.dumps(swfUrl, sort_keys=True, indent=4))
-        self.logger.debug(json.dumps(streamQualities, sort_keys=True, indent=4))
         
         # check that api response isn't empty (i.e. stream is offline)
         if streamQualities:
