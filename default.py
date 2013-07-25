@@ -158,15 +158,15 @@ def calculatePaginationValues(index):
 
 
 def getUserName():
-    username = PLUGIN.get_setting('username').lower()
+    username = PLUGIN.get_setting('username', unicode).lower()
     if not username:
         PLUGIN.open_settings()
-        username = PLUGIN.get_setting('username').lower()
+        username = PLUGIN.get_setting('username', unicode).lower()
     return username
 
 
 def getVideoQuality():
-    chosenQuality = PLUGIN.get_setting('video')
+    chosenQuality = PLUGIN.get_setting('video', unicode)
     qualities = {'0': sys.maxint, '1': 720, '2': 480, '3': 360}
     return qualities.get(chosenQuality, sys.maxint)
 

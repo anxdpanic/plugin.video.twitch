@@ -77,7 +77,7 @@ class TitleBuilder(object):
         self.line_length = line_length
 
     def formatTitle(self, titleValues):
-        titleSetting = int(self.plugin.get_setting('titledisplay'))
+        titleSetting = int(self.plugin.get_setting('titledisplay', unicode))
         template = self.getTitleTemplate(titleSetting)
 
         for key, value in titleValues.iteritems():
