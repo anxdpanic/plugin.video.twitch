@@ -153,7 +153,7 @@ class TwitchVideoResolver(object):
         return stream_is_public and stream_has_token
 
     def _getStreamsForChannel(self, channelName):
-        scraper = JSONScraper()
+        scraper = JSONScraper(self.logger)
         url = Urls.TWITCH_API.format(channel=channelName)
         return scraper.getJson(url)
 
