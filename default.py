@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 from converter import JsonListItemConverter
 from functools import wraps
@@ -11,7 +10,7 @@ LINE_LENGTH = 60
 
 PLUGIN = Plugin()
 CONVERTER = JsonListItemConverter(PLUGIN, LINE_LENGTH)
-TWITCHTV = TwitchTV()
+TWITCHTV = TwitchTV(PLUGIN.log)
 
 
 def managedTwitchExceptions(func):
@@ -131,7 +130,7 @@ def showSettings():
 @managedTwitchExceptions
 def playLive(name):
     videoQuality = getVideoQuality()
-    resolver = TwitchVideoResolver()
+    resolver = TwitchVideoResolver(PLUGIN.log)
     rtmpUrl = resolver.getRTMPUrl(name, videoQuality)
     PLUGIN.set_resolved_url(rtmpUrl)
 

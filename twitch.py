@@ -1,11 +1,11 @@
 #-*- encoding: utf-8 -*-
-import urllib2
+import urllib2, sys
 from urllib import quote_plus
 import re
 try:
     import json
 except:
-    import simplejson as json
+    import simplejson as json  # @UnresolvedImport
 
 USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0'
 
@@ -14,6 +14,11 @@ class JSONScraper(object):
     '''
     Encapsulates execution request and parsing of response
     '''
+    
+    def __init__(self, logger):
+        object.__init__(self)
+        self.logger = logger
+        
     def _downloadWebData(self, url, headers=None):
         req = urllib2.Request(url)
         req.add_header(Keys.USER_AGENT, USER_AGENT)
@@ -28,7 +33,9 @@ class JSONScraper(object):
         except:
             raise TwitchException(TwitchException.HTTP_ERROR)
         try:
-            return json.loads(jsonString)
+            jsonDict = json.loads(jsonString)
+            self.logger.debug(json.dumps(jsonDict, indent=4, sort_keys=True))
+            return jsonDict
         except:
             raise TwitchException(TwitchException.JSON_ERROR)
 
@@ -38,8 +45,9 @@ class TwitchTV(object):
     Uses Twitch API to fetch json-encoded objects
     every method returns a dict containing the objects\' values
     '''
-    def __init__(self):
-        self.scraper = JSONScraper()
+    def __init__(self, logger):
+        self.logger = logger
+        self.scraper = JSONScraper(logger)
 
     def getFeaturedStream(self):
         url = ''.join([Urls.STREAMS, Keys.FEATURED])
@@ -101,16 +109,26 @@ class TwitchVideoResolver(object):
     Resolves the RTMP-Link to a given Channelname
     Uses Justin.TV API
     '''
+    
+    def __init__(self, logger):
+        object.__init__(self)
+        self.logger = logger
 
     def getRTMPUrl(self, channelName, maxQuality):
         swfUrl = self._getSwfUrl(channelName)
         streamQualities = self._getStreamsForChannel(channelName)
+        
+        self.logger.debug("=== URL and available Streams ===")
+        self.logger.debug(json.dumps(swfUrl, sort_keys=True, indent=4))
+        
         # check that api response isn't empty (i.e. stream is offline)
         if streamQualities:
             items = [self._parseStreamValues(stream, swfUrl)
                      for stream in streamQualities
                      if self._streamIsAccessible(stream)]
             if items:
+                self.logger.debug("=== Accessible Streams ===")
+                self.logger.debug(json.dumps(items, sort_keys=True, indent=4))
                 return self._bestMatchForChosenQuality(items, maxQuality)[Keys.RTMP_URL]
             else:
                 raise TwitchException(TwitchException.NO_STREAM_URL)
@@ -135,7 +153,7 @@ class TwitchVideoResolver(object):
         return stream_is_public and stream_has_token
 
     def _getStreamsForChannel(self, channelName):
-        scraper = JSONScraper()
+        scraper = JSONScraper(self.logger)
         url = Urls.TWITCH_API.format(channel=channelName)
         return scraper.getJson(url)
 
@@ -151,15 +169,19 @@ class TwitchVideoResolver(object):
 
         streamVars[Keys.TOKEN] = (' jtv=' + token) if token else ''
         quality = int(stream.get(Keys.VIDEO_HEIGHT, 0))
+        bitrate = int(stream.get(Keys.BITRATE, 0))
         return {Keys.QUALITY: quality,
+                Keys.BITRATE: bitrate,
                 Keys.RTMP_URL: Urls.FORMAT_FOR_RTMP.format(**streamVars)}
 
     def _bestMatchForChosenQuality(self, streams, maxQuality):
-        streams.sort(key=lambda t: t[Keys.QUALITY])
-        bestMatch = streams[0]
+        # sorting on resolution, then bitrate, both ascending 
+        streams.sort(key=lambda t: (t[Keys.QUALITY], t[Keys.BITRATE]))
+        self.logger.debug("Available streams sorted: %s" % streams)
         for stream in streams:
             if stream[Keys.QUALITY] <= maxQuality:
                 bestMatch = stream
+        self.logger.debug("Chosen Stream is: %s" % bestMatch)
         return bestMatch
 
 
@@ -169,6 +191,7 @@ class Keys(object):
     string-constants
     '''
 
+    BITRATE = 'bitrate'
     CHANNEL = 'channel'
     CHANNELS = 'channels'
     CONNECT = 'connect'
