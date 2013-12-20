@@ -11,7 +11,7 @@
   <extension point='xbmc.addon.metadata'>
     <platform>all</platform>
     <language>en</language>
-    <source>https://github.com/MrSprigster/Twitch.tv-on-XBMC</source>
+    <source>https://github.com/StateOfTheArt89/Twitch.tv-on-XBMC</source>
     <license>GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007</license>
     <summary lang='de'>TwitchTV video plugin</summary>
     <description lang='de'>Schaue die besten Gaming-Streams auf XBMC!</description>
