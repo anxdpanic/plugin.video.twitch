@@ -48,3 +48,5 @@
 - fixed bug: streams with optional subscriptions
 1.0.2
 - fixed stream resolving
+1.0.3
+- added support for HLS streams 
