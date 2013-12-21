@@ -19,7 +19,7 @@ class JSONScraper(object):
         object.__init__(self)
         self.logger = logger
         
-    def _downloadWebData(self, url, headers=None):
+    def downloadWebData(self, url, headers=None):
         req = urllib2.Request(url)
         req.add_header(Keys.USER_AGENT, USER_AGENT)
         response = urllib2.urlopen(req)
@@ -29,7 +29,7 @@ class JSONScraper(object):
 
     def getJson(self, url, headers=None):
         try:
-            jsonString = self._downloadWebData(url, headers)
+            jsonString = self.downloadWebData(url, headers)
         except:
             raise TwitchException(TwitchException.HTTP_ERROR)
         try:
@@ -113,6 +113,7 @@ class TwitchVideoResolver(object):
     def __init__(self, logger):
         object.__init__(self)
         self.logger = logger
+        self.scraper = JSONScraper(logger)
 
     def getRTMPUrl(self, channelName, maxQuality):
         swfUrl = self._getSwfUrl(channelName)
@@ -134,6 +135,37 @@ class TwitchVideoResolver(object):
                 raise TwitchException(TwitchException.NO_STREAM_URL)
         else:
             raise TwitchException(TwitchException.STREAM_OFFLINE)
+
+    def saveHLSToPlaylist(self, channelName, maxQuality, fileName):
+        #Get Access Token (not necessary at the moment but could come into effect at any time)
+        tokenurl= Urls.CHANNEL_TOKEN.format(channelName)
+        channeldata = self.scraper.getJson(tokenurl)
+        channeltoken= channeldata['token']
+        channelsig= channeldata['sig']
+
+        #Download Multiple Quality Stream Playlist
+        data = self.scraper.downloadWebData(Urls.HLS_PLAYLIST.format(channelName,channelsig,channeltoken))
+        
+        #Split Into Multiple Lines
+        streamurls = data.split('\n')
+        #Initialize Custom Playlist Var
+        playlist='#EXTM3U\n'
+        
+        #Define Qualities
+        quality = 'Source,High,Medium,Low'
+        quality = quality.split(',')
+
+        #Loop Through Multiple Quality Stream Playlist Until We Find Our Preferred Quality
+        for line in range(0, (len(streamurls)-1)):
+            if quality[maxQuality] in streamurls[line]:
+                #Add 3 Quality Specific Applicable Lines From Multiple Quality Stream Playlist To Our Custom Playlist Var
+                playlist = playlist + streamurls[line] + '\n' + streamurls[(line + 1)] + '\n' + streamurls[(line + 2)]
+                print(playlist)
+        
+        #Write Custom Playlist
+        text_file = open(fileName, "w")
+        text_file.write(str(playlist))
+        text_file.close()
 
     def _getSwfUrl(self, channelName):
         url = Urls.TWITCH_SWF + channelName
@@ -248,6 +280,7 @@ class Urls(object):
     TEAMS = BASE + 'teams'
 
     TEAMSTREAM = 'http://api.twitch.tv/api/team/{0}/live_channels.json'
+    CHANNEL_TOKEN = 'http://api.twitch.tv/api/channels/{0}/access_token'
 
     OPTIONS_OFFSET_LIMIT = '?offset={0}&limit={1}'
     OPTIONS_OFFSET_LIMIT_GAME = OPTIONS_OFFSET_LIMIT + '&game={2}'
@@ -256,6 +289,8 @@ class Urls(object):
     TWITCH_API = "http://usher.justin.tv/find/{channel}.json?type=any&group=&channel_subscription="
     TWITCH_SWF = "http://www.justin.tv/widgets/live_embed_player.swf?channel="
     FORMAT_FOR_RTMP = "{rtmp}/{playpath} swfUrl={swfUrl} swfVfy=1 {token} live=1"  # Pageurl missing here
+    HLS_PLAYLIST = 'http://usher.twitch.tv/select/{0}.m3u8?nauthsig={1}&nauth={2}&allow_source=true'
+        
 
 
 class TwitchException(Exception):

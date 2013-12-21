@@ -133,45 +133,9 @@ def playLive(name):
     #Get Required Quality From Settings
     videoQuality = getVideoQuality()
     
-    #Get Access Token (not necessary at the moment but could come into effect at any time)
-    tokenurl='http://api.twitch.tv/api/channels/' + name + '/access_token'
-    readstream = json.loads(urllib2.urlopen(tokenurl).read())
-    channeltoken= readstream['token']
-    channelsig= readstream['sig']
-    
-    #Define Stream Playlist URL
-    twitchurl = 'http://usher.twitch.tv/select/' + name + '.m3u8?nauthsig=' + channelsig + '&nauth=' + channeltoken + '&allow_source=true'
-    
-    #Download Multiple Quality Stream Playlist
-    req = urllib2.Request(twitchurl)
-    req.add_header('user-agent:', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0')
-    response = urllib2.urlopen(req)
-    data = response.read()
-    response.close()
-    
-    #Split Into Multiple Lines
-    streamurls = data.split('\n')
-    #Initialize Custom Playlist Var
-    playlist='#EXTM3U\n'
-    
-    #Define Qualities
-    quality = 'Source,High,Medium,Low'
-    quality = quality.split(',')
-
-    #Loop Through Multiple Quality Stream Playlist Until We Find Our Preferred Quality
-    for line in range(0, (len(streamurls)-1)):
-        if quality[videoQuality] in streamurls[line]:
-            #Add 3 Quality Specific Applicable Lines From Multiple Quality Stream Playlist To Our Custom Playlist Var
-            playlist = playlist + streamurls[line] + '\n' + streamurls[(line + 1)] + '\n' + streamurls[(line + 2)]
-    
-    #Get Temporary Directory For The OS
-    plpath = xbmc.translatePath('special://temp') + 'twitchfix.m3u8'
-    
-    #Write Custom Playlist
-    text_file = open(plpath, "w")
-    text_file.write(str(playlist))
-    text_file.close()
-    
+    plpath = xbmc.translatePath('special://temp') + 'hlsplaylist.m3u8'
+    resolver = TwitchVideoResolver(PLUGIN.log)
+    resolver.saveHLSToPlaylist(name,videoQuality,plpath)
     #Play Custom Playlist
     xbmc.Player().play(plpath)
     PLUGIN.set_resolved_url(plpath)
