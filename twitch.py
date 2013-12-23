@@ -145,27 +145,31 @@ class TwitchVideoResolver(object):
 
         #Download Multiple Quality Stream Playlist
         data = self.scraper.downloadWebData(Urls.HLS_PLAYLIST.format(channelName,channelsig,channeltoken))
-        
-        #Split Into Multiple Lines
-        streamurls = data.split('\n')
-        #Initialize Custom Playlist Var
-        playlist='#EXTM3U\n'
-        
-        #Define Qualities
-        quality = 'Source,High,Medium,Low'
-        quality = quality.split(',')
 
-        #Loop Through Multiple Quality Stream Playlist Until We Find Our Preferred Quality
-        for line in range(0, (len(streamurls)-1)):
-            if quality[maxQuality] in streamurls[line]:
-                #Add 3 Quality Specific Applicable Lines From Multiple Quality Stream Playlist To Our Custom Playlist Var
-                playlist = playlist + streamurls[line] + '\n' + streamurls[(line + 1)] + '\n' + streamurls[(line + 2)]
-                print(playlist)
-        
-        #Write Custom Playlist
-        text_file = open(fileName, "w")
-        text_file.write(str(playlist))
-        text_file.close()
+        if "No Results" not in data:
+            #Split Into Multiple Lines
+            streamurls = data.split('\n')
+            #Initialize Custom Playlist Var
+            playlist='#EXTM3U\n'
+
+            #Define Qualities
+            quality = 'Source,High,Medium,Low'
+            quality = quality.split(',')
+
+            #Loop Through Multiple Quality Stream Playlist Until We Find Our Preferred Quality
+            for line in range(0, (len(streamurls)-1)):
+                if quality[maxQuality] in streamurls[line]:
+                    #Add 3 Quality Specific Applicable Lines From Multiple Quality Stream Playlist To Our Custom Playlist Var
+                    playlist = playlist + streamurls[line] + '\n' + streamurls[(line + 1)] + '\n' + streamurls[(line + 2)]
+                    print(playlist)
+
+            #Write Custom Playlist
+            text_file = open(fileName, "w")
+            text_file.write(str(playlist))
+            text_file.close()
+
+        else:
+            raise TwitchException(TwitchException.STREAM_OFFLINE)
 
     def _getSwfUrl(self, channelName):
         url = Urls.TWITCH_SWF + channelName
