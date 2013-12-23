@@ -49,4 +49,6 @@
 1.0.2
 - fixed stream resolving
 1.0.3
-- added support for HLS streams 
+- added support for HLS streams
+1.0.4
+- fixed bug: Viewer count could not be resolved
