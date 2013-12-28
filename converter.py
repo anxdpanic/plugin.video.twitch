@@ -70,6 +70,22 @@ class JsonListItemConverter(object):
                 'is_playable': True,
                 'icon': videobanner if videobanner else logo
                 }
+                
+    def convertFollowersToListItem(self, follower):
+        videobanner = follower.get(Keys.LOGO, '')
+        return {'label': follower[Keys.DISPLAY_NAME],
+                'path': self.plugin.url_for(endpoint='channelVideos',
+                                            name=follower[Keys.NAME]),
+                'icon': videobanner
+                }
+                
+    def convertVideoListToListItem(self,video):
+        return {'label': video['title'],
+                'path': self.plugin.url_for(endpoint='playVideo',
+                                            id=video['_id']),
+                'is_playable': True,
+                'icon': video.get(Keys.PREVIEW, '')
+                }
 
     def convertStreamToListItem(self, stream):
         channel = stream[Keys.CHANNEL]
