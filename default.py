@@ -62,9 +62,9 @@ def createMainListing():
 @PLUGIN.route('/createListOfFeaturedStreams/')
 @managedTwitchExceptions
 def createListOfFeaturedStreams():
-    streams = TWITCHTV.getFeaturedStream()
-    return [CONVERTER.convertChannelToListItem(element[Keys.STREAM][Keys.CHANNEL])
-            for element in streams]
+    featuredStreams = TWITCHTV.getFeaturedStream()
+    return [CONVERTER.convertStreamToListItem(featuredStream[Keys.STREAM])
+            for featuredStream in featuredStreams]
 
 
 @PLUGIN.route('/createListOfGames/<index>/')
@@ -83,7 +83,7 @@ def createListOfGames(index):
 @managedTwitchExceptions
 def createListForGame(gameName, index):
     index, offset, limit = calculatePaginationValues(index)
-    items = [CONVERTER.convertChannelToListItem(item[Keys.CHANNEL])for item
+    items = [CONVERTER.convertStreamToListItem(stream) for stream
              in TWITCHTV.getGameStreams(gameName, offset, limit)]
 
     items.append(linkToNextPage('createListForGame', index, gameName=gameName))
@@ -95,7 +95,7 @@ def createListForGame(gameName, index):
 def createFollowingList():
     username = getUserName()
     streams = TWITCHTV.getFollowingStreams(username)
-    return [CONVERTER.convertChannelToListItem(stream[Keys.CHANNEL]) for stream in streams]
+    return [CONVERTER.convertStreamToListItem(stream) for stream in streams]
 
 
 @PLUGIN.route('/search/')
@@ -115,7 +115,7 @@ def searchresults(query, index='0'):
     index, offset, limit = calculatePaginationValues(index)
     streams = TWITCHTV.searchStreams(query, offset, limit)
 
-    items = [CONVERTER.convertChannelToListItem(stream[Keys.CHANNEL]) for stream in streams]
+    items = [CONVERTER.convertStreamToListItem(stream) for stream in streams]
     items.append(linkToNextPage('searchresults', index, query=query))
     return items
 
