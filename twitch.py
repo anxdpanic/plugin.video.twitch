@@ -119,8 +119,8 @@ class TwitchTV(object):
         url = Urls.FOLLOWED_CHANNELS.format(quotedUsername)
         return self._fetchItems(url, Keys.FOLLOWS)
 
-    def getTeams(self):
-        return self._fetchItems(Urls.TEAMS, Keys.TEAMS)
+    def getTeams(self, index):
+        return self._fetchItems(Urls.TEAMS.format(str(index * 25)), Keys.TEAMS)
 
     def getTeamStreams(self, teamName):
         '''
@@ -321,7 +321,7 @@ class Urls(object):
     GAMES = BASE + 'games/'
     STREAMS = BASE + 'streams/'
     SEARCH = BASE + 'search/'
-    TEAMS = BASE + 'teams'
+    TEAMS = BASE + 'teams?limit=25&offset={0}'
 
     TEAMSTREAM = 'http://api.twitch.tv/api/team/{0}/live_channels.json'
     CHANNEL_TOKEN = 'http://api.twitch.tv/api/channels/{0}/access_token'
