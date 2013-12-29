@@ -40,6 +40,53 @@ class JsonListItemConverter(object):
                 'is_playable': True,
                 'icon': image}
 
+    def extractStreamTitleValues(self, stream):
+        channel = stream[Keys.CHANNEL]
+        print json.dumps(channel, indent=4, sort_keys=True)
+        return {'streamer': channel.get(Keys.DISPLAY_NAME,
+                                        self.plugin.get_string(34000)),
+                'title': channel.get(Keys.STATUS,
+                                     self.plugin.get_string(34001)),
+                'viewers': stream.get(Keys.VIEWERS,
+                                       self.plugin.get_string(34002))
+                }
+
+    def extractTitleValues(self, channel):
+        print json.dumps(channel, indent=4, sort_keys=True)
+        return {'streamer': channel.get(Keys.DISPLAY_NAME,
+                                        self.plugin.get_string(34000)),
+                'title': channel.get(Keys.STATUS,
+                                     self.plugin.get_string(34001)),
+                'viewers': channel.get(Keys.VIEWERS,
+                                       self.plugin.get_string(34002))
+                }
+
+    def convertChannelToListItem(self, channel):
+        videobanner = channel.get(Keys.VIDEO_BANNER, '')
+        logo = channel.get(Keys.LOGO, '')
+        return {'label': self.getTitleForChannel(channel),
+                'path': self.plugin.url_for(endpoint='playLive',
+                                            name=channel[Keys.NAME]),
+                'is_playable': True,
+                'icon': videobanner if videobanner else logo
+                }
+                
+    def convertFollowersToListItem(self, follower):
+        videobanner = follower.get(Keys.LOGO, '')
+        return {'label': follower[Keys.DISPLAY_NAME],
+                'path': self.plugin.url_for(endpoint='channelVideos',
+                                            name=follower[Keys.NAME]),
+                'icon': videobanner
+                }
+                
+    def convertVideoListToListItem(self,video):
+        return {'label': video['title'],
+                'path': self.plugin.url_for(endpoint='playVideo',
+                                            id=video['_id']),
+                'is_playable': True,
+                'icon': video.get(Keys.PREVIEW, '')
+                }
+
     def convertStreamToListItem(self, stream):
         channel = stream[Keys.CHANNEL]
         videobanner = channel.get(Keys.VIDEO_BANNER, '')

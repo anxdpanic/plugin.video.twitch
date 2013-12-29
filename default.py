@@ -95,9 +95,56 @@ def createListForGame(gameName, index):
 def createFollowingList():
     username = getUserName()
     streams = TWITCHTV.getFollowingStreams(username)
-    return [CONVERTER.convertStreamToListItem(stream) for stream in streams]
+    liveStreams = [CONVERTER.convertChannelToListItem(stream[Keys.CHANNEL]) for stream in streams['live']]
+    liveStreams.insert(0,{'path': PLUGIN.url_for(endpoint='createFollowingList'), 'icon': u'', 'is_playable': False, 'label': u'-- Currently Live Streams --'})
+    liveStreams.append({'path': PLUGIN.url_for(endpoint='createFollowingList'), 'icon': u'', 'is_playable': False, 'label': u'-- Followed Channels --'})
+    liveStreams.extend([CONVERTER.convertFollowersToListItem(follower) for follower in streams['others']])
+    return liveStreams
 
 
+@PLUGIN.route('/channelVideos/<name>/')
+@managedTwitchExceptions
+def channelVideos(name):
+    items = [
+        {'label': 'Past Broadcasts',
+         'path': PLUGIN.url_for(endpoint='channelVideosList', name=name, index=0, past='true')
+        },
+        {'label': 'Video Highlights',
+         'path': PLUGIN.url_for(endpoint='channelVideosList', name=name, index=0, past='false')
+        }
+    ]
+    return items
+    
+    
+@PLUGIN.route('/channelVideosList/<name>/<index>/<past>/')
+@managedTwitchExceptions
+def channelVideosList(name,index,past):
+    index = int(index)
+    offset = index * 8
+    videos = TWITCHTV.getFollowerVideos(name,offset,past)
+    items = [CONVERTER.convertVideoListToListItem(video) for video in videos[Keys.VIDEOS]]
+    if videos[Keys.TOTAL] > (offset + 8):
+        items.append(linkToNextPage('channelVideosList', index, name=name, past=past))
+    return items
+    
+    
+@PLUGIN.route('/playVideo/<id>/')
+@managedTwitchExceptions
+def playVideo(id):
+    
+    playList = TWITCHTV.getVideoChunksPlaylist(id)
+    
+    # Doesn't fullscreen video, might be because of xbmcswift
+    #xbmc.Player().play(playlist) 
+    
+    try:
+        # Gotta wrap this in a try/except, xbmcswift causes an error when passing a xbmc.PlayList()
+        # but still plays the playlist properly
+        PLUGIN.set_resolved_url(playlist)
+    except:
+        pass
+    
+    
 @PLUGIN.route('/search/')
 @managedTwitchExceptions
 def search():
@@ -124,8 +171,8 @@ def searchresults(query, index='0'):
 def showSettings():
     #there is probably a better way to do this
     PLUGIN.open_settings()
-
-
+    
+    
 @PLUGIN.route('/playLive/<name>/')
 @managedTwitchExceptions
 def playLive(name):
