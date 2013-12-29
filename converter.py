@@ -39,37 +39,6 @@ class JsonListItemConverter(object):
                 'path': self.plugin.url_for(endpoint='playLive', name=channelname),
                 'is_playable': True,
                 'icon': image}
-
-    def extractStreamTitleValues(self, stream):
-        channel = stream[Keys.CHANNEL]
-        print json.dumps(channel, indent=4, sort_keys=True)
-        return {'streamer': channel.get(Keys.DISPLAY_NAME,
-                                        self.plugin.get_string(30060)),
-                'title': channel.get(Keys.STATUS,
-                                     self.plugin.get_string(30061)),
-                'viewers': stream.get(Keys.VIEWERS,
-                                       self.plugin.get_string(30062))
-                }
-
-    def extractTitleValues(self, channel):
-        print json.dumps(channel, indent=4, sort_keys=True)
-        return {'streamer': channel.get(Keys.DISPLAY_NAME,
-                                        self.plugin.get_string(30060)),
-                'title': channel.get(Keys.STATUS,
-                                     self.plugin.get_string(30061)),
-                'viewers': channel.get(Keys.VIEWERS,
-                                       self.plugin.get_string(30062))
-                }
-
-    def convertChannelToListItem(self, channel):
-        videobanner = channel.get(Keys.VIDEO_BANNER, '')
-        logo = channel.get(Keys.LOGO, '')
-        return {'label': self.getTitleForChannel(channel),
-                'path': self.plugin.url_for(endpoint='playLive',
-                                            name=channel[Keys.NAME]),
-                'is_playable': True,
-                'icon': videobanner if videobanner else logo
-                }
                 
     def convertFollowersToListItem(self, follower):
         videobanner = follower.get(Keys.LOGO, '')
