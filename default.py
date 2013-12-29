@@ -47,7 +47,7 @@ def createMainListing():
          'path': PLUGIN.url_for(endpoint='createFollowingList')
          },
         {'label': PLUGIN.get_string(30006),
-         'path': PLUGIN.url_for(endpoint='createListOfTeams')
+         'path': PLUGIN.url_for(endpoint='createListOfTeams', index='0')
          },
         {'label': PLUGIN.get_string(30003),
          'path': PLUGIN.url_for(endpoint='search')
@@ -188,10 +188,14 @@ def playLive(name):
     PLUGIN.set_resolved_url(plpath)
 
 
-@PLUGIN.route('/createListOfTeams/')
+@PLUGIN.route('/createListOfTeams/<index>/')
 @managedTwitchExceptions
-def createListOfTeams():
-    items = [CONVERTER.convertTeamToListItem(item)for item in TWITCHTV.getTeams()]
+def createListOfTeams(index):
+    index = int(index)
+    teams = TWITCHTV.getTeams(index)
+    items = [CONVERTER.convertTeamToListItem(item)for item in teams]
+    if len(teams) == 25:
+        items.append(linkToNextPage('createListOfTeams', index))
     return items
 
 
