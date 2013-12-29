@@ -96,8 +96,8 @@ def createFollowingList():
     username = getUserName()
     streams = TWITCHTV.getFollowingStreams(username)
     liveStreams = [CONVERTER.convertChannelToListItem(stream[Keys.CHANNEL]) for stream in streams['live']]
-    liveStreams.insert(0,{'path': PLUGIN.url_for(endpoint='createFollowingList'), 'icon': u'', 'is_playable': False, 'label': u'-- Currently Live Streams --'})
-    liveStreams.append({'path': PLUGIN.url_for(endpoint='createFollowingList'), 'icon': u'', 'is_playable': False, 'label': u'-- Followed Channels --'})
+    liveStreams.insert(0,{'path': PLUGIN.url_for(endpoint='createFollowingList'), 'icon': u'', 'is_playable': False, 'label': PLUGIN.get_string(31002))
+    liveStreams.append({'path': PLUGIN.url_for(endpoint='createFollowingList'), 'icon': u'', 'is_playable': False, 'label': PLUGIN.get_string(31003))
     liveStreams.extend([CONVERTER.convertFollowersToListItem(follower) for follower in streams['others']])
     return liveStreams
 

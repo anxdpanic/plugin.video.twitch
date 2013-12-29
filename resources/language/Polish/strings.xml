@@ -14,6 +14,8 @@
   <!--general --> 
   <string id="31000">TwitchTV</string>
   <string id="31001">następne...</string>
+  <string id="31002">-- Currently Live Streams --</string>
+  <string id="31003">-- Followed Channels --</string>
 
    <!--notifications --> 
   <string id="32001">Błąd HTTP</string>

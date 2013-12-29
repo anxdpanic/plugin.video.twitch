@@ -14,6 +14,9 @@
    <!--general --> 
   <string id="31000">TwitchTV</string>
   <string id="31001">nächste Seite...</string>
+  <string id="31002">-- Jetzt live --</string>
+  <string id="31003">-- Folgend --</string>
+
 
    <!--notifications --> 
   <string id="32001">Http Fehler</string>
