@@ -44,21 +44,21 @@ class JsonListItemConverter(object):
         channel = stream[Keys.CHANNEL]
         print json.dumps(channel, indent=4, sort_keys=True)
         return {'streamer': channel.get(Keys.DISPLAY_NAME,
-                                        self.plugin.get_string(34000)),
+                                        self.plugin.get_string(30060)),
                 'title': channel.get(Keys.STATUS,
-                                     self.plugin.get_string(34001)),
+                                     self.plugin.get_string(30061)),
                 'viewers': stream.get(Keys.VIEWERS,
-                                       self.plugin.get_string(34002))
+                                       self.plugin.get_string(30062))
                 }
 
     def extractTitleValues(self, channel):
         print json.dumps(channel, indent=4, sort_keys=True)
         return {'streamer': channel.get(Keys.DISPLAY_NAME,
-                                        self.plugin.get_string(34000)),
+                                        self.plugin.get_string(30060)),
                 'title': channel.get(Keys.STATUS,
-                                     self.plugin.get_string(34001)),
+                                     self.plugin.get_string(30061)),
                 'viewers': channel.get(Keys.VIEWERS,
-                                       self.plugin.get_string(34002))
+                                       self.plugin.get_string(30062))
                 }
 
     def convertChannelToListItem(self, channel):
@@ -109,12 +109,12 @@ class JsonListItemConverter(object):
         if Keys.VIEWERS in channel:
             viewers = channel.get(Keys.VIEWERS);
         else:
-            viewers = stream.get(Keys.VIEWERS, self.plugin.get_string(34002))
+            viewers = stream.get(Keys.VIEWERS, self.plugin.get_string(30062))
 
         return {'streamer': channel.get(Keys.DISPLAY_NAME,
-                                        self.plugin.get_string(34000)),
+                                        self.plugin.get_string(30060)),
                 'title': channel.get(Keys.STATUS,
-                                     self.plugin.get_string(34001)),
+                                     self.plugin.get_string(30061)),
                 'viewers': viewers}
 
 class TitleBuilder(object):

@@ -24,12 +24,12 @@ def managedTwitchExceptions(func):
 
 
 def handleTwitchException(exception):
-    codeTranslations = {TwitchException.NO_STREAM_URL   : 32004,
-                        TwitchException.STREAM_OFFLINE  : 32002,
-                        TwitchException.HTTP_ERROR      : 32001,
-                        TwitchException.JSON_ERROR      : 32008}
+    codeTranslations = {TwitchException.NO_STREAM_URL   : 30023,
+                        TwitchException.STREAM_OFFLINE  : 30021,
+                        TwitchException.HTTP_ERROR      : 30020,
+                        TwitchException.JSON_ERROR      : 30027}
     code = exception.code
-    title = 31000
+    title = 30010
     msg = codeTranslations[code]
     PLUGIN.notify(PLUGIN.get_string(title), PLUGIN.get_string(msg))
 
@@ -96,8 +96,8 @@ def createFollowingList():
     username = getUserName()
     streams = TWITCHTV.getFollowingStreams(username)
     liveStreams = [CONVERTER.convertChannelToListItem(stream[Keys.CHANNEL]) for stream in streams['live']]
-    liveStreams.insert(0,{'path': PLUGIN.url_for(endpoint='createFollowingList'), 'icon': u'', 'is_playable': False, 'label': PLUGIN.get_string(31002)})
-    liveStreams.append({'path': PLUGIN.url_for(endpoint='createFollowingList'), 'icon': u'', 'is_playable': False, 'label': PLUGIN.get_string(31003)})
+    liveStreams.insert(0,{'path': PLUGIN.url_for(endpoint='createFollowingList'), 'icon': u'', 'is_playable': False, 'label': PLUGIN.get_string(30012)})
+    liveStreams.append({'path': PLUGIN.url_for(endpoint='createFollowingList'), 'icon': u'', 'is_playable': False, 'label': PLUGIN.get_string(30013)})
     liveStreams.extend([CONVERTER.convertFollowersToListItem(follower) for follower in streams['others']])
     return liveStreams
 
@@ -148,7 +148,7 @@ def playVideo(id):
 @PLUGIN.route('/search/')
 @managedTwitchExceptions
 def search():
-    query = PLUGIN.keyboard('', PLUGIN.get_string(30101))
+    query = PLUGIN.keyboard('', PLUGIN.get_string(30007))
     if query:
         target = PLUGIN.url_for(endpoint='searchresults', query=query, index='0')
     else:
@@ -224,7 +224,7 @@ def getVideoQuality():
 
 
 def linkToNextPage(target, currentIndex, **kwargs):
-    return {'label': PLUGIN.get_string(31001),
+    return {'label': PLUGIN.get_string(30011),
             'path': PLUGIN.url_for(target, index=str(currentIndex + 1), **kwargs)
             }
 
