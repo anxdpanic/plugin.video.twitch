@@ -24,4 +24,4 @@ Credit where credit is due.
 
 Thanks to all the people who contributed to this project:
 
-ccaspers, CDehning, Giacom, grocal, KlingOne, kokarn, MrSprigster, stuross
+ccaspers, CDehning, Giacom, grocal, KlingOne, kokarn, Kr0nZ, MrSprigster, stuross
