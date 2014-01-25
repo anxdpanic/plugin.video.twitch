@@ -186,24 +186,35 @@ class TwitchVideoResolver(object):
             #Split Into Multiple Lines
             streamurls = data.split('\n')
             #Initialize Custom Playlist Var
-            playlist='#EXTM3U\n'
-
+            playlist=''
+    
             #Define Qualities
             quality = 'Source,High,Medium,Low'
             quality = quality.split(',')
-
+            
+            #Initialize Var
+            unrestrictedquality = ''
+            #Loop Through Multiple Quality Stream Playlist and Remove Any Restricted Qualities
+            for line in range(0, (len(streamurls)-1)):
+                if 'EXT-X-TWITCH-RESTRICTED' not in streamurls[line]:
+                    unrestrictedquality += streamurls[line] + '\n'
+                    
+            streamurls = unrestrictedquality.split('\n')
+            
             #Check to see if our preferred quality is available (not all qualities are available for none partnered streams)
             if quality[maxQuality] in data:
                 #Preferred quality is available
                 #Loop Through Multiple Quality Stream Playlist Until We Find Our Preferred Quality
                 for line in range(0, (len(streamurls)-1)):
                     if quality[maxQuality] in streamurls[line]:
+                        #Add Playlist Header
+                        playlist = '#EXTM3U\n'
                         #Add 3 Quality Specific Applicable Lines From Multiple Quality Stream Playlist To Our Custom Playlist Var
-                        playlist = playlist + streamurls[line] + '\n' + streamurls[(line + 1)] + '\n' + streamurls[(line + 2)]
+                        playlist += streamurls[line] + '\n' + streamurls[(line + 1)] + '\n' + streamurls[(line + 2)]
                         print(playlist)
             else:
-                #Preferred quality is unavailable so let's play the raw playlist we got from twitch (contains only 'source')
-                playlist = data
+                #Preferred quality is unavailable so let's play the highest available quality
+                playlist += '\n'.join(streamurls)
                 print(playlist)
                 
             #Write Custom Playlist
