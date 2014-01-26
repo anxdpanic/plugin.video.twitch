@@ -187,22 +187,22 @@ class TwitchVideoResolver(object):
             streamurls = data.split('\n')
             #Initialize Custom Playlist Var
             playlist=''
-    
+            
             #Define Qualities
             quality = 'Source,High,Medium,Low'
             quality = quality.split(',')
             
             #Initialize Var
-            unrestrictedquality = ''
+            unrestrictedqualities = ''
             #Loop Through Multiple Quality Stream Playlist and Remove Any Restricted Qualities
             for line in range(0, (len(streamurls)-1)):
                 if 'EXT-X-TWITCH-RESTRICTED' not in streamurls[line]:
-                    unrestrictedquality += streamurls[line] + '\n'
+                    unrestrictedqualities += streamurls[line] + '\n'
                     
-            streamurls = unrestrictedquality.split('\n')
+            streamurls = unrestrictedqualities.split('\n')
             
             #Check to see if our preferred quality is available (not all qualities are available for none partnered streams)
-            if quality[maxQuality] in data:
+            if quality[maxQuality] in unrestrictedqualities:
                 #Preferred quality is available
                 #Loop Through Multiple Quality Stream Playlist Until We Find Our Preferred Quality
                 for line in range(0, (len(streamurls)-1)):
@@ -224,6 +224,7 @@ class TwitchVideoResolver(object):
 
         else:
             raise TwitchException(TwitchException.STREAM_OFFLINE)
+
 
     def _getSwfUrl(self, channelName):
         url = Urls.TWITCH_SWF + channelName
