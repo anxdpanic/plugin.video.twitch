@@ -10,7 +10,7 @@ class JsonListItemConverter(object):
 
     def convertGameToListItem(self, game):
         name = game[Keys.NAME].encode('utf-8')
-        image = game[Keys.LOGO].get(Keys.LARGE, '')
+        image = game[Keys.BOX].get(Keys.LARGE, '')
         return {'label': name,
                 'path': self.plugin.url_for('createListForGame',
                                             gameName=name, index='0'),
