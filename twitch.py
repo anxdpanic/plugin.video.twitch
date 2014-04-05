@@ -292,6 +292,7 @@ class Keys(object):
     FOLLOWS = 'follows'
     GAME = 'game'
     LOGO = 'logo'
+    BOX = 'box'
     LARGE = 'large'
     NAME = 'name'
     NEEDED_INFO = 'needed_info'
