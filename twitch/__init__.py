@@ -4,7 +4,8 @@ try:
     from urllib.request import urlopen, Request
     from urllib.parse import quote_plus
 except ImportError:
-    from urllib import urlopen, quote_plus
+    from urllib import quote_plus
+    from urllib2 import Request, urlopen
 
 try:
     import json
@@ -27,10 +28,15 @@ class JSONScraper(object):
         req = Request(url)
         req.add_header(Keys.USER_AGENT, USER_AGENT)
         response = urlopen(req)
-        data = response.readall().decode('utf-8')
+        data = ""
+        if sys.version_info < (3, 0):
+            data = response.read()
+        else:
+            data = response.readall().decode('utf-8')
         response.close()
         return data
-
+        
+    
     def getJson(self, url, headers=None):
         try:
             jsonString = self.downloadWebData(url, headers)
