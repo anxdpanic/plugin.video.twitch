@@ -4,6 +4,7 @@ python-twitch
 python-twitch is an python module for simple interaction with twitch.tv
 
 Git Version: https://github.com/ingwinlu/python-twitch
+
 pypi Version: https://pypi.python.org/pypi/python-twitch/
 
 
