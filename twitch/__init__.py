@@ -27,7 +27,7 @@ class JSONScraper(object):
         req = Request(url)
         req.add_header(Keys.USER_AGENT, USER_AGENT)
         response = urlopen(req)
-        data = response.read()
+        data = response.readall().decode('utf-8')
         response.close()
         return data
 
@@ -98,6 +98,7 @@ class TwitchTV(object):
     def getVideoTitle(self, id):
         url = Urls.VIDEO_INFO.format(id)
         return self._fetchItems(url, 'title')
+        
     '''
     needs to be rewritten to return a python list instead of a xbmc playlist
     def getVideoChunksPlaylist(self, id):
@@ -105,7 +106,7 @@ class TwitchTV(object):
         chunks = vidChunks['chunks']['live']
         title = self.getVideoTitle(id)
         itemTitle = '%s - Part {0} of %s' % (title, len(chunks))
-
+        
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
         playlist.clear()
         
