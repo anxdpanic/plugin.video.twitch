@@ -1,7 +1,11 @@
 #-*- encoding: utf-8 -*-
-import urllib2, sys
-from urllib import quote_plus
-import re
+import sys, re
+try:
+    from urllib.request import urlopen, Request
+    from urllib.parse import quote_plus
+except ImportError:
+    from urllib import urlopen, quote_plus
+
 try:
     import json
 except:
@@ -20,9 +24,9 @@ class JSONScraper(object):
         self.logger = logger
         
     def downloadWebData(self, url, headers=None):
-        req = urllib2.Request(url)
+        req = Request(url)
         req.add_header(Keys.USER_AGENT, USER_AGENT)
-        response = urllib2.urlopen(req)
+        response = urlopen(req)
         data = response.read()
         response.close()
         return data
@@ -232,8 +236,8 @@ class TwitchVideoResolver(object):
         url = Urls.TWITCH_SWF + channelName
         headers = {Keys.USER_AGENT: USER_AGENT,
                    Keys.REFERER: Urls.TWITCH_TV + channelName}
-        req = urllib2.Request(url, None, headers)
-        response = urllib2.urlopen(req)
+        req = Request(url, None, headers)
+        response = urlopen(req)
         return response.geturl()
 
     def _streamIsAccessible(self, stream):
