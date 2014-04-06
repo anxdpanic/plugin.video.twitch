@@ -3,10 +3,12 @@ python-twitch
 
 python-twitch is an python module for simple interaction with twitch.tv
 
+Git Version: https://github.com/ingwinlu/python-twitch
+
+
 ----------------
 
-Credit where credit is due. This was made from the twitch.tv plugin for xbmc available from:
-[Twitch.tv-on-XBMC](https://github.com/StateOfTheArt89/Twitch.tv-on-XBMC)
+Credit where credit is due. This was made from the twitch.tv plugin for xbmc available from https://github.com/StateOfTheArt89/Twitch.tv-on-XBMC
 
 ----------------
 
