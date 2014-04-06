@@ -1,7 +1,7 @@
 python-twitch
 ==================
 
-python-twitch is an python module for simple interaction with twitch.tv
+python-twitch is an python3 module for simple interaction with twitch.tv
 
 ----------------
 
