@@ -1,7 +1,7 @@
 #-*- encoding: utf-8 -*-
 import urllib2, sys
 from urllib import quote_plus
-import re, xbmcgui, xbmc
+import re
 try:
     import json
 except:
@@ -94,7 +94,8 @@ class TwitchTV(object):
     def getVideoTitle(self, id):
         url = Urls.VIDEO_INFO.format(id)
         return self._fetchItems(url, 'title')
-        
+    '''
+    needs to be rewritten to return a python list instead of a xbmc playlist
     def getVideoChunksPlaylist(self, id):
         vidChunks = self.getVideoChunks(id)
         chunks = vidChunks['chunks']['live']
@@ -113,7 +114,8 @@ class TwitchTV(object):
             playlist.add(chunk['url'], xbmcgui.ListItem(itemTitle.format(curN), thumbnailImage=vidChunks['preview']))
             
         return playlist
-
+    '''
+        
     def getFollowingChannelNames(self, username):
         quotedUsername = quote_plus(username)
         url = Urls.FOLLOWED_CHANNELS.format(quotedUsername)
