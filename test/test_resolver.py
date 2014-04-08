@@ -17,7 +17,7 @@ class TestResolver(unittest.TestCase):
             os.remove(self.__playlist)
         
         
-    def testPlaylist(self):
+    def test_playlist(self):
         tTv = TwitchTV(logging)
         featured = tTv.getFeaturedStream()
         featured = featured[0]['stream']['channel']['name']

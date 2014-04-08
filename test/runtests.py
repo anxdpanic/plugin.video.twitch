@@ -5,7 +5,7 @@ import os
 import logging
 import unittest
 
-logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
 
 sys.path.insert(0, os.path.abspath("../"))
 
