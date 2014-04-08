@@ -26,7 +26,7 @@ class JSONScraper(object):
         
     '''
         Download Data from an url and returns it as a String
-        @param url Url to download from
+        @param url Url to download from (e.g. http://www.google.com)
         @param headers currently unused, backwards compability
         @returns String of data from URL
     '''
