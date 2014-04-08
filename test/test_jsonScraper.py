@@ -2,13 +2,15 @@ from twitch import *
 import unittest
 import logging
 import os
+import json
 
 class TestJsonScraper(unittest.TestCase):
     scraper=None
     badurl1='asdffdsaa'
     badurl2='www.google.com'
     goodurl='http://www.google.com'
-    goodjsonurl='http://echo.jsontest.com/insert-key-here/insert-value-here/key/value'
+    goodjsonurl='http://echo.jsontest.com/key1/value1/key2/value2'
+    goodjsonurlunsorted='http://echo.jsontest.com/key2/value2/key1/value1'
 
     def setUp(self):
         self.scraper = JSONScraper(logging)
@@ -44,9 +46,14 @@ class TestJsonScraper(unittest.TestCase):
         with self.assertRaises(TwitchException):
             self.scraper.getJson(self.goodurl)
             
+                
     def test_getJson_1(self):
-            self.scraper.getJson(self.goodjsonurl)
-        
+            retJson=self.scraper.getJson(self.goodjsonurl)
+            retJson2=self.scraper.getJson(self.goodjsonurlunsorted)
+            self.assertEqual(
+                json.dumps(retJson,sort_keys=True),
+                json.dumps(retJson2,sort_keys=True),
+                'json not equal')
         
     def suite(self):
         testSuite = unittest.TestSuite()
