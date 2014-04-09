@@ -10,6 +10,12 @@ FAQ
 
 > Make sure you are using at least XBMC 12 Frodo.
 
+* I'm having issues with the playback of streams (buffering, dropping, stuttering).
+
+> This Addon does not handle any aspect of the playback of Twitch streams (that would be the XBMC Video Player), it simply tells XBMC what to play.
+> The Addon does however provide Quality Options which may help if your internet connection / computer specs are below requirements for HD streams.
+
+
 What's next?
 ----------------
 
