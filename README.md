@@ -8,7 +8,7 @@ FAQ
 
 * I can't find the Twitch.tv add-on in the xbmc add-on manager!
 
-> Make sure you are using at least XBMC 12 Frodo.
+> Make sure you are using at least XBMC 12 Frodo / XBMC 13 Gotham.
 
 * I'm having issues with the playback of streams (buffering, dropping, stuttering).
 
