@@ -17,6 +17,8 @@
     <description lang='de'>Schaue die besten Gaming-Streams auf XBMC!</description>
     <summary lang='en'>TwitchTV video plugin</summary>
     <description lang='en'>Watch your favorite gaming streams on XBMC!</description>
+    <summary lang='nl'>TwitchTV video plugin</summary>
+    <description lang='nl'>Bekijk je favoriete gaming-streams op XBMC!</description>
     <summary lang='pl'>TwitchTV video plugin</summary>
     <description lang='pl'>Oglądaj ulubione programy TwitchTV na XBMC!</description>
   </extension>
