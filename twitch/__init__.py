@@ -239,11 +239,11 @@ class TwitchVideoResolver(object):
                         playlist = '#EXTM3U\n'
                         #Add 3 Quality Specific Applicable Lines From Multiple Quality Stream Playlist To Our Custom Playlist Var
                         playlist += streamurls[line] + '\n' + streamurls[(line + 1)] + '\n' + streamurls[(line + 2)]
-                        print(playlist)
+                        self.logger.info("playlist:\n" + playlist)
             else:
                 #Preferred quality is unavailable so let's play the highest available quality
                 playlist += '\n'.join(streamurls)
-                print(playlist)
+                self.logger.info("playlist:\n" + playlist)
                 
             #Write Custom Playlist
             text_file = open(fileName, "w")
