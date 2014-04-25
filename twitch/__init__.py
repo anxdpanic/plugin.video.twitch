@@ -1,5 +1,5 @@
 #-*- encoding: utf-8 -*-
-import sys, re
+import sys
 try:
     from urllib.request import urlopen, Request
     from urllib.parse import quote_plus
@@ -229,6 +229,8 @@ class TwitchVideoResolver(object):
                     
             streamurls = unrestrictedqualities.split('\n')
             
+            self.logger.info('search for quality: ' + quality[maxQuality])
+            
             #Check to see if our preferred quality is available (not all qualities are available for none partnered streams)
             if quality[maxQuality] in unrestrictedqualities:
                 #Preferred quality is available
@@ -239,11 +241,10 @@ class TwitchVideoResolver(object):
                         playlist = '#EXTM3U\n'
                         #Add 3 Quality Specific Applicable Lines From Multiple Quality Stream Playlist To Our Custom Playlist Var
                         playlist += streamurls[line] + '\n' + streamurls[(line + 1)] + '\n' + streamurls[(line + 2)]
-                        self.logger.info("playlist:\n" + playlist)
             else:
                 #Preferred quality is unavailable so let's play the highest available quality
                 playlist += '\n'.join(streamurls)
-                self.logger.info("playlist:\n" + playlist)
+                self.logger.info("prefered quality unavailable, using highest available quality")
                 
             #Write Custom Playlist
             text_file = open(fileName, "w")
