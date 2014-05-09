@@ -1,7 +1,13 @@
 #-*- encoding: utf-8 -*-
-import urllib2, sys
-from urllib import quote_plus
-import re, xbmcgui, xbmc
+import xbmcgui, xbmc
+import sys
+try:
+    from urllib.request import urlopen, Request
+    from urllib.parse import quote_plus
+except ImportError:
+    from urllib import quote_plus
+    from urllib2 import Request, urlopen
+
 try:
     import json
 except:
@@ -19,14 +25,34 @@ class JSONScraper(object):
         object.__init__(self)
         self.logger = logger
         
+    '''
+        Download Data from an url and returns it as a String
+        @param url Url to download from (e.g. http://www.google.com)
+        @param headers currently unused, backwards compability
+        @returns String of data from URL
+    '''
     def downloadWebData(self, url, headers=None):
-        req = urllib2.Request(url)
-        req.add_header(Keys.USER_AGENT, USER_AGENT)
-        response = urllib2.urlopen(req)
-        data = response.read()
-        response.close()
+        data = ""
+        try:
+            req = Request(url)
+            req.add_header(Keys.USER_AGENT, USER_AGENT)
+            response = urlopen(req)
+            
+            if sys.version_info < (3, 0):
+                data = response.read()
+            else:
+                data = response.readall().decode('utf-8')
+            response.close()
+        except:
+            raise TwitchException(TwitchException.HTTP_ERROR)
         return data
-
+        
+    '''
+        Download Data from an url and returns it as JSON
+        @param url Url to download from
+        @param headers currently unused, backwards compability
+        @returns JSON Object with data from URL
+    '''
     def getJson(self, url, headers=None):
         try:
             jsonString = self.downloadWebData(url, headers)
@@ -95,12 +121,13 @@ class TwitchTV(object):
         url = Urls.VIDEO_INFO.format(id)
         return self._fetchItems(url, 'title')
         
+    
     def getVideoChunksPlaylist(self, id):
         vidChunks = self.getVideoChunks(id)
         chunks = vidChunks['chunks']['live']
         title = self.getVideoTitle(id)
         itemTitle = '%s - Part {0} of %s' % (title, len(chunks))
-
+        
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
         playlist.clear()
         
@@ -113,7 +140,7 @@ class TwitchTV(object):
             playlist.add(chunk['url'], xbmcgui.ListItem(itemTitle.format(curN), thumbnailImage=vidChunks['preview']))
             
         return playlist
-
+        
     def getFollowingChannelNames(self, username):
         quotedUsername = quote_plus(username)
         url = Urls.FOLLOWED_CHANNELS.format(quotedUsername)
@@ -201,6 +228,8 @@ class TwitchVideoResolver(object):
                     
             streamurls = unrestrictedqualities.split('\n')
             
+            self.logger.info('search for quality: ' + quality[maxQuality])
+            
             #Check to see if our preferred quality is available (not all qualities are available for none partnered streams)
             if quality[maxQuality] in unrestrictedqualities:
                 #Preferred quality is available
@@ -211,11 +240,10 @@ class TwitchVideoResolver(object):
                         playlist = '#EXTM3U\n'
                         #Add 3 Quality Specific Applicable Lines From Multiple Quality Stream Playlist To Our Custom Playlist Var
                         playlist += streamurls[line] + '\n' + streamurls[(line + 1)] + '\n' + streamurls[(line + 2)]
-                        print(playlist)
             else:
                 #Preferred quality is unavailable so let's play the highest available quality
                 playlist += '\n'.join(streamurls)
-                print(playlist)
+                self.logger.info("prefered quality unavailable, using highest available quality")
                 
             #Write Custom Playlist
             text_file = open(fileName, "w")
@@ -230,8 +258,8 @@ class TwitchVideoResolver(object):
         url = Urls.TWITCH_SWF + channelName
         headers = {Keys.USER_AGENT: USER_AGENT,
                    Keys.REFERER: Urls.TWITCH_TV + channelName}
-        req = urllib2.Request(url, None, headers)
-        response = urllib2.urlopen(req)
+        req = Request(url, None, headers)
+        response = urlopen(req)
         return response.geturl()
 
     def _streamIsAccessible(self, stream):
