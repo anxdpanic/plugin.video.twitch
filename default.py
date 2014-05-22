@@ -114,8 +114,8 @@ def channelVideos(name):
         }
     ]
     return items
-    
-    
+
+
 @PLUGIN.route('/channelVideosList/<name>/<index>/<past>/')
 @managedTwitchExceptions
 def channelVideosList(name,index,past):
@@ -126,25 +126,25 @@ def channelVideosList(name,index,past):
     if videos[Keys.TOTAL] > (offset + 8):
         items.append(linkToNextPage('channelVideosList', index, name=name, past=past))
     return items
-    
-    
+
+
 @PLUGIN.route('/playVideo/<id>/')
 @managedTwitchExceptions
 def playVideo(id):
-    
+
     playList = TWITCHTV.getVideoChunksPlaylist(id)
-    
+
     # Doesn't fullscreen video, might be because of xbmcswift
-    #xbmc.Player().play(playlist) 
-    
+    #xbmc.Player().play(playlist)
+
     try:
         # Gotta wrap this in a try/except, xbmcswift causes an error when passing a xbmc.PlayList()
         # but still plays the playlist properly
         PLUGIN.set_resolved_url(playlist)
     except:
         pass
-    
-    
+
+
 @PLUGIN.route('/search/')
 @managedTwitchExceptions
 def search():
@@ -171,20 +171,17 @@ def searchresults(query, index='0'):
 def showSettings():
     #there is probably a better way to do this
     PLUGIN.open_settings()
-    
-    
+
+
 @PLUGIN.route('/playLive/<name>/')
 @managedTwitchExceptions
 def playLive(name):
-    
+
     #Get Required Quality From Settings
     videoQuality = getVideoQuality()
-    
-    plpath = xbmc.translatePath('special://temp') + 'hlsplaylist.m3u8'
+
     resolver = TwitchVideoResolver(PLUGIN.log)
-    resolver.saveHLSToPlaylist(name,videoQuality,plpath)
-    #Play Custom Playlist
-    xbmc.Player().play(plpath)
+    plpath = resolver.saveHLSToPlaylist(name,videoQuality)
     PLUGIN.set_resolved_url(plpath)
 
 
