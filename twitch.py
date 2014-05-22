@@ -20,11 +20,11 @@ class JSONScraper(object):
     '''
     Encapsulates execution request and parsing of response
     '''
-    
+
     def __init__(self, logger):
         object.__init__(self)
         self.logger = logger
-        
+
     '''
         Download Data from an url and returns it as a String
         @param url Url to download from (e.g. http://www.google.com)
@@ -37,7 +37,7 @@ class JSONScraper(object):
             req = Request(url)
             req.add_header(Keys.USER_AGENT, USER_AGENT)
             response = urlopen(req)
-            
+
             if sys.version_info < (3, 0):
                 data = response.read()
             else:
@@ -46,7 +46,7 @@ class JSONScraper(object):
         except:
             raise TwitchException(TwitchException.HTTP_ERROR)
         return data
-        
+
     '''
         Download Data from an url and returns it as JSON
         @param url Url to download from
@@ -107,30 +107,30 @@ class TwitchTV(object):
         channels = {'live' : self._fetchItems(url, Keys.STREAMS)}
         channels['others'] = channelNames
         return channels
-        
+
     def getFollowerVideos(self, username, offset, past):
         url = Urls.CHANNEL_VIDEOS.format(username,offset,past)
         items = self.scraper.getJson(url)
         return {Keys.TOTAL : items[Keys.TOTAL], Keys.VIDEOS : items[Keys.VIDEOS]}
-        
+
     def getVideoChunks(self, id):
         url = Urls.VIDEO_CHUNKS.format(id)
         return self.scraper.getJson(url)
-        
+
     def getVideoTitle(self, id):
         url = Urls.VIDEO_INFO.format(id)
         return self._fetchItems(url, 'title')
-        
-    
+
+
     def getVideoChunksPlaylist(self, id):
         vidChunks = self.getVideoChunks(id)
         chunks = vidChunks['chunks']['live']
         title = self.getVideoTitle(id)
         itemTitle = '%s - Part {0} of %s' % (title, len(chunks))
-        
+
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
         playlist.clear()
-        
+
         # For some reason first item is skipped, so added a dummy first item to fix
         # theres probably a better way
         playlist.add('', xbmcgui.ListItem('', thumbnailImage=vidChunks['preview']))
@@ -138,9 +138,9 @@ class TwitchTV(object):
         for chunk in chunks:
             curN += 1
             playlist.add(chunk['url'], xbmcgui.ListItem(itemTitle.format(curN), thumbnailImage=vidChunks['preview']))
-            
+
         return playlist
-        
+
     def getFollowingChannelNames(self, username):
         quotedUsername = quote_plus(username)
         url = Urls.FOLLOWED_CHANNELS.format(quotedUsername)
@@ -160,7 +160,7 @@ class TwitchTV(object):
 
     def _filterChannelNames(self, channels):
         tmp = [{Keys.DISPLAY_NAME : item[Keys.CHANNEL][Keys.DISPLAY_NAME], Keys.NAME : item[Keys.CHANNEL][Keys.NAME], Keys.LOGO : item[Keys.CHANNEL][Keys.LOGO]} for item in channels]
-        return sorted(tmp, key=lambda k: k[Keys.DISPLAY_NAME]) 
+        return sorted(tmp, key=lambda k: k[Keys.DISPLAY_NAME])
 
     def _fetchItems(self, url, key):
         items = self.scraper.getJson(url)
@@ -172,7 +172,7 @@ class TwitchVideoResolver(object):
     Resolves the RTMP-Link to a given Channelname
     Uses Justin.TV API
     '''
-    
+
     def __init__(self, logger):
         object.__init__(self)
         self.logger = logger
@@ -181,10 +181,10 @@ class TwitchVideoResolver(object):
     def getRTMPUrl(self, channelName, maxQuality):
         swfUrl = self._getSwfUrl(channelName)
         streamQualities = self._getStreamsForChannel(channelName)
-        
+
         self.logger.debug("=== URL and available Streams ===")
         self.logger.debug(json.dumps(swfUrl, sort_keys=True, indent=4))
-        
+
         # check that api response isn't empty (i.e. stream is offline)
         if streamQualities:
             items = [self._parseStreamValues(stream, swfUrl)
@@ -199,7 +199,7 @@ class TwitchVideoResolver(object):
         else:
             raise TwitchException(TwitchException.STREAM_OFFLINE)
 
-    def saveHLSToPlaylist(self, channelName, maxQuality, fileName):
+    def saveHLSToPlaylist(self, channelName, maxQuality):
         #Get Access Token (not necessary at the moment but could come into effect at any time)
         tokenurl= Urls.CHANNEL_TOKEN.format(channelName)
         channeldata = self.scraper.getJson(tokenurl)
@@ -212,43 +212,30 @@ class TwitchVideoResolver(object):
         if "No Results" not in data:
             #Split Into Multiple Lines
             streamurls = data.split('\n')
-            #Initialize Custom Playlist Var
-            playlist=''
-            
+
+            playUrl = ''
+
             #Define Qualities
             quality = 'Source,High,Medium,Low'
             quality = quality.split(',')
-            
-            #Initialize Var
-            unrestrictedqualities = ''
-            #Loop Through Multiple Quality Stream Playlist and Remove Any Restricted Qualities
+
+            #Loop Through Multiple Quality Stream Playlist Until We Find Our Preferred Quality
+            #Otherwise default to first playlist item (Source)
+            foundQuality = False
+            restricted = False
             for line in range(0, (len(streamurls)-1)):
-                if 'EXT-X-TWITCH-RESTRICTED' not in streamurls[line]:
-                    unrestrictedqualities += streamurls[line] + '\n'
-                    
-            streamurls = unrestrictedqualities.split('\n')
-            
-            self.logger.info('search for quality: ' + quality[maxQuality])
-            
-            #Check to see if our preferred quality is available (not all qualities are available for none partnered streams)
-            if quality[maxQuality] in unrestrictedqualities:
-                #Preferred quality is available
-                #Loop Through Multiple Quality Stream Playlist Until We Find Our Preferred Quality
-                for line in range(0, (len(streamurls)-1)):
-                    if quality[maxQuality] in streamurls[line]:
-                        #Add Playlist Header
-                        playlist = '#EXTM3U\n'
-                        #Add 3 Quality Specific Applicable Lines From Multiple Quality Stream Playlist To Our Custom Playlist Var
-                        playlist += streamurls[line] + '\n' + streamurls[(line + 1)] + '\n' + streamurls[(line + 2)]
-            else:
-                #Preferred quality is unavailable so let's play the highest available quality
-                playlist += '\n'.join(streamurls)
-                self.logger.info("prefered quality unavailable, using highest available quality")
-                
-            #Write Custom Playlist
-            text_file = open(fileName, "w")
-            text_file.write(str(playlist))
-            text_file.close()
+                if 'EXT-X-TWITCH-RESTRICTED' in streamurls[line]:
+                  restricted = True
+                  continue
+                if not streamurls[line].startswith('#') and not restricted:
+                    if not playUrl or foundQuality:
+                      playUrl = streamurls[line]
+                      if foundQuality:
+                        break
+                if quality[maxQuality] in streamurls[line]:
+                    foundQuality = True
+                restricted = False
+            return playUrl
 
         else:
             raise TwitchException(TwitchException.STREAM_OFFLINE)
@@ -294,7 +281,7 @@ class TwitchVideoResolver(object):
                 Keys.RTMP_URL: Urls.FORMAT_FOR_RTMP.format(**streamVars)}
 
     def _bestMatchForChosenQuality(self, streams, maxQuality):
-        # sorting on resolution, then bitrate, both ascending 
+        # sorting on resolution, then bitrate, both ascending
         streams.sort(key=lambda t: (t[Keys.QUALITY], t[Keys.BITRATE]))
         self.logger.debug("Available streams sorted: %s" % streams)
         for stream in streams:
@@ -382,11 +369,11 @@ class Urls(object):
     TWITCH_SWF = "http://www.justin.tv/widgets/live_embed_player.swf?channel="
     FORMAT_FOR_RTMP = "{rtmp}/{playpath} swfUrl={swfUrl} swfVfy=1 {token} live=1"  # Pageurl missing here
     HLS_PLAYLIST = 'http://usher.twitch.tv/select/{0}.m3u8?nauthsig={1}&nauth={2}&allow_source=true'
-    
+
     CHANNEL_VIDEOS = 'https://api.twitch.tv/kraken/channels/{0}/videos?limit=8&offset={1}&broadcasts={2}'
     VIDEO_CHUNKS = 'https://api.twitch.tv/api/videos/{0}'
     VIDEO_INFO = 'https://api.twitch.tv/kraken/videos/{0}'
-        
+
 
 
 class TwitchException(Exception):
