@@ -10,7 +10,7 @@ pypi Version: https://pypi.python.org/pypi/python-twitch/
 
 ----------------
 
-Credit where credit is due. This was made from the twitch.tv plugin for xbmc available from https://github.com/StateOfTheArt89/Twitch.tv-on-XBMC
+Credit where credit is due. This is based on the twitch.tv plugin for xbmc available from https://github.com/StateOfTheArt89/Twitch.tv-on-XBMC
 
 ----------------
 
