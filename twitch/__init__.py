@@ -241,6 +241,10 @@ class TwitchVideoResolver(object):
                         playlist = '#EXTM3U\n'
                         #Add 3 Quality Specific Applicable Lines From Multiple Quality Stream Playlist To Our Custom Playlist Var
                         playlist += streamurls[line] + '\n' + streamurls[(line + 1)] + '\n' + streamurls[(line + 2)]
+                        #URL was not found where we were expecting one (rare Twitch API bug?), lets use the raw playlist provided by the Twitch API (ignores quality preference)
+                        if 'http' not in playlist:
+                            playlist = '#EXTM3U\n\n'.join(streamurls)
+                            self.logger.info("URL error occurred (rare Twitch API bug?), using raw playlist from Twitch API (ignoring quality preference)")
             else:
                 #Preferred quality is unavailable so let's play the highest available quality
                 playlist += '\n'.join(streamurls)
