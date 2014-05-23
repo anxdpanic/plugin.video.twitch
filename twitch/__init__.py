@@ -223,7 +223,7 @@ class TwitchVideoResolver(object):
             #Initialize Var
             unrestrictedqualities = ''
             #Loop Through Multiple Quality Stream Playlist and Remove Any Restricted Qualities
-            for line in range(0, (len(streamurls)-1)):
+            for line in range(0, (len(streamurls))):
                 if 'EXT-X-TWITCH-RESTRICTED' not in streamurls[line]:
                     unrestrictedqualities += streamurls[line] + '\n'
                     
@@ -235,7 +235,7 @@ class TwitchVideoResolver(object):
             if quality[maxQuality] in unrestrictedqualities:
                 #Preferred quality is available
                 #Loop Through Multiple Quality Stream Playlist Until We Find Our Preferred Quality
-                for line in range(0, (len(streamurls)-1)):
+                for line in range(0, (len(streamurls))):
                     if quality[maxQuality] in streamurls[line]:
                         #Add Playlist Header
                         playlist = '#EXTM3U\n'
