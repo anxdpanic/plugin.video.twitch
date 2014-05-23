@@ -64,3 +64,5 @@ Added ability to play archived videos (past broadcasts) - thx to Kr0nZ
 - added detection of restricted qualities (addon will now load best quality available if preferred quality is restricted) - MrSprigster
 1.1.0
 - added 'thumbnail' argument to enable support for third party skins + changed games list icon source for improved icons - Liquex
+1.1.1
+- various bug fixes, code improvements
