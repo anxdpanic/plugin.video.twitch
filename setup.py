@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
     name='python-twitch',
     description='Python Module for interaction with twitch.tv',
-    version='0.1.6',
+    version='0.2.0',
     packages=['twitch'],
     license=open('LICENSE.txt').read(),
     long_description=open('README.md').read(),
