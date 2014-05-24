@@ -1,0 +1,11 @@
+#EXTM3U
+#EXT-X-TWITCH-INFO:NODE="video16.prg01",MANIFEST-NODE="video16.prg01",SERVER-TIME="1400927815.96",USER-IP="84.112.27.151",CLUSTER="prg01",MANIFEST-CLUSTER="prg01"
+#EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID="medium",NAME="Medium",AUTOSELECT=YES,DEFAULT=YES
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=928000,VIDEO="medium"
+http://video16.prg01.hls.twitch.tv/hls18/ongamenet_9656195424_98434331/medium/index-live.m3u8?token=id=6125541036366455728,bid=9656195424,exp=1401014215,node=video16-1.prg01.hls.justin.tv,nname=video16.prg01,fmt=medium&sig=f1f4f1ee9f9cf47c826ddc95ef1f60d9a2f6a2ce
+#EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID="low",NAME="Low",AUTOSELECT=YES,DEFAULT=YES
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=596000,VIDEO="low"
+http://video16.prg01.hls.twitch.tv/hls18/ongamenet_9656195424_98434331/low/index-live.m3u8?token=id=6125541036366455728,bid=9656195424,exp=1401014215,node=video16-1.prg01.hls.justin.tv,nname=video16.prg01,fmt=low&sig=754158e9e20ce4fcae5614a1f07d8b37dbc3e1a2
+#EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID="mobile",NAME="Mobile",AUTOSELECT=YES,DEFAULT=YES
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=164000,VIDEO="mobile"
+http://video16.prg01.hls.twitch.tv/hls18/ongamenet_9656195424_98434331/mobile/index-live.m3u8?token=id=6125541036366455728,bid=9656195424,exp=1401014215,node=video16-1.prg01.hls.justin.tv,nname=video16.prg01,fmt=mobile&sig=cadce653f0b6b663f2a25c4e946788a30f559447
