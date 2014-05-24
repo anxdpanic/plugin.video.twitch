@@ -16,4 +16,4 @@ Credit where credit is due. This is based on the twitch.tv plugin for xbmc avail
 
 Thanks to all the people who contributed to this project:
 
-ccaspers, CDehning, Giacom, grocal, KlingOne, kokarn, Kr0nZ, Liquex, MrSprigster, stuross
+ccaspers, CDehning, Giacom, grocal, KlingOne, kokarn, Kr0nZ, Liquex, MrSprigster, stuross, ingwinlu
