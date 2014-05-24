@@ -66,3 +66,5 @@ Added ability to play archived videos (past broadcasts) - thx to Kr0nZ
 - added 'thumbnail' argument to enable support for third party skins + changed games list icon source for improved icons - Liquex
 1.1.1
 - various bug fixes, code improvements
+1.1.2
+- major code optimisation to HLS playlist generation function - ingwinlu
