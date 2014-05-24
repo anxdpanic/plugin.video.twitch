@@ -199,65 +199,73 @@ class TwitchVideoResolver(object):
                 raise TwitchException(TwitchException.NO_STREAM_URL)
         else:
             raise TwitchException(TwitchException.STREAM_OFFLINE)
-
+    
+    #downloads Playlist from twitch and passes it to subfunction for custom playlist generation
     def saveHLSToPlaylist(self, channelName, maxQuality, fileName):
         #Get Access Token (not necessary at the moment but could come into effect at any time)
         tokenurl= Urls.CHANNEL_TOKEN.format(channelName)
         channeldata = self.scraper.getJson(tokenurl)
         channeltoken= channeldata['token']
         channelsig= channeldata['sig']
-
+        
         #Download Multiple Quality Stream Playlist
         data = self.scraper.downloadWebData(Urls.HLS_PLAYLIST.format(channelName,channelsig,channeltoken))
+        
+        playlist = self._saveHLSToPlaylist(data,maxQuality)
+        
+        #Write Custom Playlist
+        text_file = open(fileName, "w")
+        text_file.write(str(playlist))
+        text_file.close()
+        return
 
-        if "No Results" not in data:
-            #Split Into Multiple Lines
-            streamurls = data.split('\n')
-            #Initialize Custom Playlist Var
-            playlist=''
-            
-            #Define Qualities
-            quality = 'Source,High,Medium,Low'
-            quality = quality.split(',')
-            
-            #Initialize Var
-            unrestrictedqualities = ''
-            #Loop Through Multiple Quality Stream Playlist and Remove Any Restricted Qualities
-            for line in range(0, (len(streamurls))):
-                if 'EXT-X-TWITCH-RESTRICTED' not in streamurls[line]:
-                    unrestrictedqualities += streamurls[line] + '\n'
-                    
-            streamurls = unrestrictedqualities.split('\n')
-            
-            self.logger.info('search for quality: ' + quality[maxQuality])
-            
-            #Check to see if our preferred quality is available (not all qualities are available for none partnered streams)
-            if quality[maxQuality] in unrestrictedqualities:
-                #Preferred quality is available
-                #Loop Through Multiple Quality Stream Playlist Until We Find Our Preferred Quality
-                for line in range(0, (len(streamurls))):
-                    if quality[maxQuality] in streamurls[line]:
-                        #Add Playlist Header
-                        playlist = '#EXTM3U\n'
-                        #Add 3 Quality Specific Applicable Lines From Multiple Quality Stream Playlist To Our Custom Playlist Var
-                        playlist += streamurls[line] + '\n' + streamurls[(line + 1)] + '\n' + streamurls[(line + 2)]
-                        #URL was not found where we were expecting one (rare Twitch API bug?), lets use the raw playlist provided by the Twitch API (ignores quality preference)
-                        if 'http' not in playlist:
-                            playlist = '#EXTM3U\n\n'.join(streamurls)
-                            self.logger.info("URL error occurred (rare Twitch API bug?), using raw playlist from Twitch API (ignoring quality preference)")
-            else:
-                #Preferred quality is unavailable so let's play the highest available quality
-                playlist += '\n'.join(streamurls)
-                self.logger.info("prefered quality unavailable, using highest available quality")
-                
-            #Write Custom Playlist
-            text_file = open(fileName, "w")
-            text_file.write(str(playlist))
-            text_file.close()
-
-        else:
+    #split off from main function so we can feed custom data for test cases + speedtest
+    def _saveHLSToPlaylist(self, data, maxQuality):
+        #if channel is offline, quit here
+        if(data=="<p>No Results</p>"):
             raise TwitchException(TwitchException.STREAM_OFFLINE)
-
+        
+        quality = ['Source','High','Medium','Low','Mobile'] # Define Qualities
+        if(maxQuality>=len(quality)): #check if maxQuality is supported
+            raise TwitchException()
+        
+        lines = data.split('\n') # split into lines
+        
+        playlist = lines[:2] # take first two lines into playlist
+        qualities = [None] * len(quality) # create quality based None array
+        
+        lines_iterator = iter(lines[2:]) #start iterator after the first two lines
+        for line in lines_iterator: # start after second line
+            # if line contains 'EXT-X-TWITCH-RESTRICTED' drop the line
+            if 'EXT-X-TWITCH-RESTRICTED' in line:
+                continue
+            
+            def concat_next_3_lines(): # helper function for concatination
+                return '\n'.join([line,next(lines_iterator),next(lines_iterator)])
+                
+            #if a line with quality is detected, put it into qualities array
+            if quality[0] in line:
+                qualities[0] = concat_next_3_lines()
+            elif quality[1] in line:
+                qualities[1] = concat_next_3_lines()
+            elif quality[2] in line:
+                qualities[2] = concat_next_3_lines()
+            elif quality[3] in line:
+                qualities[3] = concat_next_3_lines()
+            elif quality[4] in line:
+                qualities[4] = concat_next_3_lines()
+            else:
+                pass # drop other lines
+        
+        if qualities[maxQuality]: # prefered quality is not None -> available
+            playlist.append(qualities[maxQuality])
+        else: #prefered quality is not available, append all qualities that are not None, could be changed to respect maxQuality
+            for q in qualities:
+                if q is not None:
+                    playlist.append(q)
+        
+        playlist = '\n'.join(playlist) + '\n'
+        return playlist
 
     def _getSwfUrl(self, channelName):
         url = Urls.TWITCH_SWF + channelName
