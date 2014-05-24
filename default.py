@@ -223,7 +223,7 @@ def getUserName():
 
 def getVideoQuality():
     chosenQuality = PLUGIN.get_setting('video', unicode)
-    qualities = {'0': 0, '1': 1, '2': 2, '3': 3}
+    qualities = {'0': 0, '1': 1, '2': 2, '3': 3, '4' : 4}
     return qualities.get(chosenQuality, sys.maxint)
 
 
