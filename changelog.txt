@@ -69,4 +69,6 @@ Added ability to play archived videos (past broadcasts) - thx to Kr0nZ
 1.1.2
 - major code optimisation to HLS playlist generation function - ingwinlu
 1.1.3
-- added 'mobile (226p)' quality option
+- added 'mobile (226p)' quality option - thx mCzolko
+1.1.4
+- added Czech language option - 
