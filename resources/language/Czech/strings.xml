@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <!-- main menu -->
   <string id="30001">Hry</string>
@@ -7,6 +7,7 @@
   <string id="30004">Nastavení</string>
   <string id="30005">Nejlepší streamy</string>
   <string id="30006">Týmy</string>
+  <string id="30008">Kanály</string>
   
   <!--search -->
   <string id="30007">Hledat kanál</string>
