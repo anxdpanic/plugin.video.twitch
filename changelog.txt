@@ -72,3 +72,5 @@ Added ability to play archived videos (past broadcasts) - thx to Kr0nZ
 - added 'mobile (226p)' quality option - 
 1.1.4
 - added Czech language option - thx mCzolko
+1.1.5
+- Add listing streams by Channels. - Thanks ha107642
