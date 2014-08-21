@@ -65,7 +65,18 @@ class TestResolver(unittest.TestCase):
         data=''
         with open (self.__playlist, "r") as playlist:
             data=playlist.read()
-        self.assertIn('http://',data);
+        self.assertIn('http://',data)
+        
+    def test_get_channels(self):
+        tTv = TwitchTV(logging)
+        channels = tTv.getChannels()
+        channels = channels[0]['channel']['name']
+        logging.debug("found channel: " + channels)
+        self.resolver.saveHLSToPlaylist(channels, 0, self.__playlist)
+        data=''
+        with open (self.__playlist, "r") as playlist:
+            data=playlist.read()
+        self.assertIn('http://',data)
         
     def test_playlist_playlist_1_quality_0(self, do_print=False):
         custom_playlist = self.resolver._saveHLSToPlaylist(self.__preloaded_1_data,0)
