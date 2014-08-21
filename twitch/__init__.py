@@ -78,23 +78,23 @@ class TwitchTV(object):
         url = ''.join([Urls.STREAMS, Keys.FEATURED])
         return self._fetchItems(url, Keys.FEATURED)
 
-    def getGames(self, offset=10, limit=10):
+    def getGames(self, offset=0, limit=10):
         options = Urls.OPTIONS_OFFSET_LIMIT.format(offset, limit)
         url = ''.join([Urls.GAMES, Keys.TOP, options])
         return self._fetchItems(url, Keys.TOP)
 
-    def getChannels(self, offset=10, limit=10):
+    def getChannels(self, offset=0, limit=10):
         options = Urls.OPTIONS_OFFSET_LIMIT.format(offset, limit)
         url = ''.join([Urls.STREAMS, options])
         return self._fetchItems(url, Keys.STREAMS)
 
-    def getGameStreams(self, gameName, offset=10, limit=10):
+    def getGameStreams(self, gameName, offset=0, limit=10):
         quotedName = quote_plus(gameName)
         options = Urls.OPTIONS_OFFSET_LIMIT_GAME.format(offset, limit, quotedName)
         url = ''.join([Urls.BASE, Keys.STREAMS, options])
         return self._fetchItems(url, Keys.STREAMS)
 
-    def searchStreams(self, query, offset=10, limit=10):
+    def searchStreams(self, query, offset=0, limit=10):
         quotedQuery = quote_plus(query)
         options = Urls.OPTIONS_OFFSET_LIMIT_QUERY.format(offset, limit, quotedQuery)
         url = ''.join([Urls.SEARCH, Keys.STREAMS, options])
