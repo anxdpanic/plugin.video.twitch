@@ -30,4 +30,4 @@ Credit where credit is due.
 
 Thanks to all the people who contributed to this project:
 
-ccaspers, CDehning, Giacom, grocal, KlingOne, kokarn, Kr0nZ, Liquex, MrSprigster, stuross, ingwinlu
+ccaspers, CDehning, Giacom, grocal, KlingOne, kokarn, Kr0nZ, Liquex, MrSprigster, stuross, ingwinlu, mCzolko, ha107642, G4RL1N
