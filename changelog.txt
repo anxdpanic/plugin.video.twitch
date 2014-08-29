@@ -74,3 +74,5 @@ Added ability to play archived videos (past broadcasts) - thx to Kr0nZ
 - added Czech language option - thx mCzolko
 1.1.5
 - Add listing streams by Channels. - Thanks ha107642
+1.1.6
+- Add Spanish Language - Thanks to G4RL1N
