@@ -145,8 +145,9 @@ def channelVideosList(name,index,past):
 @PLUGIN.route('/playVideo/<id>/')
 @managedTwitchExceptions
 def playVideo(id):
-    
-    playList = TWITCHTV.getVideoChunksPlaylist(id)
+    #Get Required Quality From Settings
+    videoQuality = getVideoQuality()
+    playList = TWITCHTV.getVideoChunksPlaylist(id,videoQuality)
     
     # Doesn't fullscreen video, might be because of xbmcswift
     #xbmc.Player().play(playlist) 
