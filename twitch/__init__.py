@@ -125,28 +125,6 @@ class TwitchTV(object):
         url = Urls.VIDEO_INFO.format(id)
         return self._fetchItems(url, 'title')
         
-    '''
-    needs to be rewritten to return a python list instead of a xbmc playlist
-    def getVideoChunksPlaylist(self, id):
-        vidChunks = self.getVideoChunks(id)
-        chunks = vidChunks['chunks']['live']
-        title = self.getVideoTitle(id)
-        itemTitle = '%s - Part {0} of %s' % (title, len(chunks))
-        
-        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-        playlist.clear()
-        
-        # For some reason first item is skipped, so added a dummy first item to fix
-        # theres probably a better way
-        playlist.add('', xbmcgui.ListItem('', thumbnailImage=vidChunks['preview']))
-        curN = 0
-        for chunk in chunks:
-            curN += 1
-            playlist.add(chunk['url'], xbmcgui.ListItem(itemTitle.format(curN), thumbnailImage=vidChunks['preview']))
-            
-        return playlist
-    '''
-        
     def getFollowingChannelNames(self, username):
         quotedUsername = quote_plus(username)
         url = Urls.FOLLOWED_CHANNELS.format(quotedUsername)
