@@ -135,6 +135,14 @@ class TestResolver(unittest.TestCase):
         print('\nSpeedtest Results: ' + repr(result) + 's, that is ' + repr(result/loops) + 's per loop')
         
         
+    def test_unavailable_channel(self):
+        tTv = TwitchTV(logging)
+        featured = tTv.getFeaturedStream()
+        featured = featured[0]['stream']['channel']['name'] + "13456789152318561"
+        logging.debug("testing non available stream: " + featured)
+        with self.assertRaises(TwitchException) as context:
+            self.resolver.saveHLSToPlaylist(featured, 0, self.__playlist)
+        self.assertEqual(context.exception.code, TwitchException.HTTP_ERROR)
         
     def suite(self):
         testSuite = unittest.TestSuite()
