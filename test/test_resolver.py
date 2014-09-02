@@ -123,7 +123,6 @@ class TestResolver(unittest.TestCase):
             print('---------------------------------')
         self.assertEqual(self.__result_restricted_4_data,custom_playlist)
         
-        
     def test_speed_of_playlist_generator(self):
         #Speedtest Results: 3.674703420998412, on rpi at start
         #Speedtest Results: 1.4243742010003189s, that is 0.0014243742010003188s per loop at 13:17
@@ -134,7 +133,6 @@ class TestResolver(unittest.TestCase):
         result = timeit.timeit(lambda: self.test_playlist_playlist_1_quality_0(do_print=False), number=loops)
         print('\nSpeedtest Results: ' + repr(result) + 's, that is ' + repr(result/loops) + 's per loop')
         
-        
     def test_unavailable_channel(self):
         tTv = TwitchTV(logging)
         featured = tTv.getFeaturedStream()
@@ -144,7 +142,6 @@ class TestResolver(unittest.TestCase):
             self.resolver.saveHLSToPlaylist(featured, 0, self.__playlist)
         self.assertEqual(context.exception.code, TwitchException.HTTP_ERROR)
         
-        
     def test_offline_channel(self):
         offlinechannel = "winlu"
         logging.debug("testing offline stream: " + offlinechannel)
@@ -152,6 +149,42 @@ class TestResolver(unittest.TestCase):
             self.resolver.saveHLSToPlaylist(offlinechannel, 0, self.__playlist)
         self.assertEqual(context.exception.code, TwitchException.STREAM_OFFLINE)
         
+    def test_get_games_streams(self):
+        tTv = TwitchTV(logging)
+        result = tTv.getGames(offset=0, limit=10)
+        channels = tTv.getGameStreams(result[0]['game']['name'], offset=0, limit=10)
+        self.resolver.saveHLSToPlaylist(channels[0]['channel']['name'], 0, self.__playlist)
+        data=''
+        with open (self.__playlist, "r") as playlist:
+            data=playlist.read()
+        self.assertIn('http://',data)
+    
+    def test_get_teams_streams(self):#define fail state
+        tTv = TwitchTV(logging)
+        teams = tTv.getTeams(index=0)
+        team = teams[0]['name']
+        teamstreams = tTv.getTeamStreams(team)
+    
+    def test_search_streams(self):
+        tTv = TwitchTV(logging)
+        featured = tTv.getFeaturedStream()
+        featured = featured[0]['stream']['channel']['name']
+        result = []
+        result = tTv.searchStreams(featured,offset=0, limit=10)
+        self.assertNotEqual([],result)
+    
+    def test_following_channels(self):
+        tTv = TwitchTV(logging)
+        following = []
+        following = tTv.getFollowingStreams("winlu")
+        self.assertNotEqual([],following)
+    
+    def test_following_videos(self):
+        tTv = TwitchTV(logging)
+        channelname = "Ellohime"
+        following = tTv.getFollowerVideos(channelname, offset=0, past=True)
+        self.assertTrue(following['_total'] > 0,"total is not bigger then 0")
+    
     def suite(self):
         testSuite = unittest.TestSuite()
         testSuite.addTest(unittest.makeSuite(TestResolver))
