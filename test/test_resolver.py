@@ -144,6 +144,14 @@ class TestResolver(unittest.TestCase):
             self.resolver.saveHLSToPlaylist(featured, 0, self.__playlist)
         self.assertEqual(context.exception.code, TwitchException.HTTP_ERROR)
         
+        
+    def test_offline_channel(self):
+        offlinechannel = "winlu"
+        logging.debug("testing offline stream: " + offlinechannel)
+        with self.assertRaises(TwitchException) as context:
+            self.resolver.saveHLSToPlaylist(offlinechannel, 0, self.__playlist)
+        self.assertEqual(context.exception.code, TwitchException.STREAM_OFFLINE)
+        
     def suite(self):
         testSuite = unittest.TestSuite()
         testSuite.addTest(unittest.makeSuite(TestResolver))
