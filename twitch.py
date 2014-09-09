@@ -127,9 +127,16 @@ class TwitchTV(object):
         return self._fetchItems(url, 'title')
         
     
-    def getVideoChunksPlaylist(self, id):
+    def getVideoChunksPlaylist(self, id, maxQuality):
         vidChunks = self.getVideoChunks(id)
-        chunks = vidChunks['chunks']['live']
+        
+        chunks = []
+        if vidChunks['chunks'].get(Keys.QUALITY_LIST_VIDEO[maxQuality]):
+            # prefered quality is not None -> available
+            chunks = vidChunks['chunks'][Keys.QUALITY_LIST_VIDEO[maxQuality]]
+        else: #prefered quality is not available TODO best match
+            chunks = vidChunks['chunks'][Keys.QUALITY_LIST_VIDEO[0]]
+        
         title = self.getVideoTitle(id)
         itemTitle = '%s - Part {0} of %s' % (title, len(chunks))
         
@@ -170,7 +177,7 @@ class TwitchTV(object):
     def _fetchItems(self, url, key):
         items = self.scraper.getJson(url)
         return items[key] if items else []
-
+        
 
 class TwitchVideoResolver(object):
     '''
@@ -229,14 +236,13 @@ class TwitchVideoResolver(object):
         if(data=="<p>No Results</p>"):
             raise TwitchException(TwitchException.STREAM_OFFLINE)
         
-        quality = ['Source','High','Medium','Low','Mobile'] # Define Qualities
-        if(maxQuality>=len(quality)): #check if maxQuality is supported
+        if(maxQuality>=len(Keys.QUALITY_LIST_STREAM)): #check if maxQuality is supported
             raise TwitchException()
         
         lines = data.split('\n') # split into lines
         
         playlist = lines[:2] # take first two lines into playlist
-        qualities = [None] * len(quality) # create quality based None array
+        qualities = [None] * len(Keys.QUALITY_LIST_STREAM) # create quality based None array
         
         lines_iterator = iter(lines[2:]) #start iterator after the first two lines
         for line in lines_iterator: # start after second line
@@ -248,15 +254,15 @@ class TwitchVideoResolver(object):
                 return '\n'.join([line,next(lines_iterator),next(lines_iterator)])
                 
             #if a line with quality is detected, put it into qualities array
-            if quality[0] in line:
+            if Keys.QUALITY_LIST_STREAM[0] in line:
                 qualities[0] = concat_next_3_lines()
-            elif quality[1] in line:
+            elif Keys.QUALITY_LIST_STREAM[1] in line:
                 qualities[1] = concat_next_3_lines()
-            elif quality[2] in line:
+            elif Keys.QUALITY_LIST_STREAM[2] in line:
                 qualities[2] = concat_next_3_lines()
-            elif quality[3] in line:
+            elif Keys.QUALITY_LIST_STREAM[3] in line:
                 qualities[3] = concat_next_3_lines()
-            elif quality[4] in line:
+            elif Keys.QUALITY_LIST_STREAM[4] in line:
                 qualities[4] = concat_next_3_lines()
             else:
                 pass # drop other lines
@@ -310,7 +316,7 @@ class TwitchVideoResolver(object):
         return {Keys.QUALITY: quality,
                 Keys.BITRATE: bitrate,
                 Keys.RTMP_URL: Urls.FORMAT_FOR_RTMP.format(**streamVars)}
-
+    
     def _bestMatchForChosenQuality(self, streams, maxQuality):
         # sorting on resolution, then bitrate, both ascending 
         streams.sort(key=lambda t: (t[Keys.QUALITY], t[Keys.BITRATE]))
@@ -363,6 +369,9 @@ class Keys(object):
     VIEWERS = 'viewers'
     PREVIEW = 'preview'
     TITLE = 'title'
+    QUALITY_LIST_STREAM = ['Source', "720p", "480p", "360p", "226p"]
+    QUALITY_LIST_VIDEO = ['live', "720p", "480p", "360p", "226p"]
+
 
 
 class Patterns(object):
