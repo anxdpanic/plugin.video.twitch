@@ -194,6 +194,8 @@ class TwitchVideoResolver(object):
         #Download Multiple Quality Stream Playlist
         data = self.scraper.downloadWebData(Urls.HLS_PLAYLIST.format(channelName,channelsig,channeltoken))
         
+        #print(data)
+        
         playlist = self._saveHLSToPlaylist(data,maxQuality)
         
         #Write Custom Playlist
@@ -208,14 +210,13 @@ class TwitchVideoResolver(object):
         if(data=="<p>No Results</p>"):
             raise TwitchException(TwitchException.STREAM_OFFLINE)
         
-        quality = ['Source','High','Medium','Low','Mobile'] # Define Qualities
-        if(maxQuality>=len(quality)): #check if maxQuality is supported
+        if(maxQuality>=len(Keys.QUALITY_LIST_STREAM)): #check if maxQuality is supported
             raise TwitchException()
         
         lines = data.split('\n') # split into lines
         
         playlist = lines[:2] # take first two lines into playlist
-        qualities = [None] * len(quality) # create quality based None array
+        qualities = [None] * len(Keys.QUALITY_LIST_STREAM) # create quality based None array
         
         lines_iterator = iter(lines[2:]) #start iterator after the first two lines
         for line in lines_iterator: # start after second line
@@ -227,20 +228,20 @@ class TwitchVideoResolver(object):
                 return '\n'.join([line,next(lines_iterator),next(lines_iterator)])
                 
             #if a line with quality is detected, put it into qualities array
-            if quality[0] in line:
+            if Keys.QUALITY_LIST_STREAM[0] in line:
                 qualities[0] = concat_next_3_lines()
-            elif quality[1] in line:
+            elif Keys.QUALITY_LIST_STREAM[1] in line:
                 qualities[1] = concat_next_3_lines()
-            elif quality[2] in line:
+            elif Keys.QUALITY_LIST_STREAM[2] in line:
                 qualities[2] = concat_next_3_lines()
-            elif quality[3] in line:
+            elif Keys.QUALITY_LIST_STREAM[3] in line:
                 qualities[3] = concat_next_3_lines()
-            elif quality[4] in line:
+            elif Keys.QUALITY_LIST_STREAM[4] in line:
                 qualities[4] = concat_next_3_lines()
             else:
                 pass # drop other lines
         
-        bestmatch = 4 #start with worst quality and improve
+        bestmatch = len(Keys.QUALITY_LIST_STREAM) - 1 #start with worst quality and improve
         if qualities[maxQuality]: # prefered quality is not None -> available
             bestmatch = maxQuality
         else: #prefered quality is not available, choose best fit, TODO refactor all quality queries
@@ -344,6 +345,8 @@ class Keys(object):
     PREVIEW = 'preview'
     TITLE = 'title'
 
+    QUALITY_LIST_STREAM = ['Source', "High", "Medium", "Low", "Mobile"]
+    QUALITY_LIST_VIDEO = ['live', "720p", "480p", "360p", "226p"]
 
 class Patterns(object):
     '''
