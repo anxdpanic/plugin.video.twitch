@@ -38,9 +38,13 @@
 <string id="30047">Espectadores - Streamer - Título del Stream</string>
 <string id="30048">Título del Stream</string>
 <string id="30049">Streamer</string>
+<string id="30051">Streamer - Game Title - Stream Title</string>
 <string id="30050">Nombre de usuario</string>
 <!--title-->
 <string id="30060">Streamer sin nombre</string>
 <string id="30061">Stream sin título</string>
 <string id="30062">Número desconocido de espectadores</string>
+<string id="30064">Unknown Game</string>
+
+<string id="30065">Truncate displayed titles</string>
 </strings>

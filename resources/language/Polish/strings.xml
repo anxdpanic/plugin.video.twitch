@@ -15,8 +15,8 @@
   <!--general --> 
   <string id="30010">TwitchTV</string>
   <string id="30011">następne...</string>
-  <string id="30012">-- Currently Live Streams --</string>
-  <string id="30013">-- Followed Channels --</string>
+  <string id="30012">-- Kanały na żywo --</string>
+  <string id="30013">-- Obserwowane kanały --</string>
 
    <!--notifications --> 
   <string id="30020">Błąd HTTP</string>
@@ -42,6 +42,15 @@
   <string id="30047">Liczba oglądających - Kanał - Tytuł</string>
   <string id="30048">Tytuł</string>
   <string id="30049">Kanał</string>
+  <string id="30051">Kanał - Gra - Tytuł</string>
   
   <string id="30050">Użytkownik</string>
+
+  <string id="30060">Kanał bez nazwy</string>
+  <string id="30061">Kanał bez tytułu</string>
+  <string id="30062">Nieznana liczba oglądających</string>
+  <string id="30064">Unknown Game</string>
+
+  <string id="30065">Skracaj za długie tytuły</string>
+
 </strings>
