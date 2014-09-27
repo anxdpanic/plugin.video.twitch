@@ -182,7 +182,7 @@ class TwitchTV(object):
 
     def _filterChannelNames(self, channels):
         tmp = [{Keys.DISPLAY_NAME : item[Keys.CHANNEL][Keys.DISPLAY_NAME], Keys.NAME : item[Keys.CHANNEL][Keys.NAME], Keys.LOGO : item[Keys.CHANNEL][Keys.LOGO]} for item in channels]
-        return sorted(tmp, key=lambda k: k[Keys.DISPLAY_NAME]) 
+        return sorted(tmp, key=lambda k: k[Keys.DISPLAY_NAME].lower()) 
 
     def _fetchItems(self, url, key):
         items = self.scraper.getJson(url)
