@@ -154,9 +154,19 @@ class TwitchTV(object):
         return playlist
         
     def getFollowingChannelNames(self, username):
+        acc = []
+        limit = 100
+        offset = 0
         quotedUsername = quote_plus(username)
-        url = Urls.FOLLOWED_CHANNELS.format(quotedUsername)
-        return self._fetchItems(url, Keys.FOLLOWS)
+        baseurl = Urls.FOLLOWED_CHANNELS.format(quotedUsername)
+        while True:
+            url = baseurl + Urls.OPTIONS_OFFSET_LIMIT.format(offset, limit)
+            temp = self._fetchItems(url, Keys.FOLLOWS)
+            if (len(temp) == 0):
+                break;
+            acc = acc + temp
+            offset = offset + limit
+        return acc
 
     def getTeams(self, index):
         return self._fetchItems(Urls.TEAMS.format(str(index * 25)), Keys.TEAMS)
@@ -395,7 +405,7 @@ class Urls(object):
     TWITCH_TV = 'http://www.twitch.tv/'
 
     BASE = 'https://api.twitch.tv/kraken/'
-    FOLLOWED_CHANNELS = BASE + 'users/{0}/follows/channels?limit=100'
+    FOLLOWED_CHANNELS = BASE + 'users/{0}/follows/channels'
     GAMES = BASE + 'games/'
     STREAMS = BASE + 'streams/'
     SEARCH = BASE + 'search/'
