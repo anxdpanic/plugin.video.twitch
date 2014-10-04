@@ -43,6 +43,7 @@
   <string id="30047">Zuschauerzahl - Streamer - Status</string>
   <string id="30048">Status</string>
   <string id="30049">Streamer</string>
+  <string id="30051">Streamer - Game Title - Stream Title</string>
 
   <string id="30050">Benutzername</string>
   
@@ -50,4 +51,8 @@
   <string id="30060">Unbenannter Streamer</string>
   <string id="30061">Unbenannter Stream</string>
   <string id="30062">Unbekannte Zuschauerzahl</string>
+  <string id="30064">Unbekannt Game</string>
+
+  <string id="30065">Abschneiden angezeigt Titel</string>
+
 </strings>
