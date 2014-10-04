@@ -76,3 +76,6 @@ Added ability to play archived videos (past broadcasts) - thx to Kr0nZ
 - Add listing streams by Channels. - Thanks ha107642
 1.1.6
 - Add Spanish Language - Thanks to G4RL1N
+1.1.7
+- Various UI and code optimisations + updated translations Thanks to ingwinlu, grocal, kokarn
+
