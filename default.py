@@ -147,7 +147,7 @@ def channelVideosList(name,index,past):
 def playVideo(id):
     #Get Required Quality From Settings
     videoQuality = getVideoQuality()
-    playList = TWITCHTV.getVideoChunksPlaylist(id,videoQuality)
+    playlist = TWITCHTV.getVideoChunksPlaylist(id,videoQuality)
     
     # Doesn't fullscreen video, might be because of xbmcswift
     #xbmc.Player().play(playlist) 
@@ -155,6 +155,7 @@ def playVideo(id):
     try:
         # Gotta wrap this in a try/except, xbmcswift causes an error when passing a xbmc.PlayList()
         # but still plays the playlist properly
+        xbmc.Player().play(playlist)
         PLUGIN.set_resolved_url(playlist)
     except:
         pass
