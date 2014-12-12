@@ -230,22 +230,21 @@ class TwitchVideoResolver(object):
         channelsig= channeldata['sig']
         
         #Download Multiple Quality Stream Playlist
-        data = self.scraper.downloadWebData(Urls.HLS_PLAYLIST.format(channelName,channelsig,channeltoken))
-        
-        playlist = self._saveHLSToPlaylist(data,maxQuality)
-        
-        #Write Custom Playlist
-        text_file = open(fileName, "w")
-        text_file.write(str(playlist))
-        text_file.close()
+        try:
+            hls_url = Urls.HLS_PLAYLIST.format(channelName,channelsig,channeltoken)
+            data = self.scraper.downloadWebData(hls_url)
+            playlist = self._saveHLSToPlaylist(data,maxQuality)
+
+            #Write Custom Playlist
+            with open(fileName, "w") as text_file:
+                text_file.write(str(playlist))
+        except TwitchException:
+                #HTTP Error in download web data -> stream is offline
+                raise TwitchException(TwitchException.STREAM_OFFLINE)
         return
 
     #split off from main function so we can feed custom data for test cases + speedtest
     def _saveHLSToPlaylist(self, data, maxQuality):
-        #if channel is offline, quit here
-        if(data=="<p>No Results</p>"):
-            raise TwitchException(TwitchException.STREAM_OFFLINE)
-        
         if(maxQuality>=len(Keys.QUALITY_LIST_STREAM)): #check if maxQuality is supported
             raise TwitchException()
         
@@ -421,7 +420,7 @@ class Urls(object):
     TWITCH_API = "http://usher.justin.tv/find/{channel}.json?type=any&group=&channel_subscription="
     TWITCH_SWF = "http://www.justin.tv/widgets/live_embed_player.swf?channel="
     FORMAT_FOR_RTMP = "{rtmp}/{playpath} swfUrl={swfUrl} swfVfy=1 {token} live=1"  # Pageurl missing here
-    HLS_PLAYLIST = 'http://usher.twitch.tv/select/{0}.m3u8?nauthsig={1}&nauth={2}&allow_source=true'
+    HLS_PLAYLIST = 'http://usher.twitch.tv/api/channel/hls/{0}.m3u8?sig={1}&token={2}&allow_source=true'
     
     CHANNEL_VIDEOS = 'https://api.twitch.tv/kraken/channels/{0}/videos?limit=8&offset={1}&broadcasts={2}'
     VIDEO_CHUNKS = 'https://api.twitch.tv/api/videos/{0}'
