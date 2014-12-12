@@ -202,24 +202,21 @@ class TwitchVideoResolver(object):
         channelsig= channeldata['sig']
         
         #Download Multiple Quality Stream Playlist
-        data = self.scraper.downloadWebData(Urls.HLS_PLAYLIST.format(channelName,channelsig,channeltoken))
-        
-        #print(data)
-        
-        playlist = self._saveHLSToPlaylist(data,maxQuality)
-        
-        #Write Custom Playlist
-        text_file = open(fileName, "w")
-        text_file.write(str(playlist))
-        text_file.close()
+        try:
+            hls_url = Urls.HLS_PLAYLIST.format(channelName,channelsig,channeltoken)
+            data = self.scraper.downloadWebData(hls_url)
+            playlist = self._saveHLSToPlaylist(data,maxQuality)
+
+            #Write Custom Playlist
+            with open(fileName, "w") as text_file:
+                text_file.write(str(playlist))
+        except TwitchException:
+                #HTTP Error in download web data -> stream is offline
+                raise TwitchException(TwitchException.STREAM_OFFLINE)
         return
 
     #split off from main function so we can feed custom data for test cases + speedtest
     def _saveHLSToPlaylist(self, data, maxQuality):
-        #if channel is offline, quit here
-        if(data=="<p>No Results</p>"):
-            raise TwitchException(TwitchException.STREAM_OFFLINE)
-        
         if(maxQuality>=len(Keys.QUALITY_LIST_STREAM)): #check if maxQuality is supported
             raise TwitchException()
         
