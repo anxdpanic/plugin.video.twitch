@@ -421,7 +421,7 @@ class Urls(object):
     TWITCH_API = "http://usher.justin.tv/find/{channel}.json?type=any&group=&channel_subscription="
     TWITCH_SWF = "http://www.justin.tv/widgets/live_embed_player.swf?channel="
     FORMAT_FOR_RTMP = "{rtmp}/{playpath} swfUrl={swfUrl} swfVfy=1 {token} live=1"  # Pageurl missing here
-    HLS_PLAYLIST = 'http://usher.twitch.tv/select/{0}.m3u8?nauthsig={1}&nauth={2}&allow_source=true'
+    HLS_PLAYLIST = 'http://usher.twitch.tv/api/channel/hls/{0}.m3u8?sig={1}&token={2}&allow_source=true'
     
     CHANNEL_VIDEOS = 'https://api.twitch.tv/kraken/channels/{0}/videos?limit=8&offset={1}&broadcasts={2}'
     VIDEO_CHUNKS = 'https://api.twitch.tv/api/videos/{0}'
