@@ -78,4 +78,6 @@ Added ability to play archived videos (past broadcasts) - thx to Kr0nZ
 - Add Spanish Language - Thanks to G4RL1N
 1.1.7
 - Various UI and code optimisations + updated translations Thanks to ingwinlu, grocal, kokarn
+1.1.8
+- Fixed unplayable streams issue due to Twich updates and various UI and error handling Improvements, Thanks to spiffomatic64, ntfwc, ingwinlu
 
