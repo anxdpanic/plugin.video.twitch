@@ -155,7 +155,6 @@ def playVideo(id):
     try:
         # Gotta wrap this in a try/except, xbmcswift causes an error when passing a xbmc.PlayList()
         # but still plays the playlist properly
-        xbmc.Player().play(playlist)
         PLUGIN.set_resolved_url(playlist)
     except:
         pass
