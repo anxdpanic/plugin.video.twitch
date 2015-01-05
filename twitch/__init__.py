@@ -253,7 +253,7 @@ class TwitchVideoResolver(object):
             bestmatch = maxQuality
         else: #prefered quality is not available, choose best fit, TODO refactor all quality queries
             for i,q in enumerate(qualities):
-                if q is not None and i>maxQuality:
+                if q is not None:
                     bestmatch = i
                     break
         playlist.append(qualities[bestmatch])
