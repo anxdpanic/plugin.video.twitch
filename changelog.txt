@@ -82,3 +82,5 @@
 - fixed unplayable streams issue due to Twich updates and various UI and error handling improvements, thx spiffomatic64, ntfwc, ingwinlu
 1.1.9
 - fixed bug: past broadcasts were starting at second playlist item
+1.2.0
+- fixed bug: removed error in code which prevented falling back to best available quality when preferred quality was not available
