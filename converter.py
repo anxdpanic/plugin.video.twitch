@@ -15,7 +15,7 @@ class JsonListItemConverter(object):
                 'path': self.plugin.url_for('createListForGame',
                                             gameName=name, index='0'),
                 'icon': image,
-		'thumbnail': image
+                'thumbnail': image
                 }
 
     def convertTeamToListItem(self, team):
@@ -41,25 +41,25 @@ class JsonListItemConverter(object):
                 'path': self.plugin.url_for(endpoint='playLive', name=channelname),
                 'is_playable': True,
                 'icon': image,
-		'thumbnail': image
-		}
-                
+                'thumbnail': image
+                }
+
     def convertFollowersToListItem(self, follower):
         videobanner = follower.get(Keys.LOGO, '')
         return {'label': follower[Keys.DISPLAY_NAME],
                 'path': self.plugin.url_for(endpoint='channelVideos',
                                             name=follower[Keys.NAME]),
                 'icon': videobanner,
-		'thumbnail': videobanner 
+                'thumbnail': videobanner 
                 }
-                
+
     def convertVideoListToListItem(self,video):
         return {'label': video['title'],
                 'path': self.plugin.url_for(endpoint='playVideo',
                                             id=video['_id']),
                 'is_playable': True,
                 'icon': video.get(Keys.PREVIEW, ''),
-		'thumbnail': video.get(Keys.PREVIEW, '')
+                'thumbnail': video.get(Keys.PREVIEW, '')
                 }
 
     def convertStreamToListItem(self, stream):
@@ -71,8 +71,8 @@ class JsonListItemConverter(object):
                                             name=channel[Keys.NAME]),
                 'is_playable': True,
                 'icon': videobanner if videobanner else logo,
-		'thumbnail': videobanner if videobanner else logo
-        }
+                'thumbnail': videobanner if videobanner else logo
+                }
 
     def getTitleForStream(self, stream):
         titleValues = self.extractStreamTitleValues(stream)
