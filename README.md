@@ -3,17 +3,17 @@ python-twitch
 
 python-twitch is an python module for simple interaction with twitch.tv
 
-Git Version: https://github.com/ingwinlu/python-twitch
+* [github version]
+* [pypi version]
 
-pypi Version: https://pypi.python.org/pypi/python-twitch/
+##Installation
+`pip install python-twitch`
 
+##Usage
+Have a look at the [test](https://github.com/ingwinlu/python-twitch/tree/master/test) directory.
 
-----------------
+##Credits
+This library was based on the [twitch.tv plugin for xbmc](https://github.com/StateOfTheArt89/Twitch.tv-on-XBMC).
 
-Credit where credit is due. This is based on the twitch.tv plugin for xbmc available from https://github.com/StateOfTheArt89/Twitch.tv-on-XBMC
-
-----------------
-
-Thanks to all the people who contributed to this project:
-
-ccaspers, CDehning, Giacom, grocal, KlingOne, kokarn, Kr0nZ, Liquex, MrSprigster, stuross, ingwinlu
+[pypi version]: https://pypi.python.org/pypi/python-twitch/
+[github version]: https://github.com/ingwinlu/python-twitch/

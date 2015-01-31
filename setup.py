@@ -7,7 +7,6 @@ setup(
     version=VERSION,
     packages=['twitch'],
     license='GPLv3',
-    long_description=open('README.md').read(),
     author='winlu',
     author_email='derwinlu+python-twitch@gmail.com',
     url='https://pypi.python.org/pypi/python-twitch',

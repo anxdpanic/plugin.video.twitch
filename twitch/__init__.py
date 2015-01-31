@@ -1,5 +1,5 @@
 #-*- encoding: utf-8 -*-
-VERSION='0.3.2'
+VERSION='0.3.5'
 import sys
 try:
     from urllib.request import urlopen, Request
