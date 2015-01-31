@@ -149,26 +149,6 @@ class TwitchTV(object):
         url = Urls.TEAMSTREAM.format(quotedTeamName)
         return self._fetchItems(url, Keys.CHANNELS)
 
-    def _filterChannelNames(self, channels):
-        tmp = [{Keys.DISPLAY_NAME : item[Keys.CHANNEL][Keys.DISPLAY_NAME], Keys.NAME : item[Keys.CHANNEL][Keys.NAME], Keys.LOGO : item[Keys.CHANNEL][Keys.LOGO]} for item in channels]
-        return sorted(tmp, key=lambda k: k[Keys.DISPLAY_NAME]) 
-
-    def _fetchItems(self, url, key):
-        items = self.scraper.getJson(url)
-        return items[key] if items else []
-
-
-class TwitchVideoResolver(object):
-    '''
-    Resolves the RTMP-Link to a given Channelname
-    Uses Justin.TV API
-    '''
-
-    def __init__(self, logger):
-        object.__init__(self)
-        self.logger = logger
-        self.scraper = JSONScraper(logger)
-
     #downloads Playlist from twitch and passes it to subfunction for custom playlist generation
     def saveHLSToPlaylist(self, channelName, maxQuality, fileName):
         #Get Access Token (not necessary at the moment but could come into effect at any time)
@@ -235,6 +215,14 @@ class TwitchVideoResolver(object):
         playlist.append(qualities[bestmatch])
         playlist = '\n'.join(playlist) + '\n'
         return playlist
+
+    def _filterChannelNames(self, channels):
+        tmp = [{Keys.DISPLAY_NAME : item[Keys.CHANNEL][Keys.DISPLAY_NAME], Keys.NAME : item[Keys.CHANNEL][Keys.NAME], Keys.LOGO : item[Keys.CHANNEL][Keys.LOGO]} for item in channels]
+        return sorted(tmp, key=lambda k: k[Keys.DISPLAY_NAME]) 
+
+    def _fetchItems(self, url, key):
+        items = self.scraper.getJson(url)
+        return items[key] if items else []
 
 class Keys(object):
     '''

@@ -4,9 +4,9 @@ import logging
 import os
 import timeit
 
-class TestResolver(unittest.TestCase):
+class TestTwitchTV(unittest.TestCase):
     maxDiff = None
-    resolver = None
+    TwitchTV = None
     __playlist=os.path.expanduser('~/.playlist.m3u8')
     
     __preloaded_1 = './riotgamesoceania.m3u8'
@@ -32,7 +32,7 @@ class TestResolver(unittest.TestCase):
 
     def setUp(self):
         #setup resolver
-        self.resolver = TwitchVideoResolver(logging) 
+        self.twitch = TwitchTV(logging) 
         #load preloaded_1
         with open (self.__preloaded_1, "r") as file:
             self.__preloaded_1_data=file.read()
@@ -51,35 +51,33 @@ class TestResolver(unittest.TestCase):
             self.__result_restricted_4_data=file.read()
         
     def tearDown(self):
-        self.resolver = None
+        self.twitch = None
         if (os.path.isfile(self.__playlist)):
             os.remove(self.__playlist)
         
         
     def test_playlist(self):
-        tTv = TwitchTV(logging)
-        featured = tTv.getFeaturedStream()
+        featured = self.twitch.getFeaturedStream()
         featured = featured[0]['stream']['channel']['name']
         logging.debug("found featured stream: " + featured)
-        self.resolver.saveHLSToPlaylist(featured, 0, self.__playlist)
+        self.twitch.saveHLSToPlaylist(featured, 0, self.__playlist)
         data=''
         with open (self.__playlist, "r") as playlist:
             data=playlist.read()
         self.assertIn('http://',data)
         
     def test_get_channels(self):
-        tTv = TwitchTV(logging)
-        channels = tTv.getChannels()
+        channels = self.twitch.getChannels()
         channels = channels[0]['channel']['name']
         logging.debug("found channel: " + channels)
-        self.resolver.saveHLSToPlaylist(channels, 0, self.__playlist)
+        self.twitch.saveHLSToPlaylist(channels, 0, self.__playlist)
         data=''
         with open (self.__playlist, "r") as playlist:
             data=playlist.read()
         self.assertIn('http://',data)
         
     def test_playlist_playlist_1_quality_0(self, do_print=False):
-        custom_playlist = self.resolver._saveHLSToPlaylist(self.__preloaded_1_data,0)
+        custom_playlist = self.twitch._saveHLSToPlaylist(self.__preloaded_1_data,0)
         if(do_print):
             print()
             print('---------------------------------')
@@ -88,7 +86,7 @@ class TestResolver(unittest.TestCase):
         self.assertEqual(self.__result_1_0_data,custom_playlist)
             
     def test_playlist_playlist_1_quality_1(self, do_print=False):
-        custom_playlist = self.resolver._saveHLSToPlaylist(self.__preloaded_1_data,1)
+        custom_playlist = self.twitch._saveHLSToPlaylist(self.__preloaded_1_data,1)
         if(do_print):
             print()
             print('---------------------------------')
@@ -97,7 +95,7 @@ class TestResolver(unittest.TestCase):
         self.assertEqual(self.__result_1_1_data,custom_playlist)
         
     def test_playlist_playlist_restricted_0(self, do_print=False):
-        custom_playlist = self.resolver._saveHLSToPlaylist(self.__preloaded_restricted_data,0)
+        custom_playlist = self.twitch._saveHLSToPlaylist(self.__preloaded_restricted_data,0)
         if(do_print):
             print()
             print('---------------------------------')
@@ -106,7 +104,7 @@ class TestResolver(unittest.TestCase):
         self.assertEqual(self.__result_restricted_0_data,custom_playlist)
         
     def test_playlist_playlist_restricted_3(self, do_print=False):
-        custom_playlist = self.resolver._saveHLSToPlaylist(self.__preloaded_restricted_data,3)
+        custom_playlist = self.twitch._saveHLSToPlaylist(self.__preloaded_restricted_data,3)
         if(do_print):
             print()
             print('---------------------------------')
@@ -115,7 +113,7 @@ class TestResolver(unittest.TestCase):
         self.assertEqual(self.__result_restricted_3_data,custom_playlist)
         
     def test_playlist_playlist_restricted_4(self, do_print=False):
-        custom_playlist = self.resolver._saveHLSToPlaylist(self.__preloaded_restricted_data,4)
+        custom_playlist = self.twitch._saveHLSToPlaylist(self.__preloaded_restricted_data,4)
         if(do_print):
             print()
             print('---------------------------------')
@@ -134,55 +132,49 @@ class TestResolver(unittest.TestCase):
         print('\nSpeedtest Results: ' + repr(result) + 's, that is ' + repr(result/loops) + 's per loop')
         
     def test_unavailable_channel(self):
-        tTv = TwitchTV(logging)
-        featured = tTv.getFeaturedStream()
+        featured = self.twitch.getFeaturedStream()
         featured = featured[0]['stream']['channel']['name'] + "13456789152318561"
         logging.debug("testing non available stream: " + featured)
         with self.assertRaises(TwitchException) as context:
-            self.resolver.saveHLSToPlaylist(featured, 0, self.__playlist)
+            self.twitch.saveHLSToPlaylist(featured, 0, self.__playlist)
         self.assertEqual(context.exception.code, TwitchException.HTTP_ERROR)
         
     def test_offline_channel(self):
         offlinechannel = "winlu"
         logging.debug("testing offline stream: " + offlinechannel)
         with self.assertRaises(TwitchException) as context:
-            self.resolver.saveHLSToPlaylist(offlinechannel, 0, self.__playlist)
+            self.twitch.saveHLSToPlaylist(offlinechannel, 0, self.__playlist)
         self.assertEqual(context.exception.code, TwitchException.STREAM_OFFLINE)
         
     def test_get_games_streams(self):
-        tTv = TwitchTV(logging)
-        result = tTv.getGames(offset=0, limit=10)
-        channels = tTv.getGameStreams(result[0]['game']['name'], offset=0, limit=10)
-        self.resolver.saveHLSToPlaylist(channels[0]['channel']['name'], 0, self.__playlist)
+        result = self.twitch.getGames(offset=0, limit=10)
+        channels = self.twitch.getGameStreams(result[0]['game']['name'], offset=0, limit=10)
+        self.twitch.saveHLSToPlaylist(channels[0]['channel']['name'], 0, self.__playlist)
         data=''
         with open (self.__playlist, "r") as playlist:
             data=playlist.read()
         self.assertIn('http://',data)
     
     def test_get_teams_streams(self):#define fail state
-        tTv = TwitchTV(logging)
-        teams = tTv.getTeams(index=0)
+        teams = self.twitch.getTeams(index=0)
         team = teams[0]['name']
-        teamstreams = tTv.getTeamStreams(team)
+        teamstreams = self.twitch.getTeamStreams(team)
     
     def test_search_streams(self):
-        tTv = TwitchTV(logging)
-        featured = tTv.getFeaturedStream()
+        featured = self.twitch.getFeaturedStream()
         featured = featured[0]['stream']['channel']['name']
         result = []
-        result = tTv.searchStreams(featured,offset=0, limit=10)
+        result = self.twitch.searchStreams(featured,offset=0, limit=10)
         self.assertNotEqual([],result)
     
     def test_following_channels(self):
-        tTv = TwitchTV(logging)
         following = []
-        following = tTv.getFollowingStreams("winlu")
+        following = self.twitch.getFollowingStreams("winlu")
         self.assertNotEqual([],following)
     
     def test_following_videos(self):
-        tTv = TwitchTV(logging)
         channelname = "Ellohime"
-        following = tTv.getFollowerVideos(channelname, offset=0, past=True)
+        following = self.twitch.getFollowerVideos(channelname, offset=0, past=True)
         self.assertTrue(following['_total'] > 0,"total is not bigger then 0")
     
     def suite(self):
