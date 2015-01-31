@@ -1,12 +1,14 @@
 #-*- encoding: utf-8 -*-
-VERSION='0.3.2'
+VERSION='0.3.7'
+MAX_RETRIES=5
 import sys
 try:
     from urllib.request import urlopen, Request
     from urllib.parse import quote_plus
+    from urllib.error import URLError
 except ImportError:
     from urllib import quote_plus
-    from urllib2 import Request, urlopen
+    from urllib2 import Request, urlopen, URLError
 
 try:
     import json
@@ -20,7 +22,6 @@ class JSONScraper(object):
     def __init__(self, logger):
         object.__init__(self)
         self.logger = logger
-        
     '''
         Download Data from an url and returns it as a String
         @param url Url to download from (e.g. http://www.google.com)
@@ -29,17 +30,21 @@ class JSONScraper(object):
     '''
     def downloadWebData(self, url, headers=None):
         data = ""
-        try:
-            req = Request(url)
-            req.add_header(Keys.USER_AGENT, Keys.USER_AGENT_STRING)
-            response = urlopen(req)
-            
-            if sys.version_info < (3, 0):
-                data = response.read()
-            else:
-                data = response.readall().decode('utf-8')
-            response.close()
-        except:
+        for _ in range(MAX_RETRIES):
+            try:
+                req = Request(url)
+                req.add_header(Keys.USER_AGENT, Keys.USER_AGENT_STRING)
+                response = urlopen(req)
+                if sys.version_info < (3, 0):
+                    data = response.read()
+                else:
+                    data = response.readall().decode('utf-8')
+                response.close()
+                break
+            except Exception as err:
+                if not isinstance(err, URLError):
+                    raise # propagate non-URLError
+        else:
             raise TwitchException(TwitchException.HTTP_ERROR)
         return data
 
@@ -50,10 +55,7 @@ class JSONScraper(object):
         @returns JSON Object with data from URL
     '''
     def getJson(self, url, headers=None):
-        try:
-            jsonString = self.downloadWebData(url, headers)
-        except:
-            raise TwitchException(TwitchException.HTTP_ERROR)
+        jsonString = self.downloadWebData(url, headers)
         try:
             jsonDict = json.loads(jsonString)
             self.logger.debug(json.dumps(jsonDict, indent=4, sort_keys=True))
@@ -301,7 +303,7 @@ class Keys(object):
     TOTAL = '_total'
     USER_AGENT = 'User-Agent'
     USER_AGENT_STRING = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0'
-    VIDEOS = "videos"
+    VIDEOS = 'videos'
     VIDEO_BANNER = 'video_banner'
     VIDEO_HEIGHT = 'video_height'
     VIEWERS = 'viewers'
