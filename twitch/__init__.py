@@ -1,5 +1,5 @@
 #-*- encoding: utf-8 -*-
-VERSION='0.3.1'
+VERSION='0.3.2'
 import sys
 try:
     from urllib.request import urlopen, Request
@@ -199,17 +199,7 @@ class TwitchTV(object):
         playlistQualities = M3UPlaylist(playlistQualitiesData)
 
         vodUrl = playlistQualities.getQuality(maxQuality)
-        vodUrlBase = vodUrl[:-14]
-        vodUrlData = self.scraper.downloadWebData(vodUrl)
-
-        lines = vodUrlData.splitlines()
-        linesIterator = iter(lines)
-
-        for line in linesIterator:
-            if line.startswith('#EXTINF'):
-                segment = next(linesIterator)
-                segmentUrl = vodUrlBase + segment
-                playlist+=[(segmentUrl, ())]
+        playlist+=[(vodUrl, ())]
 
         return playlist
 
