@@ -1,6 +1,20 @@
 # -*- coding: utf-8 -*-
 from twitch import Keys
 import json
+import xbmcgui, xbmc
+
+class PlaylistConverter(object):
+    def convertToXBMCPlaylist(self, InputPlaylist):
+        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+        playlist.clear()
+        for (url, details) in InputPlaylist:
+            if(details == ()):
+                playlist.add(url)
+            else:
+                (name, preview) = details
+                playlist.add(url, xbmcgui.ListItem(name, thumbnailImage=preview))
+
+        return playlist
 
 class JsonListItemConverter(object):
 
