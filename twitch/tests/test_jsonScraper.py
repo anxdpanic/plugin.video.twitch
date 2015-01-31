@@ -14,17 +14,17 @@ class TestJsonScraper(unittest.TestCase):
 
     def setUp(self):
         self.scraper = JSONScraper(logging)
-        
+
     def tearDown(self):
         self.scraper = None
-        
-        
+
+
     def test_downloadWebData_fail_1(self):
-        with self.assertRaises(TwitchException):
+        with self.assertRaises(ValueError):
             self.scraper.downloadWebData(self.badurl1)
-            
+
     def test_downloadWebData_fail_2(self):
-        with self.assertRaises(TwitchException):
+        with self.assertRaises(ValueError):
             self.scraper.downloadWebData(self.badurl2)
             
     def test_downloadWebData_1(self):
@@ -35,18 +35,17 @@ class TestJsonScraper(unittest.TestCase):
             msg='Returned Object is not a string')
         
     def test_getJson_fail_1(self):
-        with self.assertRaises(TwitchException):
+        with self.assertRaises(ValueError):
             self.scraper.getJson(self.badurl1)
-            
+
     def test_getJson_fail_2(self):
-        with self.assertRaises(TwitchException):
+        with self.assertRaises(ValueError):
             self.scraper.getJson(self.badurl2)
-            
+
     def test_getJson_fail_3(self):
         with self.assertRaises(TwitchException):
             self.scraper.getJson(self.goodurl)
-            
-                
+
     def test_getJson_1(self):
             retJson=self.scraper.getJson(self.goodjsonurl)
             retJson2=self.scraper.getJson(self.goodjsonurlunsorted)
@@ -59,6 +58,4 @@ class TestJsonScraper(unittest.TestCase):
         testSuite = unittest.TestSuite()
         testSuite.addTest(unittest.makeSuite(TestJsonScraper))
         return testSuite
-        
-        
-        
+
