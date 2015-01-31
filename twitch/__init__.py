@@ -1,4 +1,5 @@
 #-*- encoding: utf-8 -*-
+VERSION='0.3.0'
 import sys
 try:
     from urllib.request import urlopen, Request
@@ -61,6 +62,49 @@ class JSONScraper(object):
         except:
             raise TwitchException(TwitchException.JSON_ERROR)
 
+class M3UPlaylist(object):
+    def __init__(self, input):
+        def parseQuality(ExtXMediaLine,ExtXStreamInfLine,Url):
+            namePosition = ExtXMediaLine.find('NAME')
+            if(namePosition==-1):
+                raise TwitchException()
+            qualityName = ''
+            namePosition+=6
+            for char in ExtXMediaLine[namePosition:]:
+                if(char=='"'):
+                    break
+                qualityName += char
+            return qualityName, Url
+
+        self.playlist = dict()
+        lines = input.splitlines()
+        linesIterator = iter(lines)
+        for line in linesIterator:
+            if(line.startswith('#EXT-X-MEDIA')):
+                quality, url = parseQuality(line, next(linesIterator), next(linesIterator))
+                self.playlist[quality] = url
+
+    #returns selected quality or best match if not available
+    def getQuality(self, QualityInt):
+        def isInPlaylist(QualityInt):
+            return Keys.QUALITY_LIST_STREAM[QualityInt] in self.playlist
+
+        if(isInPlaylist(QualityInt)):
+            #selected quality is available
+            return self.playlist[Keys.QUALITY_LIST_STREAM[QualityInt]]
+        else:
+            #not available, start with worst quality and improve
+            #break if better quality is not available
+            bestMatch = len(Keys.QUALITY_LIST_STREAM) - 1
+            for newMatch in range(bestMatch, -1, -1):
+                if(isInPlaylist(newMatch)):
+                    bestMatch = newMatch
+                else:
+                    break
+            return self.playlist[Keys.QUALITY_LIST_STREAM[bestMatch]]
+
+    def __str__(self):
+        return repr(self.playlist)
 
 class TwitchTV(object):
     '''
@@ -114,13 +158,69 @@ class TwitchTV(object):
         items = self.scraper.getJson(url)
         return {Keys.TOTAL : items[Keys.TOTAL], Keys.VIDEOS : items[Keys.VIDEOS]}
 
-    def getVideoChunks(self, id):
-        url = Urls.VIDEO_CHUNKS.format(id)
-        return self.scraper.getJson(url)
-
     def getVideoTitle(self, id):
         url = Urls.VIDEO_INFO.format(id)
         return self._fetchItems(url, 'title')
+
+    def __getChunkedVideo(self, id):
+        url = Urls.VIDEO_PLAYLIST.format(id)
+        return self.scraper.getJson(url)
+
+    def __getVideoPlaylistChunked(self, id, maxQuality):
+        vidChunks = self.__getChunkedVideo(id)
+        chunks = []
+        if vidChunks['chunks'].get(Keys.QUALITY_LIST_VIDEO[maxQuality]):
+            # prefered quality is not None -> available
+            chunks = vidChunks['chunks'][Keys.QUALITY_LIST_VIDEO[maxQuality]]
+        else: #prefered quality is not available TODO best match
+            chunks = vidChunks['chunks'][Keys.QUALITY_LIST_VIDEO[0]]
+
+        title = self.getVideoTitle(id)
+        itemTitle = '%s - Part {0} of %s' % (title, len(chunks))
+
+        playlist = [('', ('', vidChunks['preview']))]
+        curN = 0
+        for chunk in chunks:
+            curN += 1
+            playlist += [(chunk['url'], (itemTitle.format(curN), vidChunks['preview']))]
+
+        return playlist
+
+    def __getVideoPlaylistVod(self, id, maxQuality):
+        playlist = [('', ())]
+        vodid = id[1:]
+        url = Urls.VOD_TOKEN.format(vodid)
+        access_token = self.scraper.getJson(url)
+
+        playlistQualitiesUrl = Urls.VOD_PLAYLIST.format(
+            vodid,
+            access_token['token'],
+            access_token['sig'])
+        playlistQualitiesData = self.scraper.downloadWebData(playlistQualitiesUrl)
+        playlistQualities = M3UPlaylist(playlistQualitiesData)
+
+        vodUrl = playlistQualities.getQuality(maxQuality)
+        vodUrlBase = vodUrl[:-14]
+        vodUrlData = self.scraper.downloadWebData(vodUrl)
+
+        lines = vodUrlData.splitlines()
+        linesIterator = iter(lines)
+
+        for line in linesIterator:
+            if line.startswith('#EXTINF'):
+                segment = next(linesIterator)
+                segmentUrl = vodUrlBase + segment
+                playlist+=[(segmentUrl, ())]
+
+        return playlist
+
+    def getVideoPlaylist(self, id, maxQuality):
+        playlist = [(),()]
+        if(id.startswith('c')):
+            playlist = self.__getVideoPlaylistChunked(id,maxQuality)
+        elif(id.startswith('v')):
+            playlist = self.__getVideoPlaylistVod(id,maxQuality)
+        return playlist
 
     def getFollowingChannelNames(self, username):
         acc = []
@@ -149,72 +249,24 @@ class TwitchTV(object):
         url = Urls.TEAMSTREAM.format(quotedTeamName)
         return self._fetchItems(url, Keys.CHANNELS)
 
-    #downloads Playlist from twitch and passes it to subfunction for custom playlist generation
-    def saveHLSToPlaylist(self, channelName, maxQuality, fileName):
+    #gets playable livestream url
+    def getLiveStream(self, channelName, maxQuality):
         #Get Access Token (not necessary at the moment but could come into effect at any time)
         tokenurl= Urls.CHANNEL_TOKEN.format(channelName)
         channeldata = self.scraper.getJson(tokenurl)
         channeltoken= channeldata['token']
         channelsig= channeldata['sig']
         
-        #Download Multiple Quality Stream Playlist
+        #Download and Parse Multiple Quality Stream Playlist
         try:
             hls_url = Urls.HLS_PLAYLIST.format(channelName,channelsig,channeltoken)
             data = self.scraper.downloadWebData(hls_url)
-            playlist = self._saveHLSToPlaylist(data,maxQuality)
+            playlist = M3UPlaylist(data)
+            return playlist.getQuality(maxQuality)
 
-            #Write Custom Playlist
-            with open(fileName, "w") as text_file:
-                text_file.write(str(playlist))
         except TwitchException:
                 #HTTP Error in download web data -> stream is offline
                 raise TwitchException(TwitchException.STREAM_OFFLINE)
-        return
-
-    #split off from main function so we can feed custom data for test cases + speedtest
-    def _saveHLSToPlaylist(self, data, maxQuality):
-        if(maxQuality>=len(Keys.QUALITY_LIST_STREAM)): #check if maxQuality is supported
-            raise TwitchException()
-
-        lines = data.split('\n') # split into lines
-
-        playlist = lines[:2] # take first two lines into playlist
-        qualities = [None] * len(Keys.QUALITY_LIST_STREAM) # create quality based None array
-
-        lines_iterator = iter(lines[2:]) #start iterator after the first two lines
-        for line in lines_iterator: # start after second line
-            # if line contains 'EXT-X-TWITCH-RESTRICTED' drop the line
-            if 'EXT-X-TWITCH-RESTRICTED' in line:
-                continue
-
-            def concat_next_3_lines(): # helper function for concatination
-                return '\n'.join([line,next(lines_iterator),next(lines_iterator)])
-
-            #if a line with quality is detected, put it into qualities array
-            if Keys.QUALITY_LIST_STREAM[0] in line:
-                qualities[0] = concat_next_3_lines()
-            elif Keys.QUALITY_LIST_STREAM[1] in line:
-                qualities[1] = concat_next_3_lines()
-            elif Keys.QUALITY_LIST_STREAM[2] in line:
-                qualities[2] = concat_next_3_lines()
-            elif Keys.QUALITY_LIST_STREAM[3] in line:
-                qualities[3] = concat_next_3_lines()
-            elif Keys.QUALITY_LIST_STREAM[4] in line:
-                qualities[4] = concat_next_3_lines()
-            else:
-                pass # drop other lines
-
-        bestmatch = len(Keys.QUALITY_LIST_STREAM) - 1 #start with worst quality and improve
-        if qualities[maxQuality]: # prefered quality is not None -> available
-            bestmatch = maxQuality
-        else: #prefered quality is not available, choose best fit, TODO refactor all quality queries
-            for i,q in enumerate(qualities):
-                if q is not None:
-                    bestmatch = i
-                    break
-        playlist.append(qualities[bestmatch])
-        playlist = '\n'.join(playlist) + '\n'
-        return playlist
 
     def _filterChannelNames(self, channels):
         tmp = [{Keys.DISPLAY_NAME : item[Keys.CHANNEL][Keys.DISPLAY_NAME], Keys.NAME : item[Keys.CHANNEL][Keys.NAME], Keys.LOGO : item[Keys.CHANNEL][Keys.LOGO]} for item in channels]
@@ -264,15 +316,17 @@ class Urls(object):
 
     TEAMSTREAM = 'http://api.twitch.tv/api/team/{0}/live_channels.json'
     CHANNEL_TOKEN = 'http://api.twitch.tv/api/channels/{0}/access_token'
+    VOD_TOKEN = 'http://api.twitch.tv/api/vods/{0}/access_token'
 
     OPTIONS_OFFSET_LIMIT = '?offset={0}&limit={1}'
     OPTIONS_OFFSET_LIMIT_GAME = OPTIONS_OFFSET_LIMIT + '&game={2}'
     OPTIONS_OFFSET_LIMIT_QUERY = OPTIONS_OFFSET_LIMIT + '&q={2}'
 
     HLS_PLAYLIST = 'http://usher.twitch.tv/api/channel/hls/{0}.m3u8?sig={1}&token={2}&allow_source=true'
-    
+    VOD_PLAYLIST = 'http://usher.twitch.tv/vod/{0}?nauth={1}&nauthsig={2}'
+
     CHANNEL_VIDEOS = 'https://api.twitch.tv/kraken/channels/{0}/videos?limit=8&offset={1}&broadcasts={2}'
-    VIDEO_CHUNKS = 'https://api.twitch.tv/api/videos/{0}'
+    VIDEO_PLAYLIST = 'https://api.twitch.tv/api/videos/{0}'
     VIDEO_INFO = 'https://api.twitch.tv/kraken/videos/{0}'
 
 
