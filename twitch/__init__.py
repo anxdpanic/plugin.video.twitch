@@ -12,9 +12,6 @@ try:
 except:
     import simplejson as json  # @UnresolvedImport
 
-USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0'
-
-
 class JSONScraper(object):
     '''
     Encapsulates execution request and parsing of response
@@ -34,7 +31,7 @@ class JSONScraper(object):
         data = ""
         try:
             req = Request(url)
-            req.add_header(Keys.USER_AGENT, USER_AGENT)
+            req.add_header(Keys.USER_AGENT, Keys.USER_AGENT_STRING)
             response = urlopen(req)
             
             if sys.version_info < (3, 0):
@@ -111,20 +108,20 @@ class TwitchTV(object):
         channels = {'live' : self._fetchItems(url, Keys.STREAMS)}
         channels['others'] = channelNames
         return channels
-        
+
     def getFollowerVideos(self, username, offset, past):
         url = Urls.CHANNEL_VIDEOS.format(username,offset,past)
         items = self.scraper.getJson(url)
         return {Keys.TOTAL : items[Keys.TOTAL], Keys.VIDEOS : items[Keys.VIDEOS]}
-        
+
     def getVideoChunks(self, id):
         url = Urls.VIDEO_CHUNKS.format(id)
         return self.scraper.getJson(url)
-        
+
     def getVideoTitle(self, id):
         url = Urls.VIDEO_INFO.format(id)
         return self._fetchItems(url, 'title')
-        
+
     def getFollowingChannelNames(self, username):
         acc = []
         limit = 100
@@ -166,33 +163,12 @@ class TwitchVideoResolver(object):
     Resolves the RTMP-Link to a given Channelname
     Uses Justin.TV API
     '''
-    
+
     def __init__(self, logger):
         object.__init__(self)
         self.logger = logger
         self.scraper = JSONScraper(logger)
 
-    def getRTMPUrl(self, channelName, maxQuality):
-        swfUrl = self._getSwfUrl(channelName)
-        streamQualities = self._getStreamsForChannel(channelName)
-        
-        self.logger.debug("=== URL and available Streams ===")
-        self.logger.debug(json.dumps(swfUrl, sort_keys=True, indent=4))
-        
-        # check that api response isn't empty (i.e. stream is offline)
-        if streamQualities:
-            items = [self._parseStreamValues(stream, swfUrl)
-                     for stream in streamQualities
-                     if self._streamIsAccessible(stream)]
-            if items:
-                self.logger.debug("=== Accessible Streams ===")
-                self.logger.debug(json.dumps(items, sort_keys=True, indent=4))
-                return self._bestMatchForChosenQuality(items, maxQuality)[Keys.RTMP_URL]
-            else:
-                raise TwitchException(TwitchException.NO_STREAM_URL)
-        else:
-            raise TwitchException(TwitchException.STREAM_OFFLINE)
-    
     #downloads Playlist from twitch and passes it to subfunction for custom playlist generation
     def saveHLSToPlaylist(self, channelName, maxQuality, fileName):
         #Get Access Token (not necessary at the moment but could come into effect at any time)
@@ -219,21 +195,21 @@ class TwitchVideoResolver(object):
     def _saveHLSToPlaylist(self, data, maxQuality):
         if(maxQuality>=len(Keys.QUALITY_LIST_STREAM)): #check if maxQuality is supported
             raise TwitchException()
-        
+
         lines = data.split('\n') # split into lines
-        
+
         playlist = lines[:2] # take first two lines into playlist
         qualities = [None] * len(Keys.QUALITY_LIST_STREAM) # create quality based None array
-        
+
         lines_iterator = iter(lines[2:]) #start iterator after the first two lines
         for line in lines_iterator: # start after second line
             # if line contains 'EXT-X-TWITCH-RESTRICTED' drop the line
             if 'EXT-X-TWITCH-RESTRICTED' in line:
                 continue
-            
+
             def concat_next_3_lines(): # helper function for concatination
                 return '\n'.join([line,next(lines_iterator),next(lines_iterator)])
-                
+
             #if a line with quality is detected, put it into qualities array
             if Keys.QUALITY_LIST_STREAM[0] in line:
                 qualities[0] = concat_next_3_lines()
@@ -247,7 +223,7 @@ class TwitchVideoResolver(object):
                 qualities[4] = concat_next_3_lines()
             else:
                 pass # drop other lines
-        
+
         bestmatch = len(Keys.QUALITY_LIST_STREAM) - 1 #start with worst quality and improve
         if qualities[maxQuality]: # prefered quality is not None -> available
             bestmatch = maxQuality
@@ -260,118 +236,37 @@ class TwitchVideoResolver(object):
         playlist = '\n'.join(playlist) + '\n'
         return playlist
 
-    def _getSwfUrl(self, channelName):
-        url = Urls.TWITCH_SWF + channelName
-        headers = {Keys.USER_AGENT: USER_AGENT,
-                   Keys.REFERER: Urls.TWITCH_TV + channelName}
-        req = Request(url, None, headers)
-        response = urlopen(req)
-        return response.geturl()
-
-    def _streamIsAccessible(self, stream):
-        stream_is_public = (stream.get(Keys.NEEDED_INFO) != "channel_subscription")
-        stream_has_token = stream.get(Keys.TOKEN)
-
-        if stream.get(Keys.CONNECT) is None:
-            return False
-
-        return stream_is_public and stream_has_token
-
-    def _getStreamsForChannel(self, channelName):
-        scraper = JSONScraper(self.logger)
-        url = Urls.TWITCH_API.format(channel=channelName)
-        return scraper.getJson(url)
-
-    def _parseStreamValues(self, stream, swfUrl):
-        streamVars = {Keys.SWF_URL: swfUrl}
-        streamVars[Keys.RTMP] = stream[Keys.CONNECT]
-        streamVars[Keys.PLAYPATH] = stream.get(Keys.PLAY)
-
-        if stream[Keys.TOKEN]:
-            token = stream[Keys.TOKEN].replace('\\', '\\5c').replace(' ', '\\20').replace('"', '\\22')
-        else:
-            token = ''
-
-        streamVars[Keys.TOKEN] = (' jtv=' + token) if token else ''
-        quality = int(stream.get(Keys.VIDEO_HEIGHT, 0))
-        bitrate = int(stream.get(Keys.BITRATE, 0))
-        return {Keys.QUALITY: quality,
-                Keys.BITRATE: bitrate,
-                Keys.RTMP_URL: Urls.FORMAT_FOR_RTMP.format(**streamVars)}
-
-    def _bestMatchForChosenQuality(self, streams, maxQuality):
-        # sorting on resolution, then bitrate, both ascending 
-        streams.sort(key=lambda t: (t[Keys.QUALITY], t[Keys.BITRATE]))
-        self.logger.debug("Available streams sorted: %s" % streams)
-        for stream in streams:
-            if stream[Keys.QUALITY] <= maxQuality:
-                bestMatch = stream
-        self.logger.debug("Chosen Stream is: %s" % bestMatch)
-        return bestMatch
-
-
 class Keys(object):
     '''
     Should not be instantiated, just used to categorize
     string-constants
     '''
 
-    BITRATE = 'bitrate'
     CHANNEL = 'channel'
     CHANNELS = 'channels'
     CONNECT = 'connect'
-    BACKGROUND = 'background'
     DISPLAY_NAME = 'display_name'
     FEATURED = 'featured'
     FOLLOWS = 'follows'
-    GAME = 'game'
     LOGO = 'logo'
-    BOX = 'box'
-    LARGE = 'large'
     NAME = 'name'
-    NEEDED_INFO = 'needed_info'
-    PLAY = 'play'
-    PLAYPATH = 'playpath'
-    QUALITY = 'quality'
-    RTMP = 'rtmp'
     STREAMS = 'streams'
-    REFERER = 'Referer'
-    RTMP_URL = 'rtmpUrl'
-    STATUS = 'status'
     STREAM = 'stream'
-    SWF_URL = 'swfUrl'
     TEAMS = 'teams'
-    TOKEN = 'token'
     TOP = 'top'
     TOTAL = '_total'
     USER_AGENT = 'User-Agent'
-    VIDEOS = "videos"
-    VIDEO_BANNER = 'video_banner'
-    VIDEO_HEIGHT = 'video_height'
-    VIEWERS = 'viewers'
-    PREVIEW = 'preview'
-    TITLE = 'title'
+    USER_AGENT_STRING = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0'
+    VIDEOS = 'videos'
 
     QUALITY_LIST_STREAM = ['Source', "High", "Medium", "Low", "Mobile"]
     QUALITY_LIST_VIDEO = ['live', "720p", "480p", "360p", "226p"]
-
-class Patterns(object):
-    '''
-    Should not be instantiated, just used to categorize
-    string-constants
-    '''
-    VALID_FEED = "^https?:\/\/(?:[^\.]*.)?(?:twitch|justin)\.tv\/([a-zA-Z0-9_]+).*$"
-    IP = '.*\d+\.\d+\.\d+\.\d+.*'
-    EXPIRATION = '.*"expiration": (\d+)[^\d].*'
-
 
 class Urls(object):
     '''
     Should not be instantiated, just used to categorize
     string-constants
     '''
-    TWITCH_TV = 'http://www.twitch.tv/'
-
     BASE = 'https://api.twitch.tv/kraken/'
     FOLLOWED_CHANNELS = BASE + 'users/{0}/follows/channels'
     GAMES = BASE + 'games/'
@@ -386,15 +281,11 @@ class Urls(object):
     OPTIONS_OFFSET_LIMIT_GAME = OPTIONS_OFFSET_LIMIT + '&game={2}'
     OPTIONS_OFFSET_LIMIT_QUERY = OPTIONS_OFFSET_LIMIT + '&q={2}'
 
-    TWITCH_API = "http://usher.justin.tv/find/{channel}.json?type=any&group=&channel_subscription="
-    TWITCH_SWF = "http://www.justin.tv/widgets/live_embed_player.swf?channel="
-    FORMAT_FOR_RTMP = "{rtmp}/{playpath} swfUrl={swfUrl} swfVfy=1 {token} live=1"  # Pageurl missing here
     HLS_PLAYLIST = 'http://usher.twitch.tv/api/channel/hls/{0}.m3u8?sig={1}&token={2}&allow_source=true'
     
     CHANNEL_VIDEOS = 'https://api.twitch.tv/kraken/channels/{0}/videos?limit=8&offset={1}&broadcasts={2}'
     VIDEO_CHUNKS = 'https://api.twitch.tv/api/videos/{0}'
     VIDEO_INFO = 'https://api.twitch.tv/kraken/videos/{0}'
-        
 
 
 class TwitchException(Exception):
