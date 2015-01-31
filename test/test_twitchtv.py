@@ -6,7 +6,6 @@ class TestTwitchTV(unittest.TestCase):
     TwitchTV = None
 
     def setUp(self):
-        #setup resolver
         self.twitch = TwitchTV(logging) 
 
     def tearDown(self):

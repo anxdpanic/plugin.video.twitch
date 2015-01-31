@@ -301,7 +301,7 @@ class Keys(object):
     TOTAL = '_total'
     USER_AGENT = 'User-Agent'
     USER_AGENT_STRING = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0'
-    VIDEOS = "videos"
+    VIDEOS = 'videos'
     VIDEO_BANNER = 'video_banner'
     VIDEO_HEIGHT = 'video_height'
     VIEWERS = 'viewers'
