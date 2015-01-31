@@ -1,9 +1,10 @@
 from distutils.core import setup
+from twitch import VERSION
 
 setup(
     name='python-twitch',
     description='Python Module for interaction with twitch.tv',
-    version='0.2.5',
+    version=VERSION,
     packages=['twitch'],
     license='GPLv3',
     long_description=open('README.md').read(),
