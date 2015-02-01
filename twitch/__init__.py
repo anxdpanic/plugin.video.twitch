@@ -43,7 +43,9 @@ class JSONScraper(object):
                 break
             except Exception as err:
                 if not isinstance(err, URLError):
+                    self.logger.debug("Error %s during HTTP Request, abort", repr(err))
                     raise # propagate non-URLError
+                self.logger.debug("Error %s during HTTP Request, retrying", repr(err))
         else:
             raise TwitchException(TwitchException.HTTP_ERROR)
         return data
