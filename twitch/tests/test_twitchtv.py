@@ -68,7 +68,7 @@ class TestTwitchTV(unittest.TestCase):
         following = self.twitch.getFollowerVideos(channelname, offset=0, past=True)
         self.assertTrue(following['_total'] > 0,"total is not bigger then 0")
 
-    def test_video_playlist_chunked(self):
+    def test_video_playlist_c_chunked(self):
         videoid = 'c5928479'
         expected_playlist = [
             ('', ('', 'http://static-cdn.jtvnw.net/jtv.thumbs/archive-613890547-320x240.jpg')),
@@ -89,10 +89,31 @@ class TestTwitchTV(unittest.TestCase):
         playlist = self.twitch.getVideoPlaylist(videoid, 0)
         self.assertEqual(playlist, expected_playlist)
 
-    def test_video_playlist_nonchunked(self):
+    def test_video_playlist_v_vod(self):
         videoid = 'v3709509'
         playlist = self.twitch.getVideoPlaylist(videoid, 0)
         self.assertIn(('http://vod.ak.hls.ttvnw.net/v1/AUTH_system/vods_1ddc/hutch_12752035712_193039230/chunked/index-dvr.m3u8',()), playlist)
+
+    def test_video_playlist_a(self):
+        videoid = 'a619273813'
+        expected_playlist = [
+            ('', ('', 'http://static-cdn.jtvnw.net/jtv.thumbs/archive-619273813-320x240.jpg')),
+            ('http://media-cdn.twitch.tv/store155.media102/archives/2015-2-1/live_user_cobaltstreak_1422831905.flv', ('Darkest Dungeon - Early Access. Must kill more BOSSES! - Part 1 of 13', 'http://static-cdn.jtvnw.net/jtv.thumbs/archive-619273813-320x240.jpg')),
+            ('http://media-cdn.twitch.tv/store72.media53/archives/2015-2-1/live_user_cobaltstreak_1422833617.flv', ('Darkest Dungeon - Early Access. Must kill more BOSSES! - Part 2 of 13', 'http://static-cdn.jtvnw.net/jtv.thumbs/archive-619273813-320x240.jpg')),
+            ('http://media-cdn.twitch.tv/store47.media47/archives/2015-2-2/live_user_cobaltstreak_1422835329.flv', ('Darkest Dungeon - Early Access. Must kill more BOSSES! - Part 3 of 13', 'http://static-cdn.jtvnw.net/jtv.thumbs/archive-619273813-320x240.jpg')),
+            ('http://media-cdn.twitch.tv/store174.media112/archives/2015-2-2/live_user_cobaltstreak_1422837041.flv', ('Darkest Dungeon - Early Access. Must kill more BOSSES! - Part 4 of 13', 'http://static-cdn.jtvnw.net/jtv.thumbs/archive-619273813-320x240.jpg')),
+            ('http://media-cdn.twitch.tv/store92.media67/archives/2015-2-2/live_user_cobaltstreak_1422838751.flv', ('Darkest Dungeon - Early Access. Must kill more BOSSES! - Part 5 of 13', 'http://static-cdn.jtvnw.net/jtv.thumbs/archive-619273813-320x240.jpg')),
+            ('http://media-cdn.twitch.tv/store143.media96/archives/2015-2-2/live_user_cobaltstreak_1422840461.flv', ('Darkest Dungeon - Early Access. Must kill more BOSSES! - Part 6 of 13', 'http://static-cdn.jtvnw.net/jtv.thumbs/archive-619273813-320x240.jpg')),
+            ('http://media-cdn.twitch.tv/store102.media68/archives/2015-2-2/live_user_cobaltstreak_1422842174.flv', ('Darkest Dungeon - Early Access. Must kill more BOSSES! - Part 7 of 13', 'http://static-cdn.jtvnw.net/jtv.thumbs/archive-619273813-320x240.jpg')),
+            ('http://media-cdn.twitch.tv/store101.media76/archives/2015-2-2/live_user_cobaltstreak_1422843884.flv', ('Darkest Dungeon - Early Access. Must kill more BOSSES! - Part 8 of 13', 'http://static-cdn.jtvnw.net/jtv.thumbs/archive-619273813-320x240.jpg')),
+            ('http://media-cdn.twitch.tv/store165.media107/archives/2015-2-2/live_user_cobaltstreak_1422845595.flv', ('Darkest Dungeon - Early Access. Must kill more BOSSES! - Part 9 of 13', 'http://static-cdn.jtvnw.net/jtv.thumbs/archive-619273813-320x240.jpg')),
+            ('http://media-cdn.twitch.tv/store108.media72/archives/2015-2-2/live_user_cobaltstreak_1422847307.flv', ('Darkest Dungeon - Early Access. Must kill more BOSSES! - Part 10 of 13', 'http://static-cdn.jtvnw.net/jtv.thumbs/archive-619273813-320x240.jpg')),
+            ('http://media-cdn.twitch.tv/store165.media107/archives/2015-2-2/live_user_cobaltstreak_1422849017.flv', ('Darkest Dungeon - Early Access. Must kill more BOSSES! - Part 11 of 13', 'http://static-cdn.jtvnw.net/jtv.thumbs/archive-619273813-320x240.jpg')),
+            ('http://media-cdn.twitch.tv/store107.media70/archives/2015-2-2/live_user_cobaltstreak_1422850728.flv', ('Darkest Dungeon - Early Access. Must kill more BOSSES! - Part 12 of 13', 'http://static-cdn.jtvnw.net/jtv.thumbs/archive-619273813-320x240.jpg')),
+            ('http://media-cdn.twitch.tv/store57.media71/archives/2015-2-2/live_user_cobaltstreak_1422852440.flv', ('Darkest Dungeon - Early Access. Must kill more BOSSES! - Part 13 of 13', 'http://static-cdn.jtvnw.net/jtv.thumbs/archive-619273813-320x240.jpg'))
+        ]
+        playlist = self.twitch.getVideoPlaylist(videoid, 0)
+        self.assertEqual(playlist, expected_playlist)
 
     def suite(self):
         testSuite = unittest.TestSuite()
