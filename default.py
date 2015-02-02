@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
-from converter import JsonListItemConverter
+from converter import JsonListItemConverter, PlaylistConverter
 from functools import wraps
-from twitch import TwitchTV, TwitchVideoResolver, Keys, TwitchException
+from twitch import TwitchTV, Keys, TwitchException
 from xbmcswift2 import Plugin  # @UnresolvedImport
-import urllib2, json, sys
+import sys
+import xbmc
 
 ITEMS_PER_PAGE = 20
 LINE_LENGTH = 60
 
 PLUGIN = Plugin()
 CONVERTER = JsonListItemConverter(PLUGIN, LINE_LENGTH)
+PLAYLIST_CONVERTER = PlaylistConverter()
 TWITCHTV = TwitchTV(PLUGIN.log)
 
 
@@ -128,8 +130,8 @@ def channelVideos(name):
         }
     ]
     return items
-    
-    
+
+
 @PLUGIN.route('/channelVideosList/<name>/<index>/<past>/')
 @managedTwitchExceptions
 def channelVideosList(name,index,past):
@@ -140,26 +142,26 @@ def channelVideosList(name,index,past):
     if videos[Keys.TOTAL] > (offset + 8):
         items.append(linkToNextPage('channelVideosList', index, name=name, past=past))
     return items
-    
-    
+
+
 @PLUGIN.route('/playVideo/<id>/')
 @managedTwitchExceptions
 def playVideo(id):
     #Get Required Quality From Settings
     videoQuality = getVideoQuality()
-    playlist = TWITCHTV.getVideoChunksPlaylist(id,videoQuality)
-    
+    simplePlaylist = TWITCHTV.getVideoPlaylist(id,videoQuality)
+    playlist = PLAYLIST_CONVERTER.convertToXBMCPlaylist(simplePlaylist)
     # Doesn't fullscreen video, might be because of xbmcswift
     #xbmc.Player().play(playlist) 
-    
+
     try:
         # Gotta wrap this in a try/except, xbmcswift causes an error when passing a xbmc.PlayList()
         # but still plays the playlist properly
         PLUGIN.set_resolved_url(playlist)
     except:
         pass
-    
-    
+
+
 @PLUGIN.route('/search/')
 @managedTwitchExceptions
 def search():
@@ -186,21 +188,15 @@ def searchresults(query, index='0'):
 def showSettings():
     #there is probably a better way to do this
     PLUGIN.open_settings()
-    
-    
+
+
 @PLUGIN.route('/playLive/<name>/')
 @managedTwitchExceptions
 def playLive(name):
-    
-    #Get Required Quality From Settings
     videoQuality = getVideoQuality()
-    
-    plpath = xbmc.translatePath('special://temp') + 'hlsplaylist.m3u8'
-    resolver = TwitchVideoResolver(PLUGIN.log)
-    resolver.saveHLSToPlaylist(name,videoQuality,plpath)
-    #Play Custom Playlist
-    xbmc.Player().play(plpath)
-    PLUGIN.set_resolved_url(plpath)
+    url = TWITCHTV.getLiveStream(name,videoQuality)
+    xbmc.Player().play(url)
+    PLUGIN.set_resolved_url(url)
 
 
 @PLUGIN.route('/createListOfTeams/<index>/')
