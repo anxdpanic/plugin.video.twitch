@@ -1,5 +1,5 @@
 #-*- encoding: utf-8 -*-
-VERSION='0.3.7'
+VERSION='0.3.8'
 MAX_RETRIES=5
 import sys
 try:
@@ -43,7 +43,9 @@ class JSONScraper(object):
                 break
             except Exception as err:
                 if not isinstance(err, URLError):
+                    self.logger.debug("Error %s during HTTP Request, abort", repr(err))
                     raise # propagate non-URLError
+                self.logger.debug("Error %s during HTTP Request, retrying", repr(err))
         else:
             raise TwitchException(TwitchException.HTTP_ERROR)
         return data
@@ -164,6 +166,8 @@ class TwitchTV(object):
         return self._fetchItems(url, 'title')
 
     def __getChunkedVideo(self, id):
+        # twitch site queries chunked playlists also with token
+        # not necessary yet but might change (similar to vod playlists)
         url = Urls.VIDEO_PLAYLIST.format(id)
         return self.scraper.getJson(url)
 
@@ -207,7 +211,7 @@ class TwitchTV(object):
 
     def getVideoPlaylist(self, id, maxQuality):
         playlist = [(),()]
-        if(id.startswith('c')):
+        if(id.startswith(('a','c'))):
             playlist = self.__getVideoPlaylistChunked(id,maxQuality)
         elif(id.startswith('v')):
             playlist = self.__getVideoPlaylistVod(id,maxQuality)
