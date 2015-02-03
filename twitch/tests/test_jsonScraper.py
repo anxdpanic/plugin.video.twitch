@@ -4,6 +4,7 @@ import logging
 import os
 import json
 
+@unittest.skip("Skipping Json/WebDataDownloader Tests")
 class TestJsonScraper(unittest.TestCase):
     scraper=None
     badurl1='asdffdsaa'
