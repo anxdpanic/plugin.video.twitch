@@ -171,7 +171,7 @@ class TwitchTV(object):
         url = Urls.VIDEO_PLAYLIST.format(id)
         return self.scraper.getJson(url)
 
-    def __getVideoPlaylistChunked(self, id, maxQuality):
+    def __getVideoPlaylistChunkedArchived(self, id, maxQuality):
         vidChunks = self.__getChunkedVideo(id)
         chunks = []
         if vidChunks['chunks'].get(Keys.QUALITY_LIST_VIDEO[maxQuality]):
@@ -212,7 +212,7 @@ class TwitchTV(object):
     def getVideoPlaylist(self, id, maxQuality):
         playlist = [(),()]
         if(id.startswith(('a','c'))):
-            playlist = self.__getVideoPlaylistChunked(id,maxQuality)
+            playlist = self.__getVideoPlaylistChunkedArchived(id,maxQuality)
         elif(id.startswith('v')):
             playlist = self.__getVideoPlaylistVod(id,maxQuality)
         return playlist

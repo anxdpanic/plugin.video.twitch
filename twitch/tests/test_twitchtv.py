@@ -94,7 +94,7 @@ class TestTwitchTV(unittest.TestCase):
         playlist = self.twitch.getVideoPlaylist(videoid, 0)
         self.assertIn(('http://vod.ak.hls.ttvnw.net/v1/AUTH_system/vods_1ddc/hutch_12752035712_193039230/chunked/index-dvr.m3u8',()), playlist)
 
-    def test_video_playlist_a(self):
+    def test_video_playlist_a_archived(self):
         videoid = 'a619273813'
         expected_playlist = [
             ('', ('', 'http://static-cdn.jtvnw.net/jtv.thumbs/archive-619273813-320x240.jpg')),
