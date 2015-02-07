@@ -1,5 +1,5 @@
 python-twitch |build-status| |coverage-status|
-==================
+==============================================
 
 python-twitch is an python module for simple interaction with twitch.tv
 
@@ -7,15 +7,15 @@ python-twitch is an python module for simple interaction with twitch.tv
 * `pypi version`_
 
 Installation
-------------------
+------------
 ``pip install python-twitch``
 
 Usage
-------------------
+-----
 Have a look at the tests_ directory.
 
 Credits
-------------------
+-------
 This library was based on the `twitch.tv plugin for xbmc`_.
 
 

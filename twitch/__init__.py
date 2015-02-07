@@ -1,5 +1,5 @@
 #-*- encoding: utf-8 -*-
-VERSION='0.3.8'
+VERSION='0.3.8-a'
 MAX_RETRIES=5
 import sys
 try:
