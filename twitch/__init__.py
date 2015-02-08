@@ -66,44 +66,52 @@ class JSONScraper(object):
             raise TwitchException(TwitchException.JSON_ERROR)
 
 class M3UPlaylist(object):
-    def __init__(self, input):
+    def __init__(self, input, qualityList = None):
+        self.playlist = dict()
+        self.qualityList = qualityList or Keys.QUALITY_LIST_STREAM
+
         def parseQuality(ExtXMediaLine,ExtXStreamInfLine,Url):
+            #find name of current quality, NAME=", 6 chars
             namePosition = ExtXMediaLine.find('NAME')
             if(namePosition==-1):
                 raise TwitchException()
-            qualityName = ''
+            qualityString = ''
             namePosition+=6
             for char in ExtXMediaLine[namePosition:]:
                 if(char=='"'):
                     break
-                qualityName += char
-            return qualityName, Url
+                qualityString += char
+            return qualityString, Url
 
-        self.playlist = dict()
         lines = input.splitlines()
         linesIterator = iter(lines)
         for line in linesIterator:
             if(line.startswith('#EXT-X-MEDIA')):
                 quality, url = parseQuality(line, next(linesIterator), next(linesIterator))
-                self.playlist[quality] = url
+                qualityInt = self.qualityList.index(quality)
+                self.playlist[qualityInt] = url
+        if not self.playlist:
+            #playlist dict is empty
+            raise ValueError('could not find playable urls')
 
     #returns selected quality or best match if not available
-    def getQuality(self, QualityInt):
-        def isInPlaylist(QualityInt):
-            return Keys.QUALITY_LIST_STREAM[QualityInt] in self.playlist
-
-        if(isInPlaylist(QualityInt)):
+    def getQuality(self, selectedQuality):
+        if(selectedQuality in self.playlist.keys()):
             #selected quality is available
-            return self.playlist[Keys.QUALITY_LIST_STREAM[QualityInt]]
+            return self.playlist[selectedQuality]
         else:
-            #not available, start with worst quality and improve
-            #break if better quality is not available
-            bestMatch = len(Keys.QUALITY_LIST_STREAM) - 1
-            for newMatch in range(bestMatch, -1, -1):
-                if(isInPlaylist(newMatch)):
-                    bestMatch = newMatch
+            #not available, calculate differences to available qualities
+            #return lowest difference / lower quality if same distance
+            bestDistance = len(self.qualityList) + 1
+            bestMatch = None
 
-            return self.playlist[Keys.QUALITY_LIST_STREAM[bestMatch]]
+            for quality in sorted(self.playlist, reverse=True):
+                newDistance = abs(selectedQuality - quality)
+                if newDistance < bestDistance:
+                    bestDistance = newDistance
+                    bestMatch = quality
+
+            return self.playlist[bestMatch]
 
     def __str__(self):
         return repr(self.playlist)
@@ -313,8 +321,9 @@ class Keys(object):
     PREVIEW = 'preview'
     TITLE = 'title'
 
-    QUALITY_LIST_STREAM = ['Source', "High", "Medium", "Low", "Mobile"]
-    QUALITY_LIST_VIDEO = ['live', "720p", "480p", "360p", "226p"]
+    QUALITY_LIST_STREAM = ['Source', 'High', 'Medium', 'Low', 'Mobile']
+    QUALITY_LIST_VIDEO = ['live', '720p', '480p', '360p', '226p']
+
 
 class Urls(object):
     '''

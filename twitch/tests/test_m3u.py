@@ -84,6 +84,10 @@ http://vod.ak.hls.ttvnw.net/v1/AUTH_system/vods_1ddc/hutch_12752035712_193039230
         url = M3UPlaylist(self.vod).getQuality(0)
         self.assertEqual(url, expected)
 
+    def empty_playlist(self):
+        with self.assertRaises(ValueError):
+            M3UPlaylist('')
+
     def suite(self):
         testSuite = unittest.TestSuite()
         testSuite.addTest(unittest.makeSuite(TestResolver))
