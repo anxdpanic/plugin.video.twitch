@@ -39,6 +39,21 @@ http://video16.prg01.hls.twitch.tv/hls18/ongamenet_9656195424_98434331/low/index
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=164000,VIDEO="mobile"
 http://video16.prg01.hls.twitch.tv/hls18/ongamenet_9656195424_98434331/mobile/index-live.m3u8?token=id=6125541036366455728,bid=9656195424,exp=1401014215,node=video16-1.prg01.hls.justin.tv,nname=video16.prg01,fmt=mobile&sig=cadce653f0b6b663f2a25c4e946788a30f559447"""
 
+    quality_select = """
+#EXTM3U
+#EXT-X-TWITCH-INFO:NODE="video2.prg01",MANIFEST-NODE="video2.prg01",SERVER-TIME="1400918840.88",USER-IP="84.112.27.151",CLUSTER="prg01",MANIFEST-CLUSTER="prg01"
+#EXT-X-TWITCH-RESTRICTED:GROUP-ID="chunked",NAME="Source",RESTRICTION="chansub"
+#EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID="high",NAME="High",AUTOSELECT=YES,DEFAULT=YES
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=1760000,VIDEO="high"
+http://video2.prg01.hls.twitch.tv/hls106/riotgamesoceania_9652805392_98328050/high/index-live.m3u8?token=id=7828074928424501897,bid=9652805392,exp=1401005240,node=video2-1.prg01.hls.justin.tv,nname=video2.prg01,fmt=high&sig=7c20fa2263c78892c0f15c818620f0e85557cabf
+#EXT-X-TWITCH-RESTRICTED:GROUP-ID="medium",NAME="Medium",RESTRICTION="chansub"
+#EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID="low",NAME="Low",AUTOSELECT=YES,DEFAULT=YES
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=596000,VIDEO="low"
+http://video2.prg01.hls.twitch.tv/hls106/riotgamesoceania_9652805392_98328050/low/index-live.m3u8?token=id=7828074928424501897,bid=9652805392,exp=1401005240,node=video2-1.prg01.hls.justin.tv,nname=video2.prg01,fmt=low&sig=089be1e11a1556877ca575b3eada7a24acc7ea5a
+#EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID="mobile",NAME="Mobile",AUTOSELECT=YES,DEFAULT=YES
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=164000,VIDEO="mobile"
+http://video2.prg01.hls.twitch.tv/hls106/riotgamesoceania_9652805392_98328050/mobile/index-live.m3u8?token=id=7828074928424501897,bid=9652805392,exp=1401005240,node=video2-1.prg01.hls.justin.tv,nname=video2.prg01,fmt=mobile&sig=087b4221fdd0653456b55b5b77756ca3cadd0226"""
+
     vod = """
 #EXTM3U
 #EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID="chunked",NAME="Source",AUTOSELECT=YES,DEFAULT=YES
@@ -82,6 +97,15 @@ http://vod.ak.hls.ttvnw.net/v1/AUTH_system/vods_1ddc/hutch_12752035712_193039230
     def test_vod_0(self):
         expected = 'http://vod.ak.hls.ttvnw.net/v1/AUTH_system/vods_1ddc/hutch_12752035712_193039230/chunked/index-dvr.m3u8'
         url = M3UPlaylist(self.vod).getQuality(0)
+        self.assertEqual(url, expected)
+
+    def test_empty_playlist(self):
+        with self.assertRaises(ValueError):
+            M3UPlaylist('')
+
+    def test_bestMatch_quality(self):
+        expected = 'http://video2.prg01.hls.twitch.tv/hls106/riotgamesoceania_9652805392_98328050/low/index-live.m3u8?token=id=7828074928424501897,bid=9652805392,exp=1401005240,node=video2-1.prg01.hls.justin.tv,nname=video2.prg01,fmt=low&sig=089be1e11a1556877ca575b3eada7a24acc7ea5a'
+        url = M3UPlaylist(self.quality_select).getQuality(2)
         self.assertEqual(url, expected)
 
     def suite(self):
