@@ -1,3 +1,4 @@
-prune tests
+recursive-include tests *
+recursive-exclude tests *.pyc
 include LICENSE.txt
 include README.md

@@ -1,2 +1,2 @@
 [report]
-omit = twitch/tests/*
+omit = tests/*
