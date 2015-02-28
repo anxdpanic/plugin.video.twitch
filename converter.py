@@ -24,7 +24,12 @@ class JsonListItemConverter(object):
 
     def convertGameToListItem(self, game):
         name = game[Keys.NAME].encode('utf-8')
-        image = game[Keys.BOX].get(Keys.LARGE, '')
+        if not name:
+            name = self.plugin.get_string(30064)
+        try:
+            image = game[Keys.BOX].get(Keys.LARGE, '')
+        except:
+            image = 'http://static-cdn.jtvnw.net/ttv-static/404_boxart.jpg'
         return {'label': name,
                 'path': self.plugin.url_for('createListForGame',
                                             gameName=name, index='0'),
