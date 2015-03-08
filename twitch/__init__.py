@@ -350,7 +350,6 @@ class Urls(object):
     GAMES = BASE + 'games/'
     STREAMS = BASE + 'streams/'
     SEARCH = BASE + 'search/'
-    GAME = BASE + 'search/games?type=suggest&game='
     TEAMS = BASE + 'teams?limit=25&offset={0}'
 
     TEAMSTREAM = 'http://api.twitch.tv/api/team/{0}/live_channels.json'
