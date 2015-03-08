@@ -163,6 +163,21 @@ class TwitchTV(object):
         channels['others'] = channelNames
         return channels
 
+    def getFollowingGames(self, username):
+        acc = []
+        limit = 100
+        offset = 0
+        quotedUsername = quote_plus(username)
+        baseurl = Urls.FOLLOWED_GAMES.format(quotedUsername)
+        while True:
+            url = baseurl + Urls.OPTIONS_OFFSET_LIMIT.format(offset, limit)
+            temp = self._fetchItems(url, Keys.FOLLOWS)
+            if (len(temp) == 0):
+                break;
+            acc = acc + temp
+            offset = offset + limit
+        return acc
+
     def getFollowerVideos(self, username, offset, past):
         url = Urls.CHANNEL_VIDEOS.format(username,offset,past)
         items = self.scraper.getJson(url)
@@ -335,6 +350,7 @@ class Urls(object):
     GAMES = BASE + 'games/'
     STREAMS = BASE + 'streams/'
     SEARCH = BASE + 'search/'
+    GAME = BASE + 'search/games?type=suggest&game='
     TEAMS = BASE + 'teams?limit=25&offset={0}'
 
     TEAMSTREAM = 'http://api.twitch.tv/api/team/{0}/live_channels.json'
@@ -351,6 +367,7 @@ class Urls(object):
     CHANNEL_VIDEOS = 'https://api.twitch.tv/kraken/channels/{0}/videos?limit=8&offset={1}&broadcasts={2}'
     VIDEO_PLAYLIST = 'https://api.twitch.tv/api/videos/{0}'
     VIDEO_INFO = 'https://api.twitch.tv/kraken/videos/{0}'
+    FOLLOWED_GAMES = 'https://api.twitch.tv/api/users/{0}/follows/games'
 
 
 class TwitchException(Exception):
