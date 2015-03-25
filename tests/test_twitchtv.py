@@ -74,10 +74,7 @@ class TestTwitchTV(unittest.TestCase):
         following = self.twitch.getFollowingGames("winlu")
         self.assertEqual(expected,following)
 
-    """ 
-    since all video playlists seem to move around the tests for them are currently not working
-    need to come up with another way to relayably test all different possible videotypes
-    
+    @unittest.skip("Skip video playlist resolving due to moving urls for now")
     def test_video_playlist_c_chunked(self):
         videoid = 'c5928479'
         '''
@@ -102,11 +99,13 @@ class TestTwitchTV(unittest.TestCase):
         playlist = self.twitch.getVideoPlaylist(videoid, 0)
         self.assertEqual(len(playlist), 14)
 
+    @unittest.skip("Skip video playlist resolving due to moving urls for now")
     def test_video_playlist_v_vod(self):
         videoid = 'v3709509'
         playlist = self.twitch.getVideoPlaylist(videoid, 0)
         self.assertIn(('http://vod.ak.hls.ttvnw.net/v1/AUTH_system/vods_1ddc/hutch_12752035712_193039230/chunked/index-dvr.m3u8',()), playlist)
 
+    @unittest.skip("Skip video playlist resolving due to moving urls for now")
     def test_video_playlist_a_archived(self):
         videoid = 'a619273813'
         '''
@@ -130,7 +129,6 @@ class TestTwitchTV(unittest.TestCase):
         '''
         playlist = self.twitch.getVideoPlaylist(videoid, 0)
         self.assertEqual(len(playlist), 14)
-    """
 
     def suite(self):
         testSuite = unittest.TestSuite()
