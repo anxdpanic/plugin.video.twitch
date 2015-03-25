@@ -24,7 +24,7 @@ This library was based on the `twitch.tv plugin for xbmc`_.
 .. _`pypi version`: https://pypi.python.org/pypi/python-twitch/
 .. _`github version`: https://github.com/ingwinlu/python-twitch/
 .. _`twitch.tv plugin for xbmc`: https://github.com/StateOfTheArt89/Twitch.tv-on-XBMC
-.. _tests: https://github.com/ingwinlu/python-twitch/tree/master/twitch/tests
+.. _tests: https://github.com/ingwinlu/python-twitch/tree/master/tests
 .. |build-status| image:: https://img.shields.io/travis/ingwinlu/python-twitch/master.svg
    :target: https://travis-ci.org/ingwinlu/python-twitch
    :alt: Travis CI: continuous integration status
