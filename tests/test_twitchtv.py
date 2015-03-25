@@ -68,6 +68,16 @@ class TestTwitchTV(unittest.TestCase):
         following = self.twitch.getFollowerVideos(channelname, offset=0, past=True)
         self.assertTrue(following['_total'] > 0,"total is not bigger then 0")
 
+    def test_followed_games(self):
+        expected = [{'box': {'large': 'http://static-cdn.jtvnw.net/ttv-boxart/Counter-Strike:%20Global%20Offensive-272x380.jpg', 'small': 'http://static-cdn.jtvnw.net/ttv-boxart/Counter-Strike:%20Global%20Offensive-52x72.jpg', 'medium': 'http://static-cdn.jtvnw.net/ttv-boxart/Counter-Strike:%20Global%20Offensive-136x190.jpg', 'template': 'http://static-cdn.jtvnw.net/ttv-boxart/Counter-Strike:%20Global%20Offensive-{width}x{height}.jpg'}, 'giantbomb_id': 36113, 'name': 'Counter-Strike: Global Offensive', '_links': {}, 'logo': {'large': 'http://static-cdn.jtvnw.net/ttv-logoart/Counter-Strike:%20Global%20Offensive-240x144.jpg', 'small': 'http://static-cdn.jtvnw.net/ttv-logoart/Counter-Strike:%20Global%20Offensive-60x36.jpg', 'medium': 'http://static-cdn.jtvnw.net/ttv-logoart/Counter-Strike:%20Global%20Offensive-120x72.jpg', 'template': 'http://static-cdn.jtvnw.net/ttv-logoart/Counter-Strike:%20Global%20Offensive-{width}x{height}.jpg'}, '_id': 32399, 'properties': {}}]
+        following = []
+        following = self.twitch.getFollowingGames("winlu")
+        self.assertEqual(expected,following)
+
+    """ 
+    since all video playlists seem to move around the tests for them are currently not working
+    need to come up with another way to relayably test all different possible videotypes
+    
     def test_video_playlist_c_chunked(self):
         videoid = 'c5928479'
         '''
@@ -120,12 +130,7 @@ class TestTwitchTV(unittest.TestCase):
         '''
         playlist = self.twitch.getVideoPlaylist(videoid, 0)
         self.assertEqual(len(playlist), 14)
-
-    def test_followed_games(self):
-        expected = [{'box': {'large': 'http://static-cdn.jtvnw.net/ttv-boxart/Counter-Strike:%20Global%20Offensive-272x380.jpg', 'small': 'http://static-cdn.jtvnw.net/ttv-boxart/Counter-Strike:%20Global%20Offensive-52x72.jpg', 'medium': 'http://static-cdn.jtvnw.net/ttv-boxart/Counter-Strike:%20Global%20Offensive-136x190.jpg', 'template': 'http://static-cdn.jtvnw.net/ttv-boxart/Counter-Strike:%20Global%20Offensive-{width}x{height}.jpg'}, 'giantbomb_id': 36113, 'name': 'Counter-Strike: Global Offensive', '_links': {}, 'logo': {'large': 'http://static-cdn.jtvnw.net/ttv-logoart/Counter-Strike:%20Global%20Offensive-240x144.jpg', 'small': 'http://static-cdn.jtvnw.net/ttv-logoart/Counter-Strike:%20Global%20Offensive-60x36.jpg', 'medium': 'http://static-cdn.jtvnw.net/ttv-logoart/Counter-Strike:%20Global%20Offensive-120x72.jpg', 'template': 'http://static-cdn.jtvnw.net/ttv-logoart/Counter-Strike:%20Global%20Offensive-{width}x{height}.jpg'}, '_id': 32399, 'properties': {}}]
-        following = []
-        following = self.twitch.getFollowingGames("winlu")
-        self.assertEqual(expected,following)
+    """
 
     def suite(self):
         testSuite = unittest.TestSuite()
