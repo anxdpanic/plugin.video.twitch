@@ -1,8 +1,9 @@
 
 #-*- encoding: utf-8 -*-
-VERSION='0.4.2'
+VERSION='0.4.3'
 MAX_RETRIES=5
 import sys
+import logging
 try:
     from urllib.request import urlopen, Request
     from urllib.parse import quote_plus
@@ -122,7 +123,7 @@ class TwitchTV(object):
     Uses Twitch API to fetch json-encoded objects
     every method returns a dict containing the objects\' values
     '''
-    def __init__(self, logger):
+    def __init__(self, logger=logging):
         self.logger = logger
         self.scraper = JSONScraper(logger)
 

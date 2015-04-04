@@ -2,11 +2,14 @@ from twitch import *
 import unittest
 import logging
 
+def test_custom_logger():
+    twitch = TwitchTV(logging)
+
 class TestTwitchTV(unittest.TestCase):
     TwitchTV = None
 
     def setUp(self):
-        self.twitch = TwitchTV(logging) 
+        self.twitch = TwitchTV()
 
     def tearDown(self):
         self.twitch = None
