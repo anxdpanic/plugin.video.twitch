@@ -51,6 +51,9 @@ def createMainListing():
         {'label': PLUGIN.get_string(30002),
          'path': PLUGIN.url_for(endpoint='createFollowingList')
          },
+        {'label': PLUGIN.get_string(30066),
+         'path': PLUGIN.url_for(endpoint='createFollowingGameList')
+         },
         {'label': PLUGIN.get_string(30006),
          'path': PLUGIN.url_for(endpoint='createListOfTeams', index='0')
          },
@@ -117,6 +120,13 @@ def createFollowingList():
     liveStreams.extend([CONVERTER.convertFollowersToListItem(follower) for follower in streams['others']])
     return liveStreams
 
+@PLUGIN.route('/createFollowingGameList/')
+@managedTwitchExceptions
+def createFollowingGameList():
+    username = getUserName()
+    games = TWITCHTV.getFollowingGames(username)
+    items = [CONVERTER.convertGameToListItem(element) for element in games]
+    return items
 
 @PLUGIN.route('/channelVideos/<name>/')
 @managedTwitchExceptions
