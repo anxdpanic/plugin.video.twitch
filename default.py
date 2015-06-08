@@ -207,6 +207,7 @@ def playLive(name):
     url = TWITCHTV.getLiveStream(name,videoQuality)
     xbmc.Player().play(url)
     PLUGIN.set_resolved_url(url)
+    execIrcPlugin(name)
 
 
 @PLUGIN.route('/createListOfTeams/<index>/')
@@ -252,6 +253,16 @@ def linkToNextPage(target, currentIndex, **kwargs):
     return {'label': PLUGIN.get_string(30011),
             'path': PLUGIN.url_for(target, index=str(currentIndex + 1), **kwargs)
             }
+
+
+def execIrcPlugin(channel):
+    if PLUGIN.get_setting('irc_enable', unicode) != 'true':
+        return
+    uname = PLUGIN.get_setting('irc_username', unicode)
+    passwd = PLUGIN.get_setting('irc_password', unicode)
+    host = 'irc.twitch.tv'
+    scrline = 'RunScript(script.ircchat, run_irc=True&nickname=%s&username=%s&password=%s&host=%s&channel=#%s)' % (uname, uname, passwd, host, channel)
+    xbmc.executebuiltin(scrline)
 
 if __name__ == '__main__':
     PLUGIN.run()
