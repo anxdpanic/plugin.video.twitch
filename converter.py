@@ -2,6 +2,7 @@
 from twitch import Keys
 import json
 import xbmcgui, xbmc
+import xbmcswift2  # @UnresolvedImport
 
 class PlaylistConverter(object):
     def convertToXBMCPlaylist(self, InputPlaylist):
@@ -80,13 +81,24 @@ class JsonListItemConverter(object):
         channel = stream[Keys.CHANNEL]
         videobanner = channel.get(Keys.VIDEO_BANNER, '')
         logo = channel.get(Keys.LOGO, '')
-        return {'label': self.getTitleForStream(stream),
-                'path': self.plugin.url_for(endpoint='playLive',
-                                            name=channel[Keys.NAME]),
-                'is_playable': True,
-                'icon': videobanner if videobanner else logo,
-                'thumbnail': videobanner if videobanner else logo
-                }
+
+        path = self.plugin.url_for(endpoint='playLive', name=channel[Keys.NAME])
+        title = self.getTitleForStream(stream)
+        desc = channel.get(Keys.STATUS,
+                                     self.plugin.get_string(30061))
+        game = channel.get(Keys.GAME,
+                                     self.plugin.get_string(30064))
+        icon = videobanner if videobanner else logo
+        if Keys.VIEWERS in channel:
+            viewers = channel.get(Keys.VIEWERS);
+        else:
+            viewers = stream.get(Keys.VIEWERS, self.plugin.get_string(30062))
+        artist = channel.get(Keys.DISPLAY_NAME, '')
+        li = xbmcswift2.ListItem(label = '[' + game[:7] + '] ' + artist, icon = icon, thumbnail = icon, path = path)
+        li.set_info('video', { 'plot': desc , 'duration' : game, 'Rating': viewers, 'Tagline' : 'asdasd'})
+
+        return li
+
 
     def getTitleForStream(self, stream):
         titleValues = self.extractStreamTitleValues(stream)
@@ -117,7 +129,6 @@ class TitleBuilder(object):
         STREAMER_TITLE = u"{streamer} - {title}"
         VIEWERS_STREAMER_TITLE = u"{viewers} - {streamer} - {title}"
         STREAMER_GAME_TITLE = u"{streamer} - {game} - {title}"
-        GAME_VIEWERS_STREAMER_TITLE = u"[{game}] {viewers} | {streamer} - {title}"
         ELLIPSIS = u'...'
 
     def __init__(self, PLUGIN, line_length):
@@ -129,11 +140,7 @@ class TitleBuilder(object):
         template = self.getTitleTemplate(titleSetting)
 
         for key, value in titleValues.iteritems():
-            if key == "game":
-                titleValues[key] = self.cleanTitleValue(value)
-                titleValues[key] = titleValues[key][:5]
-            else:
-                titleValues[key] = self.cleanTitleValue(value)
+            titleValues[key] = self.cleanTitleValue(value)
         title = template.format(**titleValues)
 
         return self.truncateTitle(title)
@@ -143,8 +150,7 @@ class TitleBuilder(object):
                    1: TitleBuilder.Templates.VIEWERS_STREAMER_TITLE,
                    2: TitleBuilder.Templates.TITLE,
                    3: TitleBuilder.Templates.STREAMER,
-                   4: TitleBuilder.Templates.STREAMER_GAME_TITLE,
-                   5: TitleBuilder.Templates.GAME_VIEWERS_STREAMER_TITLE}
+                   4: TitleBuilder.Templates.STREAMER_GAME_TITLE}
         return options.get(titleSetting, TitleBuilder.Templates.STREAMER)
 
     def cleanTitleValue(self, value):
