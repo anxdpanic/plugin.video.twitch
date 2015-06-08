@@ -7,7 +7,7 @@
 		<!-- Video Quality -->
 		<setting id="video" type="enum" label="30040" lvalues="30041|30042|30043|30044|30063" default="0" />
 		<!-- Title Display -->
-		<setting id="titledisplay" type="enum" label="30045" lvalues="30046|30047|30048|30049|30051" default="0" />
+		<setting id="titledisplay" type="enum" label="30045" lvalues="30046|30047|30048|30049|30051|30067" default="0" />
 		<!-- Truncate titles -->
 		<setting id="titletruncate" type="bool" label="30065" default="true" />
 	</category>

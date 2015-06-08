@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from twitch import Keys
-import json
 import xbmcgui, xbmc
 
 class PlaylistConverter(object):
@@ -99,10 +98,9 @@ class JsonListItemConverter(object):
 
     def extractStreamTitleValues(self, stream):
         channel = stream[Keys.CHANNEL]
-        print json.dumps(channel, indent=4, sort_keys=True)
 
         if Keys.VIEWERS in channel:
-            viewers = channel.get(Keys.VIEWERS);
+            viewers = channel.get(Keys.VIEWERS)
         else:
             viewers = stream.get(Keys.VIEWERS, self.plugin.get_string(30062))
 
@@ -122,7 +120,7 @@ class TitleBuilder(object):
         STREAMER_TITLE = u"{streamer} - {title}"
         VIEWERS_STREAMER_TITLE = u"{viewers} - {streamer} - {title}"
         STREAMER_GAME_TITLE = u"{streamer} - {game} - {title}"
-        GAME_VIEWERS_STREAMER_TITLE = u"[{game}] {viewers}|{streamer} - {title}"
+        GAME_VIEWERS_STREAMER_TITLE = u"[{game}] {viewers} | {streamer} - {title}"
         ELLIPSIS = u'...'
 
     def __init__(self, PLUGIN, line_length):
@@ -145,7 +143,7 @@ class TitleBuilder(object):
                    2: TitleBuilder.Templates.TITLE,
                    3: TitleBuilder.Templates.STREAMER,
                    4: TitleBuilder.Templates.STREAMER_GAME_TITLE,
-                   4: TitleBuilder.Templates.GAME_VIEWERS_STREAMER_TITLE}
+                   5: TitleBuilder.Templates.GAME_VIEWERS_STREAMER_TITLE}
         return options.get(titleSetting, TitleBuilder.Templates.STREAMER)
 
     def cleanTitleValue(self, value):
@@ -161,6 +159,4 @@ class TitleBuilder(object):
             shortTitle = title[:self.line_length]
             ending = (title[self.line_length:] and TitleBuilder.Templates.ELLIPSIS)
             return shortTitle + ending
-        else:
-            return title
         return title
