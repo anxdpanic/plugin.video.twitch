@@ -129,7 +129,11 @@ class TitleBuilder(object):
         template = self.getTitleTemplate(titleSetting)
 
         for key, value in titleValues.iteritems():
-            titleValues[key] = self.cleanTitleValue(value)
+            if key == "game":
+                titleValues[key] = self.cleanTitleValue(value)
+                titleValues[key] = titleValues[key][:5]
+            else:
+                titleValues[key] = self.cleanTitleValue(value)
         title = template.format(**titleValues)
 
         return self.truncateTitle(title)
