@@ -81,7 +81,8 @@ class JsonListItemConverter(object):
         channel = stream[Keys.CHANNEL]
         videobanner = channel.get(Keys.VIDEO_BANNER, '')
         logo = channel.get(Keys.LOGO, '')
-        thumb = "http://static-cdn.jtvnw.net/ttv-boxart/" + urllib.quote(channel.get(Keys.GAME, '')) + "-272x380.jpg"
+        game = channel.get(Keys.GAME, '')
+        thumb = "http://static-cdn.jtvnw.net/ttv-boxart/" + urllib.quote(game) + "-272x380.jpg"
         
         viewers = ''
         if Keys.VIEWERS in channel:
@@ -90,16 +91,13 @@ class JsonListItemConverter(object):
             viewers = stream.get(Keys.VIEWERS, '')
 
         streamer = channel.get(Keys.DISPLAY_NAME, '')
-        game = channel.get(Keys.GAME, '')
 
         title = "[" + str(viewers) + "] " + streamer
-        props = {"fanart_image": videobanner}
         return {'label': title,
-                'path': self.plugin.url_for(endpoint='playLive',
-                                            name=channel[Keys.NAME]),
+                'path': self.plugin.url_for(endpoint='playLive', name=channel[Keys.NAME]),
                 'is_playable': True,
                 'icon': videobanner if videobanner else logo,
-                'properties': props,
+                'properties': {"fanart_image": videobanner if videobanner else logo},
                 'thumbnail': thumb,
                 'info': {
                     'title': title,
