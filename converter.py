@@ -2,7 +2,7 @@
 from twitch import Keys
 import json
 import xbmcgui, xbmc
-import xbmcswift2  # @UnresolvedImport
+import urllib
 
 class PlaylistConverter(object):
     def convertToXBMCPlaylist(self, InputPlaylist):
@@ -81,24 +81,33 @@ class JsonListItemConverter(object):
         channel = stream[Keys.CHANNEL]
         videobanner = channel.get(Keys.VIDEO_BANNER, '')
         logo = channel.get(Keys.LOGO, '')
-
-        path = self.plugin.url_for(endpoint='playLive', name=channel[Keys.NAME])
-        title = self.getTitleForStream(stream)
-        desc = channel.get(Keys.STATUS,
-                                     self.plugin.get_string(30061))
-        game = channel.get(Keys.GAME,
-                                     self.plugin.get_string(30064))
-        icon = videobanner if videobanner else logo
+        thumb = "http://static-cdn.jtvnw.net/ttv-boxart/" + urllib.quote(channel.get(Keys.GAME, '')) + "-272x380.jpg"
+        
+        viewers = ''
         if Keys.VIEWERS in channel:
             viewers = channel.get(Keys.VIEWERS);
         else:
-            viewers = stream.get(Keys.VIEWERS, self.plugin.get_string(30062))
-        artist = channel.get(Keys.DISPLAY_NAME, '')
-        li = xbmcswift2.ListItem(label = '[' + game[:7] + '] ' + artist, icon = icon, thumbnail = icon, path = path)
-        li.set_info('video', { 'plot': desc , 'duration' : game, 'Rating': viewers, 'Tagline' : 'asdasd'})
+            viewers = stream.get(Keys.VIEWERS, '')
 
-        return li
+        streamer = channel.get(Keys.DISPLAY_NAME, '')
+        game = channel.get(Keys.GAME, '')
 
+        title = "[" + str(viewers) + "] " + streamer
+        props = {"fanart_image": videobanner}
+        return {'label': title,
+                'path': self.plugin.url_for(endpoint='playLive',
+                                            name=channel[Keys.NAME]),
+                'is_playable': True,
+                'icon': videobanner if videobanner else logo,
+                'properties': props,
+                'thumbnail': thumb,
+                'info': {
+                    'title': title,
+                    'genre': game,
+                    'votes': viewers,
+                    'plot' : channel.get(Keys.STATUS, '')
+                    }
+                }
 
     def getTitleForStream(self, stream):
         titleValues = self.extractStreamTitleValues(stream)
