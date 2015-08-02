@@ -1,7 +1,8 @@
-
 #-*- encoding: utf-8 -*-
+
 VERSION='0.4.3'
 MAX_RETRIES=5
+
 import sys
 import logging
 try:
