@@ -12,4 +12,3 @@ setup(
     author_email='derwinlu+python-twitch@gmail.com',
     url='https://pypi.python.org/pypi/python-twitch',
 )
-
