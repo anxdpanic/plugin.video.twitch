@@ -137,6 +137,12 @@ class TwitchTV(object):
         url = ''.join([Urls.GAMES, Keys.TOP, options])
         return self._fetchItems(url, Keys.TOP)
 
+    def searchGames(self, query, type='suggest', live=True):
+        quotedQuery = quote_plus(query)
+        options = Urls.OPTIONS_SEARCH_GAMES.format(quotedQuery, type, live)
+        url = ''.join([Urls.SEARCH, Keys.GAMES, options])
+        return self._fetchItems(url, Keys.GAMES)
+
     def getChannels(self, offset=0, limit=10):
         options = Urls.OPTIONS_OFFSET_LIMIT.format(offset, limit)
         url = ''.join([Urls.STREAMS, options])
@@ -311,6 +317,7 @@ class Keys(object):
     FEATURED = 'featured'
     FOLLOWS = 'follows'
     GAME = 'game'
+    GAMES = 'games'
     LOGO = 'logo'
     BOX = 'box'
     LARGE = 'large'
@@ -362,6 +369,7 @@ class Urls(object):
     OPTIONS_OFFSET_LIMIT = '?offset={0}&limit={1}'
     OPTIONS_OFFSET_LIMIT_GAME = OPTIONS_OFFSET_LIMIT + '&game={2}'
     OPTIONS_OFFSET_LIMIT_QUERY = OPTIONS_OFFSET_LIMIT + '&q={2}'
+    OPTIONS_SEARCH_GAMES = '?q={0}&type={1}&live={2}'
 
     HLS_PLAYLIST = 'http://usher.twitch.tv/api/channel/hls/{0}.m3u8?sig={1}&token={2}&allow_source=true'
     VOD_PLAYLIST = 'http://usher.twitch.tv/vod/{0}?nauth={1}&nauthsig={2}'

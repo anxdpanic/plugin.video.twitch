@@ -77,6 +77,11 @@ class TestTwitchTV(unittest.TestCase):
         following = self.twitch.getFollowingGames("winlu")
         self.assertEqual(expected,following)
 
+    def test_search_games(self):
+        gamename = 'Terraria'
+        result = self.twitch.searchGames(gamename)
+        self.assertNotEqual([], result)
+
     @unittest.skip("Skip video playlist resolving due to moving urls for now")
     def test_video_playlist_c_chunked(self):
         videoid = 'c5928479'
