@@ -18,6 +18,9 @@ Credits
 -------
 This library was based on the `twitch.tv plugin for xbmc`_.
 
+Changelog
+---------
+Since v0.4.0 changes are documented in the changelog_.
 
 
 .. Links
@@ -31,3 +34,4 @@ This library was based on the `twitch.tv plugin for xbmc`_.
 .. |coverage-status| image:: https://img.shields.io/coveralls/ingwinlu/python-twitch.svg
    :target: https://coveralls.io/r/ingwinlu/python-twitch
    :alt: Coveralls: code coverage status
+.. _changelog: https://github.com/ingwinlu/python-twitch/blob/master/CHANGELOG.rst
