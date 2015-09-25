@@ -1,7 +1,7 @@
 python-twitch |build-status| |coverage-status|
 ==============================================
 
-python-twitch is an python module for simple interaction with twitch.tv
+python-twitch is an python module for simple interaction with twitch.
 
 * `github version`_
 * `pypi version`_
@@ -13,6 +13,12 @@ Installation
 Usage
 -----
 Have a look at the tests_ directory.
+
+Development
+-----------
+To help with backwards compatibility tox_ environments are provided
+that install all packages needed to run tests. Alternatively install
+all development requirements via ``pip install -r dev_requirements``.
 
 Credits
 -------
@@ -28,6 +34,7 @@ Since v0.4.0 changes are documented in the changelog_.
 .. _`github version`: https://github.com/ingwinlu/python-twitch/
 .. _`twitch.tv plugin for xbmc`: https://github.com/StateOfTheArt89/Twitch.tv-on-XBMC
 .. _tests: https://github.com/ingwinlu/python-twitch/tree/master/tests
+.. _tox: https://tox.readthedocs.org/en/latest/
 .. |build-status| image:: https://img.shields.io/travis/ingwinlu/python-twitch/master.svg
    :target: https://travis-ci.org/ingwinlu/python-twitch
    :alt: Travis CI: continuous integration status
