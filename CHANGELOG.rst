@@ -5,6 +5,8 @@ Next release
 ============
 
 - Implement searchGames
+- rename TwitchTV to Twitch, TwitchTV still available with deprecation warning
+- improve logging
 
 v0.4.3
 ======
