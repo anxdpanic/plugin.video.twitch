@@ -1,10 +1,7 @@
+from support import unittest
 from twitch import M3UPlaylist
-import unittest
-import logging
 
 class TestM3U(unittest.TestCase):
-    TwitchTV = None
-    
     live = """
 #EXTM3U
 #EXT-X-TWITCH-INFO:NODE="video2.prg01",MANIFEST-NODE="video2.prg01",SERVER-TIME="1400918840.88",USER-IP="84.112.27.151",CLUSTER="prg01",MANIFEST-CLUSTER="prg01"
@@ -112,4 +109,3 @@ http://vod.ak.hls.ttvnw.net/v1/AUTH_system/vods_1ddc/hutch_12752035712_193039230
         testSuite = unittest.TestSuite()
         testSuite.addTest(unittest.makeSuite(TestResolver))
         return testSuite
-

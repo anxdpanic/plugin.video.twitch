@@ -1,15 +1,12 @@
+from support import log, unittest
 from twitch import *
-import unittest
-import logging
 
-def test_custom_logger():
-    twitch = TwitchTV(logging)
 
-class TestTwitchTV(unittest.TestCase):
-    TwitchTV = None
+class TestTwitch(unittest.TestCase):
+    twitch = None
 
     def setUp(self):
-        self.twitch = TwitchTV()
+        self.twitch = Twitch(log)
 
     def tearDown(self):
         self.twitch = None
@@ -17,28 +14,24 @@ class TestTwitchTV(unittest.TestCase):
     def test_playback(self):
         featured = self.twitch.getFeaturedStream()
         featured = featured[0]['stream']['channel']['name']
-        logging.debug("found featured stream: " + featured)
         featuredUrl = self.twitch.getLiveStream(featured, 0)
         self.assertIn('http://',featuredUrl)
 
     def test_get_channels(self):
         channels = self.twitch.getChannels()
         channels = channels[0]['channel']['name']
-        logging.debug("found channel: " + channels)
         channelsurl = self.twitch.getLiveStream(channels, 0)
         self.assertIn('http://',channelsurl)
 
     def test_unavailable_channel(self):
         featured = self.twitch.getFeaturedStream()
         featured = featured[0]['stream']['channel']['name'] + "13456789152318561"
-        logging.debug("testing non available stream: " + featured)
         with self.assertRaises(TwitchException) as context:
             self.twitch.getLiveStream(featured, 0)
         self.assertEqual(context.exception.code, TwitchException.HTTP_ERROR)
 
     def test_offline_channel(self):
         offlinechannel = "winlu"
-        logging.debug("testing offline stream: " + offlinechannel)
         with self.assertRaises(TwitchException) as context:
             self.twitch.getLiveStream(offlinechannel, 0)
         self.assertEqual(context.exception.code, TwitchException.STREAM_OFFLINE)
@@ -142,4 +135,3 @@ class TestTwitchTV(unittest.TestCase):
         testSuite = unittest.TestSuite()
         testSuite.addTest(unittest.makeSuite(TestResolver))
         return testSuite
-

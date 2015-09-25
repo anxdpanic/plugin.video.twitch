@@ -1,8 +1,8 @@
-from twitch import *
-import unittest
-import logging
-import os
 import json
+
+from support import log, unittest
+from twitch import *
+
 
 @unittest.skip("Skipping Json/WebDataDownloader Tests")
 class TestJsonScraper(unittest.TestCase):
@@ -14,7 +14,7 @@ class TestJsonScraper(unittest.TestCase):
     goodjsonurlunsorted='http://echo.jsontest.com/key2/value2/key1/value1'
 
     def setUp(self):
-        self.scraper = JSONScraper(logging)
+        self.scraper = JSONScraper(log)
 
     def tearDown(self):
         self.scraper = None

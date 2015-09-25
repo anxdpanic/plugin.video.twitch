@@ -4,7 +4,6 @@ VERSION='0.4.3'
 MAX_RETRIES=5
 
 import sys
-import logging
 try:
     from urllib.request import urlopen, Request
     from urllib.parse import quote_plus
@@ -17,6 +16,8 @@ try:
     import json
 except:
     import simplejson as json  # @UnresolvedImport
+
+from twitch.logging import log, deprecation_warning
 
 class JSONScraper(object):
     '''
@@ -119,13 +120,17 @@ class M3UPlaylist(object):
     def __str__(self):
         return repr(self.playlist)
 
-class TwitchTV(object):
+def TwitchTV(logger=log):
+    deprecation_warning(logger, 'TwitchTV', 'Twitch')
+    return Twitch(log)
+
+class Twitch(object):
     '''
     Uses Twitch API to fetch json-encoded objects
     every method returns a dict containing the objects\' values
     '''
-    def __init__(self, logger=logging):
-        self.logger = logger
+    def __init__(self, logger=log):
+        self._logger = logger
         self.scraper = JSONScraper(logger)
 
     def getFeaturedStream(self):
