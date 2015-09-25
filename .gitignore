@@ -37,3 +37,8 @@ htmlcov
 .project
 .pydevproject
 
+# swap files
+*.swp
+
+# virtual environment
+venv
