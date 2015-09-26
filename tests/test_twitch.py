@@ -1,12 +1,15 @@
-from support import log, unittest
 from twitch import Twitch
 from twitch.exceptions import HttpException, StreamOfflineException
 
+from .support import ci, unittest
+
+
+@unittest.skipIf(ci, "Skipping legacy twitch tests on travis")
 class TestTwitch(unittest.TestCase):
     twitch = None
 
     def setUp(self):
-        self.twitch = Twitch(log)
+        self.twitch = Twitch()
 
     def tearDown(self):
         self.twitch = None

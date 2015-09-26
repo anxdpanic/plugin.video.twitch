@@ -4,7 +4,6 @@ from twitch import keys as Keys  # TODO improve
 from twitch import urls as Urls  # TODO improve
 from twitch.exceptions import HttpException, StreamOfflineException
 from twitch.logging import log as default_logger
-from twitch.parser import M3UPlaylist
 from twitch.scraper import download, get_json, quote_plus
 
 

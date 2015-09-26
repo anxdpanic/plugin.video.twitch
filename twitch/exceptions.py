@@ -2,6 +2,7 @@ NO_STREAM_URL = 0
 STREAM_OFFLINE = 1
 HTTP_ERROR = 2
 JSON_ERROR = 3
+RESOURCE_UNAVAILABLE = 4
 
 
 class TwitchException(Exception):
@@ -31,3 +32,8 @@ class HttpException(TwitchException):
 class JsonException(TwitchException):
     def __init__(self):
         TwitchException.__init__(self, JSON_ERROR)
+
+
+class ResourceUnavailableException(TwitchException):
+    def __init__(self):
+        TwitchException.__init__(self, RESOURCE_UNAVAILABLE)

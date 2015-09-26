@@ -1,6 +1,9 @@
 # -*- encoding: utf-8 -*-
-
-import sys
+import six
+from six.moves.urllib.error import URLError
+from six.moves.urllib.parse import quote_plus  # NOQA
+from six.moves.urllib.parse import urlencode
+from six.moves.urllib.request import Request, urlopen
 
 from twitch.exceptions import HttpException, JsonException
 from twitch.keys import USER_AGENT, USER_AGENT_STRING
@@ -15,31 +18,17 @@ except:
 if not json:
     raise JsonException()
 
-if sys.version_info < (3, 0):
-    PY2 = True
-    PY3 = False
-else:
-    PY2 = False
-    PY3 = True
-
-if PY2:
-    from urllib import quote_plus  # NOQA
-    from urllib2 import Request, urlopen, URLError
-elif PY3:
-    from urllib.request import urlopen, Request
-    from urllib.parse import quote_plus  # NOQA
-    from urllib.error import URLError
-
 MAX_RETRIES = 5
 
 
-def get_json(url):
+def get_json(baseurl, parameters={}, headers={}):
     '''Download Data from an URL and returns it as JSON
     @param url Url to download from
+    @param parameters Parameter dict to be encoded with url
+    @param headers Headers dict to pass with Request
     @returns JSON Object with data from URL
     '''
-
-    jsonString = download(url)
+    jsonString = download(baseurl, parameters, headers)
     try:
         jsonDict = json.loads(jsonString)
         log.debug(json.dumps(jsonDict, indent=4, sort_keys=True))
@@ -48,20 +37,24 @@ def get_json(url):
         raise JsonException()
 
 
-def download(url):
+def download(baseurl, parameters={}, headers={}):
     '''Download Data from an url and returns it as a String
-    @param url Url to download from (e.g. http://www.google.com)
+    @param baseurl Url to download from (e.g. http://www.google.com)
+    @param parameters Parameter dict to be encoded with url
+    @param headers Headers dict to pass with Request
     @returns String of data from URL
     '''
+    url = '?'.join([baseurl, urlencode(parameters)])
+    log.debug('Downloading: ' + url)
     data = ""
     for _ in range(MAX_RETRIES):
         try:
-            req = Request(url)
+            req = Request(url, headers=headers)
             req.add_header(USER_AGENT, USER_AGENT_STRING)
             response = urlopen(req)
-            if PY2:
+            if six.PY2:
                 data = response.read()
-            elif PY3:
+            else:
                 data = response.readall().decode('utf-8')
             response.close()
             break

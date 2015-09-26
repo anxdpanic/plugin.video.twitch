@@ -45,3 +45,47 @@ PREVIEW = 'preview'
 TITLE = 'title'
 QUALITY_LIST_STREAM = ['Source', 'High', 'Medium', 'Low', 'Mobile']
 QUALITY_LIST_VIDEO = ['live', '720p', '480p', '360p', '226p']
+
+# rework
+# error results
+ERROR = 'error'
+MESSAGE = 'message'
+STATUS = 'status'
+
+# links
+LINKS = '_links'
+NEXT = 'next'
+PREV = 'prev'
+SELF = 'self'
+
+# streams
+LIMIT = 'limit'
+OFFSET = 'offset'
+CLIENT_ID = 'client_id'
+
+#
+USER = 'user'
+
+# videos
+ID = 'id'
+PERIOD = 'period'
+BROADCASTS = 'broadcasts'
+HLS = 'hls'
+
+# search
+QUERY = 'query'
+TYPE = 'type'
+LIVE = 'live'
+
+# usher
+# vod
+VOD = 'vod'
+
+# live
+SIG = 'sig'
+TOKEN = 'token'
+ALLOW_SOURCE = 'allow_source'
+
+# vod
+NAUTH = 'nauth'
+NAUTHSIG = 'nauthsig'

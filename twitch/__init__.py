@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 
-from .app import Twitch
-from .exceptions import TwitchException  # NOQA
-from .logging import deprecation_warning, log
+from twitch.app import Twitch
+from twitch.exceptions import TwitchException  # NOQA
+from twitch.logging import deprecation_warning, log
 
 __all__ = ["Twitch", "TwitchException"]
 VERSION = '0.5.0'
