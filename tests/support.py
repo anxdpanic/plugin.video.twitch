@@ -1,5 +1,6 @@
 #-*- encoding: utf-8 -*-
 
+import os
 import re
 import unittest
 from logging.handlers import BufferingHandler
@@ -7,6 +8,10 @@ from twitch.logging import setup_log
 from twitch.logging import DEBUG
 
 log = setup_log('twitch-debug', DEBUG)
+if os.environ.get('CI') == 'true':
+    ci = True
+else:
+    ci = False
 
 
 class LogCountHandler(BufferingHandler):

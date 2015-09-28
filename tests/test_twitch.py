@@ -1,6 +1,6 @@
 from support import log, unittest
-from twitch import *
-
+from twitch import Twitch
+from twitch.exceptions import HttpException, StreamOfflineException
 
 class TestTwitch(unittest.TestCase):
     twitch = None
@@ -26,15 +26,13 @@ class TestTwitch(unittest.TestCase):
     def test_unavailable_channel(self):
         featured = self.twitch.getFeaturedStream()
         featured = featured[0]['stream']['channel']['name'] + "13456789152318561"
-        with self.assertRaises(TwitchException) as context:
+        with self.assertRaises(HttpException):
             self.twitch.getLiveStream(featured, 0)
-        self.assertEqual(context.exception.code, TwitchException.HTTP_ERROR)
 
     def test_offline_channel(self):
         offlinechannel = "winlu"
-        with self.assertRaises(TwitchException) as context:
+        with self.assertRaises(StreamOfflineException):
             self.twitch.getLiveStream(offlinechannel, 0)
-        self.assertEqual(context.exception.code, TwitchException.STREAM_OFFLINE)
 
     def test_get_games_streams(self):
         result = self.twitch.getGames(offset=0, limit=10)

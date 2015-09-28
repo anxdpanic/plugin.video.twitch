@@ -1,5 +1,5 @@
 from support import unittest
-from twitch import M3UPlaylist
+from twitch.parser import M3UPlaylist
 
 class TestM3U(unittest.TestCase):
     live = """
@@ -71,29 +71,29 @@ http://vod.ak.hls.ttvnw.net/v1/AUTH_system/vods_1ddc/hutch_12752035712_193039230
 
     def test_live_0(self):
         expected = 'http://video2.prg01.hls.twitch.tv/hls106/riotgamesoceania_9652805392_98328050/chunked/index-live.m3u8?token=id=7828074928424501897,bid=9652805392,exp=1401005240,node=video2-1.prg01.hls.justin.tv,nname=video2.prg01,fmt=chunked&sig=b9cd78d1ae4e9b08da21cc0fec718b2fe506af92'
-        url = M3UPlaylist(self.live).getQuality(0)
+        url = M3UPlaylist(self.live).get_quality(0)
         self.assertEqual(url, expected)
 
     def test_live_2(self):
         expected = 'http://video2.prg01.hls.twitch.tv/hls106/riotgamesoceania_9652805392_98328050/medium/index-live.m3u8?token=id=7828074928424501897,bid=9652805392,exp=1401005240,node=video2-1.prg01.hls.justin.tv,nname=video2.prg01,fmt=medium&sig=6c93f95701cd27818f5cc45da2f1a7abf23a1d1a'
-        url = M3UPlaylist(self.live).getQuality(2)
+        url = M3UPlaylist(self.live).get_quality(2)
         self.assertEqual(url, expected)
 
     def test_restr_0_2(self):
         expected = 'http://video16.prg01.hls.twitch.tv/hls18/ongamenet_9656195424_98434331/medium/index-live.m3u8?token=id=6125541036366455728,bid=9656195424,exp=1401014215,node=video16-1.prg01.hls.justin.tv,nname=video16.prg01,fmt=medium&sig=f1f4f1ee9f9cf47c826ddc95ef1f60d9a2f6a2ce'
-        url = M3UPlaylist(self.restricted).getQuality(0)
+        url = M3UPlaylist(self.restricted).get_quality(0)
         self.assertEqual(url, expected)
-        url = M3UPlaylist(self.restricted).getQuality(2)
+        url = M3UPlaylist(self.restricted).get_quality(2)
         self.assertEqual(url, expected)
 
     def test_restr_3(self):
         expected = 'http://video16.prg01.hls.twitch.tv/hls18/ongamenet_9656195424_98434331/low/index-live.m3u8?token=id=6125541036366455728,bid=9656195424,exp=1401014215,node=video16-1.prg01.hls.justin.tv,nname=video16.prg01,fmt=low&sig=754158e9e20ce4fcae5614a1f07d8b37dbc3e1a2'
-        url = M3UPlaylist(self.restricted).getQuality(3)
+        url = M3UPlaylist(self.restricted).get_quality(3)
         self.assertEqual(url, expected)
 
     def test_vod_0(self):
         expected = 'http://vod.ak.hls.ttvnw.net/v1/AUTH_system/vods_1ddc/hutch_12752035712_193039230/chunked/index-dvr.m3u8'
-        url = M3UPlaylist(self.vod).getQuality(0)
+        url = M3UPlaylist(self.vod).get_quality(0)
         self.assertEqual(url, expected)
 
     def test_empty_playlist(self):
@@ -102,10 +102,5 @@ http://vod.ak.hls.ttvnw.net/v1/AUTH_system/vods_1ddc/hutch_12752035712_193039230
 
     def test_bestMatch_quality(self):
         expected = 'http://video2.prg01.hls.twitch.tv/hls106/riotgamesoceania_9652805392_98328050/low/index-live.m3u8?token=id=7828074928424501897,bid=9652805392,exp=1401005240,node=video2-1.prg01.hls.justin.tv,nname=video2.prg01,fmt=low&sig=089be1e11a1556877ca575b3eada7a24acc7ea5a'
-        url = M3UPlaylist(self.quality_select).getQuality(2)
+        url = M3UPlaylist(self.quality_select).get_quality(2)
         self.assertEqual(url, expected)
-
-    def suite(self):
-        testSuite = unittest.TestSuite()
-        testSuite.addTest(unittest.makeSuite(TestResolver))
-        return testSuite
