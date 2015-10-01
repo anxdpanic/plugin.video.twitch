@@ -5,18 +5,13 @@ from six.moves.urllib.parse import quote_plus  # NOQA
 from six.moves.urllib.parse import urlencode
 from six.moves.urllib.request import Request, urlopen
 
-from twitch.exceptions import HttpException, JsonException
 from twitch.keys import USER_AGENT, USER_AGENT_STRING
 from twitch.logging import log
 
-json = False
 try:
     import json
 except:
     import simplejson as json  # @UnresolvedImport
-
-if not json:
-    raise JsonException()
 
 MAX_RETRIES = 5
 
@@ -29,12 +24,9 @@ def get_json(baseurl, parameters={}, headers={}):
     @returns JSON Object with data from URL
     '''
     jsonString = download(baseurl, parameters, headers)
-    try:
-        jsonDict = json.loads(jsonString)
-        log.debug(json.dumps(jsonDict, indent=4, sort_keys=True))
-        return jsonDict
-    except:
-        raise JsonException()
+    jsonDict = json.loads(jsonString)
+    log.debug(json.dumps(jsonDict, indent=4, sort_keys=True))
+    return jsonDict
 
 
 def download(baseurl, parameters={}, headers={}):
@@ -64,5 +56,5 @@ def download(baseurl, parameters={}, headers={}):
                 raise  # propagate non-URLError
             log.debug("Error %s during HTTP Request, retrying", repr(err))
     else:
-        raise HttpException()
+        raise
     return data

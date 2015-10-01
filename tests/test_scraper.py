@@ -3,7 +3,6 @@ import os
 import unittest
 
 from twitch.api import v3
-from twitch.exceptions import JsonException
 from twitch.scraper import get_json, download
 
 from . import ci
@@ -42,7 +41,7 @@ class TestScraper(unittest.TestCase):
             get_json(self.badurl2)
 
     def test_get_json_fail_3(self):
-        with self.assertRaises(JsonException):
+        with self.assertRaises(ValueError):
             get_json(self.goodurl)
 
     def test_get_json_1(self):

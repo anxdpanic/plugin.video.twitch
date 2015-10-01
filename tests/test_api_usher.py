@@ -3,13 +3,13 @@ import unittest
 
 import six
 
-from twitch import keys
 from twitch.api import usher
 from twitch.api import v3 as twitch
 from twitch.exceptions import ResourceUnavailableException
 
 
 class TestApiUsher(unittest.TestCase):
+    possible_qualities = ['Source', 'High', 'Medium', 'Low', 'Mobile']
 
     def test_live_offline(self):
         with self.assertRaises(ResourceUnavailableException):
@@ -20,7 +20,7 @@ class TestApiUsher(unittest.TestCase):
         r = usher.live(featured_name)
         self.assertNotEqual(r, {})
         for quality, url in six.iteritems(r):
-            self.assertIn(quality, keys.QUALITY_LIST_STREAM)
+            self.assertIn(quality, self.possible_qualities)
             self.assertIn('http://', url)
 
     def test_vod(self):
@@ -28,7 +28,7 @@ class TestApiUsher(unittest.TestCase):
         vod = usher._vod(top_video_id)
         self.assertNotEqual(vod, {})
         for quality, url in six.iteritems(vod):
-            self.assertIn(quality, keys.QUALITY_LIST_STREAM)
+            self.assertIn(quality, self.possible_qualities)
             self.assertIn('http://', url)
 
 

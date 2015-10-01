@@ -2,7 +2,7 @@
 
 from six.moves.urllib.parse import urljoin
 
-from twitch.exceptions import HttpException, ResourceUnavailableException
+from twitch.exceptions import ResourceUnavailableException
 from twitch.logging import log
 from twitch.scraper import download, get_json
 
@@ -61,9 +61,8 @@ class _Query(object):
     def execute(self, f):
         try:
             return f(self.url, self.params, self.headers)
-        except HttpException:
-            log.warning('Resource Unavailable: %s', str(self))
-            raise ResourceUnavailableException()
+        except:
+            raise ResourceUnavailableException(str(self))
 
 
 class DownloadQuery(_Query):
