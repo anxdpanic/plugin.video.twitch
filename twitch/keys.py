@@ -5,87 +5,29 @@
     string constants
 """
 
-BITRATE = 'bitrate'
+ALLOW_SOURCE = 'allow_source'
+BROADCASTS = 'broadcasts'
 CHANNEL = 'channel'
-CHANNELS = 'channels'
-CONNECT = 'connect'
-BACKGROUND = 'background'
-DISPLAY_NAME = 'display_name'
+CLIENT_ID = 'client_id'
+ERROR = 'error'
 FEATURED = 'featured'
 FOLLOWS = 'follows'
 GAME = 'game'
-GAMES = 'games'
-LOGO = 'logo'
-BOX = 'box'
-LARGE = 'large'
-NAME = 'name'
-NEEDED_INFO = 'needed_info'
-PLAY = 'play'
-PLAYPATH = 'playpath'
-QUALITY = 'quality'
-RTMP = 'rtmp'
-STREAMS = 'streams'
-REFERER = 'Referer'
-RTMP_URL = 'rtmpUrl'
-STATUS = 'status'
-STREAM = 'stream'
-SWF_URL = 'swfUrl'
-TEAMS = 'teams'
+HLS = 'hls'
+ID = 'id'
+LIMIT = 'limit'
+LIVE = 'live'
+MESSAGE = 'message'
+NAUTH = 'nauth'
+NAUTHSIG = 'nauthsig'
+OFFSET = 'offset'
+PERIOD = 'period'
+QUERY = 'query'
+SIG = 'sig'
 TOKEN = 'token'
-TOP = 'top'
-TOTAL = '_total'
+TYPE = 'type'
+USER = 'user'
 USER_AGENT = 'User-Agent'
 USER_AGENT_STRING = ('Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) '
                      'Gecko/20100101 Firefox/6.0')
-VIDEOS = 'videos'
-VIDEO_BANNER = 'video_banner'
-VIDEO_HEIGHT = 'video_height'
-VIEWERS = 'viewers'
-PREVIEW = 'preview'
-TITLE = 'title'
-QUALITY_LIST_STREAM = ['Source', 'High', 'Medium', 'Low', 'Mobile']
-QUALITY_LIST_VIDEO = ['live', '720p', '480p', '360p', '226p']
-
-# rework
-# error results
-ERROR = 'error'
-MESSAGE = 'message'
-STATUS = 'status'
-
-# links
-LINKS = '_links'
-NEXT = 'next'
-PREV = 'prev'
-SELF = 'self'
-
-# streams
-LIMIT = 'limit'
-OFFSET = 'offset'
-CLIENT_ID = 'client_id'
-
-#
-USER = 'user'
-
-# videos
-ID = 'id'
-PERIOD = 'period'
-BROADCASTS = 'broadcasts'
-HLS = 'hls'
-
-# search
-QUERY = 'query'
-TYPE = 'type'
-LIVE = 'live'
-
-# usher
-# vod
 VOD = 'vod'
-
-# live
-SIG = 'sig'
-TOKEN = 'token'
-ALLOW_SOURCE = 'allow_source'
-
-# vod
-NAUTH = 'nauth'
-NAUTHSIG = 'nauthsig'
