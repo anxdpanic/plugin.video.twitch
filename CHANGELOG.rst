@@ -1,6 +1,10 @@
 Release history
 ###############
 
+Next release
+============
+- Nothing yet
+
 v1.0.0
 ======
 - Complete overhaul of python-twitch
