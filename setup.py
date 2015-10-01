@@ -3,7 +3,7 @@ from twitch import VERSION
 
 setup(
     name='python-twitch',
-    description='Python Module for interaction with twitch.tv',
+    description='Library for interaction with the videogame streaming platform twitch',
     long_description=open('README.rst').read(),
     version=VERSION,
     packages=['twitch'],
