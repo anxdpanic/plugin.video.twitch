@@ -115,10 +115,10 @@ class TestApiV3Channels(unittest.TestCase):
                     u'profile_banner_background_color', u'_id',
                     u'profile_banner']
 
-    test_channel = 'test_channel'
+    channel_name = 'test_channel'
 
     def test_by_name(self):
-        result = twitch.channels.by_name(self.test_channel).keys()
+        result = twitch.channels.by_name(self.channel_name).keys()
         for expected_key in self.channel_keys:
             self.assertIn(expected_key, result)
 
@@ -128,8 +128,24 @@ class TestApiV3Channels(unittest.TestCase):
         self.assertEqual(len(videos), count)
 
     def test_channel_teams(self):
-        result = twitch.channels.teams(self.test_channel)
+        result = twitch.channels.teams(self.channel_name)
         six.assertCountEqual(self, result, [u'_links', u'teams'])
+
+    def test_channel(self):
+        with self.assertRaises(NotImplementedError):
+            twitch.channels.channel()
+
+    def test_editors(self):
+        with self.assertRaises(NotImplementedError):
+            twitch.channels.editors(self.channel_name)
+
+    def test_update(self):
+        with self.assertRaises(NotImplementedError):
+            twitch.channels.update(self.channel_name)
+
+    def test_commercial(self):
+        with self.assertRaises(NotImplementedError):
+            twitch.channels.commercial(self.channel_name)
 
 
 class TestApiV3Videos(unittest.TestCase):
@@ -145,12 +161,12 @@ class TestApiV3Videos(unittest.TestCase):
         for expected_key in self.video_keys:
             self.assertIn(expected_key, result)
 
-    def test_channel_teams(self):
-        result = twitch.videos.by_channel(TestApiV3Channels.test_channel)
+    def test_by_channel(self):
+        result = twitch.videos.by_channel('tornis')
         six.assertCountEqual(self, result, [u'_total', u'_links', u'videos'])
 
         from twitch.api.parameters import Boolean
-        result2 = twitch.videos.by_channel(TestApiV3Channels.test_channel, broadcasts=Boolean.TRUE)
+        result2 = twitch.videos.by_channel('tornis', broadcasts=Boolean.TRUE)
 
         self.assertNotEqual(result, result2)
 
