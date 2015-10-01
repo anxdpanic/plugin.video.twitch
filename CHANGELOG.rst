@@ -1,6 +1,10 @@
 Release history
 ###############
 
+Next release
+============
+- nothing yet
+
 v0.5.0
 ======
 - Implement searchGames
