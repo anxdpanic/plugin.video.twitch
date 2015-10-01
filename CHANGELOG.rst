@@ -1,9 +1,8 @@
 Release history
 ###############
 
-Next release
-============
-
+v0.5.0
+======
 - Implement searchGames
 - rename TwitchTV to Twitch, TwitchTV still available with deprecation warning
 - improve logging
