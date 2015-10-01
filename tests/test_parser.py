@@ -1,10 +1,12 @@
-from support import unittest
-from twitch import M3UPlaylist
+import unittest
+
+from twitch.parser import m3u8_to_dict
+
 
 class TestM3U(unittest.TestCase):
     live = """
 #EXTM3U
-#EXT-X-TWITCH-INFO:NODE="video2.prg01",MANIFEST-NODE="video2.prg01",SERVER-TIME="1400918840.88",USER-IP="84.112.27.151",CLUSTER="prg01",MANIFEST-CLUSTER="prg01"
+#EXT-X-TWITCH-INFO:NODE="video2.prg01",MANIFEST-NODE="video2.prg01",SERVER-TIME="1400918840.88",USER-IP="123.456.789.123",CLUSTER="prg01",MANIFEST-CLUSTER="prg01"
 #EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID="chunked",NAME="Source",AUTOSELECT=YES,DEFAULT=YES
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=2576820,RESOLUTION=1280x720,VIDEO="chunked"
 http://video2.prg01.hls.twitch.tv/hls106/riotgamesoceania_9652805392_98328050/chunked/index-live.m3u8?token=id=7828074928424501897,bid=9652805392,exp=1401005240,node=video2-1.prg01.hls.justin.tv,nname=video2.prg01,fmt=chunked&sig=b9cd78d1ae4e9b08da21cc0fec718b2fe506af92
@@ -23,7 +25,7 @@ http://video2.prg01.hls.twitch.tv/hls106/riotgamesoceania_9652805392_98328050/mo
     
     restricted = """
 #EXTM3U
-#EXT-X-TWITCH-INFO:NODE="video16.prg01",MANIFEST-NODE="video16.prg01",SERVER-TIME="1400927815.96",USER-IP="84.112.27.151",CLUSTER="prg01",MANIFEST-CLUSTER="prg01"
+#EXT-X-TWITCH-INFO:NODE="video16.prg01",MANIFEST-NODE="video16.prg01",SERVER-TIME="1400927815.96",USER-IP="11.22.33.44",CLUSTER="prg01",MANIFEST-CLUSTER="prg01"
 #EXT-X-TWITCH-RESTRICTED:GROUP-ID="chunked",NAME="Source",RESTRICTION="chansub"
 #EXT-X-TWITCH-RESTRICTED:GROUP-ID="high",NAME="High",RESTRICTION="chansub"
 #EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID="medium",NAME="Medium",AUTOSELECT=YES,DEFAULT=YES
@@ -38,7 +40,7 @@ http://video16.prg01.hls.twitch.tv/hls18/ongamenet_9656195424_98434331/mobile/in
 
     quality_select = """
 #EXTM3U
-#EXT-X-TWITCH-INFO:NODE="video2.prg01",MANIFEST-NODE="video2.prg01",SERVER-TIME="1400918840.88",USER-IP="84.112.27.151",CLUSTER="prg01",MANIFEST-CLUSTER="prg01"
+#EXT-X-TWITCH-INFO:NODE="video2.prg01",MANIFEST-NODE="video2.prg01",SERVER-TIME="1400918840.88",USER-IP="61.111.117.211",CLUSTER="prg01",MANIFEST-CLUSTER="prg01"
 #EXT-X-TWITCH-RESTRICTED:GROUP-ID="chunked",NAME="Source",RESTRICTION="chansub"
 #EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID="high",NAME="High",AUTOSELECT=YES,DEFAULT=YES
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=1760000,VIDEO="high"
@@ -71,41 +73,27 @@ http://vod.ak.hls.ttvnw.net/v1/AUTH_system/vods_1ddc/hutch_12752035712_193039230
 
     def test_live_0(self):
         expected = 'http://video2.prg01.hls.twitch.tv/hls106/riotgamesoceania_9652805392_98328050/chunked/index-live.m3u8?token=id=7828074928424501897,bid=9652805392,exp=1401005240,node=video2-1.prg01.hls.justin.tv,nname=video2.prg01,fmt=chunked&sig=b9cd78d1ae4e9b08da21cc0fec718b2fe506af92'
-        url = M3UPlaylist(self.live).getQuality(0)
+        url = m3u8_to_dict(self.live)['Source']
         self.assertEqual(url, expected)
 
     def test_live_2(self):
         expected = 'http://video2.prg01.hls.twitch.tv/hls106/riotgamesoceania_9652805392_98328050/medium/index-live.m3u8?token=id=7828074928424501897,bid=9652805392,exp=1401005240,node=video2-1.prg01.hls.justin.tv,nname=video2.prg01,fmt=medium&sig=6c93f95701cd27818f5cc45da2f1a7abf23a1d1a'
-        url = M3UPlaylist(self.live).getQuality(2)
+        url = m3u8_to_dict(self.live)['Medium']
         self.assertEqual(url, expected)
 
     def test_restr_0_2(self):
         expected = 'http://video16.prg01.hls.twitch.tv/hls18/ongamenet_9656195424_98434331/medium/index-live.m3u8?token=id=6125541036366455728,bid=9656195424,exp=1401014215,node=video16-1.prg01.hls.justin.tv,nname=video16.prg01,fmt=medium&sig=f1f4f1ee9f9cf47c826ddc95ef1f60d9a2f6a2ce'
-        url = M3UPlaylist(self.restricted).getQuality(0)
-        self.assertEqual(url, expected)
-        url = M3UPlaylist(self.restricted).getQuality(2)
+        with self.assertRaises(KeyError):
+            m3u8_to_dict(self.restricted)['Source']
+        url = m3u8_to_dict(self.restricted)['Medium']
         self.assertEqual(url, expected)
 
     def test_restr_3(self):
         expected = 'http://video16.prg01.hls.twitch.tv/hls18/ongamenet_9656195424_98434331/low/index-live.m3u8?token=id=6125541036366455728,bid=9656195424,exp=1401014215,node=video16-1.prg01.hls.justin.tv,nname=video16.prg01,fmt=low&sig=754158e9e20ce4fcae5614a1f07d8b37dbc3e1a2'
-        url = M3UPlaylist(self.restricted).getQuality(3)
+        url = m3u8_to_dict(self.restricted)['Low']
         self.assertEqual(url, expected)
 
     def test_vod_0(self):
         expected = 'http://vod.ak.hls.ttvnw.net/v1/AUTH_system/vods_1ddc/hutch_12752035712_193039230/chunked/index-dvr.m3u8'
-        url = M3UPlaylist(self.vod).getQuality(0)
+        url = m3u8_to_dict(self.vod)['Source']
         self.assertEqual(url, expected)
-
-    def test_empty_playlist(self):
-        with self.assertRaises(ValueError):
-            M3UPlaylist('')
-
-    def test_bestMatch_quality(self):
-        expected = 'http://video2.prg01.hls.twitch.tv/hls106/riotgamesoceania_9652805392_98328050/low/index-live.m3u8?token=id=7828074928424501897,bid=9652805392,exp=1401005240,node=video2-1.prg01.hls.justin.tv,nname=video2.prg01,fmt=low&sig=089be1e11a1556877ca575b3eada7a24acc7ea5a'
-        url = M3UPlaylist(self.quality_select).getQuality(2)
-        self.assertEqual(url, expected)
-
-    def suite(self):
-        testSuite = unittest.TestSuite()
-        testSuite.addTest(unittest.makeSuite(TestResolver))
-        return testSuite
