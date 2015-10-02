@@ -1,6 +1,10 @@
 Release history
 ###############
 
+v1.1.1
+======
+- Add missing modules to setup.py to fix pypi builds
+
 v1.1.0
 ======
 - Add missing api.v3.follows module
