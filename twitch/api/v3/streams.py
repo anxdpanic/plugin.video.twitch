@@ -9,7 +9,7 @@ from twitch.queries import query
 @query
 def by_channel(name):
     q = Qry('streams/{channel}')
-    q.add_urlkw('channel', name)
+    q.add_urlkw(keys.CHANNEL, name)
     return q
 
 
