@@ -305,3 +305,19 @@ class TestApiV3Subscriptions(unittest.TestCase):
     def test_user_to_channel(self):
         with self.assertRaises(NotImplementedError):
             twitch.subscriptions.user_to_channel('a', 'b')
+
+
+class TestApiV3Teams(unittest.TestCase):
+
+    team_keys = [u'_id', u'_links', u'background', u'banner', u'created_at',
+                 u'display_name', u'info', u'logo', u'name', u'updated_at']
+
+    def test_active(self):
+        r = twitch.teams.active(limit=25)['teams']
+        for team in r:
+            six.assertCountEqual(self, self.team_keys, team.keys())
+
+    def test_by_name(self):
+        team_name = 'eg'
+        eg = twitch.teams.by_name(team_name)['name']
+        self.assertEqual(team_name, eg)
