@@ -5,6 +5,8 @@ import six
 from twitch.api import v3 as twitch
 from twitch.exceptions import ResourceUnavailableException
 
+from . import ci
+
 class TestApiV3Root(unittest.TestCase):
 
     def test_root(self):
@@ -242,3 +244,80 @@ class TestApiV3Follows(unittest.TestCase):
     def test_streams(self):
         with self.assertRaises(NotImplementedError):
             twitch.follows.streams()
+
+
+class TestApiV3Blocks(unittest.TestCase):
+
+    def test_by_name(self):
+        with self.assertRaises(NotImplementedError):
+            twitch.blocks.by_name('a')
+
+    def test_add_block(self):
+        with self.assertRaises(NotImplementedError):
+            twitch.blocks.add_block('a', 'b')
+
+    def test_del_block(self):
+        with self.assertRaises(NotImplementedError):
+            twitch.blocks.del_block('a', 'b')
+
+
+class TestApiV3Chat(unittest.TestCase):
+
+    def test_channel(self):
+        r = twitch.chat.by_channel(TestApiV3Channels.channel_name)
+        expected = {
+                u'_links': {
+                        u'emoticons': u'https://api.twitch.tv/kraken/chat/test_channel/emoticons',
+                        u'self': u'https://api.twitch.tv/kraken/chat/test_channel',
+                        u'badges': u'https://api.twitch.tv/kraken/chat/test_channel/badges'
+                }
+        }
+        self.assertEqual(r, expected)
+
+    def test_badges(self):
+        r1 = twitch.chat.badges(TestApiV3Channels.channel_name)
+        r2 = twitch.chat.badges('tornis')
+        self.assertNotEqual(r1,r2)
+
+    @unittest.skipIf(ci, "skip on ci since answer is not paginated")
+    def test_emoticons(self):
+        e = twitch.chat.emoticons()['emoticons']
+        self.assertGreaterEqual(len(e), 36306)
+
+
+class TestApiV3Ingests(unittest.TestCase):
+
+    def test_ingests(self):
+        r = twitch.ingests.get()['ingests']
+        self.assertGreaterEqual(len(r), 26)
+
+
+class TestApiV3Subscriptions(unittest.TestCase):
+
+    def test_by_channel(self):
+        with self.assertRaises(NotImplementedError):
+            twitch.subscriptions.by_channel('a')
+
+    def test_channel_to_user(self):
+        with self.assertRaises(NotImplementedError):
+            twitch.subscriptions.channel_to_user('a', 'b')
+
+    def test_user_to_channel(self):
+        with self.assertRaises(NotImplementedError):
+            twitch.subscriptions.user_to_channel('a', 'b')
+
+
+class TestApiV3Teams(unittest.TestCase):
+
+    team_keys = [u'_id', u'_links', u'background', u'banner', u'created_at',
+                 u'display_name', u'info', u'logo', u'name', u'updated_at']
+
+    def test_active(self):
+        r = twitch.teams.active(limit=25)['teams']
+        for team in r:
+            six.assertCountEqual(self, self.team_keys, team.keys())
+
+    def test_by_name(self):
+        team_name = 'eg'
+        eg = twitch.teams.by_name(team_name)['name']
+        self.assertEqual(team_name, eg)
