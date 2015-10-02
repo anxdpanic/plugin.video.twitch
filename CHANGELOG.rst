@@ -1,9 +1,11 @@
 Release history
 ###############
 
-Next release
-============
-- Nothing yet
+v1.1.0
+======
+- Add missing api.v3.follows module
+- Expand v3.channel stubs
+- Add NullHandler to logging instance
 
 v1.0.0
 ======
