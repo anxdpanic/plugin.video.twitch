@@ -31,7 +31,7 @@ def editors(name):
 
 # TODO needs authentification and put requests
 @query
-def update(name, status, game, delay):
+def update(name, status=None, game=None, delay=0):
     raise NotImplementedError
 
 
@@ -43,7 +43,7 @@ def delete(name):
 
 # TODO needs auth, needs POST request
 @query
-def commercial():
+def commercial(name, length=30):
     raise NotImplementedError
 
 
