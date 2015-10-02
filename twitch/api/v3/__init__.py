@@ -9,6 +9,7 @@ from twitch.api.v3 import games  # NOQA
 from twitch.api.v3 import ingests  # NOQA
 from twitch.api.v3 import search  # NOQA
 from twitch.api.v3 import streams  # NOQA
+from twitch.api.v3 import subscriptions  # NOQA
 from twitch.api.v3 import users  # NOQA
 from twitch.api.v3 import videos  # NOQA
 from twitch.api.v3.root import root  # NOQA

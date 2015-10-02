@@ -290,3 +290,18 @@ class TestApiV3Ingests(unittest.TestCase):
     def test_ingests(self):
         r = twitch.ingests.get()['ingests']
         self.assertGreaterEqual(len(r), 26)
+
+
+class TestApiV3Subscriptions(unittest.TestCase):
+
+    def test_by_channel(self):
+        with self.assertRaises(NotImplementedError):
+            twitch.subscriptions.by_channel('a')
+
+    def test_channel_to_user(self):
+        with self.assertRaises(NotImplementedError):
+            twitch.subscriptions.channel_to_user('a', 'b')
+
+    def test_user_to_channel(self):
+        with self.assertRaises(NotImplementedError):
+            twitch.subscriptions.user_to_channel('a', 'b')
