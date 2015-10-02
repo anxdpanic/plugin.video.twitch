@@ -3,7 +3,7 @@ import unittest
 import six
 
 from twitch.api import v3 as twitch
-
+from twitch.exceptions import ResourceUnavailableException
 
 class TestApiV3Root(unittest.TestCase):
 
@@ -195,3 +195,50 @@ class TestApiV3Search(unittest.TestCase):
     def test_games(self):
         result = twitch.search.games('starcraft').get('games')[0].keys()
         six.assertCountEqual(self, result, TestApiV3Games.game_keys + [u'popularity'])
+
+
+class TestApiV3Follows(unittest.TestCase):
+
+    def test_by_channel(self):
+        result = twitch.follows.by_channel('tornis')['follows']
+        self.assertEqual(len(result), 25)
+
+    def test_by_user(self):
+        def get_self_link(r, n):
+            return r['follows'][n]['_links']['self']
+        result = twitch.follows.by_user(TestApiV3Channels.channel_name)
+        result_rev = twitch.follows.by_user(TestApiV3Channels.channel_name, direction='asc')
+
+        s_l_1 = get_self_link(result, 0)
+        s_l_2 = get_self_link(result_rev, 1)
+        self.assertEqual(s_l_1, s_l_2)
+
+    def test_status(self):
+        def get_channel_from_r(r, n):
+            return r['follows'][n]['channel']['name']
+        result = twitch.follows.by_user(TestApiV3Channels.channel_name)
+        channel_1 = get_channel_from_r(result, 0)
+
+        with self.assertRaises(ResourceUnavailableException):
+            twitch.follows.status(TestApiV3Channels.channel_name, channel_1 + 'asffweafwefa')
+
+        with self.assertRaises(ResourceUnavailableException):
+            twitch.follows.status(TestApiV3Channels.channel_name + 'asfweaf', channel_1)
+
+        with self.assertRaises(ResourceUnavailableException):
+            twitch.follows.status(TestApiV3Channels.channel_name, 'tornis')
+
+        f = twitch.follows.status(TestApiV3Channels.channel_name, channel_1)
+        self.assertEqual(f['created_at'], "2010-04-15T05:59:08+00:00")
+
+    def test_follow(self):
+        with self.assertRaises(NotImplementedError):
+            twitch.follows.follow('a','b')
+
+    def test_unfollow(self):
+        with self.assertRaises(NotImplementedError):
+            twitch.follows.unfollow('a','b')
+
+    def test_streams(self):
+        with self.assertRaises(NotImplementedError):
+            twitch.follows.streams()

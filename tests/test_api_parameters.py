@@ -1,6 +1,7 @@
 import unittest
 
-from twitch.api.parameters import _Parameter, Period, Boolean
+from twitch.api.parameters import (_Parameter, Period, Boolean, Direction,
+                                   SortBy)
 
 
 class TestApiParameters(unittest.TestCase):
@@ -36,3 +37,24 @@ class TestApiParameters(unittest.TestCase):
             Boolean.validate(False)
         with self.assertRaises(ValueError):
             Boolean.validate('')
+
+    def test_direction(self):
+        Direction.validate(Direction.DESC)
+        Direction.validate(Direction.ASC)
+        Direction.validate('desc')
+        Direction.validate('asc')
+
+        with self.assertRaises(ValueError):
+            Direction.validate(True)
+        with self.assertRaises(ValueError):
+            Direction.validate(12)
+        with self.assertRaises(ValueError):
+            Direction.validate('')
+
+    def test_sort_by(self):
+        SortBy.validate(SortBy.CREATED_AT)
+        SortBy.validate(SortBy.LAST_BROADCAST)
+        SortBy.validate(SortBy.LOGIN)
+
+        with self.assertRaises(ValueError):
+            SortBy.validate('logoff')
