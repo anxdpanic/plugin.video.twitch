@@ -242,3 +242,18 @@ class TestApiV3Follows(unittest.TestCase):
     def test_streams(self):
         with self.assertRaises(NotImplementedError):
             twitch.follows.streams()
+
+
+class TestApiV3Blocks(unittest.TestCase):
+
+    def test_by_name(self):
+        with self.assertRaises(NotImplementedError):
+            twitch.blocks.by_name('a')
+
+    def test_add_block(self):
+        with self.assertRaises(NotImplementedError):
+            twitch.blocks.add_block('a', 'b')
+
+    def test_del_block(self):
+        with self.assertRaises(NotImplementedError):
+            twitch.blocks.del_block('a', 'b')

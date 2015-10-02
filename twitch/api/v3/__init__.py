@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 # https://github.com/justintv/Twitch-API/blob/master/v3_resources/
 
+from twitch.api.v3 import blocks  # NOQA
 from twitch.api.v3 import channels  # NOQA
 from twitch.api.v3 import follows  # NOQA
 from twitch.api.v3 import games  # NOQA
