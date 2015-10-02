@@ -23,3 +23,18 @@ class Boolean(_Parameter):
     FALSE = 'false'
 
     _valid = [TRUE, FALSE]
+
+
+class Direction(_Parameter):
+    DESC = 'desc'
+    ASC = 'asc'
+
+    _valid = [DESC, ASC]
+
+
+class SortBy(_Parameter):
+    CREATED_AT = 'created_at'
+    LAST_BROADCAST = 'last_broadcast'
+    LOGIN = 'login'
+
+    _valid = [CREATED_AT, LAST_BROADCAST, LOGIN]
