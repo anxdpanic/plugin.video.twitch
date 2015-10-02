@@ -13,7 +13,7 @@ setup(
     description='Library for interaction with the videogame streaming platform twitch',
     long_description=open('README.rst').read(),
     version=VERSION,
-    packages=['twitch'],
+    packages=['twitch', 'twitch.api', 'twitch.api.v2', 'twitch.api.v3'],
     install_requires=['six >= 1.9.0'],
     license='GPLv3',
     author='winlu',
