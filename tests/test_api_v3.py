@@ -5,6 +5,8 @@ import six
 from twitch.api import v3 as twitch
 from twitch.exceptions import ResourceUnavailableException
 
+from . import ci
+
 class TestApiV3Root(unittest.TestCase):
 
     def test_root(self):
@@ -257,3 +259,27 @@ class TestApiV3Blocks(unittest.TestCase):
     def test_del_block(self):
         with self.assertRaises(NotImplementedError):
             twitch.blocks.del_block('a', 'b')
+
+
+class TestApiV3Chat(unittest.TestCase):
+
+    def test_channel(self):
+        r = twitch.chat.by_channel(TestApiV3Channels.channel_name)
+        expected = {
+                u'_links': {
+                        u'emoticons': u'https://api.twitch.tv/kraken/chat/test_channel/emoticons',
+                        u'self': u'https://api.twitch.tv/kraken/chat/test_channel',
+                        u'badges': u'https://api.twitch.tv/kraken/chat/test_channel/badges'
+                }
+        }
+        self.assertEqual(r, expected)
+
+    def test_badges(self):
+        r1 = twitch.chat.badges(TestApiV3Channels.channel_name)
+        r2 = twitch.chat.badges('tornis')
+        self.assertNotEqual(r1,r2)
+
+    @unittest.skipIf(ci, "skip on ci since answer is not paginated")
+    def test_emoticons(self):
+        e = twitch.chat.emoticons()['emoticons']
+        self.assertGreaterEqual(len(e), 36306)

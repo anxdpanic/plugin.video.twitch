@@ -3,6 +3,7 @@
 
 from twitch.api.v3 import blocks  # NOQA
 from twitch.api.v3 import channels  # NOQA
+from twitch.api.v3 import chat  # NOQA
 from twitch.api.v3 import follows  # NOQA
 from twitch.api.v3 import games  # NOQA
 from twitch.api.v3 import search  # NOQA
