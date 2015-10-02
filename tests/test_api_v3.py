@@ -283,3 +283,10 @@ class TestApiV3Chat(unittest.TestCase):
     def test_emoticons(self):
         e = twitch.chat.emoticons()['emoticons']
         self.assertGreaterEqual(len(e), 36306)
+
+
+class TestApiV3Ingests(unittest.TestCase):
+
+    def test_ingests(self):
+        r = twitch.ingests.get()['ingests']
+        self.assertGreaterEqual(len(r), 26)

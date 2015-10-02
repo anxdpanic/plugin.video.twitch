@@ -6,6 +6,7 @@ from twitch.api.v3 import channels  # NOQA
 from twitch.api.v3 import chat  # NOQA
 from twitch.api.v3 import follows  # NOQA
 from twitch.api.v3 import games  # NOQA
+from twitch.api.v3 import ingests  # NOQA
 from twitch.api.v3 import search  # NOQA
 from twitch.api.v3 import streams  # NOQA
 from twitch.api.v3 import users  # NOQA
