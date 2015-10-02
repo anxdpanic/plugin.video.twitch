@@ -1,6 +1,15 @@
 Release history
 ###############
 
+v1.2.0
+======
+- Implement missing v3 modules
+  - blocks
+  - chat
+  - ingests
+  - subscriptions
+  - teams
+
 v1.1.1
 ======
 - Add missing modules to setup.py to fix pypi builds
