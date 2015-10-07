@@ -113,6 +113,8 @@ def createListForGame(gameName, index):
 @managedTwitchExceptions
 def createFollowingList():
     username = getUserName()
+    if not username:
+        return []
     streams = TWITCHTV.getFollowingStreams(username)
     liveStreams = [CONVERTER.convertStreamToListItem(stream) for stream in streams['live']]
     liveStreams.insert(0,{'path': PLUGIN.url_for(endpoint='createFollowingList'), 'icon': u'', 'is_playable': False, 'label': PLUGIN.get_string(30012)})
@@ -124,6 +126,8 @@ def createFollowingList():
 @managedTwitchExceptions
 def createFollowingGameList():
     username = getUserName()
+    if not username:
+        return []
     games = TWITCHTV.getFollowingGames(username)
     items = [CONVERTER.convertGameToListItem(element) for element in games]
     return items
