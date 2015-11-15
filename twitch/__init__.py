@@ -311,6 +311,7 @@ class Keys(object):
     LOGO = 'logo'
     BOX = 'box'
     LARGE = 'large'
+    MEDIUM = 'medium'
     NAME = 'name'
     NEEDED_INFO = 'needed_info'
     PLAY = 'play'
@@ -335,6 +336,7 @@ class Keys(object):
     VIEWERS = 'viewers'
     PREVIEW = 'preview'
     TITLE = 'title'
+    LENGTH = 'length'
 
     QUALITY_LIST_STREAM = ['Source', 'High', 'Medium', 'Low', 'Mobile']
     QUALITY_LIST_VIDEO = ['live', '720p', '480p', '360p', '226p']

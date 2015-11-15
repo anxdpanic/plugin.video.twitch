@@ -72,24 +72,30 @@ class JsonListItemConverter(object):
                 }
 
     def convertVideoListToListItem(self,video):
+        duration = str(video.get(Keys.LENGTH, ''))
         return {'label': video['title'],
                 'path': self.plugin.url_for(endpoint='playVideo',
                                             id=video['_id']),
                 'is_playable': True,
                 'icon': video.get(Keys.PREVIEW, ''),
-                'thumbnail': video.get(Keys.PREVIEW, '')
+                'thumbnail': video.get(Keys.PREVIEW, ''),
+                'info': {'duration': duration}
                 }
 
     def convertStreamToListItem(self, stream):
         channel = stream[Keys.CHANNEL]
         videobanner = channel.get(Keys.VIDEO_BANNER, '')
+        preview = stream.get(Keys.PREVIEW, '')
+        if preview:
+            preview = preview.get(Keys.MEDIUM, '')
         logo = channel.get(Keys.LOGO, '')
         return {'label': self.getTitleForStream(stream),
                 'path': self.plugin.url_for(endpoint='playLive',
                                             name=channel[Keys.NAME]),
                 'is_playable': True,
-                'icon': videobanner if videobanner else logo,
-                'thumbnail': videobanner if videobanner else logo
+                'icon': preview if preview else logo,
+                'thumbnail': preview if preview else logo,
+                'properties': {'fanart_image': videobanner}
                 }
 
     def getTitleForStream(self, stream):
