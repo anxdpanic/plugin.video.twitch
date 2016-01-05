@@ -191,7 +191,7 @@ class TestApiV3Search(unittest.TestCase):
         result = twitch.search.streams('starcraft').get('streams')[0].keys()
         expected =  [u'is_playlist', u'preview', u'created_at',
                      u'video_height', u'game', u'_links', u'channel',
-                     u'average_fps', u'_id', u'viewers']
+                     u'average_fps', u'_id', u'viewers', u'delay']
         six.assertCountEqual(self, result, expected)
 
     def test_games(self):
