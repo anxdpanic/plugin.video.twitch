@@ -47,7 +47,7 @@ def download(baseurl, parameters={}, headers={}):
             if six.PY2:
                 data = response.read()
             else:
-                data = response.readall().decode('utf-8')
+                data = response.read().decode('utf-8')
             response.close()
             break
         except Exception as err:
