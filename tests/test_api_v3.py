@@ -289,7 +289,7 @@ class TestApiV3Ingests(unittest.TestCase):
 
     def test_ingests(self):
         r = twitch.ingests.get()['ingests']
-        self.assertGreaterEqual(len(r), 26)
+        self.assertGreaterEqual(len(r), 10)
 
 
 class TestApiV3Subscriptions(unittest.TestCase):
