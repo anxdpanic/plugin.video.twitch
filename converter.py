@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from twitch import Keys
-import xbmcgui, xbmc
+import xbmcgui, xbmc, uuid
 
 class PlaylistConverter(object):
     def convertToXBMCPlaylist(self, InputPlaylist):
@@ -87,7 +87,7 @@ class JsonListItemConverter(object):
         videobanner = channel.get(Keys.VIDEO_BANNER, '')
         preview = stream.get(Keys.PREVIEW, '')
         if preview:
-            preview = preview.get(Keys.MEDIUM, '')
+            preview = preview.get(Keys.MEDIUM, '') + "?uuid=" + str(uuid.uuid4());
         logo = channel.get(Keys.LOGO, '')
         return {'label': self.getTitleForStream(stream),
                 'path': self.plugin.url_for(endpoint='playLive',
