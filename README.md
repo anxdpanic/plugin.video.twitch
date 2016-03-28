@@ -1,18 +1,18 @@
 Twitch.tv on XBMC (Kodi)
 ==================
 
-Watch your favorite gaming streams on XBMC (Kodi).
+Watch your favorite gaming streams on Kodi.
 
 FAQ
 ----------------
 
-* I can't find the Twitch.tv add-on in the xbmc add-on manager!
+* I can't find the Twitch.tv add-on in the Kodi add-on manager!
 
-> Make sure you are using at least XBMC 12 Frodo / XBMC 13 Gotham / Kodi 14 Helix.
+> Make sure you are using at least Kodi 14 (Helix), Kodi 15 (Isengard), Kodi 16 (Jarvis).
 
 * I'm having issues with the playback of streams (buffering, dropping, stuttering).
 
-> This Addon does not handle any aspect of the playback of Twitch streams (that would be the XBMC Video Player), it simply tells XBMC what to play.
+> This Addon does not handle any aspect of the playback of Twitch streams (that would be the Kodi Video Player), it simply tells Kodi what to play.
 > The Addon does however provide Quality Options which may help if your internet connection / computer specs are below requirements for HD streams.
 
 
