@@ -92,3 +92,5 @@
 - added followed games Thanks to stevensmedia
 1.3.3
 - added French language
+1.4.0
+- Major code refactoring + IRC integration. Thanks to anxdpanic
