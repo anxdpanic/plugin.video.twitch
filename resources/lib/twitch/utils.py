@@ -4,8 +4,10 @@ import json
 from random import randint
 from xbmcaddon import Addon
 from urllib2 import Request, urlopen, URLError
-from constants import MAX_RETRIES, Keys
+from constants import Keys
 from exception import TwitchException
+
+MAX_RETRIES = 5
 
 
 class JSONScraper(object):
