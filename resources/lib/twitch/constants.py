@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 TWITCH_API_VERSION = 3
-MAX_RETRIES = 5
 
 
 class Keys(object):
@@ -96,7 +95,7 @@ class Urls(object):
     OPTIONS_OFFSET_LIMIT_QUERY = OPTIONS_OFFSET_LIMIT + '&q={2}'
 
     HLS_PLAYLIST = 'http://usher.twitch.tv/api/channel/hls/{0}.m3u8?sig={1}&token={2}&allow_source=true'
-    VOD_PLAYLIST = 'http://usher.twitch.tv/vod/{0}?nauth={1}&nauthsig={2}'
+    VOD_PLAYLIST = 'http://usher.twitch.tv/vod/{0}?nauth={1}&nauthsig={2}&allow_source=true'
 
     CHANNEL_VIDEOS = 'https://api.twitch.tv/kraken/channels/{0}/videos?limit=8&offset={1}&broadcasts={2}'
     VIDEO_PLAYLIST = 'https://api.twitch.tv/api/videos/{0}'
