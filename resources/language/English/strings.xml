@@ -1,10 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-    <!-- Next available: 30098 -->
+    <!-- Next available: 30099 -->
     <!-- main menu -->
     <string id="30001">Games</string>
     <string id="30002">Following</string>
     <string id="30066">Followed Games</string>
+    <string id="30098">Select Video by ID or URL</string>
     <string id="30003">Search</string>
     <string id="30004">Settings</string>
     <string id="30005">Featured Streams</string>

@@ -5,6 +5,7 @@ from twitch.constants import Keys
 from exception import managedTwitchExceptions, TwitchException
 from converter import JsonListItemConverter, PlaylistConverter
 from constants import PLUGIN, LINE_LENGTH, LIVE_PREVIEW_IMAGE, Images
+from xbmc import Keyboard
 
 TWITCHTV = TwitchTV(PLUGIN.log)
 CONVERTER = JsonListItemConverter(PLUGIN, LINE_LENGTH)
@@ -57,6 +58,13 @@ def createMainListing():
          'art': utils.theArt(),
          'context_menu': context_menu,
          'path': PLUGIN.url_for(endpoint='createListOfTeams', index='0')
+         },
+        {'label': PLUGIN.get_string(30098),
+         'icon': Images.ICON,
+         'thumbnail': Images.THUMB,
+         'art': utils.theArt(),
+         'context_menu': context_menu,
+         'path': PLUGIN.url_for(endpoint='createListForSelectedVideo')
          },
         {'label': PLUGIN.get_string(30003),
          'icon': Images.ICON,
@@ -181,6 +189,33 @@ def channelVideosList(name, index, past):
     if videos[Keys.TOTAL] > (offset + 8):
         items.append(utils.linkToNextPage('channelVideosList', index, name=name, past=past))
     PLUGIN.set_content(utils.getContentType())
+    return items
+
+
+@PLUGIN.route('/createListForSelectedVideo/')
+@managedTwitchExceptions
+def createListForSelectedVideo():
+    def extractVideoID(url):
+        _id = url                         # http://twitch.tv/a/v/12345678?t=9m1s
+        idx = _id.find('?')
+        if idx >= 0:
+            _id = _id[:idx]               # https://twitch.tv/a/v/12345678
+        idx = _id.rfind('/')
+        if idx >= 0:
+            _id = _id[:idx] + _id[idx+1:] # https://twitch.tv/a/v12345678
+        idx = _id.rfind('/')
+        if idx >= 0:
+            _id = _id[idx+1:]             # v12345678
+        return _id
+
+    items = []
+    keyboard = Keyboard('')
+    keyboard.doModal()
+    if keyboard.isConfirmed():
+        _id = extractVideoID(keyboard.getText())
+        if _id:
+            video = TWITCHTV.getVideo(_id)
+            items = [CONVERTER.convertVideoListToListItem(video)]
     return items
 
 
