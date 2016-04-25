@@ -24,6 +24,8 @@
         <description lang='fr'>Regardez les streams de vos jeux favoris !</description>
         <summary lang='nl'>Twitch video plugin</summary>
         <description lang='nl'>Bekijk je favoriete gaming-streams!</description>
+        <summary lang='no'>Tillegg for Twitch</summary>
+        <description lang='no'>Se dine favorittstrømmere!</description>
         <summary lang='pl'>Twitch video plugin</summary>
         <description lang='pl'>Oglądaj ulubione programy TwitchTV!</description>
     </extension>
