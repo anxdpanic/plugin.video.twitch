@@ -7,6 +7,12 @@ from urllib2 import Request, urlopen, URLError
 from constants import Keys
 from exception import TwitchException
 
+
+if sys.version_info >= (2, 7, 9):
+    import ssl
+    ssl._create_default_https_context = ssl._create_unverified_context
+
+
 MAX_RETRIES = 5
 
 
