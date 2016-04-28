@@ -47,9 +47,13 @@ class TwitchTV(object):
         channelNames = self._filterChannelNames(followingChannels)
 
         # get Streams of that Channels
-        options = '?channel=' + ','.join([channels[Keys.NAME] for channels in channelNames])
-        url = ''.join([Urls.BASE, Keys.STREAMS, options])
-        channels = {Keys.LIVE: self._fetchItems(url, Keys.STREAMS), Keys.OTHERS: channelNames}
+        live = []
+        step = 25
+        for i in range(0, len(channelNames), step):
+            options = '?channel=' + ','.join([channels[Keys.NAME] for channels in channelNames[i:i+step]])
+            url = ''.join([Urls.BASE, Keys.STREAMS, options])
+            live += self._fetchItems(url, Keys.STREAMS)
+        channels = {Keys.LIVE: live, Keys.OTHERS: channelNames}
         return channels
 
     def getFollowingGames(self, username):
