@@ -47,12 +47,21 @@ class TwitchTV(object):
         channelNames = self._filterChannelNames(followingChannels)
 
         # get Streams of that Channels
+        options = Urls.OPTIONS_OFFSET_LIMIT
+        options += '&channel=' + ','.join([channels[Keys.NAME] for channels in channelNames])
+        rawurl = ''.join([Urls.BASE, Keys.STREAMS, options])
+
         live = []
-        step = 25
-        for i in range(0, len(channelNames), step):
-            options = '?channel=' + ','.join([channels[Keys.NAME] for channels in channelNames[i:i+step]])
-            url = ''.join([Urls.BASE, Keys.STREAMS, options])
-            live += self._fetchItems(url, Keys.STREAMS)
+        limit = 100
+        offset = 0
+        while True:
+            url = rawurl.format(offset, limit)
+            temp = self._fetchItems(url, Keys.STREAMS)
+            if len(temp) == 0:
+                break
+            live += temp
+            offset += limit
+
         channels = {Keys.LIVE: live, Keys.OTHERS: channelNames}
         return channels
 
