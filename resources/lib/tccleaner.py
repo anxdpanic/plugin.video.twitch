@@ -49,47 +49,65 @@ class TextureCacheCleaner(object):
         :param notify: bool: enable/disable informational notifications
         :return:
         """
-        do_notification = False
-        if notify:
-            do_notification = True
         if xbmcvfs.exists(self.DATABASE):
             connection = sqlite3.connect(self.DATABASE)
             connection.isolation_level = None
             cursor = connection.cursor()
+            dialog = None
+            if notify:
+                dialog = xbmcgui.DialogProgressBG()
+                dialog.create(self.NAME + ' Cache Removal', 'Removing cached items ...')
             try:
-                if do_notification:
-                    self.notification('Removing cached items ...')
                 cursor.execute('BEGIN')
                 cursor.execute('SELECT id, cachedurl FROM texture WHERE url LIKE "{0}"'.format(pattern))
                 rows_list = cursor.fetchall()
-                for row in rows_list:
-                    thumbnail_path = xbmc.translatePath("special://thumbnails/{0}".format(row[1]))
-                    cursor.execute('DELETE FROM sizes WHERE idtexture LIKE "{0}"'.format(row[0]))
-                    if xbmcvfs.exists(thumbnail_path):
-                        try:
-                            xbmcvfs.delete(thumbnail_path)
-                        except:
+                row_count = len(rows_list)
+                percent = 100 / (row_count + 6)
+                if row_count > 0:
+                    for index, row in enumerate(rows_list):
+                        if dialog:
+                            dialog.update(percent * (index + 1), message='Deleting cached item ... {0}'.format(row[1]))
+                        thumbnail_path = xbmc.translatePath("special://thumbnails/{0}".format(row[1]))
+                        cursor.execute('DELETE FROM sizes WHERE idtexture LIKE "{0}"'.format(row[0]))
+                        if xbmcvfs.exists(thumbnail_path):
                             try:
-                                os.remove(thumbnail_path)
+                                xbmcvfs.delete(thumbnail_path)
                             except:
-                                raise OSError
-                cursor.execute('DELETE FROM texture WHERE url LIKE "{0}"'.format(pattern))
-                cursor.execute('COMMIT')
-                cursor.execute('VACUUM texture')
-                cursor.execute('VACUUM sizes')
-                connection.commit()
-                if do_notification:
-                    self.notification('Cached items removed')
+                                try:
+                                    os.remove(thumbnail_path)
+                                except:
+                                    raise OSError
+                    if dialog:
+                        dialog.update(percent * (row_count + 1), message='Removing cached items from texture ...')
+                    cursor.execute('DELETE FROM texture WHERE url LIKE "{0}"'.format(pattern))
+                if dialog:
+                    dialog.update(percent * (row_count + 2), message='Committing ...')
+                    cursor.execute('COMMIT')
+                    dialog.update(percent * (row_count + 3), message='Recovering free space from texture ...')
+                    cursor.execute('VACUUM texture')
+                    dialog.update(percent * (row_count + 4), message='Recovering free space from sizes ...')
+                    cursor.execute('VACUUM sizes')
+                    dialog.update(percent * (row_count + 5), message='Committing ...')
+                    connection.commit()
+                    dialog.update(100, message='Cached items removed')
+                else:
+                    cursor.execute('COMMIT')
+                    cursor.execute('VACUUM texture')
+                    cursor.execute('VACUUM sizes')
+                    connection.commit()
             except:
-                message = 'Error removing cached items, rolling back'
+                if dialog:
+                    dialog.close()
+                message = 'Error removing cached items, rolling back ...'
                 self.notification(message, sound=True)
                 xbmc.log(message, xbmc.LOGDEBUG)
                 connection.rollback()
             finally:
+                if dialog:
+                    dialog.close()
                 cursor.close()
                 connection.close()
         else:
             message = 'Database not found ({0})'.format(self.DATABASE)
-            if do_notification:
-                self.notification(message)
+            self.notification(message)
             xbmc.log(message, xbmc.LOGDEBUG)
