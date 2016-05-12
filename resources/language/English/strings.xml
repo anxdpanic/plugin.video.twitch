@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-    <!-- Next available: 30096 -->
+    <!-- Next available: 30098 -->
     <!-- main menu -->
     <string id="30001">Games</string>
     <string id="30002">Following</string>
@@ -70,6 +70,8 @@
     <string id="30086">These settings may allow this add-on to delete database entries and images[CR]for cached live previews.</string>
     <string id="30087">Notifications</string>
     <string id="30094">Automatic refresh interval (minutes)</string>
+    <string id="30096">API</string>
+    <string id="30097">OAuth Client ID</string>
 
     <string id="30050">Username</string>
 
