@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import json
-from random import randint
+from base64 import b64decode
 from xbmcaddon import Addon
 from urllib2 import Request, urlopen, URLError
 from constants import Keys
@@ -65,11 +65,13 @@ class JSONScraper(object):
 
     def getJson(self, url, headers=None):
         def getClientID():
-            # return a Client-ID to use for Twitch API: TwitchonXBMC_<username|'user_'randint(1000,2000)>
-            username = self.__get_current_username()
-            if not username:
-                username = Keys.DEFAULT_ID.format(str(randint(1000, 2000)))
-            client_id = Keys.CLIENT_ID.format(username)
+            # return a Client ID to use for Twitch API
+            client_id = Addon().getSetting('oauth_client_id')  # get from settings
+            if not client_id:  # not in settings
+                try:
+                    client_id = b64decode(Keys.CLIENT_ID)  # use Keys.CLIENT_ID
+                except:
+                    client_id = ''
             return client_id
 
         if not headers:
@@ -85,10 +87,6 @@ class JSONScraper(object):
             return jsonDict
         except:
             raise TwitchException(TwitchException.JSON_ERROR)
-
-    @staticmethod
-    def __get_current_username():
-        return Addon().getSetting('username').lower()
 
 
 class M3UPlaylist(object):

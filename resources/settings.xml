@@ -45,4 +45,9 @@
         <setting label="30075" id="install_ircscript" type="action" action="RunPlugin(plugin://script.ircchat/)"
                  enable="!System.HasAddon(script.ircchat)" visible="!System.HasAddon(script.ircchat)"/>
     </category>
+    <!-- API -->
+    <category label="30096">
+        <!-- OAUTH Client ID -->
+        <setting id="oauth_client_id" type="text" label="30097" default=""/>
+    </category>
 </settings>
