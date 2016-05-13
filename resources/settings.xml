@@ -48,6 +48,6 @@
     <!-- API -->
     <category label="30096">
         <!-- OAUTH Client ID -->
-        <setting id="oauth_client_id" type="text" label="30097" default=""/>
+        <setting id="oauth_client_id" type="text" label="30097" default="67ebpfhyoicab5kr0y7pzocsfohs7ty"/>
     </category>
 </settings>
