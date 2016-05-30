@@ -204,7 +204,7 @@ def playVideo(_id, quality):
                                                                  videoInfo.get('thumbnail', ''))
         if playlistItems != ():
             (playlist, listItem) = playlistItems
-            utils.play(playlist, listItem)
+            utils.play(listItem.get('path', ''), listItem)
         else:
             raise TwitchException(TwitchException.NO_PLAYABLE)
 
