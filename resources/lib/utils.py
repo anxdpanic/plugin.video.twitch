@@ -21,7 +21,13 @@ def getUserName():
         PLUGIN.open_settings()
         username = PLUGIN.get_setting('username', unicode).lower()
     return username
-
+    
+def getOauthToken():
+    oauthtoken = PLUGIN.get_setting('oauth_token', unicode)
+    if not oauthtoken:
+        PLUGIN.open_settings()
+        oauthtoken = PLUGIN.get_setting('oauth_token', unicode)
+    return oauthtoken
 
 def getVideoQuality(quality=''):
     """

@@ -102,14 +102,14 @@ class TwitchTV(object):
         else:
             raise TwitchException(TwitchException.STREAM_OFFLINE)
 
-    def __getChunkedVideo(self, _id):
+    def __getChunkedVideo(self, _id, oauthtoken):
         # twitch site queries chunked playlists also with token
         # not necessary yet but might change (similar to vod playlists)
-        url = Urls.VIDEO_PLAYLIST.format(_id)
+        url = Urls.VIDEO_PLAYLIST.format(_id) + '?oauth_token=' + oauthtoken
         return self.scraper.getJson(url)
 
-    def __getVideoPlaylistChunkedArchived(self, _id, maxQuality):
-        vidChunks = self.__getChunkedVideo(_id)
+    def __getVideoPlaylistChunkedArchived(self, _id, maxQuality, oauthtoken):
+        vidChunks = self.__getChunkedVideo(_id, oauthtoken)
         if vidChunks[Keys.CHUNKS].get(Keys.QUALITY_LIST_VIDEO[maxQuality]):
             # preferred quality is not None -> available
             chunks = vidChunks[Keys.CHUNKS][Keys.QUALITY_LIST_VIDEO[maxQuality]]
@@ -128,10 +128,10 @@ class TwitchTV(object):
 
         return playlist
 
-    def __getVideoPlaylistVod(self, _id, maxQuality):
+    def __getVideoPlaylistVod(self, _id, maxQuality, oauthtoken):
         playlist = [('', ())]
         vodid = _id[1:]
-        url = Urls.VOD_TOKEN.format(vodid)
+        url = Urls.VOD_TOKEN.format(vodid) + '?oauth_token=' + oauthtoken
         access_token = self.scraper.getJson(url)
 
         playlistQualitiesUrl = Urls.VOD_PLAYLIST.format(
@@ -149,9 +149,9 @@ class TwitchTV(object):
     def getVideoPlaylist(self, _id, maxQuality):
         playlist = [(), ()]
         if _id.startswith(('a', 'c')):
-            playlist = self.__getVideoPlaylistChunkedArchived(_id, maxQuality)
+            playlist = self.__getVideoPlaylistChunkedArchived(_id, maxQuality, oauthtoken)
         elif _id.startswith('v'):
-            playlist = self.__getVideoPlaylistVod(_id, maxQuality)
+            playlist = self.__getVideoPlaylistVod(_id, maxQuality, oauthtoken)
         return playlist
 
     def getFollowingChannelNames(self, username):
