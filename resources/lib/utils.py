@@ -102,7 +102,7 @@ def execIrcPlugin(channel):
     if PLUGIN.get_setting('irc_enable', unicode) != 'true':
         return
     uname = PLUGIN.get_setting('irc_username', unicode)
-    passwd = PLUGIN.get_setting('irc_password', unicode)
+    passwd = PLUGIN.get_setting('oauth_token', unicode)
     host = 'irc.chat.twitch.tv'
     scrline = 'RunScript(script.ircchat, run_irc=True&nickname=%s&username=%s&password=%s&host=%s&channel=#%s)' % \
               (uname, uname, passwd, host, channel)
