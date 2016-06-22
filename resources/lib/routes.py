@@ -231,10 +231,11 @@ def playVideo(_id, quality):
     * any other value for quality will use addon setting
     """
     videoQuality = utils.getVideoQuality(quality)
+    oauthtoken = utils.getOauthToken()
     if videoQuality != -1:
         # videoQuality == -1 if quality dialog was cancelled
         videoInfo = CONVERTER.getVideoInfo(TWITCHTV.getVideo(_id))
-        simplePlaylist = TWITCHTV.getVideoPlaylist(_id, videoQuality)
+        simplePlaylist = TWITCHTV.getVideoPlaylist(_id, videoQuality, oauthtoken)
         playlistItems = PLAYLIST_CONVERTER.convertToXBMCPlaylist(simplePlaylist, videoInfo.get('title', ''),
                                                                  videoInfo.get('thumbnail', ''))
         if playlistItems != ():

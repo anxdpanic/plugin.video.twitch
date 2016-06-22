@@ -21,7 +21,13 @@ def getUserName():
         PLUGIN.open_settings()
         username = PLUGIN.get_setting('username', unicode).lower()
     return username
-
+    
+def getOauthToken():
+    oauthtoken = PLUGIN.get_setting('oauth_token', unicode)
+    if not oauthtoken:
+        PLUGIN.open_settings()
+        oauthtoken = PLUGIN.get_setting('oauth_token', unicode)
+    return oauthtoken
 
 def getVideoQuality(quality=''):
     """
@@ -96,7 +102,7 @@ def execIrcPlugin(channel):
     if PLUGIN.get_setting('irc_enable', unicode) != 'true':
         return
     uname = PLUGIN.get_setting('irc_username', unicode)
-    passwd = PLUGIN.get_setting('irc_password', unicode)
+    passwd = PLUGIN.get_setting('oauth_token', unicode)
     host = 'irc.chat.twitch.tv'
     scrline = 'RunScript(script.ircchat, run_irc=True&nickname=%s&username=%s&password=%s&host=%s&channel=#%s)' % \
               (uname, uname, passwd, host, channel)
