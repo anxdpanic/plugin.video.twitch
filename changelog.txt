@@ -94,3 +94,5 @@
 - added French language
 1.4.0
 - Major code refactoring + IRC integration. Thanks to anxdpanic
+1.4.1
+- Changes/updates to API calls in line with changes made by Twitch.
