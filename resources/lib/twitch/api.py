@@ -146,7 +146,7 @@ class TwitchTV(object):
 
         return playlist
 
-    def getVideoPlaylist(self, _id, maxQuality):
+    def getVideoPlaylist(self, _id, maxQuality, oauthtoken):
         playlist = [(), ()]
         if _id.startswith(('a', 'c')):
             playlist = self.__getVideoPlaylistChunkedArchived(_id, maxQuality, oauthtoken)
