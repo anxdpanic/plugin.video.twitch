@@ -4,8 +4,8 @@
     <category label="30076">
         <!-- Username -->
         <setting id="username" type="text" label="30050" default=""/>
-        <!-- Oauth Token -->
-        <setting id="oauth_token" type="text" label="31230" default=""/>
+        <!-- OAuth Token -->
+        <setting id="oauth_token" type="text" label="30099" default=""/>
         <!-- Video Quality -->
         <setting id="video" type="enum" label="30040" lvalues="30041|30042|30043|30044|30063" default="0"/>
         <!-- Title Display -->

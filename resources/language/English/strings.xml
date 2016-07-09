@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-    <!-- Next available: 30099 -->
+    <!-- Next available: 30100 -->
     <!-- main menu -->
     <string id="30001">Games</string>
     <string id="30002">Following</string>
@@ -75,7 +75,7 @@
     <string id="30097">OAuth Client ID</string>
 
     <string id="30050">Username</string>
-    <string id="31230">Oauth Token</string>
+    <string id="30099">OAuth Token</string>
 
     <!--contextmenu-->
     <string id="30077">Play (Choose Quality)</string>
