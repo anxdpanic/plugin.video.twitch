@@ -43,7 +43,7 @@
         <!-- Username -->
         <setting id="irc_username" type="text" label="30050" default="" enable="eq(-1,true)"/>
         <!-- OAuth Token -->
-        <setting id="oauth_token" type="text" option="hidden" label="30053" default="SAME AS OAUTH TOKEN IN GENERAL" enable="eq(-2,true)"/>
+        <setting id="oauth_token" type="text" option="hidden" label="30053" default="67ebpfhyoicab5kr0y7pzocsfohs7tyaa" enable="eq(-2,true)"/>
         <setting label="30075" id="install_ircscript" type="action" action="RunPlugin(plugin://script.ircchat/)"
                  enable="!System.HasAddon(script.ircchat)" visible="!System.HasAddon(script.ircchat)"/>
     </category>
