@@ -194,15 +194,14 @@ class JsonListItemConverter(object):
     def getPlotForStream(self, stream):
         channel = stream[Keys.CHANNEL]
 
-        headings = {Keys.GAME: self.plugin.get_string(30088),
-                    Keys.VIEWERS: self.plugin.get_string(30089),
-                    Keys.BROADCASTER_LANGUAGE: self.plugin.get_string(30090),
-                    Keys.MATURE: self.plugin.get_string(30091),
-                    Keys.PARTNER: self.plugin.get_string(30092),
-                    Keys.DELAY: self.plugin.get_string(30093)}
+        headings = {Keys.GAME: self.plugin.get_string(30088).encode('utf-8'),
+                    Keys.VIEWERS: self.plugin.get_string(30089).encode('utf-8'),
+                    Keys.BROADCASTER_LANGUAGE: self.plugin.get_string(30090).encode('utf-8'),
+                    Keys.MATURE: self.plugin.get_string(30091).encode('utf-8'),
+                    Keys.PARTNER: self.plugin.get_string(30092).encode('utf-8'),
+                    Keys.DELAY: self.plugin.get_string(30093).encode('utf-8')}
         info = {
-            Keys.GAME: stream.get(Keys.GAME).encode('utf-8')
-            if stream.get(Keys.GAME) else self.plugin.get_string(30064),
+            Keys.GAME: stream.get(Keys.GAME).encode('utf-8') if stream.get(Keys.GAME) else self.plugin.get_string(30064),
             Keys.VIEWERS: str(stream.get(Keys.VIEWERS)) if stream.get(Keys.VIEWERS) else '0',
             Keys.BROADCASTER_LANGUAGE: channel.get(Keys.BROADCASTER_LANGUAGE).encode('utf-8')
             if channel.get(Keys.BROADCASTER_LANGUAGE) else None,
