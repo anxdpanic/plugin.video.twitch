@@ -61,8 +61,8 @@ class Keys(object):
     DESCRIPTION = 'description'
     CREATED_AT = 'created_at'
 
-    QUALITY_LIST_STREAM = ['Source', '1080p60', '1080p30', '720p60','720p30','540p30','480p30','360p30','240p30','144p30']
-    QUALITY_LIST_VIDEO = ['live', '1080p60', '1080p30', '720p60','720p30','540p30','480p30','360p30','240p30','144p30']
+    QUALITY_LIST_STREAM = ['Source', '1080p60', '1080p30', '720p60','720p30','540p30','480p30','360p30','240p30','144p30', 'High', 'Medium', 'Low', 'Mobile']
+    QUALITY_LIST_VIDEO = ['live', '1080p60', '1080p30', '720p60','720p30','540p30','480p30','360p30','240p30','144p30', '720p', '480p', '360p', '226p']
 
     ACCEPT = 'Accept'
     REFERER = 'Referer'
