@@ -244,6 +244,10 @@ def playVideo(_id, quality):
         else:
             raise TwitchException(TwitchException.NO_PLAYABLE)
 
+@PLUGIN.route('/playVideo/<_id>/')
+@managedTwitchExceptions
+def oldplayVideo(_id):
+    playVideo(_id, 5)
 
 @PLUGIN.route('/search/')
 @managedTwitchExceptions
@@ -292,6 +296,10 @@ def playLive(name, quality):
         utils.play(stream['path'], stream)
         utils.execIrcPlugin(name)
 
+@PLUGIN.route('/playLive/<name>/')
+@managedTwitchExceptions
+def oldplayLive(name):
+    playLive(name, 5)
 
 @PLUGIN.route('/createListOfTeams/<index>/')
 @managedTwitchExceptions
