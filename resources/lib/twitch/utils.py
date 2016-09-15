@@ -97,7 +97,7 @@ class M3UPlaylist(object):
         lines = data.splitlines()
         linesIterator = iter(lines)
         for line in linesIterator:
-            if line.startswith('#EXT-X-MEDIA'):
+            if line.startswith('#EXT-X-MEDIA:TYPE=VIDEO'):
                 quality, url = parseQuality(line, next(linesIterator), next(linesIterator))
                 qualityInt = self.qualityList.index(quality)
                 self.playlist[qualityInt] = url
