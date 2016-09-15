@@ -70,7 +70,7 @@ class Keys(object):
     USER_AGENT_STRING = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0'
     API_VERSION = 'application/vnd.twitchtv.v{0}+json'.format(str(TWITCH_API_VERSION))
     CLIENT_ID_HEADER = 'Client-ID'
-    CLIENT_ID = ''  # base64 encoded Client ID
+    CLIENT_ID = 'NjdlYnBmaHlvaWNhYjVrcjB5N3B6b2NzZm9oczd0eQ=='
 
 class Urls(object):
     '''
