@@ -39,11 +39,7 @@
   
   <!--settings -->
   <string id="30040">Videokvalitet</string>
-  <string id="30041">Best mulig</string>
-  <string id="30042">720p</string>
-  <string id="30043">480p</string>
-  <string id="30044">360p</string>
-  <string id="30063">226p (Mobil)</string>
+
   <string id="30045">Vis titler</string>
   <string id="30046">Strømmer - Stream Tittel</string>
   <string id="30047">Seere - Strømmer - Tittel til strøm</string>
