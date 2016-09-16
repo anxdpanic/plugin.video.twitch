@@ -41,17 +41,19 @@ def getVideoQuality(quality=''):
     """
     :param quality: string int/int: qualities[quality]
     qualities
-    0 = Best, 1 = 720, 2 = 480, 3 = 360, 4 = 226,
+    0 = Source, 1 = 1080p60, 2 = 1080p30, 3 = 720p60, 4 = 720p30, 5 = 540p30, 6 = 480p30, 7 = 360p30, 8 = 240p30, 9 = 144p30
     -1 = Choose quality dialog
     * any other value for quality will use addon setting
-    i18n: 0 = 30041, 1 = 30042, 2 = 30043, 3 = 30044, 4 = 30063
+    i18n: 0 = 30102 ... 9 = 30111
     """
-    qualities = {'-1': -1, '0': 0, '1': 1, '2': 2, '3': 3, '4': 4}
-    i18n_qualities = [PLUGIN.get_string(30041), PLUGIN.get_string(30042), PLUGIN.get_string(30043),
-                      PLUGIN.get_string(30044), PLUGIN.get_string(30063)]
+    qualities = {'-1': -1, '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9 }
+    i18n_qualities = [PLUGIN.get_string(30102), PLUGIN.get_string(30103), PLUGIN.get_string(30104),
+                      PLUGIN.get_string(30105), PLUGIN.get_string(30106), PLUGIN.get_string(30107),
+                      PLUGIN.get_string(30108), PLUGIN.get_string(30109), PLUGIN.get_string(30110),
+                      PLUGIN.get_string(30111)]
     try:
         quality = int(quality)
-        if 4 >= quality >= 0:
+        if 9 >= quality >= 0:
             chosenQuality = str(quality)
         elif quality == -1:
             chosenQuality = str(xbmcgui.Dialog().select(PLUGIN.get_string(30077), i18n_qualities))

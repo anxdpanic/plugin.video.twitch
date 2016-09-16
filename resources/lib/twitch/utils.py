@@ -32,7 +32,7 @@ class JSONScraper(object):
                 if headers:
                     headers[Keys.USER_AGENT] = Keys.USER_AGENT_STRING
                 else:
-                    headers = { Keys.USER_AGENT: Keys.USER_AGENT_STRING }
+                    headers = {Keys.USER_AGENT: Keys.USER_AGENT_STRING}
 
                 response = requests.get(url, headers=headers, verify=False)
                 data = response.content
@@ -107,13 +107,27 @@ class M3UPlaylist(object):
 
     # returns selected quality or best match if not available
     def getQuality(self, selectedQuality):
-        if selectedQuality in self.playlist.keys():
+        bestDistance = len(self.qualityList) + 1
+
+        if (selectedQuality in self.playlist.keys()) and (bestDistance == len(Keys.QUALITY_LIST_STREAM) + 1):
             # selected quality is available
             return self.playlist[selectedQuality]
         else:
             # not available, calculate differences to available qualities
             # return lowest difference / lower quality if same distance
             bestDistance = len(self.qualityList) + 1
+            # if not using standard list, adjust selected quality to appropriate old quality
+            if bestDistance != len(Keys.QUALITY_LIST_STREAM) + 1:
+                if selectedQuality <= 2:
+                    selectedQuality = 0
+                elif selectedQuality <= 4:
+                    selectedQuality = 1
+                elif selectedQuality <= 6:
+                    selectedQuality = 2
+                elif selectedQuality <= 7:
+                    selectedQuality = 3
+                else:
+                    selectedQuality = 4
             bestMatch = None
 
             for quality in sorted(self.playlist, reverse=True):
