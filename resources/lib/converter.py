@@ -217,7 +217,15 @@ class JsonListItemConverter(object):
         def formatKey(thisKey):
             value = ''
             if info.get(thisKey) is not None:
-                value = item_template.format(head=headings.get(thisKey), info=info.get(thisKey))
+                try:
+                    val_heading = headings.get(thisKey).encode('utf-8', 'ignore')
+                except:
+                    val_heading = headings.get(thisKey)
+                try:
+                    val_info = info.get(thisKey).encode('utf-8', 'ignore')
+                except:
+                    val_info = info.get(thisKey)
+                value = item_template.format(head=val_heading, info=val_info)
             return value
 
         plot = plot_template.format(title=title, game=formatKey(Keys.GAME),
