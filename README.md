@@ -1,4 +1,4 @@
-Twitch.tv on XBMC (Kodi)
+Twitch on Kodi
 ==================
 
 Watch your favorite gaming streams on Kodi.
