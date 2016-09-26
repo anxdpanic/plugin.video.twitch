@@ -1,3 +1,5 @@
+2.0.0
+- 
 1.4.4
 - HTTPS fix for Linux users + Kodi Offical repository compatibility fixes.
 1.4.3
