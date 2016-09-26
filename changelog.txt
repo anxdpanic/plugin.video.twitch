@@ -1,10 +1,7 @@
-1.4.6
-- Added new title formatting option which includes broadcaster language.
-1.4.5
-- Added compatibility for new Twitch encoder names.
-- Added Uploads
+2.0.0
+- 
 1.4.4
-- HTTPS fix for Linux users + Kodi Official repository compatibility fixes.
+- HTTPS fix for Linux users + Kodi Offical repository compatibility fixes.
 1.4.3
 - various fixes to coincide with issues caused by evolving Twitch API
 1.4.2
