@@ -112,8 +112,13 @@ class M3UPlaylist(object):
         for line in linesIterator:
             if line.startswith('#EXT-X-MEDIA:TYPE=VIDEO'):
                 quality, url = parseQuality(line, next(linesIterator), next(linesIterator))
-                qualityInt = self.qualityList.index(quality)
-                self.playlist[qualityInt] = url
+                if quality not in self.qualityList:  # non-standard quality naming, attempt to coerce
+                    quality = quality.split(None, 1)  # '1080p60 - source' -> ['1080p60', ' - source']
+                    if quality:
+                        quality = quality[0]  # '1080p60'
+                if quality in self.qualityList:  # check for quality in list before using it
+                    qualityInt = self.qualityList.index(quality)
+                    self.playlist[qualityInt] = url
         if not self.playlist:
             # playlist dict is empty
             raise TwitchException(TwitchException.NO_PLAYABLE)
