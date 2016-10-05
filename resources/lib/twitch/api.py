@@ -80,8 +80,8 @@ class TwitchTV(object):
             offset += limit
         return acc
 
-    def getFollowerVideos(self, username, offset, past):
-        url = Urls.CHANNEL_VIDEOS.format(username, offset, past)
+    def getFollowerVideos(self, username, offset, broadcast_type):
+        url = Urls.CHANNEL_VIDEOS.format(username, offset, broadcast_type)
         items = self.scraper.getJson(url)
         return {Keys.TOTAL: items[Keys.TOTAL], Keys.VIDEOS: items[Keys.VIDEOS]}
 
