@@ -141,7 +141,7 @@ class TwitchTV(object):
         playlistQualitiesData = self.scraper.downloadWebData(playlistQualitiesUrl)
 
         qualityList = Keys.QUALITY_LIST_STREAM
-        if 'NAME="360p30"' not in playlistQualitiesData:
+        if 'NAME="360p30"' not in playlistQualitiesData and 'NAME="360p"' not in playlistQualitiesData:
             qualityList = Keys.OLD_QUALITY_LIST_STREAM
         playlistQualities = M3UPlaylist(playlistQualitiesData, qualityList)
 
