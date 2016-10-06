@@ -72,9 +72,6 @@ def getVideoQuality(quality=''):
 def play(item, listItem):
     fromAddon = xbmc.getInfoLabel('Container.PluginName') == PLUGIN.id
     withPlayer = int(sys.argv[1]) == -1
-    oauth_token = getOauthToken(token_only=True)
-    if ('oauth=' not in item) and oauth_token:
-        item += '{0}oauth={1}'.format('&' if '?' in item else '?', oauth_token)
     if withPlayer or not fromAddon:
         playbackItem = xbmcgui.ListItem(label=listItem.get('label', ''),
                                         path=listItem.get('path', item))
