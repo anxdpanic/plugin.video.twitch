@@ -1,5 +1,6 @@
 1.4.5
 - Added compatibility for new Twitch encoder names.
+- Added Uploads
 1.4.4
 - HTTPS fix for Linux users + Kodi Official repository compatibility fixes.
 1.4.3
