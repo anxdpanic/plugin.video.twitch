@@ -32,7 +32,7 @@ msgstr "Innstillinger"
 
 msgctxt "#30005"
 msgid "Featured Streams"
-msgstr "Fremhevede spill"
+msgstr "Fremhevede kanaler"
 
 msgctxt "#30006"
 msgid "Teams"
@@ -216,11 +216,11 @@ msgstr "Tidligere kringkastinger"
 
 msgctxt "#30079"
 msgid "Video Highlights"
-msgstr "Video høydepunkt"
+msgstr "Høydepunkt fra video"
 
 msgctxt "#30080"
 msgid "Could not find any playable urls"
-msgstr "Kunne ikke finne noen spillbar urler"
+msgstr "Kunne ikke finne noen spillbare urler"
 
 msgctxt "#30081"
 msgid "IRC Chat"
@@ -288,7 +288,7 @@ msgstr "API"
 
 msgctxt "#30097"
 msgid "OAuth Client ID"
-msgstr "OAuth Klient-id"
+msgstr "OAuth klient-id"
 
 msgctxt "#30098"
 msgid "Select Video by ID or URL"
@@ -300,15 +300,15 @@ msgstr "OAuth Token"
 
 msgctxt "#30100"
 msgid "Visit www.twitch.tv/settings/connections and [CR]'Register your application' for an OAuth Client-ID"
-msgstr ""
+msgstr "Besøk www.twitch.tv/settings/connections and [CR]'Register your application' for å få en OAuth Client-ID"
 
 msgctxt "#30101"
 msgid "Visit www.twitchapps.com/tmi to generate an OAuth token"
-msgstr ""
+msgstr "Besøk www.twitchapps.com/tmi for å generere en OAuth token"
 
 msgctxt "#30102"
 msgid "Source"
-msgstr ""
+msgstr "Kilde"
 
 msgctxt "#30103"
 msgid "1080p60"
@@ -348,4 +348,8 @@ msgstr ""
 
 msgctxt "#30112"
 msgid "Quality may result in best match"
-msgstr ""
+msgstr "Valgt kvalitet vil medføre at beste treff blir valgt"
+
+msgctxt "#30113"
+msgid "Uploads"
+msgstr "Opplastninger"
