@@ -83,6 +83,14 @@ def has_addon(addon_id):
     return xbmc.getCondVisibility('System.HasAddon(%s)' % addon_id) == 1
 
 
+def get_icon():
+    return translate_path('special://home/addons/{0!s}/icon.png'.format(get_id()))
+
+
+def get_fanart():
+    return translate_path('special://home/addons/{0!s}/fanart.jpg'.format(get_id()))
+
+
 def get_kodi_version():
     class MetaClass(type):
         def __str__(self):
@@ -142,29 +150,39 @@ def set_content(content):
     xbmcplugin.setContent(int(sys.argv[1]), content)
 
 
-def create_item(queries, label, thumb='', fanart='', is_folder=None, is_playable=None, total_items=0, menu_items=None, replace_menu=False):
-    if not thumb: thumb = os.path.join(get_path(), 'icon.png')
-    list_item = xbmcgui.ListItem(label, iconImage=thumb, thumbnailImage=thumb)
-    add_item(queries, list_item, fanart, is_folder, is_playable, total_items, menu_items, replace_menu)
+def create_item(item_dict):
+    list_item = ListItem(label=item_dict.get('label', ''), label2=item_dict.get('label2', ''))
+    add_item(item_dict, list_item)
 
 
-def add_item(queries, list_item, fanart='', is_folder=None, is_playable=None, total_items=0, menu_items=None, replace_menu=False):
-    if not fanart: fanart = os.path.join(get_path(), 'fanart.jpg')
-    if menu_items is None: menu_items = []
-    if is_folder is None:
-        is_folder = False if is_playable else True
+def add_item(item_dict, list_item):
+    path = item_dict.get('path', None)
+    if not path: return
 
-    if is_playable is None:
-        playable = 'false' if is_folder else 'true'
-    else:
-        playable = 'true' if is_playable else 'false'
+    icon = get_icon()
+    fanart = get_fanart()
+    art = item_dict.get('art', {'icon': icon, 'thumb': icon, 'fanart': fanart})
+    if not art.get('icon', None):
+        art['icon'] = icon
+    if not art.get('thumb', None):
+        art['thumb'] = icon
+    if not art.get('fanart', None):
+        art['fanart'] = fanart
+    list_item.setArt(art)
 
-    liz_url = queries if isinstance(queries, basestring) else get_plugin_url(queries)
-    if not list_item.getProperty('fanart_image'): list_item.setProperty('fanart_image', fanart)
-    list_item.setInfo('video', {'title': list_item.getLabel()})
-    list_item.setProperty('isPlayable', playable)
-    list_item.addContextMenuItems(menu_items, replaceItems=replace_menu)
-    xbmcplugin.addDirectoryItem(int(sys.argv[1]), liz_url, list_item, isFolder=is_folder, totalItems=total_items)
+    content_type = item_dict.get('content_type', None)
+    if content_type:
+        info = item_dict.get('info', {'title': list_item.getLabel()})
+        list_item.setInfo(content_type, infoLabels=info)
+
+    is_playable = item_dict.get('is_playable', False)
+    is_folder = not is_playable
+
+    url = path if isinstance(path, basestring) else get_plugin_url(path)
+    list_item.setProperty('isPlayable', str(is_playable).lower())
+    menu_items = item_dict.get('menu_items', [])
+    list_item.addContextMenuItems(menu_items, replaceItems=item_dict.get('replace_menu', False))
+    xbmcplugin.addDirectoryItem(int(sys.argv[1]), url, list_item, isFolder=is_folder, totalItems=item_dict.get('total_items', 0))
 
 
 def parse_query(query):
@@ -402,3 +420,11 @@ class CountdownDialog(object):
     def update(self, percent, line1='', line2='', line3=''):
         if self.pd is not None:
             self.pd.update(percent, line1, line2, line3)
+
+
+class ListItem(xbmcgui.ListItem):
+    def setArt(self, dictionary):
+        if get_kodi_version().major < 16 and 'icon' in dictionary:
+            self.setIconImage(dictionary['icon'])
+            del dictionary['icon']
+        super(ListItem, self).setArt(dictionary)
