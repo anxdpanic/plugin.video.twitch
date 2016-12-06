@@ -18,5 +18,14 @@
 """
 
 STRINGS = {
-    'featured': 30000
+    'featured_streams': 30000,
+    'games': 30001,
+    'channels': 30002,
+    'following': 30003,
+    'live_channels': 30004,
+    'search': 30005,
+    'settings': 30006,
+    'past_broadcasts': 30007,
+    'video_highlights': 30008,
+    'uploads': 30009
 }

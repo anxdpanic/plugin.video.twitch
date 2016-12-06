@@ -14,8 +14,42 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#Next available: 30000
-
 msgctxt "#30000"
 msgid "Featured Streams"
+msgstr ""
+
+msgctxt "#30001"
+msgid "Games"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Channels"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Following"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Live Channels"
+msgstr ""
+
+msgctxt "#30005"
+msgid "Search"
+msgstr ""
+
+msgctxt "#30006"
+msgid "Settings"
+msgstr ""
+
+msgctxt "#30007"
+msgid "Past Broadcasts"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Video Highlights"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Uploads"
 msgstr ""
