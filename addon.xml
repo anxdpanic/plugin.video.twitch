@@ -9,6 +9,13 @@
     </extension>
     <extension point='xbmc.addon.metadata'>
         <platform>all</platform>
+        <news>
+All New!
+        </news>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
         <language>en</language>
         <source>https://github.com/MrSprigster/Twitch-on-Kodi</source>
         <license>GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007</license>

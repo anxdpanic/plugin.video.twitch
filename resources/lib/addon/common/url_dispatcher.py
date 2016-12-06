@@ -2,6 +2,8 @@
     tknorris shared module
     Copyright (C) 2016 tknorris
 
+    Modified by Twitch-on-Kodi/plugin.video.twitch Dec. 12, 2016
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -16,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import log_utils
+
 
 class URL_Dispatcher:
     def __init__(self):
@@ -54,6 +57,7 @@ class URL_Dispatcher:
             # log_utils.log('registering args: |%s|-->(%s) and {%s}' % (mode, args, kwargs), xbmc.LOGDEBUG)
 
             return f
+
         return decorator
 
     def dispatch(self, mode, queries):
@@ -93,7 +97,8 @@ class URL_Dispatcher:
 
         if 'mode' in unused_args: del unused_args['mode']  # delete mode last in case it's used by the target function
         log_utils.log('Calling |%s| for mode |%s| with pos args |%s| and kwargs |%s|' % (self.func_registry[mode].__name__, mode, args, kwargs), log_utils.LOGNOTICE)
-        if unused_args: log_utils.log('Warning: Arguments |%s| were passed but unused by |%s| for mode |%s|' % (unused_args, self.func_registry[mode].__name__, mode), log_utils.LOGWARNING)
+        if unused_args: log_utils.log('Warning: Arguments |%s| were passed but unused by |%s| for mode |%s|' % (unused_args, self.func_registry[mode].__name__, mode),
+                                      log_utils.LOGWARNING)
         self.func_registry[mode](*args, **kwargs)
 
     # since all params are passed as strings, do any conversions necessary to get good types (e.g. boolean)
