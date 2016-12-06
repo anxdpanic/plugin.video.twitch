@@ -2,6 +2,8 @@
     tknorris shared module
     Copyright (C) 2016 tknorris
 
+    Modified by Twitch-on-Kodi/plugin.video.twitch Dec. 12, 2016
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -24,15 +26,16 @@ import os
 import shutil
 import kodi
 
+cache_path = kodi.translate_path('special://temp/%s/cache/' % kodi.get_id())
 try:
-    cache_path = kodi.translate_path(os.path.join(kodi.get_profile(), 'cache'))
     if not os.path.exists(cache_path):
         os.makedirs(cache_path)
 except Exception as e:
     log_utils.log('Failed to create cache: %s: %s' % (cache_path, e), log_utils.LOGWARNING)
-    
+
 cache_enabled = kodi.get_setting('use_cache') == 'true'
-    
+
+
 def reset_cache():
     try:
         shutil.rmtree(cache_path)
@@ -40,7 +43,8 @@ def reset_cache():
     except Exception as e:
         log_utils.log('Failed to Reset Cache: %s' % (e), log_utils.LOGWARNING)
         return False
-    
+
+
 def _get_func(name, args=None, kwargs=None, cache_limit=1):
     if not cache_enabled: return False, None
     now = time.time()
@@ -55,9 +59,10 @@ def _get_func(name, args=None, kwargs=None, cache_limit=1):
                 pickled_result = f.read()
             # log_utils.log('Returning cached result: |%s|%s|%s| - modtime: %s max_age: %s age: %ss' % (name, args, kwargs, mtime, max_age, now - mtime), log_utils.LOGDEBUG)
             return True, pickle.loads(pickled_result)
-    
+
     return False, None
-    
+
+
 def _save_func(name, args=None, kwargs=None, result=None):
     try:
         if args is None: args = []
@@ -69,9 +74,11 @@ def _save_func(name, args=None, kwargs=None, result=None):
     except Exception as e:
         log_utils.log('Failure during cache write: %s' % (e), log_utils.LOGWARNING)
 
+
 def _get_filename(name, args, kwargs):
     arg_hash = hashlib.md5(name).hexdigest() + hashlib.md5(str(args)).hexdigest() + hashlib.md5(str(kwargs)).hexdigest()
     return arg_hash
+
 
 def cache_method(cache_limit):
     def wrap(func):
@@ -92,8 +99,11 @@ def cache_method(cache_limit):
                 result = func(*args, **kwargs)
                 _save_func(full_name, real_args, kwargs, result)
                 return result
+
         return memoizer
+
     return wrap
+
 
 # do not use this with instance methods the self parameter will cause args to never match
 def cache_function(cache_limit):
@@ -110,5 +120,7 @@ def cache_function(cache_limit):
                 result = func(*args, **kwargs)
                 _save_func(name, args, kwargs, result)
                 return result
+
         return memoizer
+
     return wrap

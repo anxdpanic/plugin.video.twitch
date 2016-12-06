@@ -2,6 +2,8 @@
     tknorris shared module
     Copyright (C) 2016 tknorris
 
+    Modified by Twitch-on-Kodi/plugin.video.twitch Dec. 12, 2016
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -19,32 +21,21 @@ import time
 import kodi
 from xbmc import LOGDEBUG, LOGERROR, LOGFATAL, LOGINFO, LOGNONE, LOGNOTICE, LOGSEVERE, LOGWARNING  # @UnusedImport
 
-name = kodi.get_name()
-enabled_comp = kodi.get_setting('enabled_comp')
-if enabled_comp:
-    enabled_comp = enabled_comp.split(',')
-else:
-    enabled_comp = None
 
-def log(msg, level=LOGDEBUG, component=None):
-    req_level = level
-    # override message level to force logging when addon logging turned on
-    if kodi.get_setting('addon_debug') == 'true' and level == LOGDEBUG:
-        level = LOGNOTICE
-    
+def log(msg, level=LOGDEBUG):
     try:
         if isinstance(msg, unicode):
             msg = '%s (ENCODED)' % (msg.encode('utf-8'))
-
-        if req_level != LOGDEBUG or (enabled_comp is None or component in enabled_comp):
-            kodi.__log('%s: %s' % (name, msg), level)
-            
+            kodi.__log('%s: %s' % (kodi.get_name(), msg), level)
     except Exception as e:
-        try: kodi.__log('Logging Failure: %s' % (e), level)
-        except: pass  # just give up
+        try:
+            kodi.__log('Logging Failure: %s' % (e), level)
+        except:
+            pass  # just give up
+
 
 def trace(method):
-    #  @debug decorator
+    #  @trace decorator
     def method_trace_on(*args, **kwargs):
         start = time.time()
         result = method(*args, **kwargs)
@@ -60,6 +51,7 @@ def trace(method):
     else:
         return method_trace_off
 
+
 def __is_debugging():
     command = {'jsonrpc': '2.0', 'id': 1, 'method': 'Settings.getSettings', 'params': {'filter': {'section': 'system', 'category': 'logging'}}}
     js_data = kodi.execute_jsonrpc(command)
@@ -67,5 +59,5 @@ def __is_debugging():
         for item in js_data['result']['settings']:
             if item['id'] == 'debug.showloginfo':
                 return item['value']
-    
+
     return False

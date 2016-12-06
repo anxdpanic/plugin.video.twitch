@@ -17,5 +17,5 @@ msgstr ""
 #Next available: 30000
 
 msgctxt "#30000"
-msgid ""
+msgid "Featured Streams"
 msgstr ""
