@@ -27,8 +27,8 @@ def main(argv=None):
     if sys.argv:
         argv = sys.argv
     queries = kodi.parse_query(sys.argv[2])
-    log_utils.log('Version: |%s| Queries: |%s|' % (kodi.get_version(), queries), log_utils.LOGDEBUG)
-    log_utils.log('Args: |%s|' % argv, log_utils.LOGDEBUG)
+    log_utils.log('Version: |%s| Kodi Version: %s' % (kodi.get_version(), kodi.get_kodi_version()), log_utils.LOGDEBUG)
+    log_utils.log('Queries: |%s| Args: |%s|' % (queries, argv), log_utils.LOGDEBUG)
 
     # don't process params that don't match our url exactly
     plugin_url = 'plugin://%s/' % kodi.get_id()
