@@ -31,6 +31,15 @@ ADDON_DATA_DIR = kodi.translate_path('special://profile/addon_data/{0!s}/'.forma
 
 MODES = __enum(
     MAIN='main',
+    FEATUREDSTREAMS='featured_streams',
+    GAMES='games',
+    CHANNELS='channels',
+    FOLLOWING='following',
+    SEARCH='search',
+    SETTINGS='settings',
+    FOLLOWEDCHANNELS='followed_channels',
+    FOLLOWEDLIVE='followed_live',
+    FOLLOWEDGAMES='followed_games'
 )
 
 ICONS = __enum(
