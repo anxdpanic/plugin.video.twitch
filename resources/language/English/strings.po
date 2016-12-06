@@ -65,3 +65,7 @@ msgstr ""
 msgctxt "#30502"
 msgid "OAuth Client Secret"
 msgstr ""
+
+msgctxt "#30503"
+msgid "OAuth Token"
+msgstr ""

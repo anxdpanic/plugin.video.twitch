@@ -6,5 +6,7 @@
         <setting id="oauth_client_id" type="text" label="30501" default=""/>
         <!-- OAuth Client Secret -->
         <setting id="oauth_client_secret" type="text" label="30502" default=""/>
+        <!-- OAuth Token -->
+        <setting id="oauth_token" type="text" label="30503" default=""/>
     </category>
 </settings>
