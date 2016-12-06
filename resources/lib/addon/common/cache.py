@@ -46,7 +46,7 @@ def reset_cache():
 
 
 def _get_func(name, args=None, kwargs=None, cache_limit=1):
-    if not cache_enabled: return False, None
+    if not cache_enabled or cache_limit <= 0: return False, None
     now = time.time()
     max_age = now - (cache_limit * 60 * 60)
     if args is None: args = []
@@ -97,7 +97,8 @@ def cache_method(cache_limit):
             else:
                 log_utils.log('Calling cached method: |%s|%s|%s|' % (full_name, args, kwargs), log_utils.LOGDEBUG)
                 result = func(*args, **kwargs)
-                _save_func(full_name, real_args, kwargs, result)
+                if cache_enabled and cache_limit > 0:
+                    _save_func(full_name, real_args, kwargs, result)
                 return result
 
         return memoizer
@@ -118,7 +119,8 @@ def cache_function(cache_limit):
             else:
                 log_utils.log('Calling cached function: |%s|%s|%s|' % (name, args, kwargs), log_utils.LOGDEBUG)
                 result = func(*args, **kwargs)
-                _save_func(name, args, kwargs, result)
+                if cache_enabled and cache_limit > 0:
+                    _save_func(name, args, kwargs, result)
                 return result
 
         return memoizer
