@@ -42,3 +42,10 @@ def following():
     kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.FOLLOWEDCHANNELS}})
     kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.FOLLOWEDGAMES}})
     kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.SETTINGS, kwargs=['refresh'])
+def settings(refresh=True):
+    kodi.show_settings()
+    if refresh:
+        kodi.refresh_container()
