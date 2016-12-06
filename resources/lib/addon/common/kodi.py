@@ -33,6 +33,7 @@ import time
 addon = xbmcaddon.Addon()
 get_setting = addon.getSetting
 show_settings = addon.openSettings
+execute_builtin = xbmc.executebuiltin
 sleep = xbmc.sleep
 __log = xbmc.log
 
@@ -200,11 +201,11 @@ def parse_query(query):
 def notify(header=None, msg='', duration=2000, sound=None, icon_path=None):
     if header is None: header = get_name()
     if sound is None: sound = get_setting('mute_notifications') == 'false'
-    if icon_path is None: icon_path = os.path.join(get_path(), 'icon.png')
+    if icon_path is None: icon_path = get_icon()
     try:
         xbmcgui.Dialog().notification(header, msg, icon_path, duration, sound)
     except:
-        builtin = "XBMC.Notification(%s,%s, %s, %s)" % (header, msg, duration, icon_path)
+        builtin = "Notification(%s,%s, %s, %s)" % (header, msg, duration, icon_path)
         xbmc.executebuiltin(builtin)
 
 
@@ -256,7 +257,7 @@ def set_view(content, set_view=False, set_sort=False):
 
 
 def refresh_container():
-    xbmc.executebuiltin("XBMC.Container.Refresh")
+    xbmc.executebuiltin('Container.Refresh')
 
 
 def update_container(url):
@@ -269,7 +270,7 @@ def get_keyboard(heading, default=''):
     if default: keyboard.setDefault(default)
     keyboard.doModal()
     if keyboard.isConfirmed():
-        return keyboard.getText()
+        return keyboard.getText().strip()
     else:
         return None
 
