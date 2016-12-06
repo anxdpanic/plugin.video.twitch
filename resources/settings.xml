@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-
+    <!-- Developer -->
+    <category label="30500">
+        <!-- OAuth Client ID -->
+        <setting id="oauth_client_id" type="text" label="30501" default=""/>
+        <!-- OAuth Client Secret -->
+        <setting id="oauth_client_secret" type="text" label="30502" default=""/>
+    </category>
 </settings>

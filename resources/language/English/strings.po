@@ -53,3 +53,15 @@ msgstr ""
 msgctxt "#30009"
 msgid "Uploads"
 msgstr ""
+
+msgctxt "#30500"
+msgid "Developer"
+msgstr ""
+
+msgctxt "#30501"
+msgid "OAuth Client ID"
+msgstr ""
+
+msgctxt "#30502"
+msgid "OAuth Client Secret"
+msgstr ""
