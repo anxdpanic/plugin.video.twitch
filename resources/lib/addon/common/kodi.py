@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+from xbmc import PLAYLIST_VIDEO, PLAYLIST_MUSIC
 import xbmcaddon
 import xbmcplugin
 import xbmcgui
@@ -34,8 +35,12 @@ addon = xbmcaddon.Addon()
 get_setting = addon.getSetting
 show_settings = addon.openSettings
 execute_builtin = xbmc.executebuiltin
+get_info_label = xbmc.getInfoLabel
 sleep = xbmc.sleep
 __log = xbmc.log
+
+Dialog = xbmcgui.Dialog
+PlayList = xbmc.PlayList
 
 
 def execute_jsonrpc(command):
