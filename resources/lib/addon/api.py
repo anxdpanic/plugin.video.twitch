@@ -75,9 +75,9 @@ class Twitch:
                 break
             for stream in temp[Keys.STREAMS]:
                 live.append(stream)
-            if offset > temp[Keys.TOTAL]:
-                break
             offset += limit
+            if temp[Keys.TOTAL] <= offset:
+                break
 
         channels = {Keys.LIVE: live, Keys.OTHERS: channels}
         return channels
@@ -92,8 +92,8 @@ class Twitch:
                 break
             for channel in temp[Keys.FOLLOWS]:
                 acc.append(channel[Keys.CHANNEL])
-            if offset > temp[Keys.TOTAL]:
-                break
             offset += limit
+            if temp[Keys.TOTAL] <= offset:
+                break
 
         return acc
