@@ -21,13 +21,18 @@ import sys
 import time
 from datetime import datetime
 from base64 import b64decode
-from common import kodi
+from common import kodi, cache
 from strings import STRINGS
 from constants import CLIENT_ID, CLIENT_SECRET, MODES, LIVE_PREVIEW_TEMPLATE, Images
 from tccleaner import TextureCacheCleaner
 
+
 translations = kodi.Translations(STRINGS)
 i18n = translations.i18n
+
+cache = cache
+cache_limit = int(kodi.get_setting('cache_expire_time')) / 60
+cache.cache_enabled = cache_limit > 0
 
 
 def get_client_id_secret():
@@ -70,7 +75,7 @@ def get_username():
     username = kodi.get_setting('username').lower()
     if not username or not username.strip():
         kodi.notify(kodi.get_name(), i18n('username_required'), sound=False)
-        username.show_settings()
+        kodi.show_settings()
         username = kodi.get_setting('username')
     formatted_username = username.lower().strip()
     if username != formatted_username:
