@@ -60,7 +60,7 @@ class JsonListItemConverter(object):
         if game.get(Keys.BOX):
             image = game[Keys.BOX].get(Keys.LARGE) if game[Keys.BOX].get(Keys.LARGE) else image
         return {'label': name,
-                'path': kodi.get_plugin_url({'mode': MODES.GAMES, 'name': name, 'index': 0}),
+                'path': kodi.get_plugin_url({'mode': MODES.GAMESTREAMS, 'game': name}),
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image})}
 
     @staticmethod

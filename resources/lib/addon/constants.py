@@ -40,6 +40,7 @@ MODES = __enum(
     FOLLOWED='followed',
     CHANNELVIDEOS='channel_videos',
     CHANNELVIDEOLIST='channel_video_list',
+    GAMESTREAMS='game_streams',
     RESETCACHE='reset_cache',
     CLEARLIVEPREVIEWS='clear_live_previews',
     PLAY='play'
