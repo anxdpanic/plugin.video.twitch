@@ -18,21 +18,14 @@
 """
 
 from addon.constants import DISPATCHER, MODES, LINE_LENGTH, Keys
-from addon.common import kodi, cache
-from addon import utils
+from addon.common import kodi
+from addon import utils, api
 from addon.converter import JsonListItemConverter
-from twitch import queries as twitch_queries
-from twitch.api import v3 as twitch
 
 i18n = utils.i18n
 
 converter = JsonListItemConverter(LINE_LENGTH)
-
-__oauth = utils.get_client_id_secret()
-twitch_queries.CLIENT_ID = __oauth['client_id']
-
-cache_limit = int(kodi.get_setting('cache_expire_time')) / 60
-cache.cache_enabled = cache_limit > 0
+twitch = api.Twitch()
 
 
 @DISPATCHER.register(MODES.MAIN)
@@ -60,30 +53,73 @@ def following():
 def list_featured_streams():
     kodi.set_content('videos')
 
-    @cache.cache_function(cache_limit=cache_limit)  # cache api response
-    def get_featured():
-        return twitch.streams.featured()
-
-    streams = get_featured()
+    streams = twitch.get_featured_streams()
     for stream in streams[Keys.FEATURED]:
         kodi.create_item(converter.stream_to_listitem(stream[Keys.STREAM]))
+
     kodi.end_of_directory()
 
 
 @DISPATCHER.register(MODES.GAMES, kwargs=['index'])
-def list_games(index=0):
+def list_all_games(index=0):
     kodi.set_content('files')
     index, offset, limit = utils.calculate_pagination_values(index)
 
-    @cache.cache_function(cache_limit=cache_limit)  # cache api response
-    def get_games(offset, limit):
-        return twitch.games.top(offset=offset, limit=limit)
-
-    games = get_games(offset, limit)
+    games = twitch.get_top_games(offset, limit)
     for element in games[Keys.TOP]:
         kodi.create_item(converter.game_to_listitem(element[Keys.GAME]))
+
     kodi.create_item(utils.link_to_next_page({'mode': MODES.GAMES, 'index': index}))
     kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.CHANNELS, kwargs=['index'])
+def list_all_channels(index=0):
+    kodi.set_content('files')
+    index, offset, limit = utils.calculate_pagination_values(index)
+
+    streams = twitch.get_all_channels(offset, limit)
+    for stream in streams[Keys.STREAMS]:
+        kodi.create_item(converter.stream_to_listitem(stream))
+
+    kodi.create_item(utils.link_to_next_page({'mode': MODES.CHANNELS, 'index': index}))
+    kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.FOLLOWEDLIVE)
+def list_followed_live():
+    kodi.set_content('videos')
+
+    username = utils.get_username()
+    if username:
+        streams = twitch.get_following_streams(username)
+        for stream in streams[Keys.LIVE]:
+            kodi.create_item(converter.stream_to_listitem(stream))
+        kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.FOLLOWEDCHANNELS)
+def list_followed_channels():
+    kodi.set_content('files')
+
+    username = utils.get_username()
+    if username:
+        streams = twitch.get_following_streams(username)
+        for follower in streams[Keys.OTHERS]:
+            kodi.create_item(converter.followers_to_listitem(follower))
+        kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.FOLLOWEDGAMES)
+def list_followed_games():
+    kodi.set_content('files')
+
+    username = utils.get_username()
+    if username:
+        games = twitch.get_followed_games(username)
+        for game in games[Keys.FOLLOWS]:
+            kodi.create_item(converter.game_to_listitem(game))
+        kodi.end_of_directory()
 
 
 @DISPATCHER.register(MODES.SETTINGS, kwargs=['refresh'])
@@ -97,7 +133,7 @@ def settings(refresh=True):
 def reset_cache():
     confirmed = kodi.Dialog().yesno(i18n('confirm'), i18n('cache_reset_confirm'))
     if confirmed:
-        result = cache.reset_cache()
+        result = utils.cache.reset_cache()
         if result:
             kodi.notify(msg=i18n('cache_reset_succeeded'), sound=False)
         else:
