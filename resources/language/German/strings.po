@@ -11,183 +11,164 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: en\n"
+"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-
-#Next available: 30041-30044, 30063, 30113
-#main menu
 
 msgctxt "#30001"
 msgid "Games"
-msgstr ""
+msgstr "Spiele"
 
 msgctxt "#30002"
 msgid "Following"
-msgstr ""
+msgstr "Abonnements"
 
 msgctxt "#30003"
 msgid "Search"
-msgstr ""
+msgstr "Suche"
 
 msgctxt "#30004"
 msgid "Settings"
-msgstr ""
+msgstr "Einstellungen"
 
 msgctxt "#30005"
 msgid "Featured Streams"
-msgstr ""
+msgstr "Featured Streams"
 
 msgctxt "#30006"
 msgid "Teams"
-msgstr ""
+msgstr "Teams"
 
 msgctxt "#30007"
 msgid "Search for channels"
-msgstr ""
-
-#general
+msgstr "Suche nach Kanälen"
 
 msgctxt "#30008"
 msgid "Channels"
-msgstr ""
-
-msgctxt "#30009"
-msgid "Live Channels"
-msgstr ""
+msgstr "Kanäle"
 
 msgctxt "#30010"
 msgid "TwitchTV"
-msgstr ""
+msgstr "TwitchTV"
 
 msgctxt "#30011"
 msgid "next page..."
-msgstr ""
+msgstr "nächste Seite..."
 
 msgctxt "#30012"
 msgid "-- Currently Live Streams --"
-msgstr ""
+msgstr "-- Aktuelle Live-Streams --"
 
 msgctxt "#30013"
 msgid "-- Followed Channels --"
-msgstr ""
-
-#empty strings from id 30014 to 30019
+msgstr "-- Abonnierte Kanäle --"
 
 msgctxt "#30020"
 msgid "Http error"
-msgstr ""
+msgstr "HTTP-Fehler"
 
 msgctxt "#30021"
 msgid "No Live Data Found"
-msgstr ""
+msgstr "Keine Live-Daten gefunden"
 
 msgctxt "#30022"
 msgid "No archives found for"
-msgstr ""
+msgstr "Keine Aufzeichnungen gefunden für"
 
 msgctxt "#30023"
 msgid "User Token Error"
-msgstr ""
+msgstr "Benutzer-Token-Fehler"
 
 msgctxt "#30024"
 msgid "Changed video settings"
-msgstr ""
+msgstr "Geänderte Video-Einstellungen"
 
 msgctxt "#30025"
 msgid "Selected video settings are not available"
-msgstr ""
+msgstr "Ausgewählte Video-Einstellungen nicht verfügbar"
 
 msgctxt "#30026"
 msgid "TwitchApi error"
-msgstr ""
+msgstr "TwitchApi-Fehler"
 
 msgctxt "#30027"
 msgid "JSON error"
-msgstr ""
+msgstr "JSON-Fehler"
 
 msgctxt "#30028"
 msgid "Failed to parse the result set"
-msgstr ""
+msgstr "Fehler beim Lesen der Daten"
 
 msgctxt "#30029"
 msgid "Please check your internet connection"
-msgstr ""
-
-#empty strings from id 30030 to 30039
+msgstr "Bitte Internet-Verbindung prüfen"
 
 msgctxt "#30040"
 msgid "Video Quality"
-msgstr ""
-
-#empty strings from id 30041 to 30044
+msgstr "Video-Qualität"
 
 msgctxt "#30045"
 msgid "Display titles"
-msgstr ""
+msgstr "Zeige Stream-Namen"
 
 msgctxt "#30046"
 msgid "Streamer - Stream Title"
-msgstr ""
+msgstr "Streamer - Stream-Name"
 
 msgctxt "#30047"
 msgid "Viewers - Streamer - Stream Title"
-msgstr ""
+msgstr "Zuschauer - Streamer - Stream-Name"
 
 msgctxt "#30048"
 msgid "Stream Title"
-msgstr ""
+msgstr "Stream-Name"
 
 msgctxt "#30049"
 msgid "Streamer"
-msgstr ""
+msgstr "Streamer"
 
 msgctxt "#30050"
 msgid "Username"
-msgstr ""
+msgstr "Benutzername"
 
 msgctxt "#30051"
 msgid "Streamer - Game Title - Stream Title"
-msgstr ""
+msgstr "Streamer - Spielname - Stream-Name"
 
 msgctxt "#30052"
 msgid "Enable"
-msgstr ""
+msgstr "Erlauben"
 
 msgctxt "#30053"
 msgid "Password (OAuth Token)"
-msgstr ""
-
-#empty strings from id 30054 to 30059
+msgstr "Passwort (OAuth-Token)"
 
 msgctxt "#30060"
 msgid "Unnamed Streamer"
-msgstr ""
+msgstr "Nicht benannter Streamer"
 
 msgctxt "#30061"
 msgid "Untitled Stream"
-msgstr ""
+msgstr "Nicht benannter Stream"
 
 msgctxt "#30062"
 msgid "Unknown Number of Viewers"
-msgstr ""
-
-#empty string with id 30063
+msgstr "Nicht bekannte Zuschauerzahl"
 
 msgctxt "#30064"
 msgid "Unknown Game"
-msgstr ""
+msgstr "Nicht bekanntes Spiel"
 
 msgctxt "#30065"
 msgid "Truncate displayed titles"
-msgstr ""
+msgstr "Schneide angezeigte Namen ab"
 
 msgctxt "#30066"
 msgid "Followed Games"
-msgstr ""
+msgstr "Abonnierte Spiele"
 
 msgctxt "#30067"
 msgid "Game Title Viewers | Streamer - Stream Title"
-msgstr ""
+msgstr "Zuschauer bei Spiel | Streamer - Stream-Name"
 
 msgctxt "#30068"
 msgid "Content Type"
@@ -229,8 +210,6 @@ msgctxt "#30077"
 msgid "Play (Choose Quality)"
 msgstr ""
 
-#stream info
-
 msgctxt "#30078"
 msgid "Past Broadcasts"
 msgstr ""
@@ -238,8 +217,6 @@ msgstr ""
 msgctxt "#30079"
 msgid "Video Highlights"
 msgstr ""
-
-#notifications
 
 msgctxt "#30080"
 msgid "Could not find any playable urls"
@@ -297,8 +274,6 @@ msgctxt "#30093"
 msgid "Delay"
 msgstr ""
 
-#title
-
 msgctxt "#30094"
 msgid "Automatic refresh interval (minutes)"
 msgstr ""
@@ -306,8 +281,6 @@ msgstr ""
 msgctxt "#30095"
 msgid "Username is required"
 msgstr ""
-
-#settings
 
 msgctxt "#30096"
 msgid "API"
@@ -375,48 +348,4 @@ msgstr ""
 
 msgctxt "#30112"
 msgid "Quality may result in best match"
-msgstr ""
-
-msgctxt "#30113"
-msgid "Uploads"
-msgstr ""
-
-msgctxt "#30114"
-msgid "Confirm"
-msgstr ""
-
-msgctxt "#30115"
-msgid "Function cache has been reset"
-msgstr ""
-
-msgctxt "#30116"
-msgid "Function cache reset failed"
-msgstr ""
-
-msgctxt "#30117"
-msgid "Reset function cache?"
-msgstr ""
-
-msgctxt "#30118"
-msgid "Developer"
-msgstr ""
-
-msgctxt "#30119"
-msgid "OAuth Client Secret"
-msgstr ""
-
-msgctxt "#30120"
-msgid "Cache"
-msgstr ""
-
-msgctxt "#30121"
-msgid "Cache expire time (minutes)"
-msgstr ""
-
-msgctxt "#30122"
-msgid "Reset function cache"
-msgstr ""
-
-msgctxt "#30123"
-msgid "Items per page"
 msgstr ""

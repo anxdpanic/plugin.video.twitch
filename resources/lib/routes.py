@@ -17,16 +17,27 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-from addon.strings import STRINGS
-from addon.constants import DISPATCHER, MODES
-from addon.common import kodi
+from addon.constants import DISPATCHER, MODES, LINE_LENGTH, Keys
+from addon.common import kodi, cache
+from addon import utils
+from addon.converter import JsonListItemConverter
+from twitch import queries as twitch_queries
+from twitch.api import v3 as twitch
 
-translations = kodi.Translations(STRINGS)
-i18n = translations.i18n
+i18n = utils.i18n
+
+converter = JsonListItemConverter(LINE_LENGTH)
+
+__oauth = utils.get_client_id_secret()
+twitch_queries.CLIENT_ID = __oauth['client_id']
+
+cache_limit = int(kodi.get_setting('cache_expire_time')) / 60
+cache.cache_enabled = cache_limit > 0
 
 
 @DISPATCHER.register(MODES.MAIN)
 def main():
+    kodi.set_content('files')
     kodi.create_item({'label': i18n('featured_streams'), 'path': {'mode': MODES.FEATUREDSTREAMS}})
     kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.GAMES}})
     kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.CHANNELS}})
@@ -38,9 +49,40 @@ def main():
 
 @DISPATCHER.register(MODES.FOLLOWING)
 def following():
+    kodi.set_content('files')
     kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.FOLLOWEDLIVE}})
     kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.FOLLOWEDCHANNELS}})
     kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.FOLLOWEDGAMES}})
+    kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.FEATUREDSTREAMS)
+def list_featured_streams():
+    kodi.set_content('videos')
+
+    @cache.cache_function(cache_limit=cache_limit)  # cache api response
+    def get_featured():
+        return twitch.streams.featured()
+
+    streams = get_featured()
+    for stream in streams[Keys.FEATURED]:
+        kodi.create_item(converter.stream_to_listitem(stream[Keys.STREAM]))
+    kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.GAMES, kwargs=['index'])
+def list_games(index=0):
+    kodi.set_content('files')
+    index, offset, limit = utils.calculate_pagination_values(index)
+
+    @cache.cache_function(cache_limit=cache_limit)  # cache api response
+    def get_games(offset, limit):
+        return twitch.games.top(offset=offset, limit=limit)
+
+    games = get_games(offset, limit)
+    for element in games[Keys.TOP]:
+        kodi.create_item(converter.game_to_listitem(element[Keys.GAME]))
+    kodi.create_item(utils.link_to_next_page({'mode': MODES.GAMES, 'index': index}))
     kodi.end_of_directory()
 
 
@@ -49,3 +91,14 @@ def settings(refresh=True):
     kodi.show_settings()
     if refresh:
         kodi.refresh_container()
+
+
+@DISPATCHER.register(MODES.RESETCACHE)
+def reset_cache():
+    confirmed = kodi.Dialog().yesno(i18n('confirm'), i18n('cache_reset_confirm'))
+    if confirmed:
+        result = cache.reset_cache()
+        if result:
+            kodi.notify(msg=i18n('cache_reset_succeeded'), sound=False)
+        else:
+            kodi.notify(msg=i18n('cache_reset_failed'), sound=False)

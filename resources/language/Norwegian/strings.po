@@ -11,319 +11,292 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: en\n"
+"Language: no\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-
-#Next available: 30041-30044, 30063, 30113
-#main menu
 
 msgctxt "#30001"
 msgid "Games"
-msgstr ""
+msgstr "Spill"
 
 msgctxt "#30002"
 msgid "Following"
-msgstr ""
+msgstr "Følger"
 
 msgctxt "#30003"
 msgid "Search"
-msgstr ""
+msgstr "Søk"
 
 msgctxt "#30004"
 msgid "Settings"
-msgstr ""
+msgstr "Innstillinger"
 
 msgctxt "#30005"
 msgid "Featured Streams"
-msgstr ""
+msgstr "Fremhevede spill"
 
 msgctxt "#30006"
 msgid "Teams"
-msgstr ""
+msgstr "Lag"
 
 msgctxt "#30007"
 msgid "Search for channels"
-msgstr ""
-
-#general
+msgstr "Søk etter kanaler"
 
 msgctxt "#30008"
 msgid "Channels"
-msgstr ""
-
-msgctxt "#30009"
-msgid "Live Channels"
-msgstr ""
+msgstr "Kanaler"
 
 msgctxt "#30010"
 msgid "TwitchTV"
-msgstr ""
+msgstr "TwitchTV"
 
 msgctxt "#30011"
 msgid "next page..."
-msgstr ""
+msgstr "neste side..."
 
 msgctxt "#30012"
 msgid "-- Currently Live Streams --"
-msgstr ""
+msgstr "-- Nåværende direktestrømmer --"
 
 msgctxt "#30013"
 msgid "-- Followed Channels --"
-msgstr ""
-
-#empty strings from id 30014 to 30019
+msgstr "-- Fulgte kanaler --"
 
 msgctxt "#30020"
 msgid "Http error"
-msgstr ""
+msgstr "HTTP-feil"
 
 msgctxt "#30021"
 msgid "No Live Data Found"
-msgstr ""
+msgstr "Ingen data fra direktesending funnet"
 
 msgctxt "#30022"
 msgid "No archives found for"
-msgstr ""
+msgstr "Ingen arkiver funnet for"
 
 msgctxt "#30023"
 msgid "User Token Error"
-msgstr ""
+msgstr "Bruker-Token Feil"
 
 msgctxt "#30024"
 msgid "Changed video settings"
-msgstr ""
+msgstr "Skiftet videoinnstillinger"
 
 msgctxt "#30025"
 msgid "Selected video settings are not available"
-msgstr ""
+msgstr "Valgte videoinnstillinger er ikke tilgjengelige"
 
 msgctxt "#30026"
 msgid "TwitchApi error"
-msgstr ""
+msgstr "TwitchAPI-feil"
 
 msgctxt "#30027"
 msgid "JSON error"
-msgstr ""
+msgstr "JSON-feil"
 
 msgctxt "#30028"
 msgid "Failed to parse the result set"
-msgstr ""
+msgstr "Kan ikke dekode resultatsettet"
 
 msgctxt "#30029"
 msgid "Please check your internet connection"
-msgstr ""
-
-#empty strings from id 30030 to 30039
+msgstr "Skjekk internettforbindelsen din"
 
 msgctxt "#30040"
 msgid "Video Quality"
-msgstr ""
-
-#empty strings from id 30041 to 30044
+msgstr "Videokvalitet"
 
 msgctxt "#30045"
 msgid "Display titles"
-msgstr ""
+msgstr "Vis titler"
 
 msgctxt "#30046"
 msgid "Streamer - Stream Title"
-msgstr ""
+msgstr "Strømmer - Stream Tittel"
 
 msgctxt "#30047"
 msgid "Viewers - Streamer - Stream Title"
-msgstr ""
+msgstr "Seere - Strømmer - Tittel til strøm"
 
 msgctxt "#30048"
 msgid "Stream Title"
-msgstr ""
+msgstr "Tittel til strøm"
 
 msgctxt "#30049"
 msgid "Streamer"
-msgstr ""
+msgstr "Strømmer"
 
 msgctxt "#30050"
 msgid "Username"
-msgstr ""
+msgstr "Brukernavn"
 
 msgctxt "#30051"
 msgid "Streamer - Game Title - Stream Title"
-msgstr ""
+msgstr "Strømmer - Spilltittel - Tittel til strøm"
 
 msgctxt "#30052"
 msgid "Enable"
-msgstr ""
+msgstr "Aktiver"
 
 msgctxt "#30053"
 msgid "Password (OAuth Token)"
-msgstr ""
-
-#empty strings from id 30054 to 30059
+msgstr "Adgangskode (OAuth Token)"
 
 msgctxt "#30060"
 msgid "Unnamed Streamer"
-msgstr ""
+msgstr "Ikke navngitt Streamer"
 
 msgctxt "#30061"
 msgid "Untitled Stream"
-msgstr ""
+msgstr "Ikke titulert Stream"
 
 msgctxt "#30062"
 msgid "Unknown Number of Viewers"
-msgstr ""
-
-#empty string with id 30063
+msgstr "Ukjent antall Seere"
 
 msgctxt "#30064"
 msgid "Unknown Game"
-msgstr ""
+msgstr "Ukjent Spill"
 
 msgctxt "#30065"
 msgid "Truncate displayed titles"
-msgstr ""
+msgstr "Forkort viste titler"
 
 msgctxt "#30066"
 msgid "Followed Games"
-msgstr ""
+msgstr "Fulgte spill"
 
 msgctxt "#30067"
 msgid "Game Title Viewers | Streamer - Stream Title"
-msgstr ""
+msgstr "Spilltittel Seere | Strømmer - Tittel til strøm"
 
 msgctxt "#30068"
 msgid "Content Type"
-msgstr ""
+msgstr "Innholdstype"
 
 msgctxt "#30069"
 msgid "Files"
-msgstr ""
+msgstr "Filer"
 
 msgctxt "#30070"
 msgid "TV Shows"
-msgstr ""
+msgstr "TV-serier"
 
 msgctxt "#30071"
 msgid "Movies"
-msgstr ""
+msgstr "Filmer"
 
 msgctxt "#30072"
 msgid "Episodes"
-msgstr ""
+msgstr "Episoder"
 
 msgctxt "#30073"
 msgid "Music Videos"
-msgstr ""
+msgstr "Musikkvideoer"
 
 msgctxt "#30074"
 msgid "Automatically refresh live preview cache"
-msgstr ""
+msgstr "Automatically refresh live preview cache"
 
 msgctxt "#30075"
 msgid "Install IrcChat (script.ircchat)"
-msgstr ""
+msgstr "Installer IrcChat (script.ircchat)"
 
 msgctxt "#30076"
 msgid "General"
-msgstr ""
+msgstr "Generell"
 
 msgctxt "#30077"
 msgid "Play (Choose Quality)"
-msgstr ""
-
-#stream info
+msgstr "Spill (Velg Kvalitet)"
 
 msgctxt "#30078"
 msgid "Past Broadcasts"
-msgstr ""
+msgstr "Tidligere kringkastinger"
 
 msgctxt "#30079"
 msgid "Video Highlights"
-msgstr ""
-
-#notifications
+msgstr "Video høydepunkt"
 
 msgctxt "#30080"
 msgid "Could not find any playable urls"
-msgstr ""
+msgstr "Kunne ikke finne noen spillbar urler"
 
 msgctxt "#30081"
 msgid "IRC Chat"
-msgstr ""
+msgstr "IRC Chat"
 
 msgctxt "#30082"
 msgid "Live Previews"
-msgstr ""
+msgstr "Forhåndsvisning av direktesending"
 
 msgctxt "#30083"
 msgid "Live Preview Settings"
-msgstr ""
+msgstr "Innstillinger for forhåndsvisning av direktesendinger"
 
 msgctxt "#30084"
 msgid "Clear live preview cache"
-msgstr ""
+msgstr "Rens mellomlagring av forhåndsvisning av direktesendinger"
 
 msgctxt "#30085"
 msgid "***** WARNING *****"
-msgstr ""
+msgstr "***** ADVARSEL *****"
 
 msgctxt "#30086"
 msgid "These settings may allow this add-on to delete database entries and images[CR]for cached live previews."
-msgstr ""
+msgstr "These settings may allow this add-on to delete database entries and images[CR]for cached live previews."
 
 msgctxt "#30087"
 msgid "Notifications"
-msgstr ""
+msgstr "Varslinger"
 
 msgctxt "#30088"
 msgid "Game"
-msgstr ""
+msgstr "Spill"
 
 msgctxt "#30089"
 msgid "Viewers"
-msgstr ""
+msgstr "Seere"
 
 msgctxt "#30090"
 msgid "Language"
-msgstr ""
+msgstr "Språk"
 
 msgctxt "#30091"
 msgid "Mature"
-msgstr ""
+msgstr "Voksent"
 
 msgctxt "#30092"
 msgid "Partner"
-msgstr ""
+msgstr "Partner"
 
 msgctxt "#30093"
 msgid "Delay"
-msgstr ""
-
-#title
+msgstr "Forsinkelse"
 
 msgctxt "#30094"
 msgid "Automatic refresh interval (minutes)"
-msgstr ""
+msgstr "Intervall for automatisk oppfriskning (minutter)"
 
 msgctxt "#30095"
 msgid "Username is required"
-msgstr ""
-
-#settings
+msgstr "Brukernavn er nødvendig"
 
 msgctxt "#30096"
 msgid "API"
-msgstr ""
+msgstr "API"
 
 msgctxt "#30097"
 msgid "OAuth Client ID"
-msgstr ""
+msgstr "OAuth Klient-id"
 
 msgctxt "#30098"
 msgid "Select Video by ID or URL"
-msgstr ""
+msgstr "Velg video etter ID eller URL"
 
 msgctxt "#30099"
 msgid "OAuth Token"
-msgstr ""
+msgstr "OAuth Token"
 
 msgctxt "#30100"
 msgid "Visit www.twitch.tv/settings/connections and [CR]'Register your application' for an OAuth Client-ID"
@@ -375,48 +348,4 @@ msgstr ""
 
 msgctxt "#30112"
 msgid "Quality may result in best match"
-msgstr ""
-
-msgctxt "#30113"
-msgid "Uploads"
-msgstr ""
-
-msgctxt "#30114"
-msgid "Confirm"
-msgstr ""
-
-msgctxt "#30115"
-msgid "Function cache has been reset"
-msgstr ""
-
-msgctxt "#30116"
-msgid "Function cache reset failed"
-msgstr ""
-
-msgctxt "#30117"
-msgid "Reset function cache?"
-msgstr ""
-
-msgctxt "#30118"
-msgid "Developer"
-msgstr ""
-
-msgctxt "#30119"
-msgid "OAuth Client Secret"
-msgstr ""
-
-msgctxt "#30120"
-msgid "Cache"
-msgstr ""
-
-msgctxt "#30121"
-msgid "Cache expire time (minutes)"
-msgstr ""
-
-msgctxt "#30122"
-msgid "Reset function cache"
-msgstr ""
-
-msgctxt "#30123"
-msgid "Items per page"
 msgstr ""
