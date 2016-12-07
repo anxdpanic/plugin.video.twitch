@@ -48,6 +48,10 @@ class Twitch:
         return self.api.follows.by_user(name=name, limit=limit, offset=offset)
 
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_channel_videos(self, name, offset, limit, broadcast_type):
+        return self.api.videos.by_channel(name=name, limit=limit, offset=offset, broadcast_type=broadcast_type)
+
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_streams_by_channels(self, names, offset, limit):
         query = self.queries.ApiQuery('streams')
         query.add_param('offset', offset)

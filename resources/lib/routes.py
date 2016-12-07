@@ -110,6 +110,29 @@ def list_followed(content):
             kodi.end_of_directory()
 
 
+@DISPATCHER.register(MODES.CHANNELVIDEOS, args=['name'])
+def list_channel_video_types(name):
+    kodi.set_content('files')
+    kodi.create_item({'label': i18n('past_broadcasts'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'name': name, 'broadcast_type': 'archive'}})
+    kodi.create_item({'label': i18n('uploads'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'name': name, 'broadcast_type': 'upload'}})
+    kodi.create_item({'label': i18n('video_highlights'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'name': name, 'broadcast_type': 'highlight'}})
+    kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.CHANNELVIDEOLIST, args=['name', 'broadcast_type'], kwargs=['index'])
+def list_channel_videos(name, broadcast_type, index=0):
+    index = int(index)
+    limit = utils.get_items_per_page()
+    offset = index * limit
+    kodi.set_content('videos')
+    videos = twitch.get_channel_videos(name, offset, limit, broadcast_type)
+    for video in videos[Keys.VIDEOS]:
+        kodi.create_item(converter.video_list_to_listitem(video))
+    if videos[Keys.TOTAL] > (offset + limit):
+        kodi.create_item(utils.link_to_next_page({'mode': MODES.CHANNELVIDEOLIST, 'name': name, 'broadcast_type': broadcast_type, 'index': index}))
+    kodi.end_of_directory()
+
+
 @DISPATCHER.register(MODES.SETTINGS, kwargs=['refresh'])
 def settings(refresh=True):
     kodi.show_settings()
