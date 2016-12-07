@@ -26,10 +26,10 @@ def log(msg, level=LOGDEBUG):
     try:
         if isinstance(msg, unicode):
             msg = '%s (ENCODED)' % (msg.encode('utf-8'))
-            kodi.__log('%s: %s' % (kodi.get_name(), msg), level)
+        kodi.__log('%s: %s' % (kodi.get_name(), msg), level)
     except Exception as e:
         try:
-            kodi.__log('Logging Failure: %s' % (e), level)
+            kodi.__log('Logging Failure: %s' % e, level)
         except:
             pass  # just give up
 
