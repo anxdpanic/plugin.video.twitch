@@ -43,9 +43,9 @@ def main():
 @DISPATCHER.register(MODES.FOLLOWING)
 def following():
     kodi.set_content('files')
-    kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.FOLLOWEDLIVE}})
-    kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.FOLLOWEDCHANNELS}})
-    kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.FOLLOWEDGAMES}})
+    kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.FOLLOWED, 'content': 'live'}})
+    kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.FOLLOWED, 'content': 'channels'}})
+    kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.FOLLOWED, 'content': 'games'}})
     kodi.end_of_directory()
 
 
@@ -86,40 +86,28 @@ def list_all_channels(index=0):
     kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.FOLLOWEDLIVE)
-def list_followed_live():
-    kodi.set_content('videos')
-
+@DISPATCHER.register(MODES.FOLLOWED, args=['content'])
+def list_followed(content):
     username = utils.get_username()
     if username:
-        streams = twitch.get_following_streams(username)
-        for stream in streams[Keys.LIVE]:
-            kodi.create_item(converter.stream_to_listitem(stream))
-        kodi.end_of_directory()
-
-
-@DISPATCHER.register(MODES.FOLLOWEDCHANNELS)
-def list_followed_channels():
-    kodi.set_content('files')
-
-    username = utils.get_username()
-    if username:
-        streams = twitch.get_following_streams(username)
-        for follower in streams[Keys.OTHERS]:
-            kodi.create_item(converter.followers_to_listitem(follower))
-        kodi.end_of_directory()
-
-
-@DISPATCHER.register(MODES.FOLLOWEDGAMES)
-def list_followed_games():
-    kodi.set_content('files')
-
-    username = utils.get_username()
-    if username:
-        games = twitch.get_followed_games(username)
-        for game in games[Keys.FOLLOWS]:
-            kodi.create_item(converter.game_to_listitem(game))
-        kodi.end_of_directory()
+        if content == 'live':
+            kodi.set_content('videos')
+            streams = twitch.get_following_streams(username)
+            for stream in streams[Keys.LIVE]:
+                kodi.create_item(converter.stream_to_listitem(stream))
+            kodi.end_of_directory()
+        elif content == 'channels':
+            kodi.set_content('files')
+            streams = twitch.get_following_streams(username)
+            for follower in streams[Keys.OTHERS]:
+                kodi.create_item(converter.followers_to_listitem(follower))
+            kodi.end_of_directory()
+        elif content == 'games':
+            kodi.set_content('files')
+            games = twitch.get_followed_games(username)
+            for game in games[Keys.FOLLOWS]:
+                kodi.create_item(converter.game_to_listitem(game))
+            kodi.end_of_directory()
 
 
 @DISPATCHER.register(MODES.SETTINGS, kwargs=['refresh'])
