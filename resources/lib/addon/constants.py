@@ -38,10 +38,11 @@ MODES = __enum(
     SEARCH='search',
     SETTINGS='settings',
     FOLLOWED='followed',
+    CHANNELVIDEOS='channel_videos',
+    CHANNELVIDEOLIST='channel_video_list',
     RESETCACHE='reset_cache',
     CLEARLIVEPREVIEWS='clear_live_previews',
-    PLAY='play',
-    CHANNELVIDEOS='channel_videos'
+    PLAY='play'
 )
 
 LINE_LENGTH = 60
