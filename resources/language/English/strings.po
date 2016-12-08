@@ -432,3 +432,11 @@ msgstr ""
 msgctxt "#30126"
 msgid "Refresh"
 msgstr ""
+
+msgctxt "#30127"
+msgid "Login"
+msgstr ""
+
+msgctxt "#30128"
+msgid "OAuth token is required"
+msgstr ""

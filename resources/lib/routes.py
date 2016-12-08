@@ -234,6 +234,7 @@ def play(name=None, video_id=None, quality=-2, use_player=False):
                 kodi.Player().play(item_dict['path'], playback_item)
             else:
                 kodi.set_resolved_url(playback_item)
+            utils.exec_irc_script(name)
 
 
 @DISPATCHER.register(MODES.SETTINGS, kwargs=['refresh'])
@@ -257,3 +258,11 @@ def reset_cache():
 @DISPATCHER.register(MODES.CLEARLIVEPREVIEWS, kwargs=['notify'])
 def clear_live_previews(notify=True):
     utils.TextureCacheCleaner().remove_like(LIVE_PREVIEW_TEMPLATE, notify)
+
+
+@DISPATCHER.register(MODES.INSTALLIRCCHAT)
+def install_ircchat():
+    if kodi.get_kodi_version().major > 16:
+        kodi.execute_builtin('InstallAddon(script.ircchat)')
+    else:
+        kodi.execute_builtin('RunPlugin(plugin://script.ircchat/)')
