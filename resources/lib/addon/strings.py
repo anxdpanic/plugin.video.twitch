@@ -61,5 +61,6 @@ STRINGS = {
     'streams': 30125,
     'refresh': 30126,
     'login': 30127,
-    'token_required': 30128
+    'token_required': 30128,
+    'error': 30129
 }

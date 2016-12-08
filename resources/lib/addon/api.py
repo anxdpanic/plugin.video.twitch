@@ -17,70 +17,113 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
+import sys
 import utils
+from functools import wraps
+from common import kodi, log_utils
 from constants import Keys
 from twitch import queries as twitch_queries
 from twitch.api import v3 as twitch
 from twitch.api import usher
+from twitch.exceptions import ResourceUnavailableException
+
+i18n = utils.i18n
+
+
+def api_error_handler(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            result = func(*args, **kwargs)
+            try:
+                if 'error' in result:
+                    message = '[Status {0}] {1}'.format(result['status'], result['message'])
+                    log_utils.log('Error |{0}| message |{1}|'.format(result['error'], message), log_utils.LOGERROR)
+                    kodi.notify('{0} ({1})'.format(i18n('error'), result['error']), message, duration=7000, sound=False)
+                    sys.exit(0)
+            except:
+                pass
+            return result
+        except ResourceUnavailableException as error:
+            log_utils.log('Error: Resource not available |{0}|'.format(error.message), log_utils.LOGERROR)
+            kodi.notify(i18n('error'), error.message, duration=7000, sound=False)
+            sys.exit(0)
+
+    return wrapper
 
 
 class Twitch:
     api = twitch
     usher = usher
     queries = twitch_queries
-    oauth = utils.get_client_id_secret()
+    client_id = utils.get_client_id()
+    access_token = utils.get_oauth_token(token_only=True, required=False)
 
     def __init__(self):
-        self.queries.CLIENT_ID = self.oauth['client_id']
+        self.queries.CLIENT_ID = self.client_id
+        self.queries.OAUTH_TOKEN = self.access_token
 
+    @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_featured_streams(self):
         return self.api.streams.featured()
 
+    @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_top_games(self, offset, limit):
         return self.api.games.top(offset=offset, limit=limit)
 
+    @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_all_channels(self, offset, limit):
         return self.api.streams.all(offset=offset, limit=limit)
 
+    @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_all_teams(self, offset, limit):
         return self.api.teams.active(offset=offset, limit=limit)
 
+    @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_followed_channels(self, name, offset, limit):
         return self.api.follows.by_user(name=name, limit=limit, offset=offset)
 
+    @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_channel_videos(self, name, offset, limit, broadcast_type):
         return self.api.videos.by_channel(name=name, limit=limit, offset=offset, broadcast_type=broadcast_type)
 
+    @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_game_streams(self, game, offset, limit):
         return self.api.streams.all(game=game, limit=limit, offset=offset)
 
+    @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_channel_search(self, query, offset, limit):
         return self.api.search.channels(query=query, limit=limit, offset=offset)
 
+    @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_stream_search(self, query, offset, limit):
         return self.api.search.streams(query=query, limit=limit, offset=offset)
 
+    @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_game_search(self, query):
         return self.api.search.games(query=query)
 
+    @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_video_by_id(self, video_id):
         return self.api.videos.by_id(identification=video_id)
 
+    @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_channel_stream(self, name):
         return self.api.streams.all(channel=name)
 
+    @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_streams_by_channels(self, names, offset, limit):
         query = self.queries.ApiQuery('streams')
@@ -89,15 +132,18 @@ class Twitch:
         query.add_param('channel', names)
         return query.execute()
 
+    @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_followed_games(self, name):
         query = self.queries.HiddenApiQuery('users/{0}/follows/games'.format(name))
         return query.execute()
 
+    @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_vod(self, video_id):
-        return self.usher._vod(video_id)
+        return self.usher.video(video_id)
 
+    @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_live(self, name):
         return self.usher.live(name)
@@ -113,7 +159,7 @@ class Twitch:
 
         while True:
             temp = self.get_streams_by_channels(channel_names, offset, limit)
-            if len(temp) == 0:
+            if len(temp[Keys.STREAMS]) == 0:
                 break
             for stream in temp[Keys.STREAMS]:
                 live.append(stream)
@@ -191,7 +237,7 @@ class Twitch:
         offset = 0
         while True:
             temp = self.get_followed_channels(username, offset, limit)
-            if len(temp) == 0:
+            if len(temp[Keys.FOLLOWS]) == 0:
                 break
             for channel in temp[Keys.FOLLOWS]:
                 acc.append(channel[Keys.CHANNEL])

@@ -24,7 +24,7 @@ from base64 import b64decode
 from common import kodi, cache
 from strings import STRINGS
 from tccleaner import TextureCacheCleaner
-from constants import CLIENT_ID, CLIENT_SECRET, LIVE_PREVIEW_TEMPLATE, Images
+from constants import CLIENT_ID, LIVE_PREVIEW_TEMPLATE, Images
 
 translations = kodi.Translations(STRINGS)
 i18n = translations.i18n
@@ -34,27 +34,22 @@ cache_limit = int(kodi.get_setting('cache_expire_time')) / 60
 cache.cache_enabled = cache_limit > 0
 
 
-def get_client_id_secret():
+def get_client_id():
     settings_id = kodi.get_setting('oauth_client_id')
-    settings_secret = kodi.get_setting('oauth_client_secret')
     stripped_id = settings_id.strip()
-    stripped_secret = settings_secret.strip()
     if settings_id != stripped_id:
         settings_id = stripped_id
         kodi.set_setting('oauth_client_id', settings_id)
-    if settings_secret != stripped_secret:
-        settings_secret = stripped_secret
-        kodi.set_setting('oauth_client_secret', settings_secret)
-
-    if settings_id and settings_secret:
-        return {'client_id': settings_id.decode('utf-8'), 'secret': settings_secret.decode('utf-8')}
+    if settings_id:
+        return settings_id.decode('utf-8')
     else:
-        return {'client_id': b64decode(CLIENT_ID).decode('utf-8'), 'secret': b64decode(CLIENT_SECRET).decode('utf-8')}
+        return b64decode(CLIENT_ID).decode('utf-8')
 
 
-def get_oauth_token(token_only=True):
+def get_oauth_token(token_only=True, required=False):
     oauth_token = kodi.get_setting('oauth_token')
     if not oauth_token or not oauth_token.strip():
+        if not required: return ''
         kodi.notify(kodi.get_name(), i18n('token_required'), sound=False)
         kodi.show_settings()
         oauth_token = kodi.get_setting('oauth_token')
@@ -150,7 +145,7 @@ def exec_irc_script(channel):
     if kodi.get_setting('irc_enable') != 'true':
         return
     username = kodi.get_setting('username')
-    password = get_oauth_token(token_only=False)
+    password = get_oauth_token(token_only=False, required=True)
     if username and password:
         host = 'irc.chat.twitch.tv'
         builtin = 'RunScript(script.ircchat, run_irc=True&nickname=%s&username=%s&password=%s&host=%s&channel=#%s)' % \
