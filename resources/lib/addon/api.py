@@ -46,6 +46,10 @@ class Twitch:
         return self.api.streams.all(offset=offset, limit=limit)
 
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_all_teams(self, offset, limit):
+        return self.api.teams.active(offset=offset, limit=limit)
+
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_followed_channels(self, name, offset, limit):
         return self.api.follows.by_user(name=name, limit=limit, offset=offset)
 
