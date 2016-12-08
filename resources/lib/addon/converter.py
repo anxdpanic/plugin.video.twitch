@@ -88,13 +88,13 @@ class JsonListItemConverter(object):
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image})}
 
     @staticmethod
-    def followers_to_listitem(follower):
-        image = follower.get(Keys.LOGO) if follower.get(Keys.LOGO) else Images.ICON
-        video_banner = follower.get(Keys.VIDEO_BANNER)
+    def channel_to_listitem(channel):
+        image = channel.get(Keys.LOGO) if channel.get(Keys.LOGO) else Images.ICON
+        video_banner = channel.get(Keys.VIDEO_BANNER)
         if not video_banner:
-            video_banner = follower.get(Keys.PROFILE_BANNER) if follower.get(Keys.PROFILE_BANNER) else Images.FANART
-        return {'label': follower[Keys.DISPLAY_NAME],
-                'path': kodi.get_plugin_url({'mode': MODES.CHANNELVIDEOS, 'name': follower[Keys.NAME]}),
+            video_banner = channel.get(Keys.PROFILE_BANNER) if channel.get(Keys.PROFILE_BANNER) else Images.FANART
+        return {'label': channel[Keys.DISPLAY_NAME],
+                'path': kodi.get_plugin_url({'mode': MODES.CHANNELVIDEOS, 'name': channel[Keys.NAME]}),
                 'art': the_art({'fanart': video_banner, 'poster': image, 'thumb': image})}
 
     @staticmethod

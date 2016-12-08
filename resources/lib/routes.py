@@ -40,6 +40,59 @@ def main():
     kodi.end_of_directory()
 
 
+@DISPATCHER.register(MODES.SEARCH)
+def search():
+    kodi.set_content('files')
+    kodi.create_item({'label': i18n('streams'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'streams'}})
+    kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'channels'}})
+    kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'games'}})
+    kodi.create_item({'label': i18n('video_id_url'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'id_url'}})
+    kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.NEWSEARCH, args=['content'])
+def new_search(content):
+    kodi.set_content('files')
+    user_input = kodi.get_keyboard(i18n('search'))
+    if user_input:
+        kodi.update_container(kodi.get_plugin_url({'mode': MODES.SEARCHRESULTS, 'content': content, 'query': user_input}))
+
+
+@DISPATCHER.register(MODES.SEARCHRESULTS, args=['content', 'query'], kwargs=['index'])
+def search_results(content, query, index=0):
+    if content == 'streams':
+        kodi.set_content('videos')
+        index, offset, limit = utils.calculate_pagination_values(index)
+        results = twitch.get_stream_search(query=query, offset=offset, limit=limit)
+        for stream in results[Keys.STREAMS]:
+            kodi.create_item(converter.stream_to_listitem(stream))
+        if results[Keys.TOTAL] > (offset + limit):
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.SEARCHRESULTS, 'content': content, 'query': query, 'index': index}))
+        kodi.end_of_directory()
+    elif content == 'channels':
+        kodi.set_content('files')
+        index, offset, limit = utils.calculate_pagination_values(index)
+        results = twitch.get_channel_search(query=query, offset=offset, limit=limit)
+        for channel in results[Keys.CHANNELS]:
+            kodi.create_item(converter.channel_to_listitem(channel))
+        if results[Keys.TOTAL] > (offset + limit):
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.SEARCHRESULTS, 'content': content, 'query': query, 'index': index}))
+        kodi.end_of_directory()
+    elif content == 'games':
+        kodi.set_content('files')
+        results = twitch.get_game_search(query=query)
+        for game in results[Keys.GAMES]:
+            kodi.create_item(converter.game_to_listitem(game))
+        kodi.end_of_directory()
+    elif content == 'id_url':
+        kodi.set_content('videos')
+        video_id = utils.extract_video_id(query)
+        results = twitch.get_video_by_id(video_id)
+        if video_id.startswith('a') or video_id.startswith('c') or video_id.startswith('v'):
+            kodi.create_item(converter.video_list_to_listitem(results))
+            kodi.end_of_directory()
+
+
 @DISPATCHER.register(MODES.FOLLOWING)
 def following():
     kodi.set_content('files')
@@ -99,8 +152,8 @@ def list_followed(content):
         elif content == 'channels':
             kodi.set_content('files')
             streams = twitch.get_following_streams(username)
-            for follower in streams[Keys.OTHERS]:
-                kodi.create_item(converter.followers_to_listitem(follower))
+            for followed in streams[Keys.OTHERS]:
+                kodi.create_item(converter.channel_to_listitem(followed))
             kodi.end_of_directory()
         elif content == 'games':
             kodi.set_content('files')

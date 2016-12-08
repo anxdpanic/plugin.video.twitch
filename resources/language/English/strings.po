@@ -420,3 +420,11 @@ msgstr ""
 msgctxt "#30123"
 msgid "Items per page"
 msgstr ""
+
+msgctxt "#30124"
+msgid "Video Id/Url"
+msgstr ""
+
+msgctxt "#30125"
+msgid "Streams"
+msgstr ""
