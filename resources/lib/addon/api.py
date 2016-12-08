@@ -17,11 +17,11 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-from twitch import queries as twitch_queries
-from twitch.api import usher
-from twitch.api import v3 as twitch
-from constants import Keys
 import utils
+from constants import Keys
+from twitch import queries as twitch_queries
+from twitch.api import v3 as twitch
+from twitch.api import usher
 
 
 class Twitch:

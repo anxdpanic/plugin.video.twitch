@@ -17,9 +17,9 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-from constants import MODES
-from common import kodi
 import utils
+from common import kodi
+from constants import MODES
 
 i18n = utils.i18n
 

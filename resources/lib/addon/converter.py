@@ -17,10 +17,10 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-from constants import Keys, Images, MODES
-from utils import the_art, TitleBuilder, i18n
-from common import kodi
 import menu_items
+from common import kodi
+from utils import the_art, TitleBuilder, i18n
+from constants import Keys, Images, MODES
 
 
 class PlaylistConverter(object):

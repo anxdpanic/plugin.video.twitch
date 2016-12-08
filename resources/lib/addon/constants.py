@@ -74,11 +74,6 @@ class Images:
 
 
 class Keys:
-    '''
-    Should not be instantiated, just used to categorize
-    string-constants
-    '''
-
     BITRATE = 'bitrate'
     CHANNEL = 'channel'
     CHANNELS = 'channels'
