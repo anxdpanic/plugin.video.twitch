@@ -55,6 +55,7 @@ def get_client_id_secret():
 def get_oauth_token(token_only=True):
     oauth_token = kodi.get_setting('oauth_token')
     if not oauth_token or not oauth_token.strip():
+        kodi.notify(kodi.get_name(), i18n('token_required'), sound=False)
         kodi.show_settings()
         oauth_token = kodi.get_setting('oauth_token')
     stripped_token = oauth_token.strip()
@@ -148,12 +149,13 @@ def link_to_next_page(queries):
 def exec_irc_script(channel):
     if kodi.get_setting('irc_enable') != 'true':
         return
-    username = kodi.get_setting('irc_username')
+    username = kodi.get_setting('username')
     password = get_oauth_token(token_only=False)
-    host = 'irc.chat.twitch.tv'
-    builtin = 'RunScript(script.ircchat, run_irc=True&nickname=%s&username=%s&password=%s&host=%s&channel=#%s)' % \
-              (username, username, password, host, channel)
-    kodi.execute_builtin(builtin)
+    if username and password:
+        host = 'irc.chat.twitch.tv'
+        builtin = 'RunScript(script.ircchat, run_irc=True&nickname=%s&username=%s&password=%s&host=%s&channel=#%s)' % \
+                  (username, username, password, host, channel)
+        kodi.execute_builtin(builtin)
 
 
 def notify_refresh():

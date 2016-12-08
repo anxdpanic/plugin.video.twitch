@@ -59,5 +59,7 @@ STRINGS = {
     'cache_reset_confirm': 30117,
     'video_id_url': 30124,
     'streams': 30125,
-    'refresh': 30126
+    'refresh': 30126,
+    'login': 30127,
+    'token_required': 30128
 }

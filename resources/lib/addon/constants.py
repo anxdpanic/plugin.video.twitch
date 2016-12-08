@@ -45,6 +45,7 @@ MODES = __enum(
     GAMESTREAMS='game_streams',
     RESETCACHE='reset_cache',
     CLEARLIVEPREVIEWS='clear_live_previews',
+    INSTALLIRCCHAT='install_ircchat',
     PLAY='play'
 )
 
