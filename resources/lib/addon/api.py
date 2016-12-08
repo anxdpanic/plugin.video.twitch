@@ -151,7 +151,7 @@ class Twitch:
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_following_streams(self, username):
         following_channels = self._get_followed_channels(username)
-        channels = sorted(following_channels, key=lambda k: k[Keys.DISPLAY_NAME])
+        channels = sorted(following_channels, key=lambda k: k[Keys.DISPLAY_NAME].lower())
         channel_names = ','.join([channel[Keys.NAME] for channel in channels])
         live = []
         limit = 100
