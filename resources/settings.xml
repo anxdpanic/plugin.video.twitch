@@ -5,6 +5,7 @@
         <!-- Username -->
         <setting id="username" type="text" label="30050" default=""/>
         <setting id="oauth_token" type="text" label="30099" default=""/>
+        <setting label="30101" type="lsep"/>
     </category>
     <!-- General -->
     <category label="30076">
@@ -55,9 +56,5 @@
     <category label="30118">
         <!-- OAuth Client ID -->
         <setting id="oauth_client_id" type="text" label="30097" default=""/>
-        <!-- OAuth Client Secret -->
-        <setting id="oauth_client_secret" type="text" label="30119" default=""/>
-        <!-- OAuth Token -->
-        <setting id="oauth_token" type="text" label="30099" default=""/>
     </category>
 </settings>
