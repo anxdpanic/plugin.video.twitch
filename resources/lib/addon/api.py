@@ -138,14 +138,14 @@ class Twitch:
                         return q[0]  # '1080p60' is in qualityList
             return q
 
-        def _get_old_quality(quality_index):
-            if quality_index <= 2:
+        def _get_old_quality(q_idx):
+            if q_idx <= 2:
                 return 0
-            elif quality_index <= 4:
+            elif q_idx <= 4:
                 return 1
-            elif quality_index <= 6:
+            elif q_idx <= 6:
                 return 2
-            elif quality_index <= 7:
+            elif q_idx <= 7:
                 return 3
             else:
                 return 4
