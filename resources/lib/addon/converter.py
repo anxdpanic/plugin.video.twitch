@@ -81,7 +81,7 @@ class JsonListItemConverter(object):
         title_values = self.extract_channel_title_values(team_channel)
         title = self.title_builder.format_title(title_values)
         return {'label': title,
-                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel_name, 'quality': -2}),
+                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel_name}),
                 'context_menu': [(i18n('play_choose_quality'), 'RunPlugin(%s)' %
                                   kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel_name, 'quality': -1}))],
                 'is_playable': True,
@@ -105,7 +105,7 @@ class JsonListItemConverter(object):
         year = video.get(Keys.CREATED_AT)[:4] if video.get(Keys.CREATED_AT) else ''
         image = video.get(Keys.PREVIEW) if video.get(Keys.PREVIEW) else Images.VIDEOTHUMB
         return {'label': video[Keys.TITLE],
-                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video['_id'], 'quality': -2}),
+                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video['_id']}),
                 'context_menu': [(i18n('play_choose_quality'), 'RunPlugin(%s)' %
                                   kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video['_id'], 'quality': -1}))],
                 'is_playable': True,
@@ -127,12 +127,24 @@ class JsonListItemConverter(object):
         info = self.get_plot_for_stream(stream)
         info.update({'mediatype': 'video'})
         return {'label': title,
-                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'quality': -2}),
+                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel[Keys.NAME]}),
                 'context_menu': [(i18n('play_choose_quality'), 'RunPlugin(%s)' %
                                   kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'quality': -1}))],
                 'is_playable': True,
                 'info': info,
                 'art': the_art({'fanart': video_banner, 'poster': image, 'thumb': image, 'icon': image})}
+
+    def video_to_playitem(self, video):
+        # path is returned '' and must be set after
+        channel = video[Keys.CHANNEL]
+        preview = video.get(Keys.PREVIEW)
+        logo = channel.get(Keys.LOGO) if channel.get(Keys.LOGO) else Images.VIDEOTHUMB
+        image = preview if preview else logo
+        title = self.get_title_for_stream(video)
+        return {'label': title,
+                'path': '',
+                'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
+                'is_playable': True}
 
     def stream_to_playitem(self, stream):
         # path is returned '' and must be set after

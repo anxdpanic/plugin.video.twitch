@@ -26,7 +26,6 @@ from strings import STRINGS
 from constants import CLIENT_ID, CLIENT_SECRET, MODES, LIVE_PREVIEW_TEMPLATE, Images
 from tccleaner import TextureCacheCleaner
 
-
 translations = kodi.Translations(STRINGS)
 i18n = translations.i18n
 
@@ -117,7 +116,7 @@ def get_video_quality(quality=''):
         else:
             raise ValueError
     except ValueError:
-        chosen_quality = kodi.get_setting('video', unicode)
+        chosen_quality = kodi.get_setting('video')
 
     if chosen_quality == '-1':
         # chosen_quality == '-1' if dialog was cancelled

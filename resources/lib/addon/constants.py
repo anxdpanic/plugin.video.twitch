@@ -56,9 +56,6 @@ FANART = kodi.get_fanart()
 CLIENT_ID = 'NjdlYnBmaHlvaWNhYjVrcjB5N3B6b2NzZm9oczd0eQ=='
 CLIENT_SECRET = ''
 
-QUALITY_LIST_STREAM = ['Source', '1080p60', '1080p30', '720p60', '720p30', '540p30', '480p30', '360p30', '240p30', '144p30']
-QUALITY_LIST_VIDEO = ['live', '1080p60', '1080p30', '720p60', '720p30', '540p30', '480p30', '360p30', '240p30', '144p30']
-
 LIVE_PREVIEW_TEMPLATE = '%://static-cdn.jtvnw.net/previews-ttv/live_user_%-%___x%___.jpg'  # sqlite LIKE pattern
 
 
