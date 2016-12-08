@@ -91,7 +91,7 @@ class JsonListItemConverter(object):
         context_menu = list()
         context_menu.extend([(i18n('refresh'), 'Container.Refresh')])
         context_menu.extend([(i18n('play_choose_quality'), 'RunPlugin(%s)' %
-                              kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel_name, 'quality': -1}))])
+                              kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel_name, 'quality': -1, 'use_player': True}))])
         return {'label': title,
                 'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel_name}),
                 'context_menu': context_menu,
@@ -122,7 +122,7 @@ class JsonListItemConverter(object):
         context_menu = list()
         context_menu.extend([(i18n('refresh'), 'Container.Refresh')])
         context_menu.extend([(i18n('play_choose_quality'), 'RunPlugin(%s)' %
-                              kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video['_id'], 'quality': -1}))])
+                              kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video['_id'], 'quality': -1, 'use_player': True}))])
         return {'label': video[Keys.TITLE],
                 'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video['_id']}),
                 'context_menu': context_menu,
@@ -148,7 +148,7 @@ class JsonListItemConverter(object):
         context_menu = list()
         context_menu.extend([(i18n('refresh'), 'Container.Refresh')])
         context_menu.extend([(i18n('play_choose_quality'), 'RunPlugin(%s)' %
-                              kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'quality': -1}))])
+                              kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'quality': -1, 'use_player': True}))])
         return {'label': title,
                 'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel[Keys.NAME]}),
                 'context_menu': context_menu,
