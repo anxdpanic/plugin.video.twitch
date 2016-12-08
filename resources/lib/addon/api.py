@@ -56,6 +56,22 @@ class Twitch:
         return self.api.streams.all(game=game, limit=limit, offset=offset)
 
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_channel_search(self, query, offset, limit):
+        return self.api.search.channels(query=query, limit=limit, offset=offset)
+
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_stream_search(self, query, offset, limit):
+        return self.api.search.streams(query=query, limit=limit, offset=offset)
+
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_game_search(self, query):
+        return self.api.search.games(query=query)
+
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_video_by_id(self, video_id):
+        return self.api.videos.by_id(identification=video_id)
+
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_streams_by_channels(self, names, offset, limit):
         query = self.queries.ApiQuery('streams')
         query.add_param('offset', offset)

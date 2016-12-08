@@ -203,6 +203,20 @@ def context_clear_previews():
     return context_menu
 
 
+def extract_video_id(url):
+    video_id = url  # http://twitch.tv/a/v/12345678?t=9m1s
+    idx = video_id.find('?')
+    if idx >= 0:
+        video_id = video_id[:idx]  # https://twitch.tv/a/v/12345678
+    idx = video_id.rfind('/')
+    if idx >= 0:
+        video_id = video_id[:idx] + video_id[idx + 1:]  # https://twitch.tv/a/v12345678
+    idx = video_id.rfind('/')
+    if idx >= 0:
+        video_id = video_id[idx + 1:]  # v12345678
+    return video_id
+
+
 class TitleBuilder(object):
     class Templates(object):
         TITLE = u"{title}"

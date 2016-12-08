@@ -36,6 +36,8 @@ MODES = __enum(
     CHANNELS='channels',
     FOLLOWING='following',
     SEARCH='search',
+    NEWSEARCH='new_search',
+    SEARCHRESULTS='search_results',
     SETTINGS='settings',
     FOLLOWED='followed',
     CHANNELVIDEOS='channel_videos',
@@ -132,3 +134,4 @@ class Keys:
     BROADCASTER_LANGUAGE = 'broadcaster_language'
     DESCRIPTION = 'description'
     CREATED_AT = 'created_at'
+    GAMES = 'games'

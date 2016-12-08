@@ -56,5 +56,7 @@ STRINGS = {
     'confirm': 30114,
     'cache_reset_succeeded': 30115,
     'cache_reset_failed': 30116,
-    'cache_reset_confirm': 30117
+    'cache_reset_confirm': 30117,
+    'video_id_url': 30124,
+    'streams': 30125
 }
