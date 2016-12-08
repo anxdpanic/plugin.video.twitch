@@ -17,7 +17,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-from addon.constants import DISPATCHER, MODES, LINE_LENGTH, Keys
+from addon.constants import DISPATCHER, MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, Keys
 from addon.common import kodi
 from addon import utils, api
 from addon.converter import JsonListItemConverter
@@ -31,11 +31,13 @@ twitch = api.Twitch()
 @DISPATCHER.register(MODES.MAIN)
 def main():
     kodi.set_content('files')
-    kodi.create_item({'label': i18n('featured_streams'), 'path': {'mode': MODES.FEATUREDSTREAMS}})
+    context_menu = list()
+    context_menu.extend(utils.context_clear_previews())
+    kodi.create_item({'label': i18n('featured_streams'), 'path': {'mode': MODES.FEATUREDSTREAMS}, 'context_menu': context_menu})
     kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.GAMES}})
-    kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.CHANNELS}})
+    kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.CHANNELS}, 'context_menu': context_menu})
     kodi.create_item({'label': i18n('following'), 'path': {'mode': MODES.FOLLOWING}})
-    kodi.create_item({'label': i18n('search'), 'path': {'mode': MODES.SEARCH}})
+    kodi.create_item({'label': i18n('search'), 'path': {'mode': MODES.SEARCH}, 'context_menu': context_menu})
     kodi.create_item({'label': i18n('settings'), 'path': {'mode': MODES.SETTINGS}})
     kodi.end_of_directory()
 
@@ -61,6 +63,7 @@ def new_search(content):
 @DISPATCHER.register(MODES.SEARCHRESULTS, args=['content', 'query'], kwargs=['index'])
 def search_results(content, query, index=0):
     if content == 'streams':
+        utils.refresh_previews()
         kodi.set_content('videos')
         index, offset, limit = utils.calculate_pagination_values(index)
         results = twitch.get_stream_search(query=query, offset=offset, limit=limit)
@@ -96,7 +99,9 @@ def search_results(content, query, index=0):
 @DISPATCHER.register(MODES.FOLLOWING)
 def following():
     kodi.set_content('files')
-    kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.FOLLOWED, 'content': 'live'}})
+    context_menu = list()
+    context_menu.extend(utils.context_clear_previews())
+    kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.FOLLOWED, 'content': 'live', 'context_menu': context_menu}})
     kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.FOLLOWED, 'content': 'channels'}})
     kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.FOLLOWED, 'content': 'games'}})
     kodi.end_of_directory()
@@ -104,6 +109,7 @@ def following():
 
 @DISPATCHER.register(MODES.FEATUREDSTREAMS)
 def list_featured_streams():
+    utils.refresh_previews()
     kodi.set_content('videos')
 
     streams = twitch.get_featured_streams()
@@ -128,7 +134,8 @@ def list_all_games(index=0):
 
 @DISPATCHER.register(MODES.CHANNELS, kwargs=['index'])
 def list_all_channels(index=0):
-    kodi.set_content('files')
+    utils.refresh_previews()
+    kodi.set_content('videos')
     index, offset, limit = utils.calculate_pagination_values(index)
 
     streams = twitch.get_all_channels(offset, limit)
@@ -144,6 +151,7 @@ def list_followed(content):
     username = utils.get_username()
     if username:
         if content == 'live':
+            utils.refresh_previews()
             kodi.set_content('videos')
             streams = twitch.get_following_streams(username)
             for stream in streams[Keys.LIVE]:
@@ -187,6 +195,7 @@ def list_channel_videos(name, broadcast_type, index=0):
 
 @DISPATCHER.register(MODES.GAMESTREAMS, args=['game'], kwargs=['index'])
 def list_game_streams(game, index=0):
+    utils.refresh_previews()
     kodi.set_content('videos')
     index, offset, limit = utils.calculate_pagination_values(index)
 
@@ -234,3 +243,8 @@ def reset_cache():
             kodi.notify(msg=i18n('cache_reset_succeeded'), sound=False)
         else:
             kodi.notify(msg=i18n('cache_reset_failed'), sound=False)
+
+
+@DISPATCHER.register(MODES.CLEARLIVEPREVIEWS, kwargs=['notify'])
+def clear_live_previews(notify=True):
+    utils.TextureCacheCleaner().remove_like(LIVE_PREVIEW_TEMPLATE, notify)

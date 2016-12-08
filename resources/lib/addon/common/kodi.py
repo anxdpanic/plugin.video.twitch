@@ -181,8 +181,8 @@ def create_item(item_dict, add=True):
         info = item_dict.get('info', {'title': list_item.getLabel()})
         list_item.setInfo(content_type, infoLabels=info)
 
-    menu_items = item_dict.get('menu_items', [])
-    list_item.addContextMenuItems(menu_items, replaceItems=item_dict.get('replace_menu', False))
+    context_menu = item_dict.get('context_menu', [])
+    list_item.addContextMenuItems(context_menu, replaceItems=item_dict.get('replace_menu', False))
     if add:
         add_item(item_dict, list_item)
     else:
