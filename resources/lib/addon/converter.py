@@ -77,7 +77,7 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.clear_previews())
         return {'label': name,
-                'path': kodi.get_plugin_url({'mode': MODES.TEAM, 'name': name}),
+                'path': kodi.get_plugin_url({'mode': MODES.TEAMSTREAMS, 'team': name}),
                 'art': the_art({'fanart': background, 'poster': image, 'thumb': image, 'icon': image}),
                 'context_menu': context_menu}
 
