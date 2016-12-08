@@ -23,8 +23,8 @@ from datetime import datetime
 from base64 import b64decode
 from common import kodi, cache
 from strings import STRINGS
-from constants import CLIENT_ID, CLIENT_SECRET, MODES, LIVE_PREVIEW_TEMPLATE, Images
 from tccleaner import TextureCacheCleaner
+from constants import CLIENT_ID, CLIENT_SECRET, LIVE_PREVIEW_TEMPLATE, Images
 
 translations = kodi.Translations(STRINGS)
 i18n = translations.i18n

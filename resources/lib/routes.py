@@ -17,10 +17,10 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-from addon.constants import DISPATCHER, MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, Keys
-from addon.common import kodi
 from addon import utils, api, menu_items
+from addon.common import kodi
 from addon.converter import JsonListItemConverter
+from addon.constants import DISPATCHER, MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, Keys
 
 i18n = utils.i18n
 
