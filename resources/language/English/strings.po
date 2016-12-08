@@ -428,3 +428,7 @@ msgstr ""
 msgctxt "#30125"
 msgid "Streams"
 msgstr ""
+
+msgctxt "#30126"
+msgid "Refresh"
+msgstr ""
