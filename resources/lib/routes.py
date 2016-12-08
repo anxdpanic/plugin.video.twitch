@@ -207,8 +207,8 @@ def list_game_streams(game, index=0):
     kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.PLAY, kwargs=['name', 'video_id', 'quality'])
-def play(name=None, video_id=None, quality=-2):
+@DISPATCHER.register(MODES.PLAY, kwargs=['name', 'video_id', 'quality', 'use_player'])
+def play(name=None, video_id=None, quality=-2, use_player=False):
     if (name is None) and (video_id is None): return
     video_quality = utils.get_video_quality(quality)
     if video_quality != -1:
@@ -224,7 +224,10 @@ def play(name=None, video_id=None, quality=-2):
         if item_dict and videos:
             item_dict['path'] = twitch.get_video_for_quality(videos, video_quality)
             playback_item = kodi.create_item(item_dict, add=False)
-            kodi.set_resolved_url(playback_item)
+            if use_player:
+                kodi.Player().play(item_dict['path'], playback_item)
+            else:
+                kodi.set_resolved_url(playback_item)
 
 
 @DISPATCHER.register(MODES.SETTINGS, kwargs=['refresh'])
