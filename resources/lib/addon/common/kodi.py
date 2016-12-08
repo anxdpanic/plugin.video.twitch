@@ -86,6 +86,10 @@ def get_name():
     return addon.getAddonInfo('name')
 
 
+def get_description():
+    return addon.getAddonInfo('description').decode('utf-8')
+
+
 def has_addon(addon_id):
     return xbmc.getCondVisibility('System.HasAddon(%s)' % addon_id) == 1
 
@@ -177,10 +181,9 @@ def create_item(item_dict, add=True):
         art['fanart'] = fanart
     list_item.setArt(art)
 
-    content_type = item_dict.get('content_type', 'file')
-    if content_type:
-        info = item_dict.get('info', {'title': list_item.getLabel()})
-        list_item.setInfo(content_type, infoLabels=info)
+    content_type = item_dict.get('content_type', 'video')
+    info = item_dict.get('info', {'title': list_item.getLabel(), 'plot': get_description()})
+    list_item.setInfo(content_type, infoLabels=info)
 
     context_menu = item_dict.get('context_menu', [])
     list_item.addContextMenuItems(context_menu, replaceItems=item_dict.get('replace_menu', False))
