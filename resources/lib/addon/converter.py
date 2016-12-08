@@ -18,8 +18,9 @@
 """
 
 from constants import Keys, Images, MODES
-from utils import the_art, TitleBuilder, i18n, context_clear_previews
+from utils import the_art, TitleBuilder, i18n
 from common import kodi
+import menu_items
 
 
 class PlaylistConverter(object):
@@ -60,8 +61,8 @@ class JsonListItemConverter(object):
         if game.get(Keys.BOX):
             image = game[Keys.BOX].get(Keys.LARGE) if game[Keys.BOX].get(Keys.LARGE) else image
         context_menu = list()
-        context_menu.extend([(i18n('refresh'), 'Container.Refresh')])
-        context_menu.extend(context_clear_previews())
+        context_menu.extend(menu_items.refresh())
+        context_menu.extend(menu_items.clear_previews())
         return {'label': name,
                 'path': kodi.get_plugin_url({'mode': MODES.GAMESTREAMS, 'game': name}),
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
@@ -73,8 +74,8 @@ class JsonListItemConverter(object):
         background = team.get(Keys.BACKGROUND) if team.get(Keys.BACKGROUND) else Images.FANART
         image = team.get(Keys.LOGO) if team.get(Keys.LOGO) else Images.ICON
         context_menu = list()
-        context_menu.extend([(i18n('refresh'), 'Container.Refresh')])
-        context_menu.extend(context_clear_previews())
+        context_menu.extend(menu_items.refresh())
+        context_menu.extend(menu_items.clear_previews())
         return {'label': name,
                 'path': kodi.get_plugin_url({'mode': MODES.TEAM, 'name': name}),
                 'art': the_art({'fanart': background, 'poster': image, 'thumb': image, 'icon': image}),
@@ -89,9 +90,9 @@ class JsonListItemConverter(object):
         title_values = self.extract_channel_title_values(team_channel)
         title = self.title_builder.format_title(title_values)
         context_menu = list()
-        context_menu.extend([(i18n('refresh'), 'Container.Refresh')])
-        context_menu.extend([(i18n('play_choose_quality'), 'RunPlugin(%s)' %
-                              kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel_name, 'quality': -1, 'use_player': True}))])
+        context_menu.extend(menu_items.refresh())
+        context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
+                                                  {'mode': MODES.PLAY, 'name': channel_name, 'quality': -1, 'use_player': True}))
         return {'label': title,
                 'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel_name}),
                 'context_menu': context_menu,
@@ -105,8 +106,8 @@ class JsonListItemConverter(object):
         if not video_banner:
             video_banner = channel.get(Keys.PROFILE_BANNER) if channel.get(Keys.PROFILE_BANNER) else Images.FANART
         context_menu = list()
-        context_menu.extend([(i18n('refresh'), 'Container.Refresh')])
-        context_menu.extend(context_clear_previews())
+        context_menu.extend(menu_items.refresh())
+        context_menu.extend(menu_items.clear_previews())
         return {'label': channel[Keys.DISPLAY_NAME],
                 'path': kodi.get_plugin_url({'mode': MODES.CHANNELVIDEOS, 'name': channel[Keys.NAME]}),
                 'art': the_art({'fanart': video_banner, 'poster': image, 'thumb': image}),
@@ -120,9 +121,9 @@ class JsonListItemConverter(object):
         year = video.get(Keys.CREATED_AT)[:4] if video.get(Keys.CREATED_AT) else ''
         image = video.get(Keys.PREVIEW) if video.get(Keys.PREVIEW) else Images.VIDEOTHUMB
         context_menu = list()
-        context_menu.extend([(i18n('refresh'), 'Container.Refresh')])
-        context_menu.extend([(i18n('play_choose_quality'), 'RunPlugin(%s)' %
-                              kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video['_id'], 'quality': -1, 'use_player': True}))])
+        context_menu.extend(menu_items.refresh())
+        context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
+                                                  {'mode': MODES.PLAY, 'video_id': video['_id'], 'quality': -1, 'use_player': True}))
         return {'label': video[Keys.TITLE],
                 'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video['_id']}),
                 'context_menu': context_menu,
@@ -146,9 +147,9 @@ class JsonListItemConverter(object):
         info = self.get_plot_for_stream(stream)
         info.update({'mediatype': 'video'})
         context_menu = list()
-        context_menu.extend([(i18n('refresh'), 'Container.Refresh')])
-        context_menu.extend([(i18n('play_choose_quality'), 'RunPlugin(%s)' %
-                              kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'quality': -1, 'use_player': True}))])
+        context_menu.extend(menu_items.refresh())
+        context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
+                                                  {'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'quality': -1, 'use_player': True}))
         return {'label': title,
                 'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel[Keys.NAME]}),
                 'context_menu': context_menu,

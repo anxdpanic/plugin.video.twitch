@@ -194,14 +194,6 @@ def get_refresh_diff():
     return total_seconds
 
 
-def context_clear_previews():
-    context_menu = []
-    if kodi.get_setting('live_previews_enable') == 'true':
-        context_menu.extend([(i18n('clear_live_preview'), 'RunPlugin(%s)' %
-                              kodi.get_plugin_url({'mode': MODES.CLEARLIVEPREVIEWS, 'notify': notify_refresh()}))])
-    return context_menu
-
-
 def extract_video_id(url):
     video_id = url  # http://twitch.tv/a/v/12345678?t=9m1s
     idx = video_id.find('?')

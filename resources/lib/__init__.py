@@ -1,1 +1,1 @@
-__all__ = ['addon', 'common']
+__all__ = ['addon']

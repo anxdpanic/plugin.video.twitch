@@ -19,7 +19,7 @@
 
 from addon.constants import DISPATCHER, MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, Keys
 from addon.common import kodi
-from addon import utils, api
+from addon import utils, api, menu_items
 from addon.converter import JsonListItemConverter
 
 i18n = utils.i18n
@@ -32,7 +32,7 @@ twitch = api.Twitch()
 def main():
     kodi.set_content('files')
     context_menu = list()
-    context_menu.extend(utils.context_clear_previews())
+    context_menu.extend(menu_items.clear_previews())
     kodi.create_item({'label': i18n('featured_streams'), 'path': {'mode': MODES.FEATUREDSTREAMS}, 'context_menu': context_menu})
     kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.GAMES}})
     kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.CHANNELS}, 'context_menu': context_menu})
@@ -100,7 +100,7 @@ def search_results(content, query, index=0):
 def following():
     kodi.set_content('files')
     context_menu = list()
-    context_menu.extend(utils.context_clear_previews())
+    context_menu.extend(menu_items.clear_previews())
     kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.FOLLOWED, 'content': 'live', 'context_menu': context_menu}})
     kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.FOLLOWED, 'content': 'channels'}})
     kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.FOLLOWED, 'content': 'games'}})
