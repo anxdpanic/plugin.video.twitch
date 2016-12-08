@@ -176,7 +176,7 @@ def create_item(item_dict, add=True):
         art['fanart'] = fanart
     list_item.setArt(art)
 
-    content_type = item_dict.get('content_type', None)
+    content_type = item_dict.get('content_type', 'file')
     if content_type:
         info = item_dict.get('info', {'title': list_item.getLabel()})
         list_item.setInfo(content_type, infoLabels=info)

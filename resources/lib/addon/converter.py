@@ -111,6 +111,7 @@ class JsonListItemConverter(object):
                 'is_playable': True,
                 'info': {'duration': str(duration), 'plot': plot, 'plotoutline': plot, 'tagline': plot,
                          'year': year, 'date': date, 'premiered': date, 'mediatype': 'video'},
+                'content_type': 'video',
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image})}
 
     def stream_to_listitem(self, stream):
@@ -132,6 +133,7 @@ class JsonListItemConverter(object):
                                   kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'quality': -1}))],
                 'is_playable': True,
                 'info': info,
+                'content_type': 'video',
                 'art': the_art({'fanart': video_banner, 'poster': image, 'thumb': image, 'icon': image})}
 
     def video_to_playitem(self, video):
@@ -144,6 +146,7 @@ class JsonListItemConverter(object):
         return {'label': title,
                 'path': '',
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
+                'content_type': 'video',
                 'is_playable': True}
 
     def stream_to_playitem(self, stream):
@@ -158,6 +161,7 @@ class JsonListItemConverter(object):
         return {'label': title,
                 'path': '',
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
+                'content_type': 'video',
                 'is_playable': True}
 
     @staticmethod
