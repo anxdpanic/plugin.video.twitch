@@ -67,20 +67,22 @@ def search_results(content, query, index=0):
         kodi.set_content('videos')
         index, offset, limit = utils.calculate_pagination_values(index)
         results = twitch.get_stream_search(query=query, offset=offset, limit=limit)
-        for stream in results[Keys.STREAMS]:
-            kodi.create_item(converter.stream_to_listitem(stream))
-        if results[Keys.TOTAL] > (offset + limit):
-            kodi.create_item(utils.link_to_next_page({'mode': MODES.SEARCHRESULTS, 'content': content, 'query': query, 'index': index}))
-        kodi.end_of_directory()
+        if results[Keys.TOTAL] > 0:
+            for stream in results[Keys.STREAMS]:
+                kodi.create_item(converter.stream_to_listitem(stream))
+            if results[Keys.TOTAL] > (offset + limit):
+                kodi.create_item(utils.link_to_next_page({'mode': MODES.SEARCHRESULTS, 'content': content, 'query': query, 'index': index}))
+            kodi.end_of_directory()
     elif content == 'channels':
         kodi.set_content('files')
         index, offset, limit = utils.calculate_pagination_values(index)
         results = twitch.get_channel_search(query=query, offset=offset, limit=limit)
-        for channel in results[Keys.CHANNELS]:
-            kodi.create_item(converter.channel_to_listitem(channel))
-        if results[Keys.TOTAL] > (offset + limit):
-            kodi.create_item(utils.link_to_next_page({'mode': MODES.SEARCHRESULTS, 'content': content, 'query': query, 'index': index}))
-        kodi.end_of_directory()
+        if results[Keys.TOTAL] > 0:
+            for channel in results[Keys.CHANNELS]:
+                kodi.create_item(converter.channel_to_listitem(channel))
+            if results[Keys.TOTAL] > (offset + limit):
+                kodi.create_item(utils.link_to_next_page({'mode': MODES.SEARCHRESULTS, 'content': content, 'query': query, 'index': index}))
+            kodi.end_of_directory()
     elif content == 'games':
         kodi.set_content('files')
         results = twitch.get_game_search(query=query)
@@ -125,11 +127,12 @@ def list_all_games(index=0):
     index, offset, limit = utils.calculate_pagination_values(index)
 
     games = twitch.get_top_games(offset, limit)
-    for element in games[Keys.TOP]:
-        kodi.create_item(converter.game_to_listitem(element[Keys.GAME]))
-    if games[Keys.TOTAL] > (offset + limit):
-        kodi.create_item(utils.link_to_next_page({'mode': MODES.GAMES, 'index': index}))
-    kodi.end_of_directory()
+    if games[Keys.TOTAL] > 0:
+        for element in games[Keys.TOP]:
+            kodi.create_item(converter.game_to_listitem(element[Keys.GAME]))
+        if games[Keys.TOTAL] > (offset + limit):
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.GAMES, 'index': index}))
+        kodi.end_of_directory()
 
 
 @DISPATCHER.register(MODES.CHANNELS, kwargs=['index'])
@@ -139,11 +142,12 @@ def list_all_channels(index=0):
     index, offset, limit = utils.calculate_pagination_values(index)
 
     streams = twitch.get_all_channels(offset, limit)
-    for stream in streams[Keys.STREAMS]:
-        kodi.create_item(converter.stream_to_listitem(stream))
-    if streams[Keys.TOTAL] > (offset + limit):
-        kodi.create_item(utils.link_to_next_page({'mode': MODES.CHANNELS, 'index': index}))
-    kodi.end_of_directory()
+    if streams[Keys.TOTAL] > 0:
+        for stream in streams[Keys.STREAMS]:
+            kodi.create_item(converter.stream_to_listitem(stream))
+        if streams[Keys.TOTAL] > (offset + limit):
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.CHANNELS, 'index': index}))
+        kodi.end_of_directory()
 
 
 @DISPATCHER.register(MODES.FOLLOWED, args=['content'])
@@ -186,11 +190,12 @@ def list_channel_videos(name, broadcast_type, index=0):
     index, offset, limit = utils.calculate_pagination_values(index)
 
     videos = twitch.get_channel_videos(name, offset, limit, broadcast_type)
-    for video in videos[Keys.VIDEOS]:
-        kodi.create_item(converter.video_list_to_listitem(video))
-    if videos[Keys.TOTAL] > (offset + limit):
-        kodi.create_item(utils.link_to_next_page({'mode': MODES.CHANNELVIDEOLIST, 'name': name, 'broadcast_type': broadcast_type, 'index': index}))
-    kodi.end_of_directory()
+    if videos[Keys.TOTAL] > 0:
+        for video in videos[Keys.VIDEOS]:
+            kodi.create_item(converter.video_list_to_listitem(video))
+        if videos[Keys.TOTAL] > (offset + limit):
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.CHANNELVIDEOLIST, 'name': name, 'broadcast_type': broadcast_type, 'index': index}))
+        kodi.end_of_directory()
 
 
 @DISPATCHER.register(MODES.GAMESTREAMS, args=['game'], kwargs=['index'])
@@ -200,11 +205,12 @@ def list_game_streams(game, index=0):
     index, offset, limit = utils.calculate_pagination_values(index)
 
     streams = twitch.get_game_streams(game=game, offset=offset, limit=limit)
-    for stream in streams[Keys.STREAMS]:
-        kodi.create_item(converter.stream_to_listitem(stream))
-    if streams[Keys.TOTAL] > (offset + limit):
-        kodi.create_item(utils.link_to_next_page({'mode': MODES.GAMESTREAMS, 'game': game, 'index': index}))
-    kodi.end_of_directory()
+    if streams[Keys.TOTAL] > 0:
+        for stream in streams[Keys.STREAMS]:
+            kodi.create_item(converter.stream_to_listitem(stream))
+        if streams[Keys.TOTAL] > (offset + limit):
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.GAMESTREAMS, 'game': game, 'index': index}))
+        kodi.end_of_directory()
 
 
 @DISPATCHER.register(MODES.PLAY, kwargs=['name', 'video_id', 'quality', 'use_player'])
