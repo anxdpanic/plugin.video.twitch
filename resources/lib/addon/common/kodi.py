@@ -152,18 +152,18 @@ def end_of_directory(cache_to_disc=False):
     xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=cache_to_disc)
 
 
+def set_resolved_url(listitem, succeeded=True):
+    xbmcplugin.setResolvedUrl(int(sys.argv[1]), succeeded=succeeded, listitem=listitem)
+
+
 def set_content(content):
     xbmcplugin.setContent(int(sys.argv[1]), content)
 
 
-def create_item(item_dict):
-    list_item = ListItem(label=item_dict.get('label', ''), label2=item_dict.get('label2', ''))
-    add_item(item_dict, list_item)
-
-
-def add_item(item_dict, list_item):
-    path = item_dict.get('path', None)
-    if not path: return
+def create_item(item_dict, add=True):
+    path = item_dict.get('path', '')
+    path = path if isinstance(path, basestring) else get_plugin_url(path)
+    list_item = ListItem(label=item_dict.get('label', ''), label2=item_dict.get('label2', ''), path=path)
 
     icon = get_icon()
     fanart = get_fanart()
@@ -181,13 +181,24 @@ def add_item(item_dict, list_item):
         info = item_dict.get('info', {'title': list_item.getLabel()})
         list_item.setInfo(content_type, infoLabels=info)
 
+    menu_items = item_dict.get('menu_items', [])
+    list_item.addContextMenuItems(menu_items, replaceItems=item_dict.get('replace_menu', False))
+    if add:
+        add_item(item_dict, list_item)
+    else:
+        return list_item
+
+
+def add_item(item_dict, list_item):
+    path = item_dict.get('path', None)
+    if not path: return
+
     is_playable = item_dict.get('is_playable', False)
     is_folder = not is_playable
 
-    url = path if isinstance(path, basestring) else get_plugin_url(path)
     list_item.setProperty('isPlayable', str(is_playable).lower())
-    menu_items = item_dict.get('menu_items', [])
-    list_item.addContextMenuItems(menu_items, replaceItems=item_dict.get('replace_menu', False))
+
+    url = path if isinstance(path, basestring) else get_plugin_url(path)
     xbmcplugin.addDirectoryItem(int(sys.argv[1]), url, list_item, isFolder=is_folder, totalItems=item_dict.get('total_items', 0))
 
 

@@ -198,6 +198,26 @@ def list_game_streams(game, index=0):
     kodi.end_of_directory()
 
 
+@DISPATCHER.register(MODES.PLAY, kwargs=['name', 'video_id', 'quality'])
+def play(name=None, video_id=None, quality=-2):
+    if (name is None) and (video_id is None): return
+    video_quality = utils.get_video_quality(quality)
+    if video_quality != -1:
+        videos = item_dict = None
+        if video_id:
+            videos = twitch.get_vod(video_id)
+            result = twitch.get_video_by_id(video_id)
+            item_dict = converter.video_to_playitem(result)
+        elif name:
+            videos = twitch.get_live(name)
+            result = twitch.get_channel_stream(name)[Keys.STREAMS][0]
+            item_dict = converter.stream_to_playitem(result)
+        if item_dict and videos:
+            item_dict['path'] = twitch.get_video_for_quality(videos, video_quality)
+            playback_item = kodi.create_item(item_dict, add=False)
+            kodi.set_resolved_url(playback_item)
+
+
 @DISPATCHER.register(MODES.SETTINGS, kwargs=['refresh'])
 def settings(refresh=True):
     kodi.show_settings()
