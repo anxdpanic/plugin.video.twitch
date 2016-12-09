@@ -148,6 +148,7 @@ class JsonListItemConverter(object):
         info.update({'mediatype': 'video'})
         context_menu = list()
         context_menu.extend(menu_items.refresh())
+        context_menu.extend(menu_items.channel_videos(channel[Keys.NAME]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'quality': -1, 'use_player': True}))
         return {'label': title,

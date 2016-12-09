@@ -28,10 +28,18 @@ def run_plugin(label, queries):
     return [(label, 'RunPlugin(%s)' % kodi.get_plugin_url(queries))]
 
 
+def update_container(label, queries):
+    return [(label, 'Container.Update(%s)' % kodi.get_plugin_url(queries))]
+
+
 def clear_previews():
     if kodi.get_setting('live_previews_enable') == 'true':
         return run_plugin(i18n('clear_live_preview'), {'mode': MODES.CLEARLIVEPREVIEWS, 'notify': utils.notify_refresh()})
     return []
+
+
+def channel_videos(name):
+    return update_container(i18n('go_to_videos'), {'mode': MODES.CHANNELVIDEOS, 'name': name})
 
 
 def refresh():
