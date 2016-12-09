@@ -62,5 +62,6 @@ STRINGS = {
     'refresh': 30126,
     'login': 30127,
     'token_required': 30128,
-    'error': 30129
+    'error': 30129,
+    'go_to_videos': 30130
 }
