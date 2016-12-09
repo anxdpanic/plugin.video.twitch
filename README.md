@@ -17,7 +17,7 @@ FAQ
 
 * I'm experiencing HTTP errors!
 
-> There are various things that can cause this (including Twitch changing things! Which we do try to keep on top of.) but recently, most commonly it is caused by several missing OAUTH entries in the settings section of this addon. Please visit http://www.twitchapps.com/tmi/ and acquire an OAuth Token and insert this to the relevant sections of the addon settings and your HTTP errors may just go away.
+> There are various things that can cause this (including Twitch changing things! Which we do try to keep on top of.) but recently, most commonly it is caused by missing OAUTH entry in the settings section of this addon. Please visit http://www.twitchapps.com/tmi/ and acquire an OAuth Token and insert this to the relevant section of the addon settings and your HTTP errors may just go away.
 
 What's next?
 ----------------
