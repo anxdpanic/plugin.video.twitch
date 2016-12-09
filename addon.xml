@@ -10,7 +10,19 @@
     <extension point='xbmc.addon.metadata'>
         <platform>all</platform>
         <news>
-All New!
+*** v1 favorites, routes will NOT work. NOT backwards compatible with v1
+- start from scratch. revisit, refactor and rewrite v1 code where necessary
+- remove xbmcswift dependency, remove use of any framework
+- remove api portion in favor of new module script.module.python.twitch (fork of python-twitch by ingwinlu)
+- use ssl (script.module.python.twitch handles this with requests)
+- api calls are cached, cache can be set/cleared from settings
+- menu and setting layouts updated
+- more search options
+- 'refresh' from context menus
+- 'go to videos' from context menu for streams
+- uniform pagination where possible, 'items per page' can be changed in settings
+- remove Teams, end-points no longer available
+- Kodi 17 ready, content/media types set per new official repository requirements
         </news>
         <assets>
             <icon>icon.png</icon>
