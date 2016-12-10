@@ -1,7 +1,7 @@
 2.0.0
 *** v1 favorites, routes will NOT work. NOT backwards compatible with v1
 - start from scratch. revisit, refactor and rewrite v1 code where necessary
-- remove xbmcswift dependency, remove use of any framework
+- remove xbmcswift dependency
 - remove api portion in favor of new module script.module.python.twitch (fork of python-twitch by ingwinlu)
 - use ssl (script.module.python.twitch handles this with requests)
 - api calls are cached, cache can be set/cleared from settings

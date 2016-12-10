@@ -32,7 +32,7 @@ msgstr "Innstillinger"
 
 msgctxt "#30005"
 msgid "Featured Streams"
-msgstr "Fremhevede kanaler"
+msgstr "Fremhevede spill"
 
 msgctxt "#30006"
 msgid "Teams"
@@ -216,11 +216,11 @@ msgstr "Tidligere kringkastinger"
 
 msgctxt "#30079"
 msgid "Video Highlights"
-msgstr "Høydepunkt fra video"
+msgstr "Video høydepunkt"
 
 msgctxt "#30080"
 msgid "Could not find any playable urls"
-msgstr "Kunne ikke finne noen spillbare urler"
+msgstr "Kunne ikke finne noen spillbar urler"
 
 msgctxt "#30081"
 msgid "IRC Chat"
@@ -288,7 +288,7 @@ msgstr "API"
 
 msgctxt "#30097"
 msgid "OAuth Client ID"
-msgstr "OAuth klient-id"
+msgstr "OAuth Klient-id"
 
 msgctxt "#30098"
 msgid "Select Video by ID or URL"
@@ -300,11 +300,11 @@ msgstr "OAuth Token"
 
 msgctxt "#30100"
 msgid "Visit www.twitch.tv/settings/connections and [CR]'Register your application' for an OAuth Client-ID"
-msgstr "Besøk www.twitch.tv/settings/connections and [CR]'Register your application' for å få en OAuth Client-ID"
+msgstr ""
 
 msgctxt "#30101"
 msgid "Visit www.twitchapps.com/tmi to generate an OAuth token"
-msgstr "Besøk www.twitchapps.com/tmi for å generere en OAuth token"
+msgstr ""
 
 msgctxt "#30102"
 msgid "Source"
@@ -353,3 +353,67 @@ msgstr "Valgt kvalitet vil medføre at beste treff blir valgt"
 msgctxt "#30113"
 msgid "Uploads"
 msgstr "Opplastninger"
+
+msgctxt "#30114"
+msgid "Confirm"
+msgstr ""
+
+msgctxt "#30115"
+msgid "Function cache has been reset"
+msgstr ""
+
+msgctxt "#30116"
+msgid "Function cache reset failed"
+msgstr ""
+
+msgctxt "#30117"
+msgid "Reset function cache?"
+msgstr ""
+
+msgctxt "#30118"
+msgid "Developer"
+msgstr ""
+
+msgctxt "#30120"
+msgid "Cache"
+msgstr ""
+
+msgctxt "#30121"
+msgid "Cache expire time (minutes)"
+msgstr ""
+
+msgctxt "#30122"
+msgid "Reset function cache"
+msgstr ""
+
+msgctxt "#30123"
+msgid "Items per page"
+msgstr ""
+
+msgctxt "#30124"
+msgid "Video Id/Url"
+msgstr ""
+
+msgctxt "#30125"
+msgid "Streams"
+msgstr ""
+
+msgctxt "#30126"
+msgid "Refresh"
+msgstr ""
+
+msgctxt "#30127"
+msgid "Login"
+msgstr ""
+
+msgctxt "#30128"
+msgid "OAuth token is required"
+msgstr ""
+
+msgctxt "#30129"
+msgid "Error"
+msgstr ""
+
+msgctxt "#30130"
+msgid "Go to videos"
+msgstr ""

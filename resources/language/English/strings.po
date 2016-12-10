@@ -401,10 +401,6 @@ msgctxt "#30118"
 msgid "Developer"
 msgstr ""
 
-msgctxt "#30119"
-msgid "OAuth Client Secret"
-msgstr ""
-
 msgctxt "#30120"
 msgid "Cache"
 msgstr ""
