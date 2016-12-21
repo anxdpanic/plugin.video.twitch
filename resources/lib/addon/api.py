@@ -18,8 +18,9 @@
 """
 
 import sys
-import utils
+import json
 from functools import wraps
+import utils
 from common import kodi, log_utils
 from constants import Keys
 from twitch import queries as twitch_queries
@@ -35,6 +36,11 @@ def api_error_handler(func):
     def wrapper(*args, **kwargs):
         try:
             result = func(*args, **kwargs)
+            try:
+                logging_result = json.dumps(result, indent=4)
+            except:
+                logging_result = result
+            log_utils.log(logging_result, log_utils.LOGDEBUG)
             try:
                 if 'error' in result:
                     message = '[Status {0}] {1}'.format(result['status'], result['message'])
