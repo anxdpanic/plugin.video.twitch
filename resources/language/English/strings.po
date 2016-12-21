@@ -442,5 +442,5 @@ msgid "Error"
 msgstr ""
 
 msgctxt "#30130"
-msgid "Go to videos"
+msgid "Go to %s"
 msgstr ""

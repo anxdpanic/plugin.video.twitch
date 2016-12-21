@@ -122,6 +122,7 @@ class JsonListItemConverter(object):
         image = video.get(Keys.PREVIEW) if video.get(Keys.PREVIEW) else Images.VIDEOTHUMB
         context_menu = list()
         context_menu.extend(menu_items.refresh())
+        context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'video_id': video['_id'], 'quality': -1, 'use_player': True}))
         return {'label': video[Keys.TITLE],
@@ -148,7 +149,8 @@ class JsonListItemConverter(object):
         info.update({'mediatype': 'video'})
         context_menu = list()
         context_menu.extend(menu_items.refresh())
-        context_menu.extend(menu_items.channel_videos(channel[Keys.NAME]))
+        context_menu.extend(menu_items.channel_videos(channel[Keys.NAME], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.go_to_game(channel[Keys.GAME]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'quality': -1, 'use_player': True}))
         return {'label': title,
