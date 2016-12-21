@@ -444,3 +444,7 @@ msgstr ""
 msgctxt "#30130"
 msgid "Go to %s"
 msgstr ""
+
+msgctxt "#30131"
+msgid "No results returned"
+msgstr ""

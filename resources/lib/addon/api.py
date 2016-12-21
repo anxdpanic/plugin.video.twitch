@@ -43,6 +43,8 @@ def api_error_handler(func):
                     sys.exit(0)
             except:
                 pass
+            if not result or (isinstance(result, dict) and ('_total' in result) and (int(result['_total'] == 0))):
+                kodi.notify(msg=i18n('no_results_returned'), duration=5000, sound=False)
             return result
         except ResourceUnavailableException as error:
             log_utils.log('Error: Resource not available |{0}|'.format(error.message), log_utils.LOGERROR)
