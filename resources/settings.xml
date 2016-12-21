@@ -5,6 +5,7 @@
         <!-- Username -->
         <setting id="username" type="text" label="30050" default=""/>
         <setting id="oauth_token" type="text" label="30099" default=""/>
+        <setting label="30132" type="lsep"/>
         <setting label="30101" type="lsep"/>
     </category>
     <!-- General -->
