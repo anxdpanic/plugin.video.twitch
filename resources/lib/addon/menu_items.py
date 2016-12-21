@@ -38,8 +38,12 @@ def clear_previews():
     return []
 
 
-def channel_videos(name):
-    return update_container(i18n('go_to_videos'), {'mode': MODES.CHANNELVIDEOS, 'name': name})
+def channel_videos(name, display_name):
+    return update_container(i18n('go_to') % '[COLOR white][B]%s[/B][/COLOR]' % display_name, {'mode': MODES.CHANNELVIDEOS, 'name': name})
+
+
+def go_to_game(game):
+    return update_container(i18n('go_to') % '[COLOR white][B]%s[/B][/COLOR]' % game, {'mode': MODES.GAMESTREAMS, 'game': game})
 
 
 def refresh():
