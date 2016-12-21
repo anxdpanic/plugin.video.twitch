@@ -245,35 +245,35 @@ class JsonListItemConverter(object):
     def get_plot_for_stream(stream):
         channel = stream[Keys.CHANNEL]
 
-        headings = {Keys.GAME: i18n('game').encode('utf-8'),
-                    Keys.VIEWERS: i18n('viewers').encode('utf-8'),
-                    Keys.BROADCASTER_LANGUAGE: i18n('language').encode('utf-8'),
-                    Keys.MATURE: i18n('mature').encode('utf-8'),
-                    Keys.PARTNER: i18n('partner').encode('utf-8'),
-                    Keys.DELAY: i18n('delay').encode('utf-8')}
+        headings = {Keys.GAME: i18n('game').decode('utf-8'),
+                    Keys.VIEWERS: i18n('viewers').decode('utf-8'),
+                    Keys.BROADCASTER_LANGUAGE: i18n('language').decode('utf-8'),
+                    Keys.MATURE: i18n('mature').decode('utf-8'),
+                    Keys.PARTNER: i18n('partner').decode('utf-8'),
+                    Keys.DELAY: i18n('delay').decode('utf-8')}
         info = {
-            Keys.GAME: stream.get(Keys.GAME).encode('utf-8') if stream.get(Keys.GAME) else i18n('unknown_game'),
-            Keys.VIEWERS: str(stream.get(Keys.VIEWERS)) if stream.get(Keys.VIEWERS) else '0',
-            Keys.BROADCASTER_LANGUAGE: channel.get(Keys.BROADCASTER_LANGUAGE).encode('utf-8')
+            Keys.GAME: stream.get(Keys.GAME) if stream.get(Keys.GAME) else i18n('unknown_game').decode('utf-8'),
+            Keys.VIEWERS: str(stream.get(Keys.VIEWERS)) if stream.get(Keys.VIEWERS) else u'0',
+            Keys.BROADCASTER_LANGUAGE: channel.get(Keys.BROADCASTER_LANGUAGE)
             if channel.get(Keys.BROADCASTER_LANGUAGE) else None,
-            Keys.MATURE: str(channel.get(Keys.MATURE)) if channel.get(Keys.MATURE) else 'False',
-            Keys.PARTNER: str(channel.get(Keys.PARTNER)) if channel.get(Keys.PARTNER) else 'False',
-            Keys.DELAY: str(stream.get(Keys.DELAY)) if stream.get(Keys.DELAY) else '0'
+            Keys.MATURE: str(channel.get(Keys.MATURE)) if channel.get(Keys.MATURE) else u'False',
+            Keys.PARTNER: str(channel.get(Keys.PARTNER)) if channel.get(Keys.PARTNER) else u'False',
+            Keys.DELAY: str(stream.get(Keys.DELAY)) if stream.get(Keys.DELAY) else u'0'
         }
-        title = channel.get(Keys.STATUS).encode('utf-8') + '\r\n' if channel.get(Keys.STATUS) else ''
+        title = channel.get(Keys.STATUS) + u'\r\n' if channel.get(Keys.STATUS) else u''
 
-        item_template = '{head}:{info}  '  # no whitespace around {head} and {info} for word wrapping in Kodi
-        plot_template = '{title}{game}{viewers}{broadcaster_language}{mature}{partner}{delay}'
+        item_template = u'{head}:{info}  ' # no whitespace around {head} and {info} for word wrapping in Kodi
+        plot_template = u'{title}{game}{viewers}{broadcaster_language}{mature}{partner}{delay}'
 
         def format_key(key):
             value = ''
             if info.get(key) is not None:
                 try:
-                    val_heading = headings.get(key).encode('utf-8', 'ignore')
+                    val_heading = headings.get(key)
                 except:
                     val_heading = headings.get(key)
                 try:
-                    val_info = info.get(key).encode('utf-8', 'ignore')
+                    val_info = info.get(key)
                 except:
                     val_info = info.get(key)
                 value = item_template.format(head=val_heading, info=val_info)
@@ -284,4 +284,4 @@ class JsonListItemConverter(object):
                                     broadcaster_language=format_key(Keys.BROADCASTER_LANGUAGE),
                                     mature=format_key(Keys.MATURE), partner=format_key(Keys.PARTNER))
 
-        return {'plot': plot, 'plotoutline': plot, 'tagline': title.rstrip('\r\n')}
+        return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
