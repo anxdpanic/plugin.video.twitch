@@ -63,5 +63,6 @@ STRINGS = {
     'login': 30127,
     'token_required': 30128,
     'error': 30129,
-    'go_to': 30130
+    'go_to': 30130,
+    'no_results_returned': 30131
 }
