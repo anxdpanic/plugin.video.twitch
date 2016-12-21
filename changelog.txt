@@ -8,7 +8,8 @@
 - menu and setting layouts updated
 - more search options
 - 'refresh' from context menus
-- 'go to videos' from context menu for streams
+- 'go to' channel videos(display name) from context menu for streams
+- 'go to' game from context menu for streams and videos
 - uniform pagination where possible, 'items per page' can be changed in settings
 - remove Teams, end-points no longer available
 - Kodi 17 ready, content/media types set per new official repository requirements
