@@ -1,331 +1,272 @@
 # -*- coding: utf-8 -*-
-import utils
-from twitch.api import TwitchTV
-from twitch.constants import Keys
-from exception import managedTwitchExceptions, TwitchException
-from converter import JsonListItemConverter, PlaylistConverter
-from constants import PLUGIN, LINE_LENGTH, LIVE_PREVIEW_IMAGE, Images
-from xbmc import Keyboard
+"""
+     
+    Copyright (C) 2016 Twitch-on-Kodi
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+"""
 
-TWITCHTV = TwitchTV(PLUGIN.log)
-CONVERTER = JsonListItemConverter(PLUGIN, LINE_LENGTH)
-PLAYLIST_CONVERTER = PlaylistConverter()
+from addon import utils, api, menu_items
+from addon.common import kodi
+from addon.converter import JsonListItemConverter
+from addon.constants import DISPATCHER, MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, Keys
 
+i18n = utils.i18n
 
-@PLUGIN.route('/')
-def createMainListing():
-    context_menu = []
-    context_menu.extend(utils.contextClearPreviews())
-    items = [
-        {'label': PLUGIN.get_string(30005),
-         'icon': Images.ICON,
-         'thumbnail': Images.THUMB,
-         'art': utils.theArt(),
-         'context_menu': context_menu,
-         'path': PLUGIN.url_for(endpoint='createListOfFeaturedStreams')
-         },
-        {'label': PLUGIN.get_string(30001),
-         'icon': Images.ICON,
-         'thumbnail': Images.THUMB,
-         'art': utils.theArt(),
-         'context_menu': context_menu,
-         'path': PLUGIN.url_for(endpoint='createListOfGames', index='0')
-         },
-        {'label': PLUGIN.get_string(30008),
-         'icon': Images.ICON,
-         'thumbnail': Images.THUMB,
-         'art': utils.theArt(),
-         'context_menu': context_menu,
-         'path': PLUGIN.url_for(endpoint='createListOfChannels', index='0')
-         },
-        {'label': PLUGIN.get_string(30002),
-         'icon': Images.ICON,
-         'thumbnail': Images.THUMB,
-         'art': utils.theArt(),
-         'context_menu': context_menu,
-         'path': PLUGIN.url_for(endpoint='createFollowingList')
-         },
-        {'label': PLUGIN.get_string(30066),
-         'icon': Images.ICON,
-         'thumbnail': Images.THUMB,
-         'art': utils.theArt(),
-         'context_menu': context_menu,
-         'path': PLUGIN.url_for(endpoint='createFollowingGameList')
-         },
-        {'label': PLUGIN.get_string(30006),
-         'icon': Images.ICON,
-         'thumbnail': Images.THUMB,
-         'art': utils.theArt(),
-         'context_menu': context_menu,
-         'path': PLUGIN.url_for(endpoint='createListOfTeams', index='0')
-         },
-        {'label': PLUGIN.get_string(30098),
-         'icon': Images.ICON,
-         'thumbnail': Images.THUMB,
-         'art': utils.theArt(),
-         'context_menu': context_menu,
-         'path': PLUGIN.url_for(endpoint='createListForSelectedVideo')
-         },
-        {'label': PLUGIN.get_string(30003),
-         'icon': Images.ICON,
-         'thumbnail': Images.THUMB,
-         'art': utils.theArt(),
-         'context_menu': context_menu,
-         'path': PLUGIN.url_for(endpoint='search')
-         },
-        {'label': PLUGIN.get_string(30004),
-         'icon': Images.ICON,
-         'thumbnail': Images.THUMB,
-         'art': utils.theArt(),
-         'context_menu': context_menu,
-         'path': PLUGIN.url_for(endpoint='showSettings')
-         }
-    ]
-    PLUGIN.set_content(utils.getContentType())
-    return items
+converter = JsonListItemConverter(LINE_LENGTH)
+twitch = api.Twitch()
 
 
-@PLUGIN.route('/createListOfFeaturedStreams/')
-@managedTwitchExceptions
-def createListOfFeaturedStreams():
-    featuredStreams = TWITCHTV.getFeaturedStream()
-    utils.refreshPreviews()
-    PLUGIN.set_content(utils.getContentType())
-    return [CONVERTER.convertStreamToListItem(featuredStream[Keys.STREAM])
-            for featuredStream in featuredStreams]
+@DISPATCHER.register(MODES.MAIN)
+def main():
+    kodi.set_content('files')
+    context_menu = list()
+    context_menu.extend(menu_items.clear_previews())
+    kodi.create_item({'label': i18n('featured_streams'), 'path': {'mode': MODES.FEATUREDSTREAMS}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('following'), 'path': {'mode': MODES.FOLLOWING}})
+    kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.CHANNELS}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.GAMES}})
+    kodi.create_item({'label': i18n('search'), 'path': {'mode': MODES.SEARCH}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('settings'), 'path': {'mode': MODES.SETTINGS}})
+    kodi.end_of_directory()
 
 
-@PLUGIN.route('/createListOfGames/<index>/')
-@managedTwitchExceptions
-def createListOfGames(index):
-    index, offset, limit = utils.calculatePaginationValues(index)
-
-    games = TWITCHTV.getGames(offset, limit)
-    items = [CONVERTER.convertGameToListItem(element[Keys.GAME]) for element in games]
-
-    items.append(utils.linkToNextPage('createListOfGames', index))
-    PLUGIN.set_content(utils.getContentType())
-    return items
-
-
-@PLUGIN.route('/createListOfChannels/<index>/')
-@managedTwitchExceptions
-def createListOfChannels(index):
-    index, offset, limit = utils.calculatePaginationValues(index)
-    items = [CONVERTER.convertStreamToListItem(stream) for stream
-             in TWITCHTV.getChannels(offset, limit)]
-
-    items.append(utils.linkToNextPage('createListOfChannels', index))
-    utils.refreshPreviews()
-    PLUGIN.set_content(utils.getContentType())
-    return items
-
-
-@PLUGIN.route('/createListForGame/<gameName>/<index>/')
-@managedTwitchExceptions
-def createListForGame(gameName, index):
-    index, offset, limit = utils.calculatePaginationValues(index)
-    items = [CONVERTER.convertStreamToListItem(stream) for stream
-             in TWITCHTV.getGameStreams(gameName, offset, limit)]
-
-    items.append(utils.linkToNextPage('createListForGame', index, gameName=gameName))
-    utils.refreshPreviews()
-    PLUGIN.set_content(utils.getContentType())
-    return items
-
-
-@PLUGIN.route('/createFollowingList/')
-@managedTwitchExceptions
-def createFollowingList():
-    username = utils.getUserName()
-    if not username:
-        utils.notification(PLUGIN.get_string(30095))
-    else:
-        streams = TWITCHTV.getFollowingStreams(username)
-        liveStreams = [CONVERTER.convertStreamToListItem(stream) for stream in streams[Keys.LIVE]]
-        liveStreams.insert(0, {'path': PLUGIN.url_for(endpoint='createFollowingList'), 'icon': Images.ICON,
-                               'thumbnail': Images.THUMB, 'art': utils.theArt(), 'is_playable': False,
-                               'label': PLUGIN.get_string(30012)})
-        liveStreams.append({'path': PLUGIN.url_for(endpoint='createFollowingList'), 'icon': Images.ICON,
-                            'thumbnail': Images.THUMB, 'art': utils.theArt(), 'is_playable': False,
-                            'label': PLUGIN.get_string(30013)})
-        liveStreams.extend([CONVERTER.convertFollowersToListItem(follower) for follower in streams[Keys.OTHERS]])
-        utils.refreshPreviews()
-        PLUGIN.set_content(utils.getContentType())
-        return liveStreams
-
-
-@PLUGIN.route('/createFollowingGameList/')
-@managedTwitchExceptions
-def createFollowingGameList():
-    username = utils.getUserName()
-    if not username:
-        utils.notification(PLUGIN.get_string(30095))
-    else:
-        games = TWITCHTV.getFollowingGames(username)
-        items = [CONVERTER.convertGameToListItem(element) for element in games]
-        PLUGIN.set_content(utils.getContentType())
-        return items
-
-
-@PLUGIN.route('/channelVideos/<name>/')
-@managedTwitchExceptions
-def channelVideos(name):
-    items = [{'label': PLUGIN.get_string(30078), 'icon': Images.ICON, 'thumbnail': Images.THUMB, 'art': utils.theArt(),
-              'path': PLUGIN.url_for(endpoint='channelVideosList', name=name, index=0, past='true')},
-             {'label': PLUGIN.get_string(30079), 'icon': Images.ICON, 'thumbnail': Images.THUMB, 'art': utils.theArt(),
-              'path': PLUGIN.url_for(endpoint='channelVideosList', name=name, index=0, past='false')}]
-    PLUGIN.set_content(utils.getContentType())
-    return items
-
-
-@PLUGIN.route('/channelVideosList/<name>/<index>/<past>/')
-@managedTwitchExceptions
-def channelVideosList(name, index, past):
-    index = int(index)
-    offset = index * 8
-    videos = TWITCHTV.getFollowerVideos(name, offset, past)
-    items = [CONVERTER.convertVideoListToListItem(video) for video in videos[Keys.VIDEOS]]
-    if videos[Keys.TOTAL] > (offset + 8):
-        items.append(utils.linkToNextPage('channelVideosList', index, name=name, past=past))
-    PLUGIN.set_content(utils.getContentType())
-    return items
-
-
-@PLUGIN.route('/createListForSelectedVideo/')
-@managedTwitchExceptions
-def createListForSelectedVideo():
-    def extractVideoID(url):
-        _id = url  # http://twitch.tv/a/v/12345678?t=9m1s
-        idx = _id.find('?')
-        if idx >= 0:
-            _id = _id[:idx]  # https://twitch.tv/a/v/12345678
-        idx = _id.rfind('/')
-        if idx >= 0:
-            _id = _id[:idx] + _id[idx + 1:]  # https://twitch.tv/a/v12345678
-        idx = _id.rfind('/')
-        if idx >= 0:
-            _id = _id[idx + 1:]  # v12345678
-        return _id
-
-    items = []
-    keyboard = Keyboard('')
-    keyboard.doModal()
-    if keyboard.isConfirmed():
-        _id = extractVideoID(keyboard.getText())
-        if _id:
-            video = TWITCHTV.getVideo(_id)
-            items = [CONVERTER.convertVideoListToListItem(video)]
-    return items
-
-
-@PLUGIN.route('/playVideo/<_id>/<quality>/')
-@managedTwitchExceptions
-def playVideo(_id, quality):
-    """
-    :param _id: string: video id
-    :param quality: string: qualities[quality]
-    0 = Source, 1 = 1080p60, 2 = 1080p30, 3 = 720p60, 4 = 720p30, 5 = 540p30, 6 = 480p30, 7 = 360p30, 8 = 240p30, 9 = 144p30
-    -1 = Choose quality dialog
-    * any other value for quality will use addon setting
-    """
-    videoQuality = utils.getVideoQuality(quality)
-    oauthtoken = utils.getOauthToken()
-    if videoQuality != -1:
-        # videoQuality == -1 if quality dialog was cancelled
-        videoInfo = CONVERTER.getVideoInfo(TWITCHTV.getVideo(_id))
-        simplePlaylist = TWITCHTV.getVideoPlaylist(_id, videoQuality, oauthtoken)
-        playlistItems = PLAYLIST_CONVERTER.convertToXBMCPlaylist(simplePlaylist, videoInfo.get('title', ''),
-                                                                 videoInfo.get('thumbnail', ''))
-        if playlistItems != ():
-            (playlist, listItem) = playlistItems
-            utils.play(listItem.get('path', ''), listItem)
-        else:
-            raise TwitchException(TwitchException.NO_PLAYABLE)
-
-
-@PLUGIN.route('/playVideo/<_id>/')
-@managedTwitchExceptions
-def oldplayVideo(_id):
-    playVideo(_id, -2)
-
-
-@PLUGIN.route('/search/')
-@managedTwitchExceptions
+@DISPATCHER.register(MODES.SEARCH)
 def search():
-    query = PLUGIN.keyboard('', PLUGIN.get_string(30007))
-    if query:
-        target = PLUGIN.url_for(endpoint='searchresults', query=query, index='0')
+    kodi.set_content('files')
+    kodi.create_item({'label': i18n('streams'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'streams'}})
+    kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'channels'}})
+    kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'games'}})
+    kodi.create_item({'label': i18n('video_id_url'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'id_url'}})
+    kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.NEWSEARCH, args=['content'])
+def new_search(content):
+    kodi.set_content('files')
+    user_input = kodi.get_keyboard(i18n('search'))
+    if user_input:
+        kodi.update_container(kodi.get_plugin_url({'mode': MODES.SEARCHRESULTS, 'content': content, 'query': user_input}))
+
+
+@DISPATCHER.register(MODES.SEARCHRESULTS, args=['content', 'query'], kwargs=['index'])
+def search_results(content, query, index=0):
+    if content == 'streams':
+        utils.refresh_previews()
+        kodi.set_content('videos')
+        index, offset, limit = utils.calculate_pagination_values(index)
+        results = twitch.get_stream_search(query=query, offset=offset, limit=limit)
+        if (results[Keys.TOTAL] > 0) and (Keys.STREAMS in results):
+            for stream in results[Keys.STREAMS]:
+                kodi.create_item(converter.stream_to_listitem(stream))
+            if results[Keys.TOTAL] > (offset + limit):
+                kodi.create_item(utils.link_to_next_page({'mode': MODES.SEARCHRESULTS, 'content': content, 'query': query, 'index': index}))
+            kodi.end_of_directory()
+    elif content == 'channels':
+        kodi.set_content('files')
+        index, offset, limit = utils.calculate_pagination_values(index)
+        results = twitch.get_channel_search(query=query, offset=offset, limit=limit)
+        if (results[Keys.TOTAL] > 0) and (Keys.CHANNELS in results):
+            for channel in results[Keys.CHANNELS]:
+                kodi.create_item(converter.channel_to_listitem(channel))
+            if results[Keys.TOTAL] > (offset + limit):
+                kodi.create_item(utils.link_to_next_page({'mode': MODES.SEARCHRESULTS, 'content': content, 'query': query, 'index': index}))
+            kodi.end_of_directory()
+    elif content == 'games':
+        kodi.set_content('files')
+        results = twitch.get_game_search(query=query)
+        if Keys.GAMES in results:
+            for game in results[Keys.GAMES]:
+                kodi.create_item(converter.game_to_listitem(game))
+            kodi.end_of_directory()
+    elif content == 'id_url':
+        kodi.set_content('videos')
+        video_id = utils.extract_video_id(query)
+        results = twitch.get_video_by_id(video_id)
+        if video_id.startswith('a') or video_id.startswith('c') or video_id.startswith('v'):
+            kodi.create_item(converter.video_list_to_listitem(results))
+            kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.FOLLOWING)
+def following():
+    kodi.set_content('files')
+    context_menu = list()
+    context_menu.extend(menu_items.clear_previews())
+    kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.FOLLOWED, 'content': 'live', 'context_menu': context_menu}})
+    kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.FOLLOWED, 'content': 'channels'}})
+    kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.FOLLOWED, 'content': 'games'}})
+    kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.FEATUREDSTREAMS)
+def list_featured_streams():
+    utils.refresh_previews()
+    kodi.set_content('videos')
+
+    streams = twitch.get_featured_streams()
+    if Keys.FEATURED in streams:
+        for stream in streams[Keys.FEATURED]:
+            kodi.create_item(converter.stream_to_listitem(stream[Keys.STREAM]))
+        kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.GAMES, kwargs=['index'])
+def list_all_games(index=0):
+    kodi.set_content('files')
+    index, offset, limit = utils.calculate_pagination_values(index)
+
+    games = twitch.get_top_games(offset, limit)
+    if (games[Keys.TOTAL] > 0) and (Keys.TOP in games):
+        for element in games[Keys.TOP]:
+            kodi.create_item(converter.game_to_listitem(element[Keys.GAME]))
+        if games[Keys.TOTAL] > (offset + limit):
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.GAMES, 'index': index}))
+        kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.CHANNELS, kwargs=['index'])
+def list_all_channels(index=0):
+    utils.refresh_previews()
+    kodi.set_content('videos')
+    index, offset, limit = utils.calculate_pagination_values(index)
+
+    streams = twitch.get_all_channels(offset, limit)
+    if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
+        for stream in streams[Keys.STREAMS]:
+            kodi.create_item(converter.stream_to_listitem(stream))
+        if streams[Keys.TOTAL] > (offset + limit):
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.CHANNELS, 'index': index}))
+        kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.FOLLOWED, args=['content'])
+def list_followed(content):
+    username = utils.get_username()
+    if username:
+        if content == 'live':
+            utils.refresh_previews()
+            kodi.set_content('videos')
+            streams = twitch.get_following_streams(username)
+            if Keys.LIVE in streams:
+                for stream in streams[Keys.LIVE]:
+                    kodi.create_item(converter.stream_to_listitem(stream))
+                kodi.end_of_directory()
+        elif content == 'channels':
+            kodi.set_content('files')
+            streams = twitch.get_following_streams(username)
+            if Keys.OTHERS in streams:
+                for followed in streams[Keys.OTHERS]:
+                    kodi.create_item(converter.channel_to_listitem(followed))
+                kodi.end_of_directory()
+        elif content == 'games':
+            kodi.set_content('files')
+            games = twitch.get_followed_games(username)
+            if Keys.FOLLOWS in games:
+                for game in games[Keys.FOLLOWS]:
+                    kodi.create_item(converter.game_to_listitem(game))
+                kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.CHANNELVIDEOS, args=['name'])
+def list_channel_video_types(name):
+    kodi.set_content('files')
+    kodi.create_item({'label': i18n('past_broadcasts'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'name': name, 'broadcast_type': 'archive'}})
+    kodi.create_item({'label': i18n('uploads'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'name': name, 'broadcast_type': 'upload'}})
+    kodi.create_item({'label': i18n('video_highlights'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'name': name, 'broadcast_type': 'highlight'}})
+    kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.CHANNELVIDEOLIST, args=['name', 'broadcast_type'], kwargs=['index'])
+def list_channel_videos(name, broadcast_type, index=0):
+    kodi.set_content('videos')
+    index, offset, limit = utils.calculate_pagination_values(index)
+
+    videos = twitch.get_channel_videos(name, offset, limit, broadcast_type)
+    if (videos[Keys.TOTAL] > 0) and (Keys.VIDEOS in videos):
+        for video in videos[Keys.VIDEOS]:
+            kodi.create_item(converter.video_list_to_listitem(video))
+        if videos[Keys.TOTAL] > (offset + limit):
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.CHANNELVIDEOLIST, 'name': name, 'broadcast_type': broadcast_type, 'index': index}))
+        kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.GAMESTREAMS, args=['game'], kwargs=['index'])
+def list_game_streams(game, index=0):
+    utils.refresh_previews()
+    kodi.set_content('videos')
+    index, offset, limit = utils.calculate_pagination_values(index)
+
+    streams = twitch.get_game_streams(game=game, offset=offset, limit=limit)
+    if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
+        for stream in streams[Keys.STREAMS]:
+            kodi.create_item(converter.stream_to_listitem(stream))
+        if streams[Keys.TOTAL] > (offset + limit):
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.GAMESTREAMS, 'game': game, 'index': index}))
+        kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.PLAY, kwargs=['name', 'video_id', 'quality', 'use_player'])
+def play(name=None, video_id=None, quality=-2, use_player=False):
+    if (name is None) and (video_id is None): return
+    video_quality = utils.get_video_quality(quality)
+    if video_quality != -1:
+        videos = item_dict = None
+        if video_id:
+            videos = twitch.get_vod(video_id)
+            result = twitch.get_video_by_id(video_id)
+            item_dict = converter.video_to_playitem(result)
+        elif name:
+            videos = twitch.get_live(name)
+            result = twitch.get_channel_stream(name)[Keys.STREAMS][0]
+            item_dict = converter.stream_to_playitem(result)
+        if item_dict and videos:
+            item_dict['path'] = twitch.get_video_for_quality(videos, video_quality)
+            playback_item = kodi.create_item(item_dict, add=False)
+            if use_player:
+                kodi.Player().play(item_dict['path'], playback_item)
+            else:
+                kodi.set_resolved_url(playback_item)
+            utils.exec_irc_script(name)
+
+
+@DISPATCHER.register(MODES.SETTINGS, kwargs=['refresh'])
+def settings(refresh=True):
+    kodi.show_settings()
+    if refresh:
+        kodi.refresh_container()
+
+
+@DISPATCHER.register(MODES.RESETCACHE)
+def reset_cache():
+    confirmed = kodi.Dialog().yesno(i18n('confirm'), i18n('cache_reset_confirm'))
+    if confirmed:
+        result = utils.cache.reset_cache()
+        if result:
+            kodi.notify(msg=i18n('cache_reset_succeeded'), sound=False)
+        else:
+            kodi.notify(msg=i18n('cache_reset_failed'), sound=False)
+
+
+@DISPATCHER.register(MODES.CLEARLIVEPREVIEWS, kwargs=['notify'])
+def clear_live_previews(notify=True):
+    utils.TextureCacheCleaner().remove_like(LIVE_PREVIEW_TEMPLATE, notify)
+
+
+@DISPATCHER.register(MODES.INSTALLIRCCHAT)
+def install_ircchat():
+    if kodi.get_kodi_version().major > 16:
+        kodi.execute_builtin('InstallAddon(script.ircchat)')
     else:
-        target = PLUGIN.url_for(endpoint='createMainListing')
-    PLUGIN.redirect(target)
-
-
-@PLUGIN.route('/searchresults/<query>/<index>/')
-@managedTwitchExceptions
-def searchresults(query, index='0'):
-    index, offset, limit = utils.calculatePaginationValues(index)
-    streams = TWITCHTV.searchStreams(query, offset, limit)
-    items = [CONVERTER.convertStreamToListItem(stream) for stream in streams]
-    items.append(utils.linkToNextPage('searchresults', index, query=query))
-    utils.refreshPreviews()
-    PLUGIN.set_content(utils.getContentType())
-    return items
-
-
-@PLUGIN.route('/showSettings/')
-def showSettings():
-    PLUGIN.open_settings()
-
-
-@PLUGIN.route('/playLive/<name>/<quality>/')
-@managedTwitchExceptions
-def playLive(name, quality):
-    """
-    :param name: string: stream/channel name
-    :param quality: string: qualities[quality]
-    0 = Source, 1 = 1080p60, 2 = 1080p30, 3 = 720p60, 4 = 720p30, 5 = 540p30, 6 = 480p30, 7 = 360p30, 8 = 240p30, 9 = 144p30
-    -1 = Choose quality dialog
-    * any other value for quality will use addon setting
-    """
-    videoQuality = utils.getVideoQuality(quality)
-    if videoQuality != -1:
-        # videoQuality == -1 if quality dialog was cancelled
-        stream = CONVERTER.convertStreamToPlayItem(TWITCHTV.getStreamInfo(name))
-        stream['path'] = TWITCHTV.getLiveStream(name, videoQuality)
-        utils.play(stream['path'], stream)
-        utils.execIrcPlugin(name)
-
-
-@PLUGIN.route('/playLive/<name>/')
-@managedTwitchExceptions
-def oldplayLive(name):
-    playLive(name, -2)
-
-
-@PLUGIN.route('/createListOfTeams/<index>/')
-@managedTwitchExceptions
-def createListOfTeams(index):
-    index = int(index)
-    teams = TWITCHTV.getTeams(index)
-    items = [CONVERTER.convertTeamToListItem(item) for item in teams]
-    if len(teams) == 25:
-        items.append(utils.linkToNextPage('createListOfTeams', index))
-    PLUGIN.set_content(utils.getContentType())
-    return items
-
-
-@PLUGIN.route('/createListOfTeamStreams/<team>/')
-@managedTwitchExceptions
-def createListOfTeamStreams(team):
-    PLUGIN.set_content(utils.getContentType())
-    return [CONVERTER.convertTeamChannelToListItem(channel[Keys.CHANNEL])
-            for channel in TWITCHTV.getTeamStreams(team)]
-
-
-@PLUGIN.route('/clearLivePreviews/<notify>/')
-def clearLivePreviews(notify):
-    do_notify = True
-    if notify.lower() == 'false':
-        do_notify = False
-    utils.TextureCacheCleaner().remove_like(LIVE_PREVIEW_IMAGE, do_notify)
+        kodi.execute_builtin('RunPlugin(plugin://script.ircchat/)')

@@ -1,16 +1,36 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
-<addon id='plugin.video.twitch' version='1.4.4' name='Twitch' provider-name='StateOfTheArt and ccaspers'>
+<addon id='plugin.video.twitch' version='2.0.0~alpha2' name='Twitch' provider-name='A Talented Community'>
     <requires>
         <import addon='xbmc.python' version='2.20.0'/>
-        <import addon="script.module.xbmcswift2" version="1.2.0"/>
+        <import addon="script.module.python.twitch"/>
     </requires>
     <extension point='xbmc.python.pluginsource' library='resources/lib/__run__.py'>
         <provides>video</provides>
     </extension>
     <extension point='xbmc.addon.metadata'>
         <platform>all</platform>
+        <news>
+*** v1 favorites, routes will NOT work. NOT backwards compatible with v1
+- revisit, refactor and rewrite v1 code where necessary
+- remove xbmcswift dependency
+- remove api portion in favor of new module script.module.python.twitch (based on python-twitch by ingwinlu)
+- use ssl (script.module.python.twitch handles this with requests)
+- api calls are cached, cache can be set/cleared from settings
+- menu and setting layouts updated
+- more search options
+- 'refresh' from context menus
+- 'go to' channel videos(display name) from context menu for streams
+- 'go to' game from context menu for streams and videos
+- uniform pagination where possible, 'items per page' can be changed in settings
+- remove Teams, end-points no longer available
+- Kodi 17 ready, content/media types set per new official repository requirements
+        </news>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
         <language>en</language>
-        <source>https://github.com/StateOfTheArt89/Twitch.tv-on-XBMC</source>
+        <source>https://github.com/MrSprigster/Twitch-on-Kodi</source>
         <license>GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007</license>
         <forum>http://forum.kodi.tv/showthread.php?tid=134538</forum>
         <summary lang='da'>Twitch video plugin</summary>

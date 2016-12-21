@@ -1,4 +1,4 @@
-Twitch.tv on XBMC (Kodi)
+Twitch on Kodi
 ==================
 
 Watch your favorite gaming streams on Kodi.
@@ -17,22 +17,21 @@ FAQ
 
 * I'm experiencing HTTP errors!
 
-> There are various things that can cause this (including Twitch changing things! Which we do try to keep on top of.) but recently, most commonly it is caused by several missing OAUTH entries in the settings section of this addon. Please visit http://www.twitchapps.com/tmi/ and acquire an OAuth Token and insert this to the relevant sections of the addon settings and your HTTP errors may just go away.
+> There are various things that can cause this (including Twitch changing things! Which we do try to keep on top of.) but recently, most commonly it is caused by missing OAUTH entry in the settings section of this addon. Please visit http://www.twitchapps.com/tmi/ and acquire an OAuth Token and insert this to the relevant section of the addon settings and your HTTP errors may just go away.
 
 What's next?
 ----------------
 
 Things that need to be done next:
 
-* Implement a user authentication
-* Add Twitch IRC chat overlay
+* Implement features based upon user authentication
 * Suggestions welcome.
 
 Credit where credit is due.
-----------------
+-------------
 
 Thanks to all the people who contributed to this project:
 
-ccaspers, CDehning, Giacom, grocal, KlingOne, kokarn, Kr0nZ, Liquex, MrSprigster, stuross, ingwinlu, mCzolko, ha107642, G4RL1N, spiffomatic64, stevensmedia, anxdpanic, xsellier, lucabric, dadobt, torstehu, kravone, beastd BtbN, Preovaleo, Blayr, bamberino.
+StateOfTheArt89 (Founder of this project), ccaspers, CDehning, Giacom, grocal, KlingOne, kokarn, Kr0nZ, Liquex, MrSprigster, stuross, ingwinlu, mCzolko, ha107642, G4RL1N, spiffomatic64, stevensmedia, anxdpanic, xsellier, lucabric, dadobt, torstehu, kravone, beastd BtbN, Preovaleo, Blayr, bamberino.
 
 This addon utilizes python-twitch https://github.com/ingwinlu/python-twitch (a project which derived from an early version of this addon and has grown to deserve recognition of its own). Thanks to ingwinlu for his continued work on the project.
