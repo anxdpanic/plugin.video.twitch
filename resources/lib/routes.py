@@ -199,6 +199,7 @@ def channelVideosList(name, index, broadcast_type):
 def createListForSelectedVideo():
     def extractVideoID(url):
         _id = url  # http://twitch.tv/a/v/12345678?t=9m1s
+                   # http://twitch.tv/videos/12345678?t=9m1s
         idx = _id.find('?')
         if idx >= 0:
             _id = _id[:idx]  # https://twitch.tv/a/v/12345678
@@ -208,6 +209,9 @@ def createListForSelectedVideo():
         idx = _id.rfind('/')
         if idx >= 0:
             _id = _id[idx + 1:]  # v12345678
+        if _id.startswith("videos"):  # videos12345678
+            _id = "v" + _id[6:]  # v12345678
+
         return _id
 
     items = []
