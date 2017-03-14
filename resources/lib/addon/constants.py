@@ -19,6 +19,7 @@
 
 from common import kodi
 from common.url_dispatcher import URL_Dispatcher
+from twitch import scopes
 
 
 def __enum(**enums):
@@ -46,7 +47,8 @@ MODES = __enum(
     RESETCACHE='reset_cache',
     CLEARLIVEPREVIEWS='clear_live_previews',
     INSTALLIRCCHAT='install_ircchat',
-    PLAY='play'
+    PLAY='play',
+    TOKENURL='get_token_url'
 )
 
 LINE_LENGTH = 60
@@ -127,3 +129,8 @@ class Keys:
     DESCRIPTION = 'description'
     CREATED_AT = 'created_at'
     GAMES = 'games'
+    ID = '_id'
+
+
+SCOPES = [scopes.user_read, scopes.user_blocks_edit, scopes.user_blocks_read, scopes.user_follows_edit, scopes.user_subscriptions,
+          scopes.channel_feed_edit, scopes.channel_feed_read, scopes.chat_login]

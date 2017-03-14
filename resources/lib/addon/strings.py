@@ -41,7 +41,6 @@ STRINGS = {
     'mature': 30091,
     'partner': 30092,
     'delay': 30093,
-    'username_required': 30095,
     'source': 30102,
     '1080p60': 30103,
     '1080p30': 30104,
@@ -64,5 +63,7 @@ STRINGS = {
     'token_required': 30128,
     'error': 30129,
     'go_to': 30130,
-    'no_results_returned': 30131
+    'no_results_returned': 30131,
+    'authorize_heading': 30133,
+    'authorize_message': 30134
 }

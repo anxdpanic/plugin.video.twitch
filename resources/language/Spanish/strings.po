@@ -419,5 +419,5 @@ msgid "No results returned"
 msgstr ""
 
 msgctxt "#30132"
-msgid "OAuth token is required for access to subscribed content and IrcChat"
+msgid "OAuth token is required for access to authorized user functions."
 msgstr ""

@@ -24,7 +24,8 @@ import utils
 from common import kodi, log_utils
 from constants import Keys
 from twitch import queries as twitch_queries
-from twitch.api import v3 as twitch
+from twitch import oauth
+from twitch.api import v5 as twitch
 from twitch.api import usher
 from twitch.exceptions import ResourceUnavailableException
 
@@ -70,6 +71,12 @@ class Twitch:
     def __init__(self):
         self.queries.CLIENT_ID = self.client_id
         self.queries.OAUTH_TOKEN = self.access_token
+        self.client = oauth.MobileClient(self.client_id)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=1)
+    def get_user(self):
+        return self.api.users.user()
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -93,13 +100,13 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_followed_channels(self, name, offset, limit):
-        return self.api.follows.by_user(name=name, limit=limit, offset=offset)
+    def get_followed_channels(self, identification, offset, limit):
+        return self.api.follows.by_id(identification=identification, limit=limit, offset=offset)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_channel_videos(self, name, offset, limit, broadcast_type):
-        return self.api.videos.by_channel(name=name, limit=limit, offset=offset, broadcast_type=broadcast_type)
+    def get_channel_videos(self, channel_id, offset, limit, broadcast_type):
+        return self.api.videos.by_channel(identification=channel_id, limit=limit, offset=offset, broadcast_type=broadcast_type)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -157,8 +164,8 @@ class Twitch:
         return self.usher.live(name)
 
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_following_streams(self, username):
-        following_channels = self._get_followed_channels(username)
+    def get_following_streams(self, user_id):
+        following_channels = self._get_followed_channels(user_id)
         channels = sorted(following_channels, key=lambda k: k[Keys.DISPLAY_NAME].lower())
         channel_names = ','.join([channel[Keys.NAME] for channel in channels])
         live = []
