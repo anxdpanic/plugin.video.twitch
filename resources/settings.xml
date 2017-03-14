@@ -2,11 +2,10 @@
 <settings>
     <!-- Login -->
     <category label="30127">
-        <!-- Username -->
-        <setting id="username" type="text" label="30050" default=""/>
         <setting id="oauth_token" type="text" label="30099" default=""/>
+        <setting label="30135" id="show_token_url" type="action" action="RunPlugin(plugin://$ID/?mode=get_token_url)" option="close"/>
         <setting label="30132" type="lsep"/>
-        <setting label="30101" type="lsep"/>
+        <setting label="" type="lsep"/>
     </category>
     <!-- General -->
     <category label="30076">
@@ -56,6 +55,6 @@
     <!-- Developer -->
     <category label="30118">
         <!-- OAuth Client ID -->
-        <setting id="oauth_client_id" type="text" label="30097" default=""/>
+        <setting id="oauth_clientid" type="text" label="30097" default=""/>
     </category>
 </settings>

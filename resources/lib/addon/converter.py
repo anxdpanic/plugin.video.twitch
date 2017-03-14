@@ -109,7 +109,7 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.clear_previews())
         return {'label': channel[Keys.DISPLAY_NAME],
-                'path': kodi.get_plugin_url({'mode': MODES.CHANNELVIDEOS, 'name': channel[Keys.NAME]}),
+                'path': kodi.get_plugin_url({'mode': MODES.CHANNELVIDEOS, 'channel_id': channel[Keys.ID]}),
                 'art': the_art({'fanart': video_banner, 'poster': image, 'thumb': image}),
                 'context_menu': context_menu}
 
@@ -120,13 +120,15 @@ class JsonListItemConverter(object):
         date = video.get(Keys.CREATED_AT)[:10] if video.get(Keys.CREATED_AT) else ''
         year = video.get(Keys.CREATED_AT)[:4] if video.get(Keys.CREATED_AT) else ''
         image = video.get(Keys.PREVIEW) if video.get(Keys.PREVIEW) else Images.VIDEOTHUMB
+        if Keys.MEDIUM in image:
+            image = image.get(Keys.MEDIUM)
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'video_id': video['_id'], 'quality': -1, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'video_id': video[Keys.ID], 'quality': -1, 'use_player': True}))
         return {'label': video[Keys.TITLE],
-                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video['_id']}),
+                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video[Keys.ID]}),
                 'context_menu': context_menu,
                 'is_playable': True,
                 'info': {'duration': str(duration), 'plot': plot, 'plotoutline': plot, 'tagline': plot,
@@ -140,7 +142,7 @@ class JsonListItemConverter(object):
         if not video_banner:
             video_banner = channel.get(Keys.VIDEO_BANNER) if channel.get(Keys.VIDEO_BANNER) else Images.FANART
         preview = stream.get(Keys.PREVIEW)
-        if preview:
+        if Keys.MEDIUM in preview:
             preview = preview.get(Keys.MEDIUM)
         logo = channel.get(Keys.LOGO) if channel.get(Keys.LOGO) else Images.VIDEOTHUMB
         image = preview if preview else logo
@@ -149,12 +151,12 @@ class JsonListItemConverter(object):
         info.update({'mediatype': 'video'})
         context_menu = list()
         context_menu.extend(menu_items.refresh())
-        context_menu.extend(menu_items.channel_videos(channel[Keys.NAME], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.channel_videos(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.go_to_game(channel[Keys.GAME]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'quality': -1, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys.ID], 'quality': -1, 'use_player': True}))
         return {'label': title,
-                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel[Keys.NAME]}),
+                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys.ID]}),
                 'context_menu': context_menu,
                 'is_playable': True,
                 'info': info,
@@ -165,6 +167,8 @@ class JsonListItemConverter(object):
         # path is returned '' and must be set after
         channel = video[Keys.CHANNEL]
         preview = video.get(Keys.PREVIEW)
+        if Keys.MEDIUM in preview:
+            preview = preview.get(Keys.MEDIUM)
         logo = channel.get(Keys.LOGO) if channel.get(Keys.LOGO) else Images.VIDEOTHUMB
         image = preview if preview else logo
         title = self.get_title_for_stream(video)

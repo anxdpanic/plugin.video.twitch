@@ -35,11 +35,11 @@ cache.cache_enabled = cache_limit > 0
 
 
 def get_client_id():
-    settings_id = kodi.get_setting('oauth_client_id')
+    settings_id = kodi.get_setting('oauth_clientid')
     stripped_id = settings_id.strip()
     if settings_id != stripped_id:
         settings_id = stripped_id
-        kodi.set_setting('oauth_client_id', settings_id)
+        kodi.set_setting('oauth_clientid', settings_id)
     if settings_id:
         return settings_id.decode('utf-8')
     else:
@@ -59,25 +59,16 @@ def get_oauth_token(token_only=True, required=False):
         kodi.set_setting('oauth_token', oauth_token)
     if oauth_token:
         if token_only:
-            oauth_token = oauth_token.replace('oauth:', '')
+            idx = oauth_token.find(':')
+            if idx >= 0:
+                oauth_token = oauth_token[idx + 1:]
         else:
             if not oauth_token.lower().startswith('oauth:'):
+                idx = oauth_token.find(':')
+                if idx >= 0:
+                    oauth_token = oauth_token[idx + 1:]
                 oauth_token = 'oauth:{0}'.format(oauth_token)
     return oauth_token.decode('utf-8')
-
-
-def get_username():
-    username = kodi.get_setting('username').lower()
-    if not username or not username.strip():
-        kodi.notify(kodi.get_name(), i18n('username_required'), sound=False)
-        kodi.show_settings()
-        username = kodi.get_setting('username')
-    formatted_username = username.lower().strip()
-    if username != formatted_username:
-        username = formatted_username
-        kodi.set_setting('username', username)
-
-    return username
 
 
 def get_items_per_page():
@@ -141,10 +132,9 @@ def link_to_next_page(queries):
             'path': kodi.get_plugin_url(queries)}
 
 
-def exec_irc_script(channel):
+def exec_irc_script(username, channel):
     if kodi.get_setting('irc_enable') != 'true':
         return
-    username = kodi.get_setting('username')
     password = get_oauth_token(token_only=False, required=True)
     if username and password:
         host = 'irc.chat.twitch.tv'
@@ -202,6 +192,8 @@ def extract_video_id(url):
     idx = video_id.rfind('/')
     if idx >= 0:
         video_id = video_id[idx + 1:]  # v12345678
+    if video_id.startswith("videos"):  # videos12345678
+        video_id = "v" + video_id[6:]  # v12345678
     return video_id
 
 

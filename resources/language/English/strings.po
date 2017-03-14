@@ -450,5 +450,17 @@ msgid "No results returned"
 msgstr ""
 
 msgctxt "#30132"
-msgid "OAuth token is required for access to subscribed content and IrcChat"
+msgid "OAuth token is required for access to authorized user functions."
+msgstr ""
+
+msgctxt "#30133"
+msgid "Authorize"
+msgstr ""
+
+msgctxt "#30134"
+msgid "Get your OAuth token by logging in/signing up to Twitch.tv here:"
+msgstr ""
+
+msgctxt "#30135"
+msgid "Get OAuth token"
 msgstr ""
