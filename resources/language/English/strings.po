@@ -472,3 +472,7 @@ msgstr ""
 msgctxt "#30137"
 msgid "Communities"
 msgstr ""
+
+msgctxt "#30138"
+msgid "*** Do NOT share your OAuth token. ***"
+msgstr ""
