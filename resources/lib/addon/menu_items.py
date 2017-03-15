@@ -48,3 +48,8 @@ def go_to_game(game):
 
 def refresh():
     return [(i18n('refresh'), 'Container.Refresh')]
+
+
+def editfollow(channel_id, display_name):
+    return update_container(i18n('follow_unfollow') % '[COLOR white][B]%s[/B][/COLOR]' % display_name, {'mode': MODES.EDITFOLLOW, 'channel_id': channel_id,
+                                                                                                        'channel_name': display_name})

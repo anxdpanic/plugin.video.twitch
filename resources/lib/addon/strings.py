@@ -57,5 +57,8 @@ STRINGS = {
     'no_results_returned': 30131,
     'authorize_heading': 30133,
     'authorize_message': 30134,
-    'communities': 30137
+    'communities': 30137,
+    'follow_unfollow': 30139,
+    'now_following': 30140,
+    'unfollowed': 30141
 }

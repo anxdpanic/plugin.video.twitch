@@ -22,7 +22,7 @@ from addon.common import kodi
 from addon.converter import JsonListItemConverter
 from addon.constants import DISPATCHER, MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, SCOPES, Keys
 from addon.googl_shorten import googl_url
-from addon.error_handling import error_handler
+from addon.error_handling import error_handler, TwitchException
 
 i18n = utils.i18n
 
@@ -82,6 +82,8 @@ def search_results(content, query, index=0):
             if results[Keys.TOTAL] > (offset + limit):
                 kodi.create_item(utils.link_to_next_page({'mode': MODES.SEARCHRESULTS, 'content': content, 'query': query, 'index': index}))
             kodi.end_of_directory()
+        else:
+            kodi.refresh_container()
     elif content == 'channels':
         kodi.set_content('files')
         index, offset, limit = utils.calculate_pagination_values(index)
@@ -92,6 +94,8 @@ def search_results(content, query, index=0):
             if results[Keys.TOTAL] > (offset + limit):
                 kodi.create_item(utils.link_to_next_page({'mode': MODES.SEARCHRESULTS, 'content': content, 'query': query, 'index': index}))
             kodi.end_of_directory()
+        else:
+            kodi.refresh_container()
     elif content == 'games':
         kodi.set_content('files')
         results = twitch.get_game_search(query=query)
@@ -99,6 +103,8 @@ def search_results(content, query, index=0):
             for game in results[Keys.GAMES]:
                 kodi.create_item(converter.game_to_listitem(game))
             kodi.end_of_directory()
+        else:
+            kodi.refresh_container()
     elif content == 'id_url':
         kodi.set_content('videos')
         video_id = utils.extract_video_id(query)
@@ -106,6 +112,8 @@ def search_results(content, query, index=0):
         if video_id.startswith('a') or video_id.startswith('c') or video_id.startswith('v'):
             kodi.create_item(converter.video_list_to_listitem(results))
             kodi.end_of_directory()
+        else:
+            kodi.refresh_container()
 
 
 @DISPATCHER.register(MODES.FOLLOWING)
@@ -295,6 +303,24 @@ def play(name=None, channel_id=None, video_id=None, source=True, use_player=Fals
             username = user.get(Keys.NAME, None)
             if username:
                 utils.exec_irc_script(username, name)
+
+
+@DISPATCHER.register(MODES.EDITFOLLOW, args=['channel_id', 'channel_name'])
+@error_handler
+def edit_user_follows(channel_id, channel_name):
+    try:
+        result = twitch.follow_status(channel_id)
+        is_following = True
+    except TwitchException as error:
+        if '404' not in error.message: raise
+        is_following = False
+
+    if is_following:
+        result = twitch.unfollow(channel_id)
+        kodi.notify(msg=i18n('unfollowed') % channel_name, sound=False)
+    else:
+        result = twitch.follow(channel_id)
+        kodi.notify(msg=i18n('now_following') % channel_name, sound=False)
 
 
 @DISPATCHER.register(MODES.SETTINGS, kwargs=['refresh'])

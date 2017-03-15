@@ -476,3 +476,15 @@ msgstr ""
 msgctxt "#30138"
 msgid "*** Do NOT share your OAuth token. ***"
 msgstr ""
+
+msgctxt "#30139"
+msgid "Follow/Unfollow %s"
+msgstr ""
+
+msgctxt "#30140"
+msgid "Now following %s"
+msgstr ""
+
+msgctxt "#30141"
+msgid "Unfollowed %s"
+msgstr ""

@@ -109,6 +109,27 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def follow_status(self, channel_id):
+        user = self.get_user()
+        user_id = user.get(Keys.ID)
+        return self.api.follows.status(identification=user_id, target=channel_id)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def follow(self, channel_id):
+        user = self.get_user()
+        user_id = user.get(Keys.ID)
+        return self.api.follows.follow(identification=user_id, target=channel_id)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def unfollow(self, channel_id):
+        user = self.get_user()
+        user_id = user.get(Keys.ID)
+        return self.api.follows.unfollow(identification=user_id, target=channel_id)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_video_by_id(self, video_id):
         return self.api.videos.by_id(identification=video_id)
 
