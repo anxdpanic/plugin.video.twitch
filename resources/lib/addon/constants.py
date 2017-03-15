@@ -60,6 +60,7 @@ ICON = kodi.get_icon()
 FANART = kodi.get_fanart()
 
 CLIENT_ID = 'NjdlYnBmaHlvaWNhYjVrcjB5N3B6b2NzZm9oczd0eQ=='
+REDIRECT_URI = 'http://localhost:3000/'
 
 LIVE_PREVIEW_TEMPLATE = '%://static-cdn.jtvnw.net/previews-ttv/live_user_%-%___x%___.jpg'  # sqlite LIKE pattern
 
@@ -138,5 +139,4 @@ class Keys:
     AVATAR_IMAGE = 'avatar_image_url'
 
 
-SCOPES = [scopes.user_read, scopes.user_blocks_edit, scopes.user_blocks_read, scopes.user_follows_edit, scopes.user_subscriptions,
-          scopes.channel_feed_edit, scopes.channel_feed_read, scopes.chat_login]
+SCOPES = [scopes.user_read, scopes.user_blocks_edit, scopes.user_blocks_read, scopes.user_follows_edit, scopes.user_subscriptions, scopes.chat_login]

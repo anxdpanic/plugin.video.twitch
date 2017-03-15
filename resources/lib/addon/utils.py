@@ -24,7 +24,7 @@ from base64 import b64decode
 from common import kodi, cache
 from strings import STRINGS
 from tccleaner import TextureCacheCleaner
-from constants import CLIENT_ID, LIVE_PREVIEW_TEMPLATE, Images
+from constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images
 
 translations = kodi.Translations(STRINGS)
 i18n = translations.i18n
@@ -32,6 +32,18 @@ i18n = translations.i18n
 cache = cache
 cache_limit = int(kodi.get_setting('cache_expire_time')) / 60
 cache.cache_enabled = cache_limit > 0
+
+
+def get_redirect_uri():
+    settings_id = kodi.get_setting('oauth_redirecturi')
+    stripped_id = settings_id.strip()
+    if settings_id != stripped_id:
+        settings_id = stripped_id
+        kodi.set_setting('oauth_redirecturi', settings_id)
+    if settings_id:
+        return settings_id.decode('utf-8')
+    else:
+        return REDIRECT_URI.decode('utf-8')
 
 
 def get_client_id():

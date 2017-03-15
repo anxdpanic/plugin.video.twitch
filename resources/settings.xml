@@ -54,5 +54,6 @@
     <category label="30118">
         <!-- OAuth Client ID -->
         <setting id="oauth_clientid" type="text" label="30097" default=""/>
+        <setting id="oauth_redirecturi" type="text" label="30142" default=""/>
     </category>
 </settings>
