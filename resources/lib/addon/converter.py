@@ -92,7 +92,7 @@ class JsonListItemConverter(object):
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'name': channel_name, 'quality': -1, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'name': channel_name, 'source': False, 'use_player': True}))
         return {'label': title,
                 'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel_name}),
                 'context_menu': context_menu,
@@ -126,7 +126,7 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'video_id': video[Keys.ID], 'quality': -1, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'video_id': video[Keys.ID], 'source': False, 'use_player': True}))
         return {'label': video[Keys.TITLE],
                 'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video[Keys.ID]}),
                 'context_menu': context_menu,
@@ -154,7 +154,7 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.channel_videos(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.go_to_game(channel[Keys.GAME]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys.ID], 'quality': -1, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys.ID], 'source': False, 'use_player': True}))
         return {'label': title,
                 'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys.ID]}),
                 'context_menu': context_menu,

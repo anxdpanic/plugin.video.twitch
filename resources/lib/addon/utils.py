@@ -82,36 +82,6 @@ def calculate_pagination_values(index):
     return index, offset, limit
 
 
-def get_video_quality(quality=''):
-    """
-    :param quality: string int/int: qualities[quality]
-    qualities
-    0 = Source, 1 = 1080p60, 2 = 1080p30, 3 = 720p60, 4 = 720p30, 5 = 540p30, 6 = 480p30, 7 = 360p30, 8 = 240p30, 9 = 144p30
-    -1 = Choose quality dialog
-    * any other value for quality will use add-on setting
-    i18n: 0 - 9
-    """
-    qualities = {'-1': -1, '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9}
-    i18n_qualities = [i18n('source'), i18n('1080p60'), i18n('1080p30'), i18n('720p60'), i18n('720p30'),
-                      i18n('540p30'), i18n('480p30'), i18n('360p30'), i18n('240p30'), i18n('144p30')]
-    try:
-        quality = int(quality)
-        if 9 >= quality >= 0:
-            chosen_quality = str(quality)
-        elif quality == -1:
-            chosen_quality = str(kodi.Dialog().select(i18n('play_choose_quality'), i18n_qualities))
-        else:
-            raise ValueError
-    except ValueError:
-        chosen_quality = kodi.get_setting('video')
-
-    if chosen_quality == '-1':
-        # chosen_quality == '-1' if dialog was cancelled
-        return int(chosen_quality)
-    else:
-        return qualities.get(chosen_quality, sys.maxint)
-
-
 def the_art(art=None):
     if not art:
         art = {}
