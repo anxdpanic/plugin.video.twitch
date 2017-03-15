@@ -41,6 +41,7 @@ def main():
     if has_token:
         kodi.create_item({'label': i18n('following'), 'path': {'mode': MODES.FOLLOWING}})
     kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.CHANNELS}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('communities'), 'path': {'mode': MODES.COMMUNITIES}})
     kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.GAMES}})
     kodi.create_item({'label': i18n('search'), 'path': {'mode': MODES.SEARCH}, 'context_menu': context_menu})
     kodi.create_item({'label': i18n('settings'), 'path': {'mode': MODES.SETTINGS}})
@@ -147,6 +148,20 @@ def list_all_games(index=0):
         kodi.end_of_directory()
 
 
+@DISPATCHER.register(MODES.COMMUNITIES, kwargs=['index'])
+@error_handler
+def list_all_communities(index=0):
+    kodi.set_content('files')
+    index, offset, limit = utils.calculate_pagination_values(index)
+    communities = twitch.get_top_communities(index, limit)
+    if (communities[Keys.TOTAL] > 0) and (Keys.COMMUNITIES in communities):
+        for element in communities[Keys.COMMUNITIES]:
+            kodi.create_item(converter.community_to_listitem(element))
+        if communities[Keys.TOTAL] > (offset + limit):
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.COMMUNITIES, 'index': index}))
+        kodi.end_of_directory()
+
+
 @DISPATCHER.register(MODES.CHANNELS, kwargs=['index'])
 @error_handler
 def list_all_channels(index=0):
@@ -233,6 +248,22 @@ def list_game_streams(game, index=0):
             kodi.create_item(converter.stream_to_listitem(stream))
         if streams[Keys.TOTAL] > (offset + limit):
             kodi.create_item(utils.link_to_next_page({'mode': MODES.GAMESTREAMS, 'game': game, 'index': index}))
+        kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.COMMUNITYSTREAMS, args=['community_id'], kwargs=['index'])
+@error_handler
+def list_community_streams(community_id, index=0):
+    utils.refresh_previews()
+    kodi.set_content('videos')
+    index, offset, limit = utils.calculate_pagination_values(index)
+
+    streams = twitch.get_community_streams(community_id=community_id, offset=offset, limit=limit)
+    if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
+        for stream in streams[Keys.STREAMS]:
+            kodi.create_item(converter.stream_to_listitem(stream))
+        if streams[Keys.TOTAL] > (offset + limit):
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.GAMESTREAMS, 'community_id': community_id, 'index': index}))
         kodi.end_of_directory()
 
 
