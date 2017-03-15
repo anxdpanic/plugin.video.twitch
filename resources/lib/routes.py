@@ -22,6 +22,7 @@ from addon.common import kodi
 from addon.converter import JsonListItemConverter
 from addon.constants import DISPATCHER, MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, SCOPES, Keys
 from addon.googl_shorten import googl_url
+from addon.error_handling import error_handler
 
 i18n = utils.i18n
 
@@ -30,6 +31,7 @@ twitch = api.Twitch()
 
 
 @DISPATCHER.register(MODES.MAIN)
+@error_handler
 def main():
     has_token = True if utils.get_oauth_token() else False
     kodi.set_content('files')
@@ -46,6 +48,7 @@ def main():
 
 
 @DISPATCHER.register(MODES.SEARCH)
+@error_handler
 def search():
     kodi.set_content('files')
     kodi.create_item({'label': i18n('streams'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'streams'}})
@@ -56,6 +59,7 @@ def search():
 
 
 @DISPATCHER.register(MODES.NEWSEARCH, args=['content'])
+@error_handler
 def new_search(content):
     kodi.set_content('files')
     user_input = kodi.get_keyboard(i18n('search'))
@@ -64,6 +68,7 @@ def new_search(content):
 
 
 @DISPATCHER.register(MODES.SEARCHRESULTS, args=['content', 'query'], kwargs=['index'])
+@error_handler
 def search_results(content, query, index=0):
     if content == 'streams':
         utils.refresh_previews()
@@ -103,6 +108,7 @@ def search_results(content, query, index=0):
 
 
 @DISPATCHER.register(MODES.FOLLOWING)
+@error_handler
 def following():
     kodi.set_content('files')
     context_menu = list()
@@ -114,6 +120,7 @@ def following():
 
 
 @DISPATCHER.register(MODES.FEATUREDSTREAMS)
+@error_handler
 def list_featured_streams():
     utils.refresh_previews()
     kodi.set_content('videos')
@@ -126,6 +133,7 @@ def list_featured_streams():
 
 
 @DISPATCHER.register(MODES.GAMES, kwargs=['index'])
+@error_handler
 def list_all_games(index=0):
     kodi.set_content('files')
     index, offset, limit = utils.calculate_pagination_values(index)
@@ -140,6 +148,7 @@ def list_all_games(index=0):
 
 
 @DISPATCHER.register(MODES.CHANNELS, kwargs=['index'])
+@error_handler
 def list_all_channels(index=0):
     utils.refresh_previews()
     kodi.set_content('videos')
@@ -155,6 +164,7 @@ def list_all_channels(index=0):
 
 
 @DISPATCHER.register(MODES.FOLLOWED, args=['content'])
+@error_handler
 def list_followed(content):
     user = twitch.get_user()
     user_id = user.get(Keys.ID, None)
@@ -186,6 +196,7 @@ def list_followed(content):
 
 
 @DISPATCHER.register(MODES.CHANNELVIDEOS, args=['channel_id'])
+@error_handler
 def list_channel_video_types(channel_id):
     kodi.set_content('files')
     kodi.create_item({'label': i18n('past_broadcasts'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': 'archive'}})
@@ -195,6 +206,7 @@ def list_channel_video_types(channel_id):
 
 
 @DISPATCHER.register(MODES.CHANNELVIDEOLIST, args=['channel_id', 'broadcast_type'], kwargs=['index'])
+@error_handler
 def list_channel_videos(channel_id, broadcast_type, index=0):
     kodi.set_content('videos')
     index, offset, limit = utils.calculate_pagination_values(index)
@@ -209,6 +221,7 @@ def list_channel_videos(channel_id, broadcast_type, index=0):
 
 
 @DISPATCHER.register(MODES.GAMESTREAMS, args=['game'], kwargs=['index'])
+@error_handler
 def list_game_streams(game, index=0):
     utils.refresh_previews()
     kodi.set_content('videos')
@@ -224,6 +237,7 @@ def list_game_streams(game, index=0):
 
 
 @DISPATCHER.register(MODES.PLAY, kwargs=['name', 'channel_id', 'video_id', 'source', 'use_player'])
+@error_handler
 def play(name=None, channel_id=None, video_id=None, source=True, use_player=False):
     if (name is None or channel_id is None) and (video_id is None): return
     videos = item_dict = None
@@ -253,6 +267,7 @@ def play(name=None, channel_id=None, video_id=None, source=True, use_player=Fals
 
 
 @DISPATCHER.register(MODES.SETTINGS, kwargs=['refresh'])
+@error_handler
 def settings(refresh=True):
     kodi.show_settings()
     if refresh:
@@ -260,6 +275,7 @@ def settings(refresh=True):
 
 
 @DISPATCHER.register(MODES.RESETCACHE)
+@error_handler
 def reset_cache():
     confirmed = kodi.Dialog().yesno(i18n('confirm'), i18n('cache_reset_confirm'))
     if confirmed:
@@ -271,11 +287,13 @@ def reset_cache():
 
 
 @DISPATCHER.register(MODES.CLEARLIVEPREVIEWS, kwargs=['notify'])
+@error_handler
 def clear_live_previews(notify=True):
     utils.TextureCacheCleaner().remove_like(LIVE_PREVIEW_TEMPLATE, notify)
 
 
 @DISPATCHER.register(MODES.INSTALLIRCCHAT)
+@error_handler
 def install_ircchat():
     if kodi.get_kodi_version().major > 16:
         kodi.execute_builtin('InstallAddon(script.ircchat)')
@@ -284,6 +302,7 @@ def install_ircchat():
 
 
 @DISPATCHER.register(MODES.TOKENURL)
+@error_handler
 def get_token_url():
     request_url = twitch.client.prepare_request_uri(scope=SCOPES)
     try:
