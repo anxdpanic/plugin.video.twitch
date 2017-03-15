@@ -223,22 +223,24 @@ def list_game_streams(game, index=0):
         kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.PLAY, kwargs=['name', 'channel_id', 'video_id', 'quality', 'use_player'])
-def play(name=None, channel_id=None, video_id=None, quality=-2, use_player=False):
+@DISPATCHER.register(MODES.PLAY, kwargs=['name', 'channel_id', 'video_id', 'source', 'use_player'])
+def play(name=None, channel_id=None, video_id=None, source=True, use_player=False):
     if (name is None or channel_id is None) and (video_id is None): return
-    video_quality = utils.get_video_quality(quality)
-    if video_quality != -1:
-        videos = item_dict = None
-        if video_id:
-            videos = twitch.get_vod(video_id)
-            result = twitch.get_video_by_id(video_id)
-            item_dict = converter.video_to_playitem(result)
-        elif name and channel_id:
-            videos = twitch.get_live(name)
-            result = twitch.get_channel_stream(channel_id)[Keys.STREAMS][0]
-            item_dict = converter.stream_to_playitem(result)
-        if item_dict and videos:
-            item_dict['path'] = twitch.get_video_for_quality(videos, video_quality)
+    videos = item_dict = None
+    if video_id:
+        videos = twitch.get_vod(video_id)
+        result = twitch.get_video_by_id(video_id)
+        item_dict = converter.video_to_playitem(result)
+    elif name and channel_id:
+        videos = twitch.get_live(name)
+        result = twitch.get_channel_stream(channel_id)[Keys.STREAMS][0]
+        item_dict = converter.stream_to_playitem(result)
+    if item_dict and videos:
+        if source:
+            source = kodi.get_setting('video_quality') == '0'
+        play_url = twitch.get_video_for_quality(videos, source)
+        if play_url:
+            item_dict['path'] = play_url
             playback_item = kodi.create_item(item_dict, add=False)
             if use_player:
                 kodi.Player().play(item_dict['path'], playback_item)

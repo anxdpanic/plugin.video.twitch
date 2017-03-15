@@ -186,65 +186,18 @@ class Twitch:
         return channels
 
     @staticmethod
-    def get_video_for_quality(videos, quality_index):
-        quality_list_stream = ['Source', '1080p60', '1080p30', '720p60', '720p30', '540p30', '480p30', '360p30', '240p30', '144p30']
-        old_quality_list_stream = ['Source', 'High', 'Medium', 'Low', 'Mobile']
-        new_videos = dict()
+    def get_video_for_quality(videos, source=True):
+        qualities = []
+        for quality in videos:
+            if source and 'source' in quality.lower():
+                    return videos[quality]
+            qualities.append(quality)
 
-        def _coerce_quality(q):
-            if q == 'live':
-                return 'Source'
-            elif q not in quality_list:  # non-standard quality naming, attempt to coerce
-                if q.endswith('p'):  # '1080p'
-                    return q + '30'  # '1080p30' is in qualityList
-                else:
-                    q = q.split(None, 1)  # '1080p60 - source' -> ['1080p60', ' - source']
-                    if q:
-                        return q[0]  # '1080p60' is in qualityList
-            return q
-
-        def _get_old_quality(q_idx):
-            if q_idx <= 2:
-                return 0
-            elif q_idx <= 4:
-                return 1
-            elif q_idx <= 6:
-                return 2
-            elif q_idx <= 7:
-                return 3
-            else:
-                return 4
-
-        quality_list = quality_list_stream
-        if '360p' not in videos and '360p30' not in videos:
-            quality_index = _get_old_quality(quality_index)
-            quality_list = old_quality_list_stream
-
-        for video_quality, url in videos.items():
-            video_quality = _coerce_quality(video_quality)
-            if video_quality in quality_list:  # check for quality in list before using it
-                quality_int = quality_list.index(video_quality)
-                new_videos[quality_int] = url
-
-        best_distance = len(quality_list) + 1
-
-        if (quality_index in new_videos) and (best_distance == len(quality_list) + 1):
-            # selected quality is available
-            return new_videos[quality_index]
+        result = kodi.Dialog().select(i18n('play_choose_quality'), [quality for quality in qualities])
+        if result == -1:
+            return None
         else:
-            # not available, calculate differences to available qualities
-            # return lowest difference / lower quality if same distance
-            best_distance = len(quality_list) + 1
-
-            best_match = None
-            qualities = sorted(new_videos, reverse=True)
-            for quality in qualities:
-                new_distance = abs(quality_index - quality)
-                if new_distance < best_distance:
-                    best_distance = new_distance
-                    best_match = quality
-
-            return new_videos[best_match]
+            return videos[qualities[result]]
 
     def _get_followed_channels(self, username):
         acc = []
