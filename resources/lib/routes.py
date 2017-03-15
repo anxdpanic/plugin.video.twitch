@@ -361,7 +361,8 @@ def install_ircchat():
 @DISPATCHER.register(MODES.TOKENURL)
 @error_handler
 def get_token_url():
-    request_url = twitch.client.prepare_request_uri(scope=SCOPES)
+    redirect_uri = utils.get_redirect_uri()
+    request_url = twitch.client.prepare_request_uri(redirect_uri=redirect_uri, scope=SCOPES)
     try:
         short_url = googl_url(request_url)
     except:
