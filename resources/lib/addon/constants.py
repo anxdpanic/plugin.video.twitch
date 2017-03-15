@@ -50,7 +50,8 @@ MODES = __enum(
     PLAY='play',
     TOKENURL='get_token_url',
     COMMUNITIES='communities',
-    COMMUNITYSTREAMS='community_streams'
+    COMMUNITYSTREAMS='community_streams',
+    EDITFOLLOW='edit_user_follows'
 )
 
 LINE_LENGTH = 60
