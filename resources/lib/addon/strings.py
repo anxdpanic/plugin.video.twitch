@@ -42,15 +42,6 @@ STRINGS = {
     'partner': 30092,
     'delay': 30093,
     'source': 30102,
-    '1080p60': 30103,
-    '1080p30': 30104,
-    '720p60': 30105,
-    '720p30': 30106,
-    '540p30': 30107,
-    '480p30': 30108,
-    '360p30': 30109,
-    '240p30': 30110,
-    '144p30': 30111,
     'uploads': 30113,
     'confirm': 30114,
     'cache_reset_succeeded': 30115,
@@ -65,5 +56,6 @@ STRINGS = {
     'go_to': 30130,
     'no_results_returned': 30131,
     'authorize_heading': 30133,
-    'authorize_message': 30134
+    'authorize_message': 30134,
+    'communities': 30137
 }

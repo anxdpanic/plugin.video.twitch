@@ -25,6 +25,7 @@ from twitch import queries as twitch_queries
 from twitch import oauth
 from twitch.api import v5 as twitch
 from twitch.api import usher
+from base64 import b64encode
 
 i18n = utils.i18n
 
@@ -58,6 +59,11 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_top_communities(self, index, limit):
+        return self.api.communities.top(cursor=b64encode(str(index)), limit=limit)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_all_channels(self, offset, limit):
         return self.api.streams.all(offset=offset, limit=limit)
 
@@ -80,6 +86,11 @@ class Twitch:
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_game_streams(self, game, offset, limit):
         return self.api.streams.all(game=game, limit=limit, offset=offset)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_community_streams(self, community_id, offset, limit):
+        return self.api.streams.all(community_id=community_id, limit=limit, offset=offset)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)

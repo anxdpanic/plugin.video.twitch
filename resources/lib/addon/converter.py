@@ -69,6 +69,19 @@ class JsonListItemConverter(object):
                 'context_menu': context_menu}
 
     @staticmethod
+    def community_to_listitem(community):
+        name = community[Keys.NAME].encode('utf-8')
+        _id = community[Keys.ID]
+        image = community.get(Keys.AVATAR_IMAGE, Images.THUMB)
+        context_menu = list()
+        context_menu.extend(menu_items.refresh())
+        context_menu.extend(menu_items.clear_previews())
+        return {'label': name,
+                'path': kodi.get_plugin_url({'mode': MODES.COMMUNITYSTREAMS, 'community_id': _id}),
+                'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
+                'context_menu': context_menu}
+
+    @staticmethod
     def team_to_listitem(team):
         name = team[Keys.NAME]
         background = team.get(Keys.BACKGROUND) if team.get(Keys.BACKGROUND) else Images.FANART
@@ -266,7 +279,7 @@ class JsonListItemConverter(object):
         }
         title = channel.get(Keys.STATUS) + u'\r\n' if channel.get(Keys.STATUS) else u''
 
-        item_template = u'{head}:{info}  ' # no whitespace around {head} and {info} for word wrapping in Kodi
+        item_template = u'{head}:{info}  '  # no whitespace around {head} and {info} for word wrapping in Kodi
         plot_template = u'{title}{game}{viewers}{broadcaster_language}{mature}{partner}{delay}'
 
         def format_key(key):

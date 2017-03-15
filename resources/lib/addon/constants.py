@@ -48,7 +48,9 @@ MODES = __enum(
     CLEARLIVEPREVIEWS='clear_live_previews',
     INSTALLIRCCHAT='install_ircchat',
     PLAY='play',
-    TOKENURL='get_token_url'
+    TOKENURL='get_token_url',
+    COMMUNITIES='communities',
+    COMMUNITYSTREAMS='community_streams'
 )
 
 LINE_LENGTH = 60
@@ -130,6 +132,9 @@ class Keys:
     CREATED_AT = 'created_at'
     GAMES = 'games'
     ID = '_id'
+    CURSOR = '_cursor'
+    COMMUNITIES = 'communities'
+    AVATAR_IMAGE = 'avatar_image_url'
 
 
 SCOPES = [scopes.user_read, scopes.user_blocks_edit, scopes.user_blocks_read, scopes.user_follows_edit, scopes.user_subscriptions,
