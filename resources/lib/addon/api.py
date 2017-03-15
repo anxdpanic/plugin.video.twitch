@@ -17,48 +17,16 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-import sys
-import json
-from functools import wraps
 import utils
-from common import kodi, log_utils
+from error_handling import api_error_handler
+from common import kodi
 from constants import Keys
 from twitch import queries as twitch_queries
 from twitch import oauth
 from twitch.api import v5 as twitch
 from twitch.api import usher
-from twitch.exceptions import ResourceUnavailableException
 
 i18n = utils.i18n
-
-
-def api_error_handler(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        try:
-            result = func(*args, **kwargs)
-            try:
-                logging_result = json.dumps(result, indent=4)
-            except:
-                logging_result = result
-            log_utils.log(logging_result, log_utils.LOGDEBUG)
-            try:
-                if 'error' in result:
-                    message = '[Status {0}] {1}'.format(result['status'], result['message'])
-                    log_utils.log('Error |{0}| message |{1}|'.format(result['error'], message), log_utils.LOGERROR)
-                    kodi.notify('{0} ({1})'.format(i18n('error'), result['error']), message, duration=7000, sound=False)
-                    sys.exit(0)
-            except:
-                pass
-            if not result or (isinstance(result, dict) and ('_total' in result) and (int(result['_total'] == 0))):
-                kodi.notify(msg=i18n('no_results_returned'), duration=5000, sound=False)
-            return result
-        except ResourceUnavailableException as error:
-            log_utils.log('Error: Resource not available |{0}|'.format(error.message), log_utils.LOGERROR)
-            kodi.notify(i18n('error'), error.message, duration=7000, sound=False)
-            sys.exit(0)
-
-    return wrapper
 
 
 class Twitch:
@@ -190,7 +158,7 @@ class Twitch:
         qualities = []
         for quality in videos:
             if source and 'source' in quality.lower():
-                    return videos[quality]
+                return videos[quality]
             qualities.append(quality)
 
         result = kodi.Dialog().select(i18n('play_choose_quality'), [quality for quality in qualities])
