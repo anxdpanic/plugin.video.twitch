@@ -345,7 +345,7 @@ msgid "1080p30"
 msgstr ""
 
 msgctxt "#30105"
-msgid "720p60"
+msgid "720p60 (High)"
 msgstr ""
 
 msgctxt "#30106"
@@ -353,7 +353,7 @@ msgid "720p30"
 msgstr ""
 
 msgctxt "#30107"
-msgid "540p30"
+msgid "540p30 (Medium)"
 msgstr ""
 
 msgctxt "#30108"
@@ -361,11 +361,11 @@ msgid "480p30"
 msgstr ""
 
 msgctxt "#30109"
-msgid "360p30"
+msgid "360p30 (Low)"
 msgstr ""
 
 msgctxt "#30110"
-msgid "240p30"
+msgid "240p30 (Mobile)"
 msgstr ""
 
 msgctxt "#30111"

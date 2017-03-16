@@ -199,7 +199,7 @@ class TwitchTV(object):
             hls_url = Urls.HLS_PLAYLIST.format(channelName, channelsig, channeltoken)
             data = self.scraper.downloadWebData(hls_url)
             qualityList = Keys.QUALITY_LIST_STREAM
-            if 'NAME="360p30"' not in data:
+            if ('p30"' not in data) and ('p60"' not in data):
                 qualityList = Keys.OLD_QUALITY_LIST_STREAM
             playlist = M3UPlaylist(data, qualityList)
             return playlist.getQuality(maxQuality)
