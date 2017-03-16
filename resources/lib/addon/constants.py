@@ -60,7 +60,7 @@ ICON = kodi.get_icon()
 FANART = kodi.get_fanart()
 
 CLIENT_ID = 'NjdlYnBmaHlvaWNhYjVrcjB5N3B6b2NzZm9oczd0eQ=='
-REDIRECT_URI = 'http://localhost:3000/'
+REDIRECT_URI = 'https://mrsprigster.github.io/Twitch-on-Kodi/token/'
 
 LIVE_PREVIEW_TEMPLATE = '%://static-cdn.jtvnw.net/previews-ttv/live_user_%-%___x%___.jpg'  # sqlite LIKE pattern
 
