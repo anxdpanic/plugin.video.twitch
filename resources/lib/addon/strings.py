@@ -58,7 +58,9 @@ STRINGS = {
     'authorize_heading': 30133,
     'authorize_message': 30134,
     'communities': 30137,
-    'follow_unfollow': 30139,
+    'toggle_follow': 30139,
     'now_following': 30140,
-    'unfollowed': 30141
+    'unfollowed': 30141,
+    'follow_confirm': 30143,
+    'unfollow_confirm': 30144
 }
