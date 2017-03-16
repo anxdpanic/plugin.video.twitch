@@ -101,8 +101,8 @@ class Urls(object):
     OPTIONS_OFFSET_LIMIT_GAME = OPTIONS_OFFSET_LIMIT + '&game={2}'
     OPTIONS_OFFSET_LIMIT_QUERY = OPTIONS_OFFSET_LIMIT + '&q={2}'
 
-    HLS_PLAYLIST = 'https://usher.twitch.tv/api/channel/hls/{0}.m3u8?sig={1}&token={2}&allow_source=true'
-    VOD_PLAYLIST = 'https://usher.twitch.tv/vod/{0}?nauth={1}&nauthsig={2}&allow_source=true'
+    HLS_PLAYLIST = 'https://usher.ttvnw.net/api/channel/hls/{0}.m3u8?sig={1}&token={2}&allow_source=true'
+    VOD_PLAYLIST = 'https://usher.ttvnw.net/vod/{0}?nauth={1}&nauthsig={2}&allow_source=true'
 
     CHANNEL_VIDEOS = 'https://api.twitch.tv/kraken/channels/{0}/videos?limit=8&offset={1}&broadcast_type={2}'
     VIDEO_PLAYLIST = 'https://api.twitch.tv/api/videos/{0}'

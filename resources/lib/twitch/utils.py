@@ -105,13 +105,26 @@ class M3UPlaylist(object):
                 if char == '"':
                     break
                 qualityString += char
-            return qualityString, Url
+            groupPosition = ExtXMediaLine.find('GROUP-ID')
+            if namePosition == -1:
+                group_id = 'unknown'
+            else:
+                group_id = ''
+                groupPosition += 10
+                for char in ExtXMediaLine[groupPosition:]:
+                    if char == '"':
+                        break
+                    group_id += char
+            return group_id, qualityString, Url
 
+        source = None
         lines = data.splitlines()
         linesIterator = iter(lines)
         for line in linesIterator:
             if line.startswith('#EXT-X-MEDIA:TYPE=VIDEO'):
-                quality, url = parseQuality(line, next(linesIterator), next(linesIterator))
+                group_id, quality, url = parseQuality(line, next(linesIterator), next(linesIterator))
+                if group_id == 'chunked':
+                    source = url
                 # do coercing of qualities here
                 if quality not in self.qualityList:  # non-standard quality naming, attempt to coerce
                     if quality.endswith('p'):  # '1080p'
@@ -123,6 +136,8 @@ class M3UPlaylist(object):
                 if quality in self.qualityList:  # check for quality in list before using it
                     qualityInt = self.qualityList.index(quality)
                     self.playlist[qualityInt] = url
+        if (source) and (0 not in self.playlist):
+            self.playlist[0] = source
         if not self.playlist:
             # playlist dict is empty
             raise TwitchException(TwitchException.NO_PLAYABLE)
