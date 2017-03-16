@@ -1,0 +1,80 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Twitch for Kodi</title>
+    <meta name="description" content="">
+    <meta name="author" content="A Talented Community">
+    <style>
+		div.body {
+			width: 800px;
+			margin: 0 auto;
+		}
+		.parent div {
+			float: left;
+			clear: none;
+			padding-top: 30px;
+			padding-bottom: 30px;
+		}
+		div.head {
+			font-size: 22px;
+			font-weight: 900;
+			margin: 10px;
+		}
+		div#response {
+			font-size: 22px;
+			margin: 10px;
+		}
+
+    </style>
+</head>
+
+<body>
+<div class="body">
+    <div class="parent">
+        <div class="head" id="response_type"></div>
+        <div id="response"></div>
+    </div>
+</div>
+<script>
+		function get_pairs(pairString) {
+			var fragment = {};
+			var fragments = pairString.split('&');
+			var fragmentPair = [];
+			for (var i in fragments) {
+				fragmentPair = fragments[i].split('=');
+				if (fragmentPair.length !== 2) {
+					continue;
+				}
+				fragment[fragmentPair[0]] = fragmentPair[1];
+			}
+			return fragment;
+		}
+		var response = "";
+		var response_type = "";
+		var fragment = null;
+		var locationHash = location.hash.substr(1);
+		fragment = get_pairs(locationHash);
+		if (typeof fragment["access_token"] != "undefined") {
+			response_type = "OAuth token";
+			response = fragment["access_token"];
+		}
+		else {
+			var getParameters = location.search.substr(1);
+			fragment = get_pairs(getParameters);
+			if (typeof fragment["error"] != "undefined") {
+				response_type = "Error";
+				response = fragment["error"];
+				if (typeof fragment["error_description"] != "undefined") {
+					response += ": " + decodeURIComponent(fragment["error_description"].replace(/\+/g, " "));
+				}
+			}
+		}
+		document.getElementById('response_type').innerHTML = response_type;
+		document.getElementById('response').innerHTML = response;
+
+</script>
+</body>
+</html>
