@@ -17,7 +17,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-import sys
 import time
 from datetime import datetime
 from base64 import b64decode
@@ -114,8 +113,12 @@ def link_to_next_page(queries):
             'path': kodi.get_plugin_url(queries)}
 
 
+def irc_enabled():
+    return kodi.get_setting('irc_enable') != 'true'
+
+
 def exec_irc_script(username, channel):
-    if kodi.get_setting('irc_enable') != 'true':
+    if irc_enabled():
         return
     password = get_oauth_token(token_only=False, required=True)
     if username and password:
