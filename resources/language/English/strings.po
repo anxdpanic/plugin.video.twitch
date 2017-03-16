@@ -450,5 +450,53 @@ msgid "No results returned"
 msgstr ""
 
 msgctxt "#30132"
-msgid "OAuth token is required for access to subscribed content and IrcChat"
+msgid "OAuth token is required for access to authorized user functions."
+msgstr ""
+
+msgctxt "#30133"
+msgid "Authorize"
+msgstr ""
+
+msgctxt "#30134"
+msgid "Get your OAuth token by logging in/signing up to Twitch.tv here:"
+msgstr ""
+
+msgctxt "#30135"
+msgid "Get OAuth token"
+msgstr ""
+
+msgctxt "#30136"
+msgid "Always ask"
+msgstr ""
+
+msgctxt "#30137"
+msgid "Communities"
+msgstr ""
+
+msgctxt "#30138"
+msgid "*** Do NOT share your OAuth token. ***"
+msgstr ""
+
+msgctxt "#30139"
+msgid "Toggle Follow"
+msgstr ""
+
+msgctxt "#30140"
+msgid "Now following %s"
+msgstr ""
+
+msgctxt "#30141"
+msgid "Unfollowed %s"
+msgstr ""
+
+msgctxt "#30142"
+msgid "Redirect URI"
+msgstr ""
+
+msgctxt "#30143"
+msgid "Would you like to follow %s?"
+msgstr ""
+
+msgctxt "#30144"
+msgid "Are you sure you want to unfollow %s?"
 msgstr ""

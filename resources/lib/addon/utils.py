@@ -17,14 +17,13 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-import sys
 import time
 from datetime import datetime
 from base64 import b64decode
 from common import kodi, cache
 from strings import STRINGS
 from tccleaner import TextureCacheCleaner
-from constants import CLIENT_ID, LIVE_PREVIEW_TEMPLATE, Images
+from constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images
 
 translations = kodi.Translations(STRINGS)
 i18n = translations.i18n
@@ -34,12 +33,24 @@ cache_limit = int(kodi.get_setting('cache_expire_time')) / 60
 cache.cache_enabled = cache_limit > 0
 
 
-def get_client_id():
-    settings_id = kodi.get_setting('oauth_client_id')
+def get_redirect_uri():
+    settings_id = kodi.get_setting('oauth_redirecturi')
     stripped_id = settings_id.strip()
     if settings_id != stripped_id:
         settings_id = stripped_id
-        kodi.set_setting('oauth_client_id', settings_id)
+        kodi.set_setting('oauth_redirecturi', settings_id)
+    if settings_id:
+        return settings_id.decode('utf-8')
+    else:
+        return REDIRECT_URI.decode('utf-8')
+
+
+def get_client_id():
+    settings_id = kodi.get_setting('oauth_clientid')
+    stripped_id = settings_id.strip()
+    if settings_id != stripped_id:
+        settings_id = stripped_id
+        kodi.set_setting('oauth_clientid', settings_id)
     if settings_id:
         return settings_id.decode('utf-8')
     else:
@@ -59,25 +70,16 @@ def get_oauth_token(token_only=True, required=False):
         kodi.set_setting('oauth_token', oauth_token)
     if oauth_token:
         if token_only:
-            oauth_token = oauth_token.replace('oauth:', '')
+            idx = oauth_token.find(':')
+            if idx >= 0:
+                oauth_token = oauth_token[idx + 1:]
         else:
             if not oauth_token.lower().startswith('oauth:'):
+                idx = oauth_token.find(':')
+                if idx >= 0:
+                    oauth_token = oauth_token[idx + 1:]
                 oauth_token = 'oauth:{0}'.format(oauth_token)
     return oauth_token.decode('utf-8')
-
-
-def get_username():
-    username = kodi.get_setting('username').lower()
-    if not username or not username.strip():
-        kodi.notify(kodi.get_name(), i18n('username_required'), sound=False)
-        kodi.show_settings()
-        username = kodi.get_setting('username')
-    formatted_username = username.lower().strip()
-    if username != formatted_username:
-        username = formatted_username
-        kodi.set_setting('username', username)
-
-    return username
 
 
 def get_items_per_page():
@@ -89,36 +91,6 @@ def calculate_pagination_values(index):
     limit = get_items_per_page()
     offset = index * limit
     return index, offset, limit
-
-
-def get_video_quality(quality=''):
-    """
-    :param quality: string int/int: qualities[quality]
-    qualities
-    0 = Source, 1 = 1080p60, 2 = 1080p30, 3 = 720p60, 4 = 720p30, 5 = 540p30, 6 = 480p30, 7 = 360p30, 8 = 240p30, 9 = 144p30
-    -1 = Choose quality dialog
-    * any other value for quality will use add-on setting
-    i18n: 0 - 9
-    """
-    qualities = {'-1': -1, '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9}
-    i18n_qualities = [i18n('source'), i18n('1080p60'), i18n('1080p30'), i18n('720p60'), i18n('720p30'),
-                      i18n('540p30'), i18n('480p30'), i18n('360p30'), i18n('240p30'), i18n('144p30')]
-    try:
-        quality = int(quality)
-        if 9 >= quality >= 0:
-            chosen_quality = str(quality)
-        elif quality == -1:
-            chosen_quality = str(kodi.Dialog().select(i18n('play_choose_quality'), i18n_qualities))
-        else:
-            raise ValueError
-    except ValueError:
-        chosen_quality = kodi.get_setting('video')
-
-    if chosen_quality == '-1':
-        # chosen_quality == '-1' if dialog was cancelled
-        return int(chosen_quality)
-    else:
-        return qualities.get(chosen_quality, sys.maxint)
 
 
 def the_art(art=None):
@@ -141,10 +113,13 @@ def link_to_next_page(queries):
             'path': kodi.get_plugin_url(queries)}
 
 
-def exec_irc_script(channel):
-    if kodi.get_setting('irc_enable') != 'true':
+def irc_enabled():
+    return kodi.get_setting('irc_enable') != 'true'
+
+
+def exec_irc_script(username, channel):
+    if irc_enabled():
         return
-    username = kodi.get_setting('username')
     password = get_oauth_token(token_only=False, required=True)
     if username and password:
         host = 'irc.chat.twitch.tv'
@@ -202,6 +177,8 @@ def extract_video_id(url):
     idx = video_id.rfind('/')
     if idx >= 0:
         video_id = video_id[idx + 1:]  # v12345678
+    if video_id.startswith("videos"):  # videos12345678
+        video_id = "v" + video_id[6:]  # v12345678
     return video_id
 
 

@@ -17,47 +17,17 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-import sys
-import json
-from functools import wraps
 import utils
-from common import kodi, log_utils
-from constants import Keys
+from error_handling import api_error_handler
+from common import kodi
+from constants import Keys, SCOPES
 from twitch import queries as twitch_queries
-from twitch.api import v3 as twitch
+from twitch import oauth
+from twitch.api import v5 as twitch
 from twitch.api import usher
-from twitch.exceptions import ResourceUnavailableException
+from base64 import b64encode
 
 i18n = utils.i18n
-
-
-def api_error_handler(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        try:
-            result = func(*args, **kwargs)
-            try:
-                logging_result = json.dumps(result, indent=4)
-            except:
-                logging_result = result
-            log_utils.log(logging_result, log_utils.LOGDEBUG)
-            try:
-                if 'error' in result:
-                    message = '[Status {0}] {1}'.format(result['status'], result['message'])
-                    log_utils.log('Error |{0}| message |{1}|'.format(result['error'], message), log_utils.LOGERROR)
-                    kodi.notify('{0} ({1})'.format(i18n('error'), result['error']), message, duration=7000, sound=False)
-                    sys.exit(0)
-            except:
-                pass
-            if not result or (isinstance(result, dict) and ('_total' in result) and (int(result['_total'] == 0))):
-                kodi.notify(msg=i18n('no_results_returned'), duration=5000, sound=False)
-            return result
-        except ResourceUnavailableException as error:
-            log_utils.log('Error: Resource not available |{0}|'.format(error.message), log_utils.LOGERROR)
-            kodi.notify(i18n('error'), error.message, duration=7000, sound=False)
-            sys.exit(0)
-
-    return wrapper
 
 
 class Twitch:
@@ -66,10 +36,17 @@ class Twitch:
     queries = twitch_queries
     client_id = utils.get_client_id()
     access_token = utils.get_oauth_token(token_only=True, required=False)
+    required_scopes = SCOPES
 
     def __init__(self):
         self.queries.CLIENT_ID = self.client_id
         self.queries.OAUTH_TOKEN = self.access_token
+        self.client = oauth.MobileClient(self.client_id)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=1)
+    def get_user(self):
+        return self.api.users.user()
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -83,6 +60,11 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_top_communities(self, index, limit):
+        return self.api.communities.top(cursor=b64encode(str(index)), limit=limit)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_all_channels(self, offset, limit):
         return self.api.streams.all(offset=offset, limit=limit)
 
@@ -93,18 +75,23 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_followed_channels(self, name, offset, limit):
-        return self.api.follows.by_user(name=name, limit=limit, offset=offset)
+    def get_followed_channels(self, identification, offset, limit):
+        return self.api.follows.by_id(identification=identification, limit=limit, offset=offset)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_channel_videos(self, name, offset, limit, broadcast_type):
-        return self.api.videos.by_channel(name=name, limit=limit, offset=offset, broadcast_type=broadcast_type)
+    def get_channel_videos(self, channel_id, offset, limit, broadcast_type):
+        return self.api.videos.by_channel(identification=channel_id, limit=limit, offset=offset, broadcast_type=broadcast_type)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_game_streams(self, game, offset, limit):
         return self.api.streams.all(game=game, limit=limit, offset=offset)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_community_streams(self, community_id, offset, limit):
+        return self.api.streams.all(community_id=community_id, limit=limit, offset=offset)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -120,6 +107,27 @@ class Twitch:
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_game_search(self, query):
         return self.api.search.games(query=query)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def follow_status(self, channel_id):
+        user = self.get_user()
+        user_id = user.get(Keys.ID)
+        return self.api.follows.status(identification=user_id, target=channel_id)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def follow(self, channel_id):
+        user = self.get_user()
+        user_id = user.get(Keys.ID)
+        return self.api.follows.follow(identification=user_id, target=channel_id)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def unfollow(self, channel_id):
+        user = self.get_user()
+        user_id = user.get(Keys.ID)
+        return self.api.follows.unfollow(identification=user_id, target=channel_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -157,8 +165,8 @@ class Twitch:
         return self.usher.live(name)
 
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_following_streams(self, username):
-        following_channels = self._get_followed_channels(username)
+    def get_following_streams(self, user_id):
+        following_channels = self._get_followed_channels(user_id)
         channels = sorted(following_channels, key=lambda k: k[Keys.DISPLAY_NAME].lower())
         channel_names = ','.join([channel[Keys.NAME] for channel in channels])
         live = []
@@ -179,65 +187,18 @@ class Twitch:
         return channels
 
     @staticmethod
-    def get_video_for_quality(videos, quality_index):
-        quality_list_stream = ['Source', '1080p60', '1080p30', '720p60', '720p30', '540p30', '480p30', '360p30', '240p30', '144p30']
-        old_quality_list_stream = ['Source', 'High', 'Medium', 'Low', 'Mobile']
-        new_videos = dict()
+    def get_video_for_quality(videos, source=True):
+        qualities = []
+        for quality in videos:
+            if source and 'source' in quality.lower():
+                return videos[quality]
+            qualities.append(quality)
 
-        def _coerce_quality(q):
-            if q == 'live':
-                return 'Source'
-            elif q not in quality_list:  # non-standard quality naming, attempt to coerce
-                if q.endswith('p'):  # '1080p'
-                    return q + '30'  # '1080p30' is in qualityList
-                else:
-                    q = q.split(None, 1)  # '1080p60 - source' -> ['1080p60', ' - source']
-                    if q:
-                        return q[0]  # '1080p60' is in qualityList
-            return q
-
-        def _get_old_quality(q_idx):
-            if q_idx <= 2:
-                return 0
-            elif q_idx <= 4:
-                return 1
-            elif q_idx <= 6:
-                return 2
-            elif q_idx <= 7:
-                return 3
-            else:
-                return 4
-
-        quality_list = quality_list_stream
-        if '360p' not in videos and '360p30' not in videos:
-            quality_index = _get_old_quality(quality_index)
-            quality_list = old_quality_list_stream
-
-        for video_quality, url in videos.items():
-            video_quality = _coerce_quality(video_quality)
-            if video_quality in quality_list:  # check for quality in list before using it
-                quality_int = quality_list.index(video_quality)
-                new_videos[quality_int] = url
-
-        best_distance = len(quality_list) + 1
-
-        if (quality_index in new_videos) and (best_distance == len(quality_list) + 1):
-            # selected quality is available
-            return new_videos[quality_index]
+        result = kodi.Dialog().select(i18n('play_choose_quality'), [quality for quality in qualities])
+        if result == -1:
+            return None
         else:
-            # not available, calculate differences to available qualities
-            # return lowest difference / lower quality if same distance
-            best_distance = len(quality_list) + 1
-
-            best_match = None
-            qualities = sorted(new_videos, reverse=True)
-            for quality in qualities:
-                new_distance = abs(quality_index - quality)
-                if new_distance < best_distance:
-                    best_distance = new_distance
-                    best_match = quality
-
-            return new_videos[best_match]
+            return videos[qualities[result]]
 
     def _get_followed_channels(self, username):
         acc = []

@@ -19,6 +19,7 @@
 
 from common import kodi
 from common.url_dispatcher import URL_Dispatcher
+from twitch import scopes
 
 
 def __enum(**enums):
@@ -46,7 +47,11 @@ MODES = __enum(
     RESETCACHE='reset_cache',
     CLEARLIVEPREVIEWS='clear_live_previews',
     INSTALLIRCCHAT='install_ircchat',
-    PLAY='play'
+    PLAY='play',
+    TOKENURL='get_token_url',
+    COMMUNITIES='communities',
+    COMMUNITYSTREAMS='community_streams',
+    EDITFOLLOW='edit_user_follows'
 )
 
 LINE_LENGTH = 60
@@ -55,6 +60,7 @@ ICON = kodi.get_icon()
 FANART = kodi.get_fanart()
 
 CLIENT_ID = 'NjdlYnBmaHlvaWNhYjVrcjB5N3B6b2NzZm9oczd0eQ=='
+REDIRECT_URI = 'https://mrsprigster.github.io/Twitch-on-Kodi/token/'
 
 LIVE_PREVIEW_TEMPLATE = '%://static-cdn.jtvnw.net/previews-ttv/live_user_%-%___x%___.jpg'  # sqlite LIKE pattern
 
@@ -127,3 +133,10 @@ class Keys:
     DESCRIPTION = 'description'
     CREATED_AT = 'created_at'
     GAMES = 'games'
+    ID = '_id'
+    CURSOR = '_cursor'
+    COMMUNITIES = 'communities'
+    AVATAR_IMAGE = 'avatar_image_url'
+
+
+SCOPES = [scopes.user_read, scopes.user_blocks_edit, scopes.user_blocks_read, scopes.user_follows_edit, scopes.user_subscriptions, scopes.chat_login]
