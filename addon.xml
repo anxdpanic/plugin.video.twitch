@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
-<addon id='plugin.video.twitch' version='2.0.0~alpha2' name='Twitch' provider-name='A Talented Community'>
+<addon id='plugin.video.twitch' version='2.0.0~alpha3' name='Twitch' provider-name='A Talented Community'>
     <requires>
         <import addon='xbmc.python' version='2.20.0'/>
         <import addon="script.module.python.twitch"/>
@@ -12,6 +12,7 @@
         <platform>all</platform>
         <news>
 *** v1 favorites, routes will NOT work. NOT backwards compatible with v1
+*** New OAuth token required, see Settings - Get OAuth token
 - revisit, refactor and rewrite v1 code where necessary
 - remove xbmcswift dependency
 - remove api portion in favor of new module script.module.python.twitch (based on python-twitch by ingwinlu)
@@ -25,6 +26,9 @@
 - uniform pagination where possible, 'items per page' can be changed in settings
 - remove Teams, end-points no longer available
 - Kodi 17 ready, content/media types set per new official repository requirements
+- update to use Twitch API v5
+- add Communities
+- add Follow/Unfollow
         </news>
         <assets>
             <icon>icon.png</icon>
