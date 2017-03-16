@@ -20,7 +20,7 @@
 from addon import utils, api, menu_items
 from addon.common import kodi
 from addon.converter import JsonListItemConverter
-from addon.constants import DISPATCHER, MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, SCOPES, Keys
+from addon.constants import DISPATCHER, MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, Keys
 from addon.googl_shorten import googl_url
 from addon.error_handling import error_handler, TwitchException
 
@@ -299,10 +299,11 @@ def play(name=None, channel_id=None, video_id=None, source=True, use_player=Fals
                 kodi.Player().play(item_dict['path'], playback_item)
             else:
                 kodi.set_resolved_url(playback_item)
-            user = twitch.get_user()
-            username = user.get(Keys.NAME, None)
-            if username:
-                utils.exec_irc_script(username, name)
+            if utils.irc_enabled() and utils.get_oauth_token():
+                user = twitch.get_user()
+                username = user.get(Keys.NAME, None)
+                if username:
+                    utils.exec_irc_script(username, name)
 
 
 @DISPATCHER.register(MODES.EDITFOLLOW, args=['channel_id', 'channel_name'])
@@ -366,7 +367,7 @@ def install_ircchat():
 @error_handler
 def get_token_url():
     redirect_uri = utils.get_redirect_uri()
-    request_url = twitch.client.prepare_request_uri(redirect_uri=redirect_uri, scope=SCOPES)
+    request_url = twitch.client.prepare_request_uri(redirect_uri=redirect_uri, scope=twitch.required_scopes)
     try:
         short_url = googl_url(request_url)
     except:

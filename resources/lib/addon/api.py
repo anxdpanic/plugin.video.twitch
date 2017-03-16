@@ -20,7 +20,7 @@
 import utils
 from error_handling import api_error_handler
 from common import kodi
-from constants import Keys
+from constants import Keys, SCOPES
 from twitch import queries as twitch_queries
 from twitch import oauth
 from twitch.api import v5 as twitch
@@ -36,6 +36,7 @@ class Twitch:
     queries = twitch_queries
     client_id = utils.get_client_id()
     access_token = utils.get_oauth_token(token_only=True, required=False)
+    required_scopes = SCOPES
 
     def __init__(self):
         self.queries.CLIENT_ID = self.client_id
