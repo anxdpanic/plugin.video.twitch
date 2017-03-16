@@ -316,11 +316,15 @@ def edit_user_follows(channel_id, channel_name):
         is_following = False
 
     if is_following:
-        result = twitch.unfollow(channel_id)
-        kodi.notify(msg=i18n('unfollowed') % channel_name, sound=False)
+        confirmed = kodi.Dialog().yesno(i18n('toggle_follow'), i18n('unfollow_confirm') % channel_name)
+        if confirmed:
+            result = twitch.unfollow(channel_id)
+            kodi.notify(msg=i18n('unfollowed') % channel_name, sound=False)
     else:
-        result = twitch.follow(channel_id)
-        kodi.notify(msg=i18n('now_following') % channel_name, sound=False)
+        confirmed = kodi.Dialog().yesno(i18n('toggle_follow'), i18n('follow_confirm') % channel_name)
+        if confirmed:
+            result = twitch.follow(channel_id)
+            kodi.notify(msg=i18n('now_following') % channel_name, sound=False)
 
 
 @DISPATCHER.register(MODES.SETTINGS, kwargs=['refresh'])

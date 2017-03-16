@@ -19,7 +19,7 @@
 
 import menu_items
 from common import kodi
-from utils import the_art, TitleBuilder, i18n
+from utils import the_art, TitleBuilder, i18n, get_oauth_token
 from constants import Keys, Images, MODES
 
 
@@ -51,6 +51,7 @@ class PlaylistConverter(object):
 class JsonListItemConverter(object):
     def __init__(self, title_length):
         self.title_builder = TitleBuilder(title_length)
+        self.has_token = True if get_oauth_token() else False
 
     @staticmethod
     def game_to_listitem(game):
@@ -112,8 +113,7 @@ class JsonListItemConverter(object):
                 'is_playable': True,
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image})}
 
-    @staticmethod
-    def channel_to_listitem(channel):
+    def channel_to_listitem(self, channel):
         image = channel.get(Keys.LOGO) if channel.get(Keys.LOGO) else Images.ICON
         video_banner = channel.get(Keys.VIDEO_BANNER)
         if not video_banner:
@@ -121,7 +121,8 @@ class JsonListItemConverter(object):
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.clear_previews())
-        context_menu.extend(menu_items.editfollow(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
+        if self.has_token:
+            context_menu.extend(menu_items.editfollow(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
         return {'label': channel[Keys.DISPLAY_NAME],
                 'path': kodi.get_plugin_url({'mode': MODES.CHANNELVIDEOS, 'channel_id': channel[Keys.ID]}),
                 'art': the_art({'fanart': video_banner, 'poster': image, 'thumb': image}),
@@ -167,7 +168,8 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.channel_videos(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.go_to_game(channel[Keys.GAME]))
-        context_menu.extend(menu_items.editfollow(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
+        if self.has_token:
+            context_menu.extend(menu_items.editfollow(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys.ID], 'source': False, 'use_player': True}))
         return {'label': title,

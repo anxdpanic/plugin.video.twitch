@@ -51,5 +51,4 @@ def refresh():
 
 
 def editfollow(channel_id, display_name):
-    return update_container(i18n('follow_unfollow') % '[COLOR white][B]%s[/B][/COLOR]' % display_name, {'mode': MODES.EDITFOLLOW, 'channel_id': channel_id,
-                                                                                                        'channel_name': display_name})
+    return update_container(i18n('toggle_follow'), {'mode': MODES.EDITFOLLOW, 'channel_id': channel_id, 'channel_name': display_name})
