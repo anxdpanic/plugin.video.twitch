@@ -14,8 +14,10 @@
 - uniform pagination where possible, 'items per page' can be changed in settings
 - remove Teams, end-points no longer available
 - Kodi 17 ready, content/media types set per new official repository requirements
+- update to use Twitch API v5
 - add Communities
 - add Follow/Unfollow
+- add Block/Unblock user
 
 1.4.4
 - HTTPS fix for Linux users + Kodi Offical repository compatibility fixes.

@@ -51,7 +51,8 @@ MODES = __enum(
     TOKENURL='get_token_url',
     COMMUNITIES='communities',
     COMMUNITYSTREAMS='community_streams',
-    EDITFOLLOW='edit_user_follows'
+    EDITFOLLOW='edit_user_follows',
+    EDITBLOCK='edit_user_blocks'
 )
 
 LINE_LENGTH = 60
@@ -137,6 +138,8 @@ class Keys:
     CURSOR = '_cursor'
     COMMUNITIES = 'communities'
     AVATAR_IMAGE = 'avatar_image_url'
+    BLOCKS = 'blocks'
+    USER = 'user'
 
 
 SCOPES = [scopes.user_read, scopes.user_blocks_edit, scopes.user_blocks_read, scopes.user_follows_edit, scopes.user_subscriptions, scopes.chat_login]
