@@ -23,7 +23,7 @@ from base64 import b64decode
 from common import kodi, cache
 from strings import STRINGS
 from tccleaner import TextureCacheCleaner
-from constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images
+from constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, STORAGE
 
 translations = kodi.Translations(STRINGS)
 i18n = translations.i18n
@@ -180,6 +180,51 @@ def extract_video_id(url):
     if video_id.startswith("videos"):  # videos12345678
         video_id = "v" + video_id[6:]  # v12345678
     return video_id
+
+
+def get_stored_json():
+    json_data = STORAGE.load()
+    if 'blacklist' not in json_data:
+        json_data.update({'blacklist': {'user': [], 'game': []}})
+        STORAGE.save(json_data)
+    return json_data
+
+
+def is_blacklisted(target_id=None, list_type='user'):
+    json_data = get_stored_json()
+    return any(str(target_id) == str(blacklist_id) for blacklist_id, blacklist_name in json_data['blacklist'][list_type])
+
+
+def add_blacklist(target_id=None, name=None, list_type='user'):
+    json_data = get_stored_json()
+
+    if not target_id or not name: return False
+    if (list_type in json_data['blacklist']) and (not is_blacklisted(target_id, list_type)):
+        json_data['blacklist'][list_type].append([target_id, name])
+        STORAGE.save(json_data)
+        return True
+    return False
+
+
+def remove_blacklist(list_type='user'):
+    json_data = get_stored_json()
+    result = kodi.Dialog().select(i18n('remove_from_blacklist') % list_type, [name for user_id, name in json_data['blacklist'][list_type]])
+    if result == -1:
+        return None
+    else:
+        result = json_data['blacklist'][list_type].pop(result)
+        STORAGE.save(json_data)
+        return result
+
+
+def clear_list(list_type, list_name):
+    json_data = get_stored_json()
+    if (list_name in json_data) and (list_type in json_data[list_name]):
+        json_data[list_name][list_type] = []
+        STORAGE.save(json_data)
+        return True
+    else:
+        return False
 
 
 class TitleBuilder(object):

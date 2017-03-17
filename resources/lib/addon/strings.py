@@ -67,5 +67,12 @@ STRINGS = {
     'blocked': 30146,
     'unblocked': 30147,
     'block_confirm': 30148,
-    'unblock_confirm': 30149
+    'unblock_confirm': 30149,
+    'add_blacklist': 30150,
+    'blacklisted': 30151,
+    'remove_from_blacklist': 30158,
+    'removed_from_blacklist': 30159,
+    'cleared_list': 30160,
+    'confirm_clear': 30161,
+    'clear_list': 30162
 }

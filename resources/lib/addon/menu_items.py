@@ -56,3 +56,8 @@ def editfollow(channel_id, display_name):
 
 def editblock(target_id, display_name):
     return update_container(i18n('toggle_block'), {'mode': MODES.EDITBLOCK, 'target_id': target_id, 'name': display_name})
+
+
+def addblacklist(target_id, display_name, list_type='user'):
+    return update_container(i18n('add_blacklist') % '[COLOR white][B]%s[/B][/COLOR]' % display_name,
+                            {'mode': MODES.EDITBLACKLIST, 'target_id': target_id, 'name': display_name, 'list_type': list_type})
