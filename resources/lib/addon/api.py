@@ -131,6 +131,27 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def blocks(self, offset, limit):
+        user = self.get_user()
+        user_id = user.get(Keys.ID)
+        return self.api.blocks.by_id(identification=user_id, limit=limit, offset=offset)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def block_user(self, target_id):
+        user = self.get_user()
+        user_id = user.get(Keys.ID)
+        return self.api.blocks.add_block(identification=user_id, target=target_id)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def unblock_user(self, target_id):
+        user = self.get_user()
+        user_id = user.get(Keys.ID)
+        return self.api.blocks.del_block(identification=user_id, target=target_id)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_video_by_id(self, video_id):
         return self.api.videos.by_id(identification=video_id)
 
@@ -163,6 +184,24 @@ class Twitch:
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_live(self, name):
         return self.usher.live(name)
+
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_user_blocks(self):
+        limit = 100
+        offset = 0
+
+        user_blocks = []
+        while True:
+            temp = self.blocks(offset, limit)
+            if len(temp[Keys.BLOCKS]) == 0:
+                break
+            for user in temp[Keys.BLOCKS]:
+                user_blocks.append((user[Keys.USER][Keys.ID], user[Keys.USER][Keys.DISPLAY_NAME]))
+            offset += limit
+            if temp[Keys.TOTAL] <= offset:
+                break
+
+        return user_blocks
 
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_following_streams(self, user_id):
