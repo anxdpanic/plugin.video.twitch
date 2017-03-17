@@ -174,11 +174,12 @@ class JsonListItemConverter(object):
         streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else self.plugin.get_string(30060)
         title = channel.get(Keys.STATUS) if channel.get(Keys.STATUS) else self.plugin.get_string(30061)
         game = channel.get(Keys.GAME) if channel.get(Keys.GAME) else self.plugin.get_string(30064)
-
+        broadcaster_language = channel.get(Keys.BROADCASTER_LANGUAGE) if channel.get(Keys.BROADCASTER_LANGUAGE) else self.plugin.get_string(30063)
         return {'streamer': streamer,
                 'title': title,
                 'game': game,
-                'viewers': viewers}
+                'viewers': viewers,
+                'broadcaster_language': broadcaster_language}
 
     def extractChannelTitleValues(self, channel):
         streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else self.plugin.get_string(30060)

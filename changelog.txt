@@ -1,3 +1,5 @@
+1.4.6
+- Added new title formatting option which includes broadcaster language.
 1.4.5
 - Added compatibility for new Twitch encoder names.
 - Added Uploads
