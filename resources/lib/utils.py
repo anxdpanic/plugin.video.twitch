@@ -187,6 +187,7 @@ class TitleBuilder(object):
         VIEWERS_STREAMER_TITLE = u"{viewers} - {streamer} - {title}"
         STREAMER_GAME_TITLE = u"{streamer} - {game} - {title}"
         GAME_VIEWERS_STREAMER_TITLE = u"[{game}] {viewers} | {streamer} - {title}"
+        BROADCASTER_LANGUAGE_STREAMER_TITLE = u"{broadcaster_language} | {streamer} - {title}"
         ELLIPSIS = u'...'
 
     def __init__(self, plugin, line_length):
@@ -210,7 +211,8 @@ class TitleBuilder(object):
                    2: TitleBuilder.Templates.TITLE,
                    3: TitleBuilder.Templates.STREAMER,
                    4: TitleBuilder.Templates.STREAMER_GAME_TITLE,
-                   5: TitleBuilder.Templates.GAME_VIEWERS_STREAMER_TITLE}
+                   5: TitleBuilder.Templates.GAME_VIEWERS_STREAMER_TITLE,
+                   6: TitleBuilder.Templates.BROADCASTER_LANGUAGE_STREAMER_TITLE}
         return options.get(titleSetting, TitleBuilder.Templates.STREAMER)
 
     @staticmethod
