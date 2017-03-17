@@ -50,14 +50,19 @@ def refresh():
     return [(i18n('refresh'), 'Container.Refresh')]
 
 
-def editfollow(channel_id, display_name):
+def edit_follow(channel_id, display_name):
     return update_container(i18n('toggle_follow'), {'mode': MODES.EDITFOLLOW, 'channel_id': channel_id, 'channel_name': display_name})
 
 
-def editblock(target_id, display_name):
+def edit_block(target_id, display_name):
     return update_container(i18n('toggle_block'), {'mode': MODES.EDITBLOCK, 'target_id': target_id, 'name': display_name})
 
 
-def addblacklist(target_id, display_name, list_type='user'):
+def add_blacklist(target_id, display_name, list_type='user'):
     return update_container(i18n('add_blacklist') % '[COLOR white][B]%s[/B][/COLOR]' % display_name,
                             {'mode': MODES.EDITBLACKLIST, 'target_id': target_id, 'name': display_name, 'list_type': list_type})
+
+
+def set_default_quality(target_id, name, video_id=None):
+    return update_container(i18n('set_default_quality'),
+                            {'mode': MODES.EDITQUALITIES, 'target_id': target_id, 'name': name, 'video_id': video_id})

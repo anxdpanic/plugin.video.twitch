@@ -74,5 +74,10 @@ STRINGS = {
     'removed_from_blacklist': 30159,
     'cleared_list': 30160,
     'confirm_clear': 30161,
-    'clear_list': 30162
+    'clear_list': 30162,
+    'set_default_quality': 30163,
+    'default_quality_set': 30164,
+    'removed_default_quality': 30165,
+    'remove_default_quality': 30166,
+    'choose_quality': 30169
 }

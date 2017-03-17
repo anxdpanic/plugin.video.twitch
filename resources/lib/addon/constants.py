@@ -56,6 +56,7 @@ MODES = __enum(
     EDITFOLLOW='edit_user_follows',
     EDITBLOCK='edit_user_blocks',
     EDITBLACKLIST='edit_blacklist',
+    EDITQUALITIES='edit_qualities',
     CLEARLIST='clear_list'
 )
 
