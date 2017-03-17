@@ -29,6 +29,7 @@
 - update to use Twitch API v5
 - add Communities
 - add Follow/Unfollow
+- add Block/Unblock user
         </news>
         <assets>
             <icon>icon.png</icon>

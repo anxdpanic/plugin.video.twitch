@@ -62,5 +62,10 @@ STRINGS = {
     'now_following': 30140,
     'unfollowed': 30141,
     'follow_confirm': 30143,
-    'unfollow_confirm': 30144
+    'unfollow_confirm': 30144,
+    'toggle_block': 30145,
+    'blocked': 30146,
+    'unblocked': 30147,
+    'block_confirm': 30148,
+    'unblock_confirm': 30149
 }

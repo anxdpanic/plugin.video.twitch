@@ -500,3 +500,23 @@ msgstr ""
 msgctxt "#30144"
 msgid "Are you sure you want to unfollow %s?"
 msgstr ""
+
+msgctxt "#30145"
+msgid "Toggle Block User"
+msgstr ""
+
+msgctxt "#30146"
+msgid "Blocked %s"
+msgstr ""
+
+msgctxt "#30147"
+msgid "Unblocked %s"
+msgstr ""
+
+msgctxt "#30148"
+msgid "Would you like to block %s?"
+msgstr ""
+
+msgctxt "#30149"
+msgid "Are you sure you want to unblock %s?"
+msgstr ""

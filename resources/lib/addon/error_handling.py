@@ -60,7 +60,7 @@ def api_error_handler(func):
                 message = '[Status {0}] {1}'.format(result['status'], result['message'])
                 raise TwitchException(message)
             if not result or (isinstance(result, dict) and ('_total' in result) and (int(result['_total'] == 0))):
-                raise TwitchException(i18n('no_results_returned'))
+                raise TwitchException('No results returned')
             return result
         except ResourceUnavailableException:
             raise

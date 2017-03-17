@@ -328,6 +328,29 @@ def edit_user_follows(channel_id, channel_name):
             kodi.notify(msg=i18n('now_following') % channel_name, sound=False)
 
 
+@DISPATCHER.register(MODES.EDITBLOCK, args=['target_id', 'name'])
+@error_handler
+def edit_user_blocks(target_id, name):
+    try:
+        block_list = twitch.get_user_blocks()
+    except TwitchException as error:
+        if 'no results' not in error.message.lower(): raise
+        block_list = []
+
+    is_blocked = any(target_id == blocked_id for blocked_id, blocked_name in block_list)
+
+    if is_blocked:
+        confirmed = kodi.Dialog().yesno(i18n('toggle_block'), i18n('unblock_confirm') % name)
+        if confirmed:
+            result = twitch.unblock_user(target_id)
+            kodi.notify(msg=i18n('unblocked') % name, sound=False)
+    else:
+        confirmed = kodi.Dialog().yesno(i18n('toggle_block'), i18n('block_confirm') % name)
+        if confirmed:
+            result = twitch.block_user(target_id)
+            kodi.notify(msg=i18n('blocked') % name, sound=False)
+
+
 @DISPATCHER.register(MODES.SETTINGS, kwargs=['refresh'])
 @error_handler
 def settings(refresh=True):
