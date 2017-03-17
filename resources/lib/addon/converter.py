@@ -19,7 +19,7 @@
 
 import menu_items
 from common import kodi
-from utils import the_art, TitleBuilder, i18n, get_oauth_token
+from utils import the_art, TitleBuilder, i18n, get_oauth_token, is_blacklisted
 from constants import Keys, Images, MODES
 
 
@@ -64,6 +64,7 @@ class JsonListItemConverter(object):
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.clear_previews())
+        context_menu.extend(menu_items.addblacklist(game[Keys.ID], name, list_type='game'))
         return {'label': name,
                 'path': kodi.get_plugin_url({'mode': MODES.GAMESTREAMS, 'game': name}),
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
@@ -121,6 +122,7 @@ class JsonListItemConverter(object):
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.clear_previews())
+        context_menu.extend(menu_items.addblacklist(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
         if self.has_token:
             context_menu.extend(menu_items.editfollow(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
             context_menu.extend(menu_items.editblock(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
@@ -169,6 +171,7 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.channel_videos(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.go_to_game(channel[Keys.GAME]))
+        context_menu.extend(menu_items.addblacklist(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
         if self.has_token:
             context_menu.extend(menu_items.editfollow(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
             context_menu.extend(menu_items.editblock(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))

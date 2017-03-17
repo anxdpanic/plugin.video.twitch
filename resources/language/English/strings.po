@@ -520,3 +520,55 @@ msgstr ""
 msgctxt "#30149"
 msgid "Are you sure you want to unblock %s?"
 msgstr ""
+
+msgctxt "#30150"
+msgid "Blacklist %s"
+msgstr ""
+
+msgctxt "#30151"
+msgid "Blacklisted %s"
+msgstr ""
+
+msgctxt "#30152"
+msgid "Lists"
+msgstr ""
+
+msgctxt "#30153"
+msgid "Blacklist"
+msgstr ""
+
+msgctxt "#30154"
+msgid "Remove user"
+msgstr ""
+
+msgctxt "#30155"
+msgid "Remove game"
+msgstr ""
+
+msgctxt "#30156"
+msgid "Remove all users"
+msgstr ""
+
+msgctxt "#30157"
+msgid "Remove all games"
+msgstr ""
+
+msgctxt "#30158"
+msgid "Remove %s from blacklist"
+msgstr ""
+
+msgctxt "#30159"
+msgid "Removed %s from blacklist"
+msgstr ""
+
+msgctxt "#30160"
+msgid "Cleared %s %s"
+msgstr ""
+
+msgctxt "#30161"
+msgid "Are you sure you want to clear %s %s?"
+msgstr ""
+
+msgctxt "#30162"
+msgid "Clear list"
+msgstr ""
