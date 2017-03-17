@@ -30,6 +30,7 @@ STRINGS = {
     'unnamed_streamer': 30060,
     'untitled_stream': 30061,
     'unknown_viewer_count': 30062,
+    'unknown_language': 30063,
     'unknown_game': 30064,
     'play_choose_quality': 30077,
     'past_broadcasts': 30078,

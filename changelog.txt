@@ -18,7 +18,14 @@
 - add Communities
 - add Follow/Unfollow
 - add Block/Unblock user
-
+- add blacklisting of users/games
+- add set default quality per stream
+1.4.6
+- Added new title formatting option which includes broadcaster language.
+- Added compatibility for new Twitch encoder names.
+1.4.5
+- Added compatibility for new Twitch encoder names.
+- Added Uploads
 1.4.4
 - HTTPS fix for Linux users + Kodi Offical repository compatibility fixes.
 1.4.3

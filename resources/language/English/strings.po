@@ -157,7 +157,11 @@ msgctxt "#30053"
 msgid "Password (OAuth Token)"
 msgstr ""
 
-#empty strings from id 30054 to 30059
+msgctxt "#30054"
+msgid "Language | Streamer - Stream Title"
+msgstr ""
+
+#empty strings from id 30055 to 30059
 
 msgctxt "#30060"
 msgid "Unnamed Streamer"
@@ -171,7 +175,9 @@ msgctxt "#30062"
 msgid "Unknown Number of Viewers"
 msgstr ""
 
-#empty string with id 30063
+msgctxt "#30063"
+msgid "Unknown Language"
+msgstr ""
 
 msgctxt "#30064"
 msgid "Unknown Game"
