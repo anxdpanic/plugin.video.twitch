@@ -478,7 +478,7 @@ msgid "*** Do NOT share your OAuth token. ***"
 msgstr ""
 
 msgctxt "#30139"
-msgid "Toggle Follow"
+msgid "Toggle follow"
 msgstr ""
 
 msgctxt "#30140"
@@ -502,7 +502,7 @@ msgid "Are you sure you want to unfollow %s?"
 msgstr ""
 
 msgctxt "#30145"
-msgid "Toggle Block User"
+msgid "Toggle block user"
 msgstr ""
 
 msgctxt "#30146"
@@ -571,4 +571,32 @@ msgstr ""
 
 msgctxt "#30162"
 msgid "Clear list"
+msgstr ""
+
+msgctxt "#30163"
+msgid "Set default quality"
+msgstr ""
+
+msgctxt "#30164"
+msgid "Default quality [%s] set for %s"
+msgstr ""
+
+msgctxt "#30165"
+msgid "Removed default quality for %s"
+msgstr ""
+
+msgctxt "#30166"
+msgid "Remove default quality"
+msgstr ""
+
+msgctxt "#30167"
+msgid "Default Qualities"
+msgstr ""
+
+msgctxt "#30168"
+msgid "Clear default quality"
+msgstr ""
+
+msgctxt "#30169"
+msgid "Choose Quality"
 msgstr ""

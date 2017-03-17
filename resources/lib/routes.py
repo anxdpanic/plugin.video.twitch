@@ -297,19 +297,30 @@ def list_community_streams(community_id, index=0):
 @error_handler
 def play(name=None, channel_id=None, video_id=None, source=True, use_player=False):
     if (name is None or channel_id is None) and (video_id is None): return
-    videos = item_dict = None
+    videos = item_dict = quality = None
     if video_id:
         videos = twitch.get_vod(video_id)
         result = twitch.get_video_by_id(video_id)
         item_dict = converter.video_to_playitem(result)
+        channel_id = result[Keys.CHANNEL][Keys.ID]
+        quality = utils.get_default_quality(channel_id)
+        if quality:
+            quality = quality[channel_id]['quality']
     elif name and channel_id:
+        quality = utils.get_default_quality(channel_id)
+        if quality:
+            quality = quality[channel_id]['quality']
         videos = twitch.get_live(name)
         result = twitch.get_channel_stream(channel_id)[Keys.STREAMS][0]
         item_dict = converter.stream_to_playitem(result)
     if item_dict and videos:
         if source:
-            source = kodi.get_setting('video_quality') == '0'
-        play_url = twitch.get_video_for_quality(videos, source)
+            use_source = kodi.get_setting('video_quality') == '0'
+        else:
+            use_source = False
+
+        play_url = twitch.get_video_for_quality(videos, source=use_source, quality=quality)
+
         if play_url:
             item_dict['path'] = play_url
             playback_item = kodi.create_item(item_dict, add=False)
@@ -373,6 +384,7 @@ def edit_user_blocks(target_id, name):
 @error_handler
 def edit_blacklist(list_type='user', target_id=None, name=None, remove=False):
     if not remove:
+        if not target_id or not name: return
         result = utils.add_blacklist(target_id, name, list_type)
         if result:
             kodi.notify(msg=i18n('blacklisted') % name, sound=False)
@@ -380,6 +392,25 @@ def edit_blacklist(list_type='user', target_id=None, name=None, remove=False):
         result = utils.remove_blacklist(list_type)
         if result:
             kodi.notify(msg=i18n('removed_from_blacklist') % result[1], sound=False)
+
+
+@DISPATCHER.register(MODES.EDITQUALITIES, kwargs=['video_id', 'target_id', 'name', 'remove'])
+@error_handler
+def edit_qualities(target_id=None, name=None, video_id=None, remove=False):
+    if not remove:
+        if not target_id or not name: return
+        if video_id:
+            videos = twitch.get_vod(video_id)
+        else:
+            videos = twitch.get_live(name)
+        quality, url = twitch.get_video_for_quality(videos, source=False, return_label=True)
+        result = utils.add_default_quality(target_id, name, quality)
+        if result:
+            kodi.notify(msg=i18n('default_quality_set') % (quality, name), sound=False)
+    else:
+        result = utils.remove_default_quality()
+        if result:
+            kodi.notify(msg=i18n('removed_default_quality') % result[result.keys()[0]]['name'], sound=False)
 
 
 @DISPATCHER.register(MODES.CLEARLIST, args=['list_type', 'list_name'])
