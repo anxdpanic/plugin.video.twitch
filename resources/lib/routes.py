@@ -289,7 +289,7 @@ def list_community_streams(community_id, index=0):
             if not utils.is_blacklisted(channel[Keys.ID]):
                 kodi.create_item(converter.stream_to_listitem(stream))
         if streams[Keys.TOTAL] > (offset + limit):
-            kodi.create_item(utils.link_to_next_page({'mode': MODES.GAMESTREAMS, 'community_id': community_id, 'index': index}))
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.COMMUNITYSTREAMS, 'community_id': community_id, 'index': index}))
         kodi.end_of_directory()
 
 
