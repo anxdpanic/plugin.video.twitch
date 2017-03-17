@@ -30,6 +30,8 @@
 - add Communities
 - add Follow/Unfollow
 - add Block/Unblock user
+- add blacklisting of users/games
+- add set default quality per stream
         </news>
         <assets>
             <icon>icon.png</icon>

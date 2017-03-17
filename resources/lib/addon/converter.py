@@ -250,11 +250,13 @@ class JsonListItemConverter(object):
         streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else i18n('unnamed_streamer')
         title = channel.get(Keys.STATUS) if channel.get(Keys.STATUS) else i18n('untitled_stream')
         game = channel.get(Keys.GAME) if channel.get(Keys.GAME) else i18n('unknown_game')
+        broadcaster_language = channel.get(Keys.BROADCASTER_LANGUAGE) if channel.get(Keys.BROADCASTER_LANGUAGE) else i18n('unknown_language')
 
         return {'streamer': streamer,
                 'title': title,
                 'game': game,
-                'viewers': viewers}
+                'viewers': viewers,
+                'broadcaster_language': broadcaster_language}
 
     @staticmethod
     def extract_channel_title_values(channel):
@@ -264,11 +266,13 @@ class JsonListItemConverter(object):
         game = game if game else i18n('unknown_game')
         viewers = channel.get(Keys.CURRENT_VIEWERS) \
             if channel.get(Keys.CURRENT_VIEWERS) else i18n('unknown_viewer_count')
+        broadcaster_language = channel.get(Keys.BROADCASTER_LANGUAGE) if channel.get(Keys.BROADCASTER_LANGUAGE) else i18n('unknown_language')
 
         return {'streamer': streamer,
                 'title': title,
                 'viewers': viewers,
-                'game': game}
+                'game': game,
+                'broadcaster_language': broadcaster_language}
 
     @staticmethod
     def get_plot_for_stream(stream):
