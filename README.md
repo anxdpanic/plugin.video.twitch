@@ -15,16 +15,12 @@ FAQ
 > This Addon does not handle any aspect of the playback of Twitch streams (that would be the Kodi Video Player), it simply tells Kodi what to play.
 > The Addon does however provide Quality Options which may help if your internet connection / computer specs are below requirements for HD streams.
 
-* I'm experiencing HTTP errors!
-
-> There are various things that can cause this (including Twitch changing things! Which we do try to keep on top of.) but recently, most commonly it is caused by missing OAUTH entry in the settings section of this addon. Please visit http://www.twitchapps.com/tmi/ and acquire an OAuth Token and insert this to the relevant section of the addon settings and your HTTP errors may just go away.
 
 What's next?
 ----------------
 
 Things that need to be done next:
 
-* Implement features based upon user authentication
 * Suggestions welcome.
 
 Credit where credit is due.
