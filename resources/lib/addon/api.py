@@ -188,17 +188,15 @@ class Twitch:
 
     @staticmethod
     def get_video_for_quality(videos, source=True):
-        qualities = []
-        for quality in videos:
+        for quality, url in videos:
             if source and 'source' in quality.lower():
-                return videos[quality]
-            qualities.append(quality)
+                return url
 
-        result = kodi.Dialog().select(i18n('play_choose_quality'), [quality for quality in qualities])
+        result = kodi.Dialog().select(i18n('play_choose_quality'), [quality for quality, url in videos])
         if result == -1:
             return None
         else:
-            return videos[qualities[result]]
+            return videos[result][1]
 
     def _get_followed_channels(self, username):
         acc = []

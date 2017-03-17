@@ -118,7 +118,7 @@ def irc_enabled():
 
 
 def exec_irc_script(username, channel):
-    if irc_enabled():
+    if not irc_enabled():
         return
     password = get_oauth_token(token_only=False, required=True)
     if username and password:
