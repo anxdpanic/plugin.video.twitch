@@ -64,6 +64,7 @@ class JsonListItemConverter(object):
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.clear_previews())
+        context_menu.extend(menu_items.add_blacklist(game[Keys.ID], name, list_type='game'))
         return {'label': name,
                 'path': kodi.get_plugin_url({'mode': MODES.GAMESTREAMS, 'game': name}),
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
@@ -121,9 +122,10 @@ class JsonListItemConverter(object):
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.clear_previews())
+        context_menu.extend(menu_items.add_blacklist(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
         if self.has_token:
-            context_menu.extend(menu_items.editfollow(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
-            context_menu.extend(menu_items.editblock(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
+            context_menu.extend(menu_items.edit_follow(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
+            context_menu.extend(menu_items.edit_block(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
         return {'label': channel[Keys.DISPLAY_NAME],
                 'path': kodi.get_plugin_url({'mode': MODES.CHANNELVIDEOS, 'channel_id': channel[Keys.ID]}),
                 'art': the_art({'fanart': video_banner, 'poster': image, 'thumb': image}),
@@ -141,6 +143,8 @@ class JsonListItemConverter(object):
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
+        channel = video[Keys.CHANNEL]
+        context_menu.extend(menu_items.set_default_quality(channel[Keys.ID], channel[Keys.NAME], video[Keys.ID]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'video_id': video[Keys.ID], 'source': False, 'use_player': True}))
         return {'label': video[Keys.TITLE],
@@ -169,9 +173,11 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.channel_videos(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.go_to_game(channel[Keys.GAME]))
+        context_menu.extend(menu_items.add_blacklist(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
         if self.has_token:
-            context_menu.extend(menu_items.editfollow(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
-            context_menu.extend(menu_items.editblock(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
+            context_menu.extend(menu_items.edit_follow(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
+            context_menu.extend(menu_items.edit_block(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.set_default_quality(channel[Keys.ID], channel[Keys.NAME]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys.ID], 'source': False, 'use_player': True}))
         return {'label': title,
@@ -244,11 +250,13 @@ class JsonListItemConverter(object):
         streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else i18n('unnamed_streamer')
         title = channel.get(Keys.STATUS) if channel.get(Keys.STATUS) else i18n('untitled_stream')
         game = channel.get(Keys.GAME) if channel.get(Keys.GAME) else i18n('unknown_game')
+        broadcaster_language = channel.get(Keys.BROADCASTER_LANGUAGE) if channel.get(Keys.BROADCASTER_LANGUAGE) else i18n('unknown_language')
 
         return {'streamer': streamer,
                 'title': title,
                 'game': game,
-                'viewers': viewers}
+                'viewers': viewers,
+                'broadcaster_language': broadcaster_language}
 
     @staticmethod
     def extract_channel_title_values(channel):
@@ -258,11 +266,13 @@ class JsonListItemConverter(object):
         game = game if game else i18n('unknown_game')
         viewers = channel.get(Keys.CURRENT_VIEWERS) \
             if channel.get(Keys.CURRENT_VIEWERS) else i18n('unknown_viewer_count')
+        broadcaster_language = channel.get(Keys.BROADCASTER_LANGUAGE) if channel.get(Keys.BROADCASTER_LANGUAGE) else i18n('unknown_language')
 
         return {'streamer': streamer,
                 'title': title,
                 'viewers': viewers,
-                'game': game}
+                'game': game,
+                'broadcaster_language': broadcaster_language}
 
     @staticmethod
     def get_plot_for_stream(stream):

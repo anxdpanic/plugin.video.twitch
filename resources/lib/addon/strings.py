@@ -30,6 +30,7 @@ STRINGS = {
     'unnamed_streamer': 30060,
     'untitled_stream': 30061,
     'unknown_viewer_count': 30062,
+    'unknown_language': 30063,
     'unknown_game': 30064,
     'play_choose_quality': 30077,
     'past_broadcasts': 30078,
@@ -67,5 +68,17 @@ STRINGS = {
     'blocked': 30146,
     'unblocked': 30147,
     'block_confirm': 30148,
-    'unblock_confirm': 30149
+    'unblock_confirm': 30149,
+    'add_blacklist': 30150,
+    'blacklisted': 30151,
+    'remove_from_blacklist': 30158,
+    'removed_from_blacklist': 30159,
+    'cleared_list': 30160,
+    'confirm_clear': 30161,
+    'clear_list': 30162,
+    'set_default_quality': 30163,
+    'default_quality_set': 30164,
+    'removed_default_quality': 30165,
+    'remove_default_quality': 30166,
+    'choose_quality': 30169
 }

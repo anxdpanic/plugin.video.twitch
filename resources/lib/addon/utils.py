@@ -23,7 +23,7 @@ from base64 import b64decode
 from common import kodi, cache
 from strings import STRINGS
 from tccleaner import TextureCacheCleaner
-from constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images
+from constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, STORAGE
 
 translations = kodi.Translations(STRINGS)
 i18n = translations.i18n
@@ -182,6 +182,92 @@ def extract_video_id(url):
     return video_id
 
 
+def get_stored_json():
+    json_data = STORAGE.load()
+    needs_save = False
+    # set defaults
+    if 'blacklist' not in json_data:
+        json_data.update({'blacklist': {'user': [], 'game': []}})
+        needs_save = True
+    if 'qualities' not in json_data:
+        json_data.update({'qualities': {'default': []}})
+        needs_save = True
+    if needs_save:
+        STORAGE.save(json_data)
+    return json_data
+
+
+def is_blacklisted(target_id, list_type='user'):
+    json_data = get_stored_json()
+    return any(str(target_id) == str(blacklist_id) for blacklist_id, blacklist_name in json_data['blacklist'][list_type])
+
+
+def add_blacklist(target_id, name, list_type='user'):
+    json_data = get_stored_json()
+
+    if (list_type in json_data['blacklist']) and (not is_blacklisted(target_id, list_type)):
+        json_data['blacklist'][list_type].append([target_id, name])
+        STORAGE.save(json_data)
+        return True
+    return False
+
+
+def remove_blacklist(list_type='user'):
+    json_data = get_stored_json()
+    result = kodi.Dialog().select(i18n('remove_from_blacklist') % list_type, [name for user_id, name in json_data['blacklist'][list_type]])
+    if result == -1:
+        return None
+    else:
+        result = json_data['blacklist'][list_type].pop(result)
+        STORAGE.save(json_data)
+        return result
+
+
+def get_default_quality(target_id):
+    json_data = get_stored_json()
+    if any(str(target_id) in item for item in json_data['qualities']['default']):
+        return next(item for item in json_data['qualities']['default'] if str(target_id) in item)
+    else:
+        return None
+
+
+def add_default_quality(target_id, name, quality):
+    json_data = get_stored_json()
+    current_quality = get_default_quality(target_id)
+    if current_quality:
+        current_quality = current_quality[target_id]['quality']
+        if current_quality.lower() == quality.lower():
+            return False
+        else:
+            index = next(index for index, item in enumerate(json_data['qualities']['default']) if str(target_id) in item)
+            del json_data['qualities']['default'][index]
+    json_data['qualities']['default'].append({target_id: {'name': name, 'quality': quality}})
+    STORAGE.save(json_data)
+    return True
+
+
+def remove_default_quality():
+    json_data = get_stored_json()
+    result = kodi.Dialog().select(i18n('remove_default_quality'),
+                                  ['%s [%s]' % (user[user.keys()[0]]['name'], user[user.keys()[0]]['quality']) for user in json_data['qualities']['default']])
+    if result == -1:
+        return None
+    else:
+        result = json_data['qualities']['default'].pop(result)
+        STORAGE.save(json_data)
+        return result
+
+
+def clear_list(list_type, list_name):
+    json_data = get_stored_json()
+    if (list_name in json_data) and (list_type in json_data[list_name]):
+        json_data[list_name][list_type] = []
+        STORAGE.save(json_data)
+        return True
+    else:
+        return False
+
+
 class TitleBuilder(object):
     class Templates(object):
         TITLE = u"{title}"
@@ -190,6 +276,7 @@ class TitleBuilder(object):
         VIEWERS_STREAMER_TITLE = u"{viewers} - {streamer} - {title}"
         STREAMER_GAME_TITLE = u"{streamer} - {game} - {title}"
         GAME_VIEWERS_STREAMER_TITLE = u"[{game}] {viewers} | {streamer} - {title}"
+        BROADCASTER_LANGUAGE_STREAMER_TITLE = u"{broadcaster_language} | {streamer} - {title}"
         ELLIPSIS = u'...'
 
     def __init__(self, line_length):
@@ -212,7 +299,8 @@ class TitleBuilder(object):
                    2: TitleBuilder.Templates.TITLE,
                    3: TitleBuilder.Templates.STREAMER,
                    4: TitleBuilder.Templates.STREAMER_GAME_TITLE,
-                   5: TitleBuilder.Templates.GAME_VIEWERS_STREAMER_TITLE}
+                   5: TitleBuilder.Templates.GAME_VIEWERS_STREAMER_TITLE,
+                   6: TitleBuilder.Templates.BROADCASTER_LANGUAGE_STREAMER_TITLE}
         return options.get(title_setting, TitleBuilder.Templates.STREAMER)
 
     @staticmethod

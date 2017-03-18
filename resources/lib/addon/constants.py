@@ -17,7 +17,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-from common import kodi
+from common import kodi, json_store
 from common.url_dispatcher import URL_Dispatcher
 from twitch import scopes
 
@@ -29,6 +29,8 @@ def __enum(**enums):
 DISPATCHER = URL_Dispatcher()
 
 ADDON_DATA_DIR = kodi.translate_path('special://profile/addon_data/{0!s}/'.format(kodi.get_id()))
+
+STORAGE = json_store.JSONStore(ADDON_DATA_DIR + 'storage.json')
 
 MODES = __enum(
     MAIN='main',
@@ -52,7 +54,10 @@ MODES = __enum(
     COMMUNITIES='communities',
     COMMUNITYSTREAMS='community_streams',
     EDITFOLLOW='edit_user_follows',
-    EDITBLOCK='edit_user_blocks'
+    EDITBLOCK='edit_user_blocks',
+    EDITBLACKLIST='edit_blacklist',
+    EDITQUALITIES='edit_qualities',
+    CLEARLIST='clear_list'
 )
 
 LINE_LENGTH = 60

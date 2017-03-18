@@ -157,7 +157,11 @@ msgctxt "#30053"
 msgid "Password (OAuth Token)"
 msgstr ""
 
-#empty strings from id 30054 to 30059
+msgctxt "#30054"
+msgid "Language | Streamer - Stream Title"
+msgstr ""
+
+#empty strings from id 30055 to 30059
 
 msgctxt "#30060"
 msgid "Unnamed Streamer"
@@ -171,7 +175,9 @@ msgctxt "#30062"
 msgid "Unknown Number of Viewers"
 msgstr ""
 
-#empty string with id 30063
+msgctxt "#30063"
+msgid "Unknown Language"
+msgstr ""
 
 msgctxt "#30064"
 msgid "Unknown Game"
@@ -478,7 +484,7 @@ msgid "*** Do NOT share your OAuth token. ***"
 msgstr ""
 
 msgctxt "#30139"
-msgid "Toggle Follow"
+msgid "Toggle follow"
 msgstr ""
 
 msgctxt "#30140"
@@ -502,7 +508,7 @@ msgid "Are you sure you want to unfollow %s?"
 msgstr ""
 
 msgctxt "#30145"
-msgid "Toggle Block User"
+msgid "Toggle block user"
 msgstr ""
 
 msgctxt "#30146"
@@ -519,4 +525,84 @@ msgstr ""
 
 msgctxt "#30149"
 msgid "Are you sure you want to unblock %s?"
+msgstr ""
+
+msgctxt "#30150"
+msgid "Blacklist %s"
+msgstr ""
+
+msgctxt "#30151"
+msgid "Blacklisted %s"
+msgstr ""
+
+msgctxt "#30152"
+msgid "Lists"
+msgstr ""
+
+msgctxt "#30153"
+msgid "Blacklist"
+msgstr ""
+
+msgctxt "#30154"
+msgid "Remove user"
+msgstr ""
+
+msgctxt "#30155"
+msgid "Remove game"
+msgstr ""
+
+msgctxt "#30156"
+msgid "Remove all users"
+msgstr ""
+
+msgctxt "#30157"
+msgid "Remove all games"
+msgstr ""
+
+msgctxt "#30158"
+msgid "Remove %s from blacklist"
+msgstr ""
+
+msgctxt "#30159"
+msgid "Removed %s from blacklist"
+msgstr ""
+
+msgctxt "#30160"
+msgid "Cleared %s %s"
+msgstr ""
+
+msgctxt "#30161"
+msgid "Are you sure you want to clear %s %s?"
+msgstr ""
+
+msgctxt "#30162"
+msgid "Clear list"
+msgstr ""
+
+msgctxt "#30163"
+msgid "Set default quality"
+msgstr ""
+
+msgctxt "#30164"
+msgid "Default quality [%s] set for %s"
+msgstr ""
+
+msgctxt "#30165"
+msgid "Removed default quality for %s"
+msgstr ""
+
+msgctxt "#30166"
+msgid "Remove default quality"
+msgstr ""
+
+msgctxt "#30167"
+msgid "Default Qualities"
+msgstr ""
+
+msgctxt "#30168"
+msgid "Clear default quality"
+msgstr ""
+
+msgctxt "#30169"
+msgid "Choose Quality"
 msgstr ""
