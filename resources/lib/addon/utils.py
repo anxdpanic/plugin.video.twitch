@@ -23,7 +23,8 @@ from base64 import b64decode
 from common import kodi, cache
 from strings import STRINGS
 from tccleaner import TextureCacheCleaner
-from constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, STORAGE
+from constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, STORAGE, ADDON_DATA_DIR
+import xbmcvfs
 
 translations = kodi.Translations(STRINGS)
 i18n = translations.i18n
@@ -183,6 +184,8 @@ def extract_video_id(url):
 
 
 def get_stored_json():
+    if not xbmcvfs.exists(ADDON_DATA_DIR):
+        result = xbmcvfs.mkdir(ADDON_DATA_DIR)
     json_data = STORAGE.load()
     needs_save = False
     # set defaults
