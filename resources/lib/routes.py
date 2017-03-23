@@ -65,7 +65,7 @@ def new_search(content):
     kodi.set_content('files')
     user_input = kodi.get_keyboard(i18n('search'))
     if user_input:
-        kodi.update_container(kodi.get_plugin_url({'mode': MODES.SEARCHRESULTS, 'content': content, 'query': user_input}))
+        search_results(content=content, query=user_input)
     else:
         kodi.update_container(kodi.get_plugin_url({'mode': MODES.SEARCH}))
 
