@@ -177,6 +177,11 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_followed_streams(self, stream_type, offset, limit):
+        return self.api.streams.followed(stream_type=stream_type, limit=limit, offset=offset)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_vod(self, video_id):
         return self.usher.video(video_id)
 
@@ -203,28 +208,6 @@ class Twitch:
 
         return user_blocks
 
-    @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_following_streams(self, user_id):
-        following_channels = self._get_followed_channels(user_id)
-        channels = sorted(following_channels, key=lambda k: k[Keys.DISPLAY_NAME].lower())
-        channel_names = ','.join([channel[Keys.NAME] for channel in channels])
-        live = []
-        limit = 100
-        offset = 0
-
-        while True:
-            temp = self.get_streams_by_channels(channel_names, offset, limit)
-            if len(temp[Keys.STREAMS]) == 0:
-                break
-            for stream in temp[Keys.STREAMS]:
-                live.append(stream)
-            offset += limit
-            if temp[Keys.TOTAL] <= offset:
-                break
-
-        channels = {Keys.LIVE: live, Keys.OTHERS: channels}
-        return channels
-
     @staticmethod
     def get_video_for_quality(videos, source=True, return_label=False, quality=None):
         for quality_label, url in videos:
@@ -248,19 +231,3 @@ class Twitch:
                 return videos[result][0], videos[result][1]
             else:
                 return videos[result][1]
-
-    def _get_followed_channels(self, username):
-        acc = []
-        limit = 100
-        offset = 0
-        while True:
-            temp = self.get_followed_channels(username, offset, limit)
-            if len(temp[Keys.FOLLOWS]) == 0:
-                break
-            for channel in temp[Keys.FOLLOWS]:
-                acc.append(channel[Keys.CHANNEL])
-            offset += limit
-            if temp[Keys.TOTAL] <= offset:
-                break
-
-        return acc
