@@ -129,6 +129,7 @@ def following():
     context_menu = list()
     context_menu.extend(menu_items.clear_previews())
     kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.FOLLOWED, 'content': 'live', 'context_menu': context_menu}})
+    kodi.create_item({'label': i18n('playlists'), 'path': {'mode': MODES.FOLLOWED, 'content': 'playlist', 'context_menu': context_menu}})
     kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.FOLLOWED, 'content': 'channels'}})
     kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.FOLLOWED, 'content': 'games'}})
     kodi.end_of_directory()
@@ -139,8 +140,7 @@ def following():
 def list_featured_streams():
     utils.refresh_previews()
     kodi.set_content('videos')
-
-    streams = twitch.get_featured_streams()
+    streams = twitch.get_featured_streams(offset=0, limit=100)
     if Keys.FEATURED in streams:
         for stream in streams[Keys.FEATURED]:
             channel = stream[Keys.STREAM][Keys.CHANNEL]
@@ -198,30 +198,37 @@ def list_all_channels(index=0):
         kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.FOLLOWED, args=['content'])
+@DISPATCHER.register(MODES.FOLLOWED, args=['content'], kwargs=['index'])
 @error_handler
-def list_followed(content):
+def list_followed(content, index=0):
     user = twitch.get_user()
     user_id = user.get(Keys.ID, None)
     username = user.get(Keys.NAME, None)
     if user_id:
-        if content == 'live':
+        if content == 'live' or content == 'playlist':
             utils.refresh_previews()
             kodi.set_content('videos')
-            streams = twitch.get_following_streams(user_id)
-            if Keys.LIVE in streams:
-                for stream in streams[Keys.LIVE]:
+            index, offset, limit = utils.calculate_pagination_values(index)
+            streams = twitch.get_followed_streams(stream_type=content, offset=offset, limit=limit)
+            if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
+                for stream in streams[Keys.STREAMS]:
                     channel = stream[Keys.CHANNEL]
                     if not utils.is_blacklisted(channel[Keys.ID]):
                         kodi.create_item(converter.stream_to_listitem(stream))
+                if streams[Keys.TOTAL] > (offset + limit):
+                    kodi.create_item(utils.link_to_next_page({'mode': MODES.FOLLOWED, 'content': content, 'index': index}))
                 kodi.end_of_directory()
         elif content == 'channels':
             kodi.set_content('files')
-            streams = twitch.get_following_streams(user_id)
-            if Keys.OTHERS in streams:
-                for followed in streams[Keys.OTHERS]:
-                    if not utils.is_blacklisted(followed[Keys.ID]):
-                        kodi.create_item(converter.channel_to_listitem(followed))
+            index, offset, limit = utils.calculate_pagination_values(index)
+            channels = twitch.get_followed_channels(user_id=user_id, offset=offset, limit=limit)
+            if (channels[Keys.TOTAL] > 0) and (Keys.FOLLOWS in channels):
+                for follow in channels[Keys.FOLLOWS]:
+                    channel = follow[Keys.CHANNEL]
+                    if not utils.is_blacklisted(channel[Keys.ID]):
+                        kodi.create_item(converter.channel_to_listitem(channel))
+                if channels[Keys.TOTAL] > (offset + limit):
+                    kodi.create_item(utils.link_to_next_page({'mode': MODES.FOLLOWED, 'content': content, 'index': index}))
                 kodi.end_of_directory()
         elif content == 'games':
             if username:
@@ -311,7 +318,7 @@ def play(name=None, channel_id=None, video_id=None, source=True, use_player=Fals
         if quality:
             quality = quality[channel_id]['quality']
         videos = twitch.get_live(name)
-        result = twitch.get_channel_stream(channel_id)[Keys.STREAMS][0]
+        result = twitch.get_channel_stream(channel_id)[Keys.STREAM]
         item_dict = converter.stream_to_playitem(result)
     if item_dict and videos:
         if source:
@@ -319,7 +326,7 @@ def play(name=None, channel_id=None, video_id=None, source=True, use_player=Fals
         else:
             use_source = False
 
-        play_url = twitch.get_video_for_quality(videos, source=use_source, quality=quality)
+        play_url = converter.get_video_for_quality(videos, source=use_source, quality=quality)
 
         if play_url:
             item_dict['path'] = play_url
@@ -403,7 +410,7 @@ def edit_qualities(target_id=None, name=None, video_id=None, remove=False):
             videos = twitch.get_vod(video_id)
         else:
             videos = twitch.get_live(name)
-        quality, url = twitch.get_video_for_quality(videos, source=False, return_label=True)
+        quality, url = converter.get_video_for_quality(videos, source=False, return_label=True)
         result = utils.add_default_quality(target_id, name, quality)
         if result:
             kodi.notify(msg=i18n('default_quality_set') % (quality, name), sound=False)

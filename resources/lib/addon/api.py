@@ -19,7 +19,6 @@
 
 import utils
 from error_handling import api_error_handler
-from common import kodi
 from constants import Keys, SCOPES
 from twitch import queries as twitch_queries
 from twitch import oauth
@@ -50,8 +49,8 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_featured_streams(self):
-        return self.api.streams.featured()
+    def get_featured_streams(self, offset, limit):
+        return self.api.streams.featured(offset=offset, limit=limit)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -75,13 +74,13 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_followed_channels(self, identification, offset, limit):
-        return self.api.follows.by_id(identification=identification, limit=limit, offset=offset)
+    def get_followed_channels(self, user_id, offset, limit):
+        return self.api.users.follows(user_id=user_id, limit=limit, offset=offset)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_channel_videos(self, channel_id, offset, limit, broadcast_type):
-        return self.api.videos.by_channel(identification=channel_id, limit=limit, offset=offset, broadcast_type=broadcast_type)
+        return self.api.channels.videos(channel_id=channel_id, limit=limit, offset=offset, broadcast_type=broadcast_type)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -113,52 +112,52 @@ class Twitch:
     def follow_status(self, channel_id):
         user = self.get_user()
         user_id = user.get(Keys.ID)
-        return self.api.follows.status(identification=user_id, target=channel_id)
+        return self.api.users.follow_status(user_id=user_id, target_id=channel_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def follow(self, channel_id):
         user = self.get_user()
         user_id = user.get(Keys.ID)
-        return self.api.follows.follow(identification=user_id, target=channel_id)
+        return self.api.users.follow(user_id=user_id, target_id=channel_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def unfollow(self, channel_id):
         user = self.get_user()
         user_id = user.get(Keys.ID)
-        return self.api.follows.unfollow(identification=user_id, target=channel_id)
+        return self.api.users.unfollow(user_id=user_id, target_id=channel_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def blocks(self, offset, limit):
         user = self.get_user()
         user_id = user.get(Keys.ID)
-        return self.api.blocks.by_id(identification=user_id, limit=limit, offset=offset)
+        return self.api.users.blocks(user_id=user_id, limit=limit, offset=offset)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def block_user(self, target_id):
         user = self.get_user()
         user_id = user.get(Keys.ID)
-        return self.api.blocks.add_block(identification=user_id, target=target_id)
+        return self.api.users.add_block(user_id=user_id, target_id=target_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def unblock_user(self, target_id):
         user = self.get_user()
         user_id = user.get(Keys.ID)
-        return self.api.blocks.del_block(identification=user_id, target=target_id)
+        return self.api.users.del_block(user_id=user_id, target_id=target_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_video_by_id(self, video_id):
-        return self.api.videos.by_id(identification=video_id)
+        return self.api.videos.by_id(video_id=video_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_channel_stream(self, name):
-        return self.api.streams.all(channel=name)
+    def get_channel_stream(self, channel_id):
+        return self.api.streams.by_id(channel_id=channel_id, stream_type='all')
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -174,6 +173,11 @@ class Twitch:
     def get_followed_games(self, name):
         query = self.queries.HiddenApiQuery('users/{0}/follows/games'.format(name))
         return query.execute()
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_followed_streams(self, stream_type, offset, limit):
+        return self.api.streams.followed(stream_type=stream_type, limit=limit, offset=offset)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -202,65 +206,3 @@ class Twitch:
                 break
 
         return user_blocks
-
-    @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_following_streams(self, user_id):
-        following_channels = self._get_followed_channels(user_id)
-        channels = sorted(following_channels, key=lambda k: k[Keys.DISPLAY_NAME].lower())
-        channel_names = ','.join([channel[Keys.NAME] for channel in channels])
-        live = []
-        limit = 100
-        offset = 0
-
-        while True:
-            temp = self.get_streams_by_channels(channel_names, offset, limit)
-            if len(temp[Keys.STREAMS]) == 0:
-                break
-            for stream in temp[Keys.STREAMS]:
-                live.append(stream)
-            offset += limit
-            if temp[Keys.TOTAL] <= offset:
-                break
-
-        channels = {Keys.LIVE: live, Keys.OTHERS: channels}
-        return channels
-
-    @staticmethod
-    def get_video_for_quality(videos, source=True, return_label=False, quality=None):
-        for quality_label, url in videos:
-            if (quality) and (quality.lower() in quality_label.lower()):
-                if return_label:
-                    return quality_label, url
-                else:
-                    return url
-        for quality_label, url in videos:
-            if (source) and ('source' in quality_label.lower()):
-                if return_label:
-                    return quality_label, url
-                else:
-                    return url
-
-        result = kodi.Dialog().select(i18n('choose_quality'), [quality for quality, url in videos])
-        if result == -1:
-            return None
-        else:
-            if return_label:
-                return videos[result][0], videos[result][1]
-            else:
-                return videos[result][1]
-
-    def _get_followed_channels(self, username):
-        acc = []
-        limit = 100
-        offset = 0
-        while True:
-            temp = self.get_followed_channels(username, offset, limit)
-            if len(temp[Keys.FOLLOWS]) == 0:
-                break
-            for channel in temp[Keys.FOLLOWS]:
-                acc.append(channel[Keys.CHANNEL])
-            offset += limit
-            if temp[Keys.TOTAL] <= offset:
-                break
-
-        return acc
