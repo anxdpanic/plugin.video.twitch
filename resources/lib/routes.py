@@ -140,8 +140,7 @@ def following():
 def list_featured_streams():
     utils.refresh_previews()
     kodi.set_content('videos')
-
-    streams = twitch.get_featured_streams()
+    streams = twitch.get_featured_streams(offset=0, limit=100)
     if Keys.FEATURED in streams:
         for stream in streams[Keys.FEATURED]:
             channel = stream[Keys.STREAM][Keys.CHANNEL]

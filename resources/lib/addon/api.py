@@ -49,8 +49,8 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_featured_streams(self):
-        return self.api.streams.featured()
+    def get_featured_streams(self, offset, limit):
+        return self.api.streams.featured(offset=offset, limit=limit)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
