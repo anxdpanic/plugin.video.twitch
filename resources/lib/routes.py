@@ -327,7 +327,7 @@ def play(name=None, channel_id=None, video_id=None, source=True, use_player=Fals
         else:
             use_source = False
 
-        play_url = twitch.get_video_for_quality(videos, source=use_source, quality=quality)
+        play_url = converter.get_video_for_quality(videos, source=use_source, quality=quality)
 
         if play_url:
             item_dict['path'] = play_url
@@ -411,7 +411,7 @@ def edit_qualities(target_id=None, name=None, video_id=None, remove=False):
             videos = twitch.get_vod(video_id)
         else:
             videos = twitch.get_live(name)
-        quality, url = twitch.get_video_for_quality(videos, source=False, return_label=True)
+        quality, url = converter.get_video_for_quality(videos, source=False, return_label=True)
         result = utils.add_default_quality(target_id, name, quality)
         if result:
             kodi.notify(msg=i18n('default_quality_set') % (quality, name), sound=False)

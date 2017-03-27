@@ -318,3 +318,27 @@ class JsonListItemConverter(object):
                                     mature=format_key(Keys.MATURE), partner=format_key(Keys.PARTNER))
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
+
+    @staticmethod
+    def get_video_for_quality(videos, source=True, return_label=False, quality=None):
+        for quality_label, url in videos:
+            if ((quality) and (quality.lower() in quality_label.lower())) or len(videos) == 1:
+                if return_label:
+                    return quality_label, url
+                else:
+                    return url
+        for quality_label, url in videos:
+            if (source) and ('source' in quality_label.lower()):
+                if return_label:
+                    return quality_label, url
+                else:
+                    return url
+
+        result = kodi.Dialog().select(i18n('choose_quality'), [quality for quality, url in videos])
+        if result == -1:
+            return None
+        else:
+            if return_label:
+                return videos[result][0], videos[result][1]
+            else:
+                return videos[result][1]
