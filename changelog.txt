@@ -20,6 +20,8 @@
 - add Block/Unblock user
 - add blacklisting of users/games
 - add set default quality per stream
+- add offline playlists to Following
+
 1.4.6
 - Added new title formatting option which includes broadcaster language.
 - Added compatibility for new Twitch encoder names.

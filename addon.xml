@@ -32,6 +32,7 @@
 - add Block/Unblock user
 - add blacklisting of users/games
 - add set default quality per stream
+- add offline playlists to Following
         </news>
         <assets>
             <icon>icon.png</icon>

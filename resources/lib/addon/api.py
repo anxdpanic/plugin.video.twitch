@@ -157,8 +157,8 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_channel_stream(self, channel_ids):
-        return self.api.streams.all(channel_ids=channel_ids)
+    def get_channel_stream(self, channel_id):
+        return self.api.streams.by_id(channel_id=channel_id, stream_type='all')
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)

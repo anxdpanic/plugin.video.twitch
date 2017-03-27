@@ -606,3 +606,7 @@ msgstr ""
 msgctxt "#30169"
 msgid "Choose Quality"
 msgstr ""
+
+msgctxt "#30170"
+msgid "Playlists"
+msgstr ""
