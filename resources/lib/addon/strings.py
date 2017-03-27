@@ -80,5 +80,6 @@ STRINGS = {
     'default_quality_set': 30164,
     'removed_default_quality': 30165,
     'remove_default_quality': 30166,
-    'choose_quality': 30169
+    'choose_quality': 30169,
+    'playlists': 30170
 }
