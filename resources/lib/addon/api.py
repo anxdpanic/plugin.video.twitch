@@ -112,21 +112,21 @@ class Twitch:
     def follow_status(self, channel_id):
         user = self.get_user()
         user_id = user.get(Keys.ID)
-        return self.api.users.check_follows(user_id=user_id, target_id=channel_id)
+        return self.api.users.check_follows(user_id=user_id, channel_id=channel_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def follow(self, channel_id):
         user = self.get_user()
         user_id = user.get(Keys.ID)
-        return self.api.users.follow_channel(user_id=user_id, target_id=channel_id)
+        return self.api.users.follow_channel(user_id=user_id, channel_id=channel_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def unfollow(self, channel_id):
         user = self.get_user()
         user_id = user.get(Keys.ID)
-        return self.api.users.unfollow_channel(user_id=user_id, target_id=channel_id)
+        return self.api.users.unfollow_channel(user_id=user_id, channel_id=channel_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
