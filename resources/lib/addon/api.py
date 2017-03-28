@@ -109,7 +109,7 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def follow_status(self, channel_id):
+    def check_follow(self, channel_id):
         user = self.get_user()
         user_id = user.get(Keys.ID)
         return self.api.users.check_follows(user_id=user_id, channel_id=channel_id)
@@ -127,6 +127,27 @@ class Twitch:
         user = self.get_user()
         user_id = user.get(Keys.ID)
         return self.api.users.unfollow_channel(user_id=user_id, channel_id=channel_id)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def check_follow_game(self, game_name):
+        user = self.get_user()
+        username = user.get(Keys.NAME)
+        return self.api.games.check_follows(username=username, name=game_name)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def follow_game(self, game_name):
+        user = self.get_user()
+        username = user.get(Keys.NAME)
+        return self.api.games.follow(username=username, name=game_name)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def unfollow_game(self, game_name):
+        user = self.get_user()
+        username = user.get(Keys.NAME)
+        return self.api.games.unfollow(username=username, name=game_name)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -171,7 +192,7 @@ class Twitch:
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_followed_games(self, name):
-        return self.api.users.get_followed_games(username=name)
+        return self.api.games.get_followed(username=name)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
