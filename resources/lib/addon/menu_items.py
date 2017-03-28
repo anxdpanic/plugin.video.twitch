@@ -66,3 +66,7 @@ def add_blacklist(target_id, display_name, list_type='user'):
 def set_default_quality(target_id, name, video_id=None):
     return update_container(i18n('set_default_quality'),
                             {'mode': MODES.EDITQUALITIES, 'target_id': target_id, 'name': name, 'video_id': video_id})
+
+
+def edit_follow_game(game_name):
+    return update_container(i18n('toggle_follow'), {'mode': MODES.EDITFOLLOW, 'game_name': game_name})

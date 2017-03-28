@@ -342,26 +342,42 @@ def play(name=None, channel_id=None, video_id=None, source=True, use_player=Fals
                     utils.exec_irc_script(username, name)
 
 
-@DISPATCHER.register(MODES.EDITFOLLOW, args=['channel_id', 'channel_name'])
+@DISPATCHER.register(MODES.EDITFOLLOW, kwargs=['channel_id', 'channel_name', 'game_name'])
 @error_handler
-def edit_user_follows(channel_id, channel_name):
+def edit_user_follows(channel_id=None, channel_name=None, game_name=None):
+    if (channel_id is None or channel_name is None) and game_name is None:
+        return
     try:
-        result = twitch.follow_status(channel_id)
+        if not game_name:
+            result = twitch.check_follow(channel_id)
+        else:
+            result = twitch.check_follow_game(game_name)
         is_following = True
     except TwitchException as error:
         if '404' not in error.message: raise
         is_following = False
 
-    if is_following:
-        confirmed = kodi.Dialog().yesno(i18n('toggle_follow'), i18n('unfollow_confirm') % channel_name)
-        if confirmed:
-            result = twitch.unfollow(channel_id)
-            kodi.notify(msg=i18n('unfollowed') % channel_name, sound=False)
+    if not game_name:
+        display_name = channel_name
     else:
-        confirmed = kodi.Dialog().yesno(i18n('toggle_follow'), i18n('follow_confirm') % channel_name)
+        display_name = game_name
+
+    if is_following:
+        confirmed = kodi.Dialog().yesno(i18n('toggle_follow'), i18n('unfollow_confirm') % display_name)
         if confirmed:
-            result = twitch.follow(channel_id)
-            kodi.notify(msg=i18n('now_following') % channel_name, sound=False)
+            if not game_name:
+                result = twitch.unfollow(channel_id)
+            else:
+                result = twitch.unfollow_game(game_name)
+            kodi.notify(msg=i18n('unfollowed') % display_name, sound=False)
+    else:
+        confirmed = kodi.Dialog().yesno(i18n('toggle_follow'), i18n('follow_confirm') % display_name)
+        if confirmed:
+            if not game_name:
+                result = twitch.follow(channel_id)
+            else:
+                result = twitch.follow_game(game_name)
+            kodi.notify(msg=i18n('now_following') % display_name, sound=False)
 
 
 @DISPATCHER.register(MODES.EDITBLOCK, args=['target_id', 'name'])
