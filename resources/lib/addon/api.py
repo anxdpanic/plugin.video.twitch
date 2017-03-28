@@ -22,8 +22,8 @@ from error_handling import api_error_handler
 from constants import Keys, SCOPES
 from twitch import queries as twitch_queries
 from twitch import oauth
-from twitch.api import v5 as twitch
 from twitch.api import usher
+from twitch.api import v5 as twitch
 from base64 import b64encode
 
 i18n = utils.i18n
@@ -171,8 +171,7 @@ class Twitch:
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_followed_games(self, name):
-        query = self.queries.HiddenApiQuery('users/{0}/follows/games'.format(name))
-        return query.execute()
+        return self.api.users.get_followed_games(username=name)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
