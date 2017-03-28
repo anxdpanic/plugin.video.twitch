@@ -50,47 +50,47 @@ class Twitch:
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_featured_streams(self, offset, limit):
-        return self.api.streams.featured(offset=offset, limit=limit)
+        return self.api.streams.get_featured(offset=offset, limit=limit)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_top_games(self, offset, limit):
-        return self.api.games.top(offset=offset, limit=limit)
+        return self.api.games.get_top(offset=offset, limit=limit)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_top_communities(self, index, limit):
-        return self.api.communities.top(cursor=b64encode(str(index)), limit=limit)
+        return self.api.communities.get_top(cursor=b64encode(str(index)), limit=limit)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_all_channels(self, offset, limit):
-        return self.api.streams.all(offset=offset, limit=limit)
+        return self.api.streams.get_all(offset=offset, limit=limit)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_all_teams(self, offset, limit):
-        return self.api.teams.active(offset=offset, limit=limit)
+        return self.api.teams.get_active(offset=offset, limit=limit)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_followed_channels(self, user_id, offset, limit):
-        return self.api.users.follows(user_id=user_id, limit=limit, offset=offset)
+        return self.api.users.get_follows(user_id=user_id, limit=limit, offset=offset)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_channel_videos(self, channel_id, offset, limit, broadcast_type):
-        return self.api.channels.videos(channel_id=channel_id, limit=limit, offset=offset, broadcast_type=broadcast_type)
+        return self.api.channels.get_videos(channel_id=channel_id, limit=limit, offset=offset, broadcast_type=broadcast_type)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_game_streams(self, game, offset, limit):
-        return self.api.streams.all(game=game, limit=limit, offset=offset)
+        return self.api.streams.get_all(game=game, limit=limit, offset=offset)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_community_streams(self, community_id, offset, limit):
-        return self.api.streams.all(community_id=community_id, limit=limit, offset=offset)
+        return self.api.streams.get_all(community_id=community_id, limit=limit, offset=offset)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -112,42 +112,42 @@ class Twitch:
     def follow_status(self, channel_id):
         user = self.get_user()
         user_id = user.get(Keys.ID)
-        return self.api.users.follow_status(user_id=user_id, target_id=channel_id)
+        return self.api.users.check_follows(user_id=user_id, target_id=channel_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def follow(self, channel_id):
         user = self.get_user()
         user_id = user.get(Keys.ID)
-        return self.api.users.follow(user_id=user_id, target_id=channel_id)
+        return self.api.users.follow_channel(user_id=user_id, target_id=channel_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def unfollow(self, channel_id):
         user = self.get_user()
         user_id = user.get(Keys.ID)
-        return self.api.users.unfollow(user_id=user_id, target_id=channel_id)
+        return self.api.users.unfollow_channel(user_id=user_id, target_id=channel_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def blocks(self, offset, limit):
         user = self.get_user()
         user_id = user.get(Keys.ID)
-        return self.api.users.blocks(user_id=user_id, limit=limit, offset=offset)
+        return self.api.users.get_blocks(user_id=user_id, limit=limit, offset=offset)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def block_user(self, target_id):
         user = self.get_user()
         user_id = user.get(Keys.ID)
-        return self.api.users.add_block(user_id=user_id, target_id=target_id)
+        return self.api.users.block_user(user_id=user_id, target_id=target_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def unblock_user(self, target_id):
         user = self.get_user()
         user_id = user.get(Keys.ID)
-        return self.api.users.del_block(user_id=user_id, target_id=target_id)
+        return self.api.users.unblock_user(user_id=user_id, target_id=target_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -177,7 +177,7 @@ class Twitch:
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_followed_streams(self, stream_type, offset, limit):
-        return self.api.streams.followed(stream_type=stream_type, limit=limit, offset=offset)
+        return self.api.streams.get_followed(stream_type=stream_type, limit=limit, offset=offset)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
