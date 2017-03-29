@@ -56,7 +56,8 @@ def browse():
     kodi.create_item({'label': i18n('playlists'), 'path': {'mode': MODES.STREAMLIST, 'stream_type': 'playlist'}, 'context_menu': context_menu})
     kodi.create_item({'label': i18n('xbox_one'), 'path': {'mode': MODES.STREAMLIST, 'platform': 'xbox_one'}, 'context_menu': context_menu})
     kodi.create_item({'label': i18n('ps4'), 'path': {'mode': MODES.STREAMLIST, 'platform': 'ps4'}, 'context_menu': context_menu})
-    kodi.create_item({'label': i18n('videos'), 'path': {'mode': MODES.CHANNELVIDEOS, 'channel_id': 'all'}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('videos'), 'path': {'mode': MODES.CHANNELVIDEOS, 'channel_id': 'all'}})
+    kodi.create_item({'label': i18n('clips'), 'path': {'mode': MODES.CLIPSLIST, 'trending': 'true'}})
     kodi.create_item({'label': i18n('communities'), 'path': {'mode': MODES.COMMUNITIES}})
     kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.GAMES}})
     kodi.end_of_directory()
@@ -148,6 +149,7 @@ def following():
     kodi.create_item({'label': i18n('playlists'), 'path': {'mode': MODES.FOLLOWED, 'content': 'playlist', 'context_menu': context_menu}})
     kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.FOLLOWED, 'content': 'channels'}})
     kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.FOLLOWED, 'content': 'games'}})
+    kodi.create_item({'label': i18n('clips'), 'path': {'mode': MODES.FOLLOWED, 'content': 'clips'}})
     kodi.end_of_directory()
 
 
@@ -214,15 +216,16 @@ def list_streams(stream_type='live', index=0, platform='all'):
         kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.FOLLOWED, args=['content'], kwargs=['index'])
+@DISPATCHER.register(MODES.FOLLOWED, args=['content'], kwargs=['index', 'cursor'])
 @error_handler
-def list_followed(content, index=0):
+def list_followed(content, index=0, cursor='MA=='):
     user = twitch.get_user()
     user_id = user.get(Keys.ID, None)
     username = user.get(Keys.NAME, None)
     if user_id:
         if content == 'live' or content == 'playlist':
-            utils.refresh_previews()
+            if content == 'live':
+                utils.refresh_previews()
             kodi.set_content('videos')
             index, offset, limit = utils.calculate_pagination_values(index)
             streams = twitch.get_followed_streams(stream_type=content, offset=offset, limit=limit)
@@ -255,16 +258,28 @@ def list_followed(content, index=0):
                         if not utils.is_blacklisted(game[Keys.ID], list_type='game'):
                             kodi.create_item(converter.game_to_listitem(game))
                     kodi.end_of_directory()
+        elif content == 'clips':
+            kodi.set_content('videos')
+            limit = utils.get_items_per_page()
+            clips = twitch.get_followed_clips(cursor=cursor, limit=limit)
+            if Keys.CLIPS in clips and len(clips[Keys.CLIPS]) > 0:
+                for clip in clips[Keys.CLIPS]:
+                    kodi.create_item(converter.clip_to_listitem(clip))
+                if clips[Keys.CURSOR]:
+                    kodi.create_item(utils.link_to_next_page({'mode': MODES.FOLLOWED, 'content': content, 'cursor': clips[Keys.CURSOR]}))
+                kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.CHANNELVIDEOS, args=['channel_id'])
+@DISPATCHER.register(MODES.CHANNELVIDEOS, args=['channel_id'], kwargs=['channel_name'])
 @error_handler
-def list_channel_video_types(channel_id):
+def list_channel_video_types(channel_id, channel_name=None):
     kodi.set_content('files')
     kodi.create_item({'label': i18n('past_broadcasts'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': 'archive'}})
     kodi.create_item({'label': i18n('uploads'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': 'upload'}})
     kodi.create_item({'label': i18n('video_highlights'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': 'highlight'}})
     if channel_id != 'all':
+        if channel_name:
+            kodi.create_item({'label': i18n('clips'), 'path': {'mode': MODES.CLIPSLIST, 'trending': 'true', 'channel_name': channel_name}})
         kodi.create_item({'label': i18n('collections'), 'path': {'mode': MODES.COLLECTIONS, 'channel_id': channel_id}})
     kodi.end_of_directory()
 
@@ -272,7 +287,7 @@ def list_channel_video_types(channel_id):
 @DISPATCHER.register(MODES.COLLECTIONS, args=['channel_id'], kwargs=['cursor'])
 @error_handler
 def list_collections(channel_id, cursor='MA=='):
-    kodi.set_content('videos')
+    kodi.set_content('files')
     limit = utils.get_items_per_page()
     collections = twitch.get_collections(channel_id, cursor, limit)
 
@@ -298,6 +313,24 @@ def list_collection_videos(collection_id):
     if (Keys.ITEMS in videos) and (len(videos[Keys.ITEMS]) > 0):
         for video in videos[Keys.ITEMS]:
             kodi.create_item(converter.collection_video_to_listitem(video))
+        kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.CLIPSLIST, kwargs=['cursor', 'channel_name'])
+@error_handler
+def list_clips(cursor='MA==', channel_name=None):
+    kodi.set_content('videos')
+    limit = utils.get_items_per_page()
+    clips = twitch.get_top_clips(cursor, limit, channel=channel_name)
+
+    if Keys.CLIPS in clips and len(clips[Keys.CLIPS]) > 0:
+        for clip in clips[Keys.CLIPS]:
+            kodi.create_item(converter.clip_to_listitem(clip))
+        if clips[Keys.CURSOR]:
+            item_dict = {'mode': MODES.CLIPSLIST, 'cursor': clips[Keys.CURSOR]}
+            if channel_name:
+                item_dict['channel_name'] = channel_name
+            kodi.create_item(utils.link_to_next_page(item_dict))
         kodi.end_of_directory()
 
 
@@ -353,10 +386,9 @@ def list_community_streams(community_id, index=0):
         kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.PLAY, kwargs=['name', 'channel_id', 'video_id', 'source', 'use_player'])
+@DISPATCHER.register(MODES.PLAY, kwargs=['name', 'channel_id', 'video_id', 'slug', 'source', 'use_player'])
 @error_handler
-def play(name=None, channel_id=None, video_id=None, source=True, use_player=False):
-    if (name is None or channel_id is None) and (video_id is None): return
+def play(name=None, channel_id=None, video_id=None, slug=None, source=True, use_player=False):
     videos = item_dict = quality = None
     if video_id:
         result = twitch.get_video_by_id(video_id)
@@ -374,6 +406,10 @@ def play(name=None, channel_id=None, video_id=None, source=True, use_player=Fals
         videos = twitch.get_live(name)
         result = twitch.get_channel_stream(channel_id)[Keys.STREAM]
         item_dict = converter.stream_to_playitem(result)
+    elif slug:
+        videos = twitch.get_clip(slug)
+        result = twitch.get_clip_by_slug(slug)
+        item_dict = converter.clip_to_playitem(result)
     if item_dict and videos:
         if source:
             use_source = kodi.get_setting('video_quality') == '0'

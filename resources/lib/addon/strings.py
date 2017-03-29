@@ -86,5 +86,6 @@ STRINGS = {
     'browse': 30172,
     'xbox_one': 30173,
     'ps4': 30174,
-    'videos': 30175
+    'videos': 30175,
+    'clips': 30176
 }

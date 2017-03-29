@@ -88,8 +88,18 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_top_videos(self, offset, limit, broadcast_type, period='all'):
+    def get_top_videos(self, offset, limit, broadcast_type, period='week'):
         return self.api.videos.get_top(limit=limit, offset=offset, broadcast_type=broadcast_type, period=period)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_followed_clips(self, cursor, limit, trending='true'):
+        return self.api.clips.get_followed(limit=limit, cursor=cursor, trending=trending)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_top_clips(self, cursor, limit, channel=None, game=None, period='week', trending='true'):
+        return self.api.clips.get_top(limit=limit, cursor=cursor, channels=channel, games=game, period=period, trending=trending)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -196,6 +206,11 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_clip_by_slug(self, slug):
+        return self.api.clips.by_slug(slug=slug)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_channel_stream(self, channel_id):
         return self.api.streams.by_id(channel_id=channel_id, stream_type='all')
 
@@ -222,6 +237,11 @@ class Twitch:
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_vod(self, video_id):
         return self.usher.video(video_id)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_clip(self, slug):
+        return self.usher.clip(slug)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)

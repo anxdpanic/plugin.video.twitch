@@ -630,3 +630,7 @@ msgstr ""
 msgctxt "#30175"
 msgid "Videos"
 msgstr ""
+
+msgctxt "#30176"
+msgid "Clips"
+msgstr ""
