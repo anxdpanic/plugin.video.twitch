@@ -108,7 +108,8 @@ def the_art(art=None):
 
 
 def link_to_next_page(queries):
-    queries['index'] += 1
+    if 'index' in queries:
+        queries['index'] += 1
     return {'label': i18n('next_page'),
             'art': the_art(),
             'path': kodi.get_plugin_url(queries)}

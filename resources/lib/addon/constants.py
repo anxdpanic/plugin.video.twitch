@@ -57,7 +57,9 @@ MODES = __enum(
     EDITBLOCK='edit_user_blocks',
     EDITBLACKLIST='edit_blacklist',
     EDITQUALITIES='edit_qualities',
-    CLEARLIST='clear_list'
+    CLEARLIST='clear_list',
+    COLLECTIONS='collections',
+    COLLECTIONVIDEOLIST='collection_video_list',
 )
 
 LINE_LENGTH = 60
@@ -145,6 +147,15 @@ class Keys:
     AVATAR_IMAGE = 'avatar_image_url'
     BLOCKS = 'blocks'
     USER = 'user'
+    COLLECTIONS = 'collections'
+    THUMBNAILS = 'thumbnails'
+    ITEMS = 'items'
+    ITEM_ID = 'item_id'
+    DURATION = 'duration'
+    OWNER = 'owner'
+    PUBLISHED_AT = 'published_at'
+    ITEM_TYPE = 'item_type'
+    ITEMS_COUNT = 'items_count'
 
 
 SCOPES = [scopes.user_read, scopes.user_blocks_edit, scopes.user_blocks_read, scopes.user_follows_edit, scopes.user_subscriptions, scopes.chat_login]

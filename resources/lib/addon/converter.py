@@ -85,6 +85,19 @@ class JsonListItemConverter(object):
                 'context_menu': context_menu}
 
     @staticmethod
+    def collection_to_listitem(collection):
+        title = collection[Keys.TITLE].encode('utf-8')
+        _id = collection[Keys.ID]
+        image = collection[Keys.THUMBNAILS].get(Keys.MEDIUM, Images.THUMB)
+        context_menu = list()
+        context_menu.extend(menu_items.refresh())
+        context_menu.extend(menu_items.clear_previews())
+        return {'label': title,
+                'path': kodi.get_plugin_url({'mode': MODES.COLLECTIONVIDEOLIST, 'collection_id': _id}),
+                'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
+                'context_menu': context_menu}
+
+    @staticmethod
     def team_to_listitem(team):
         name = team[Keys.NAME]
         background = team.get(Keys.BACKGROUND) if team.get(Keys.BACKGROUND) else Images.FANART
@@ -131,6 +144,32 @@ class JsonListItemConverter(object):
                 'path': kodi.get_plugin_url({'mode': MODES.CHANNELVIDEOS, 'channel_id': channel[Keys.ID]}),
                 'art': the_art({'fanart': video_banner, 'poster': image, 'thumb': image}),
                 'context_menu': context_menu}
+
+    @staticmethod
+    def collection_video_to_listitem(video):
+        duration = video.get(Keys.DURATION)
+        plot = video.get(Keys.DESCRIPTION)
+        date = video.get(Keys.PUBLISHED_AT)[:10] if video.get(Keys.PUBLISHED_AT) else ''
+        year = video.get(Keys.PUBLISHED_AT)[:4] if video.get(Keys.PUBLISHED_AT) else ''
+
+        image = video.get(Keys.THUMBNAILS) if video.get(Keys.THUMBNAILS) else Images.VIDEOTHUMB
+        if Keys.MEDIUM in image:
+            image = image.get(Keys.MEDIUM)
+        context_menu = list()
+        context_menu.extend(menu_items.refresh())
+        context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
+        owner = video[Keys.OWNER]
+        context_menu.extend(menu_items.set_default_quality(owner[Keys.ID], owner[Keys.NAME], video[Keys.ITEM_ID]))
+        context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
+                                                  {'mode': MODES.PLAY, 'video_id': video[Keys.ITEM_ID], 'source': False, 'use_player': True}))
+        return {'label': video[Keys.TITLE],
+                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video[Keys.ITEM_ID]}),
+                'context_menu': context_menu,
+                'is_playable': True,
+                'info': {'duration': str(duration), 'plot': plot, 'plotoutline': plot, 'tagline': plot,
+                         'year': year, 'date': date, 'premiered': date, 'mediatype': 'video'},
+                'content_type': 'video',
+                'art': the_art({'poster': image, 'thumb': image, 'icon': image})}
 
     @staticmethod
     def video_list_to_listitem(video):

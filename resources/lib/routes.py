@@ -166,17 +166,17 @@ def list_all_games(index=0):
         kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.COMMUNITIES, kwargs=['index'])
+@DISPATCHER.register(MODES.COMMUNITIES, kwargs=['cursor'])
 @error_handler
-def list_all_communities(index=0):
+def list_all_communities(cursor='MA=='):
     kodi.set_content('files')
-    index, offset, limit = utils.calculate_pagination_values(index)
-    communities = twitch.get_top_communities(index, limit)
+    limit = utils.get_items_per_page()
+    communities = twitch.get_top_communities(cursor, limit)
     if (communities[Keys.TOTAL] > 0) and (Keys.COMMUNITIES in communities):
         for element in communities[Keys.COMMUNITIES]:
             kodi.create_item(converter.community_to_listitem(element))
-        if communities[Keys.TOTAL] > (offset + limit):
-            kodi.create_item(utils.link_to_next_page({'mode': MODES.COMMUNITIES, 'index': index}))
+        if communities[Keys.CURSOR]:
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.COMMUNITIES, 'cursor': communities[Keys.CURSOR]}))
         kodi.end_of_directory()
 
 
@@ -248,7 +248,40 @@ def list_channel_video_types(channel_id):
     kodi.create_item({'label': i18n('past_broadcasts'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': 'archive'}})
     kodi.create_item({'label': i18n('uploads'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': 'upload'}})
     kodi.create_item({'label': i18n('video_highlights'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': 'highlight'}})
+    kodi.create_item({'label': i18n('collections'), 'path': {'mode': MODES.COLLECTIONS, 'channel_id': channel_id}})
     kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.COLLECTIONS, args=['channel_id'], kwargs=['cursor'])
+@error_handler
+def list_collections(channel_id, cursor='MA=='):
+    kodi.set_content('videos')
+    limit = utils.get_items_per_page()
+    collections = twitch.get_collections(channel_id, cursor, limit)
+
+    if (Keys.COLLECTIONS in collections) and (len(collections[Keys.COLLECTIONS]) > 0):
+        has_collections = False
+        for collection in collections[Keys.COLLECTIONS]:
+            if collection[Keys.ITEMS_COUNT] > 0:
+                has_collections = True
+        if has_collections:
+            for collection in collections[Keys.COLLECTIONS]:
+                if collection[Keys.ITEMS_COUNT] > 0:
+                    kodi.create_item(converter.collection_to_listitem(collection))
+            if collections[Keys.CURSOR]:
+                kodi.create_item(utils.link_to_next_page({'mode': MODES.COLLECTIONS, 'channel_id': channel_id, 'cursor': collections[Keys.CURSOR]}))
+            kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.COLLECTIONVIDEOLIST, args=['collection_id'])
+@error_handler
+def list_collection_videos(collection_id):
+    kodi.set_content('videos')
+    videos = twitch.get_collection_videos(collection_id)
+    if (Keys.ITEMS in videos) and (len(videos[Keys.ITEMS]) > 0):
+        for video in videos[Keys.ITEMS]:
+            kodi.create_item(converter.collection_video_to_listitem(video))
+        kodi.end_of_directory()
 
 
 @DISPATCHER.register(MODES.CHANNELVIDEOLIST, args=['channel_id', 'broadcast_type'], kwargs=['index'])
@@ -306,8 +339,9 @@ def play(name=None, channel_id=None, video_id=None, source=True, use_player=Fals
     if (name is None or channel_id is None) and (video_id is None): return
     videos = item_dict = quality = None
     if video_id:
-        videos = twitch.get_vod(video_id)
         result = twitch.get_video_by_id(video_id)
+        video_id = result[Keys.ID]
+        videos = twitch.get_vod(video_id)
         item_dict = converter.video_to_playitem(result)
         channel_id = result[Keys.CHANNEL][Keys.ID]
         quality = utils.get_default_quality(channel_id)
