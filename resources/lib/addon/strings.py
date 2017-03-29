@@ -81,5 +81,6 @@ STRINGS = {
     'removed_default_quality': 30165,
     'remove_default_quality': 30166,
     'choose_quality': 30169,
-    'playlists': 30170
+    'playlists': 30170,
+    'collections': 30171
 }

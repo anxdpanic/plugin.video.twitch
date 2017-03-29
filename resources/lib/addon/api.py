@@ -44,6 +44,11 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=1)
+    def root(self):
+        return self.api.root()
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=1)
     def get_user(self):
         return self.api.users.user()
 
@@ -59,8 +64,13 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_top_communities(self, index, limit):
-        return self.api.communities.get_top(cursor=b64encode(str(index)), limit=limit)
+    def get_top_communities(self, cursor, limit):
+        return self.api.communities.get_top(cursor=cursor, limit=limit)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_collections(self, channel_id, cursor, limit):
+        return self.api.collections.get_collections(channel_id=channel_id, cursor=cursor, limit=limit)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -81,6 +91,11 @@ class Twitch:
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_channel_videos(self, channel_id, offset, limit, broadcast_type):
         return self.api.channels.get_videos(channel_id=channel_id, limit=limit, offset=offset, broadcast_type=broadcast_type)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_collection_videos(self, collection_id):
+        return self.api.collections.by_id(collection_id=collection_id, include_all='false')
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
