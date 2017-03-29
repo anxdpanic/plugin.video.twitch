@@ -82,5 +82,9 @@ STRINGS = {
     'remove_default_quality': 30166,
     'choose_quality': 30169,
     'playlists': 30170,
-    'collections': 30171
+    'collections': 30171,
+    'browse': 30172,
+    'xbox_one': 30173,
+    'ps4': 30174,
+    'videos': 30175
 }

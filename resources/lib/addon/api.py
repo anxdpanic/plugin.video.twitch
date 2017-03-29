@@ -24,7 +24,6 @@ from twitch import queries as twitch_queries
 from twitch import oauth
 from twitch.api import usher
 from twitch.api import v5 as twitch
-from base64 import b64encode
 
 i18n = utils.i18n
 
@@ -74,8 +73,8 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_all_channels(self, stream_type, offset, limit):
-        return self.api.streams.get_all(stream_type=stream_type, offset=offset, limit=limit)
+    def get_all_streams(self, stream_type, platform, offset, limit):
+        return self.api.streams.get_all(stream_type=stream_type, platform=platform, offset=offset, limit=limit)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -86,6 +85,11 @@ class Twitch:
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_followed_channels(self, user_id, offset, limit):
         return self.api.users.get_follows(user_id=user_id, limit=limit, offset=offset)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_top_videos(self, offset, limit, broadcast_type, period='all'):
+        return self.api.videos.get_top(limit=limit, offset=offset, broadcast_type=broadcast_type, period=period)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)

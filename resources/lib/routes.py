@@ -40,12 +40,25 @@ def main():
     kodi.create_item({'label': i18n('featured_streams'), 'path': {'mode': MODES.FEATUREDSTREAMS}, 'context_menu': context_menu})
     if has_token:
         kodi.create_item({'label': i18n('following'), 'path': {'mode': MODES.FOLLOWING}})
-    kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.CHANNELS, 'stream_type': 'live'}, 'context_menu': context_menu})
-    kodi.create_item({'label': i18n('communities'), 'path': {'mode': MODES.COMMUNITIES}})
-    kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.GAMES}})
-    kodi.create_item({'label': i18n('playlists'), 'path': {'mode': MODES.CHANNELS, 'stream_type': 'playlist'}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('browse'), 'path': {'mode': MODES.BROWSE}, 'context_menu': context_menu})
     kodi.create_item({'label': i18n('search'), 'path': {'mode': MODES.SEARCH}, 'context_menu': context_menu})
     kodi.create_item({'label': i18n('settings'), 'path': {'mode': MODES.SETTINGS}})
+    kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.BROWSE)
+@error_handler
+def browse():
+    kodi.set_content('files')
+    context_menu = list()
+    context_menu.extend(menu_items.clear_previews())
+    kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.STREAMLIST, 'stream_type': 'live'}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('playlists'), 'path': {'mode': MODES.STREAMLIST, 'stream_type': 'playlist'}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('xbox_one'), 'path': {'mode': MODES.STREAMLIST, 'platform': 'xbox_one'}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('ps4'), 'path': {'mode': MODES.STREAMLIST, 'platform': 'ps4'}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('videos'), 'path': {'mode': MODES.CHANNELVIDEOS, 'channel_id': 'all'}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('communities'), 'path': {'mode': MODES.COMMUNITIES}})
+    kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.GAMES}})
     kodi.end_of_directory()
 
 
@@ -53,6 +66,8 @@ def main():
 @error_handler
 def search():
     kodi.set_content('files')
+    context_menu = list()
+    context_menu.extend(menu_items.clear_previews())
     kodi.create_item({'label': i18n('streams'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'streams'}})
     kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'channels'}})
     kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'games'}})
@@ -181,21 +196,21 @@ def list_all_communities(cursor='MA=='):
         kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.CHANNELS, kwargs=['stream_type', 'index'])
+@DISPATCHER.register(MODES.STREAMLIST, kwargs=['stream_type', 'index', 'platform'])
 @error_handler
-def list_all_channels(stream_type='live', index=0):
+def list_streams(stream_type='live', index=0, platform='all'):
     utils.refresh_previews()
     kodi.set_content('videos')
     index, offset, limit = utils.calculate_pagination_values(index)
 
-    streams = twitch.get_all_channels(stream_type, offset, limit)
+    streams = twitch.get_all_streams(stream_type, platform, offset, limit)
     if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
         for stream in streams[Keys.STREAMS]:
             channel = stream[Keys.CHANNEL]
             if not utils.is_blacklisted(channel[Keys.ID]):
                 kodi.create_item(converter.stream_to_listitem(stream))
         if streams[Keys.TOTAL] > (offset + limit):
-            kodi.create_item(utils.link_to_next_page({'mode': MODES.CHANNELS, 'stream_type': stream_type, 'index': index}))
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.STREAMLIST, 'stream_type': stream_type, 'platform': platform, 'index': index}))
         kodi.end_of_directory()
 
 
@@ -249,7 +264,8 @@ def list_channel_video_types(channel_id):
     kodi.create_item({'label': i18n('past_broadcasts'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': 'archive'}})
     kodi.create_item({'label': i18n('uploads'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': 'upload'}})
     kodi.create_item({'label': i18n('video_highlights'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': 'highlight'}})
-    kodi.create_item({'label': i18n('collections'), 'path': {'mode': MODES.COLLECTIONS, 'channel_id': channel_id}})
+    if channel_id != 'all':
+        kodi.create_item({'label': i18n('collections'), 'path': {'mode': MODES.COLLECTIONS, 'channel_id': channel_id}})
     kodi.end_of_directory()
 
 
@@ -290,12 +306,15 @@ def list_collection_videos(collection_id):
 def list_channel_videos(channel_id, broadcast_type, index=0):
     kodi.set_content('videos')
     index, offset, limit = utils.calculate_pagination_values(index)
-
-    videos = twitch.get_channel_videos(channel_id, offset, limit, broadcast_type)
-    if (videos[Keys.TOTAL] > 0) and (Keys.VIDEOS in videos):
-        for video in videos[Keys.VIDEOS]:
+    if channel_id == 'all':
+        videos = twitch.get_top_videos(offset, limit, broadcast_type)
+    else:
+        videos = twitch.get_channel_videos(channel_id, offset, limit, broadcast_type)
+    if Keys.VODS in videos or ((videos[Keys.TOTAL] > 0) and (Keys.VIDEOS in videos)):
+        key = Keys.VODS if Keys.VODS in videos else Keys.VIDEOS
+        for video in videos[key]:
             kodi.create_item(converter.video_list_to_listitem(video))
-        if videos[Keys.TOTAL] > (offset + limit):
+        if Keys.VODS in videos or videos[Keys.TOTAL] > (offset + limit):
             kodi.create_item(utils.link_to_next_page({'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': broadcast_type, 'index': index}))
         kodi.end_of_directory()
 

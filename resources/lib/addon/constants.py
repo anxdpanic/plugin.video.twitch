@@ -60,6 +60,8 @@ MODES = __enum(
     CLEARLIST='clear_list',
     COLLECTIONS='collections',
     COLLECTIONVIDEOLIST='collection_video_list',
+    BROWSE='browse',
+    STREAMLIST='stream_list'
 )
 
 LINE_LENGTH = 60
@@ -156,6 +158,7 @@ class Keys:
     PUBLISHED_AT = 'published_at'
     ITEM_TYPE = 'item_type'
     ITEMS_COUNT = 'items_count'
+    VODS = 'vods'
 
 
 SCOPES = [scopes.user_read, scopes.user_blocks_edit, scopes.user_blocks_read, scopes.user_follows_edit, scopes.user_subscriptions, scopes.chat_login]
