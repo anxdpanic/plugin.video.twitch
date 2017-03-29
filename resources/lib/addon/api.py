@@ -74,8 +74,8 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_all_channels(self, offset, limit):
-        return self.api.streams.get_all(offset=offset, limit=limit)
+    def get_all_channels(self, stream_type, offset, limit):
+        return self.api.streams.get_all(stream_type=stream_type, offset=offset, limit=limit)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)

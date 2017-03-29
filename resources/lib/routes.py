@@ -40,9 +40,10 @@ def main():
     kodi.create_item({'label': i18n('featured_streams'), 'path': {'mode': MODES.FEATUREDSTREAMS}, 'context_menu': context_menu})
     if has_token:
         kodi.create_item({'label': i18n('following'), 'path': {'mode': MODES.FOLLOWING}})
-    kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.CHANNELS}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.CHANNELS, 'stream_type': 'live'}, 'context_menu': context_menu})
     kodi.create_item({'label': i18n('communities'), 'path': {'mode': MODES.COMMUNITIES}})
     kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.GAMES}})
+    kodi.create_item({'label': i18n('playlists'), 'path': {'mode': MODES.CHANNELS, 'stream_type': 'playlist'}, 'context_menu': context_menu})
     kodi.create_item({'label': i18n('search'), 'path': {'mode': MODES.SEARCH}, 'context_menu': context_menu})
     kodi.create_item({'label': i18n('settings'), 'path': {'mode': MODES.SETTINGS}})
     kodi.end_of_directory()
@@ -180,21 +181,21 @@ def list_all_communities(cursor='MA=='):
         kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.CHANNELS, kwargs=['index'])
+@DISPATCHER.register(MODES.CHANNELS, kwargs=['stream_type', 'index'])
 @error_handler
-def list_all_channels(index=0):
+def list_all_channels(stream_type='live', index=0):
     utils.refresh_previews()
     kodi.set_content('videos')
     index, offset, limit = utils.calculate_pagination_values(index)
 
-    streams = twitch.get_all_channels(offset, limit)
+    streams = twitch.get_all_channels(stream_type, offset, limit)
     if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
         for stream in streams[Keys.STREAMS]:
             channel = stream[Keys.CHANNEL]
             if not utils.is_blacklisted(channel[Keys.ID]):
                 kodi.create_item(converter.stream_to_listitem(stream))
         if streams[Keys.TOTAL] > (offset + limit):
-            kodi.create_item(utils.link_to_next_page({'mode': MODES.CHANNELS, 'index': index}))
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.CHANNELS, 'stream_type': stream_type, 'index': index}))
         kodi.end_of_directory()
 
 
