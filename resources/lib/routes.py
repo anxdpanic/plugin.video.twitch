@@ -33,7 +33,7 @@ twitch = api.Twitch()
 @DISPATCHER.register(MODES.MAIN)
 @error_handler
 def main():
-    has_token = True if utils.get_oauth_token() else False
+    has_token = True if twitch.access_token else False
     kodi.set_content('files')
     context_menu = list()
     context_menu.extend(menu_items.clear_previews())
@@ -425,7 +425,7 @@ def play(name=None, channel_id=None, video_id=None, slug=None, source=True, use_
                 kodi.Player().play(item_dict['path'], playback_item)
             else:
                 kodi.set_resolved_url(playback_item)
-            if utils.irc_enabled() and utils.get_oauth_token():
+            if utils.irc_enabled() and twitch.access_token:
                 user = twitch.get_user()
                 username = user.get(Keys.NAME, None)
                 if username:
