@@ -426,7 +426,7 @@ def edit_qualities(target_id=None, name=None, video_id=None, remove=False):
             videos = twitch.get_vod(video_id)
         else:
             videos = twitch.get_live(name)
-        quality, url = converter.get_video_for_quality(videos, source=False, return_label=True)
+        quality, url = converter.select_video_for_quality(videos, return_label=True)
         result = utils.add_default_quality(target_id, name, quality)
         if result:
             kodi.notify(msg=i18n('default_quality_set') % (quality, name), sound=False)
