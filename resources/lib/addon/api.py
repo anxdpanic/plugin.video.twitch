@@ -18,6 +18,7 @@
 """
 
 import utils
+from common import kodi
 from error_handling import api_error_handler
 from constants import Keys, SCOPES
 from twitch import queries as twitch_queries
@@ -40,6 +41,28 @@ class Twitch:
         self.queries.CLIENT_ID = self.client_id
         self.queries.OAUTH_TOKEN = self.access_token
         self.client = oauth.MobileClient(self.client_id)
+        if self.access_token:
+            token_check = self.root()
+            if not token_check['token']['valid']:
+                self.queries.OAUTH_TOKEN = ''
+                self.access_token = ''
+                result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('invalid_token'),
+                                          line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
+            else:
+                if token_check['token']['client_id'] == self.client_id:
+                    if token_check['token']['authorization']:
+                        scopes = token_check['token']['authorization']['scopes']
+                        missing_scopes = [value for value in self.required_scopes if value not in scopes]
+                        if len(missing_scopes) > 0:
+                            self.queries.OAUTH_TOKEN = ''
+                            self.access_token = ''
+                            result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('missing_scopes') % missing_scopes,
+                                                      line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
+                else:
+                    self.queries.OAUTH_TOKEN = ''
+                    self.access_token = ''
+                    result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('client_id_mismatch'),
+                                              line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=1)

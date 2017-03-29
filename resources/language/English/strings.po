@@ -634,3 +634,19 @@ msgstr ""
 msgctxt "#30176"
 msgid "Clips"
 msgstr ""
+
+msgctxt "#30177"
+msgid "Ivalid OAuth token"
+msgstr ""
+
+msgctxt "#30178"
+msgid "Missing required scopes: %s"
+msgstr ""
+
+msgctxt "#30179"
+msgid "Client id mismatch"
+msgstr ""
+
+msgctxt "#30180"
+msgid "Go to '%s' - '%s' - '%s' to generate a new token"
+msgstr ""
