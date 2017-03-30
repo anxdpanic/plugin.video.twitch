@@ -714,3 +714,7 @@ msgstr ""
 msgctxt "#30196"
 msgid "Remove all clip qualities"
 msgstr ""
+
+msgctxt "#30197"
+msgid "Requires confirmation"
+msgstr ""
