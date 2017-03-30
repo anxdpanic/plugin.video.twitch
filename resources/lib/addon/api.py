@@ -43,27 +43,31 @@ class Twitch:
         self.queries.OAUTH_TOKEN = self.access_token
         self.client = oauth.MobileClient(self.client_id)
         if self.access_token:
-            token_check = self.root()
-            if not token_check['token']['valid']:
+            if not self.valid_token():
                 self.queries.OAUTH_TOKEN = ''
                 self.access_token = ''
-                result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('invalid_token'),
-                                          line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
+
+    @utils.cache.cache_function(cache_limit=1)
+    def valid_token(self):
+        token_check = self.root()
+        if not token_check['token']['valid']:
+            result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('invalid_token'),
+                                      line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
+            return False
+        else:
+            if token_check['token']['client_id'] == self.client_id:
+                if token_check['token']['authorization']:
+                    scopes = token_check['token']['authorization']['scopes']
+                    missing_scopes = [value for value in self.required_scopes if value not in scopes]
+                    if len(missing_scopes) > 0:
+                        result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('missing_scopes') % missing_scopes,
+                                                  line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
+                        return False
             else:
-                if token_check['token']['client_id'] == self.client_id:
-                    if token_check['token']['authorization']:
-                        scopes = token_check['token']['authorization']['scopes']
-                        missing_scopes = [value for value in self.required_scopes if value not in scopes]
-                        if len(missing_scopes) > 0:
-                            self.queries.OAUTH_TOKEN = ''
-                            self.access_token = ''
-                            result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('missing_scopes') % missing_scopes,
-                                                      line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
-                else:
-                    self.queries.OAUTH_TOKEN = ''
-                    self.access_token = ''
-                    result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('client_id_mismatch'),
-                                              line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
+                result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('client_id_mismatch'),
+                                          line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
+                return False
+        return True
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=1)
