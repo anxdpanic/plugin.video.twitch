@@ -20,7 +20,7 @@
 import time
 from datetime import datetime
 from base64 import b64decode
-from common import kodi, cache
+from common import kodi
 from strings import STRINGS
 from tccleaner import TextureCacheCleaner
 from constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, STORAGE, ADDON_DATA_DIR
@@ -29,10 +29,6 @@ import xbmcvfs
 
 translations = kodi.Translations(STRINGS)
 i18n = translations.i18n
-
-cache = cache
-cache_limit = int(kodi.get_setting('cache_expire_time')) / 60
-cache.cache_enabled = cache_limit > 0
 
 
 def get_redirect_uri():
