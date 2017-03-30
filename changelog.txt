@@ -18,7 +18,7 @@
 - add Communities
 - add Follow/Unfollow
 - add Block/Unblock user
-- add blacklisting of users/games
+- add blacklisting of users/games/communities
 - add set default quality per stream
 - add offline playlists to Following
 - add Collections

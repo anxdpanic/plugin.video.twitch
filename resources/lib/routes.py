@@ -94,7 +94,7 @@ def search_results(content, query, index=0):
         utils.refresh_previews()
         kodi.set_content('videos')
         index, offset, limit = utils.calculate_pagination_values(index)
-        results = twitch.get_stream_search(query=query, offset=offset, limit=limit)
+        results = twitch.get_stream_search(search_query=query, offset=offset, limit=limit)
         if (results[Keys.TOTAL] > 0) and (Keys.STREAMS in results):
             for stream in results[Keys.STREAMS]:
                 channel = stream[Keys.CHANNEL]
@@ -108,7 +108,7 @@ def search_results(content, query, index=0):
     elif content == 'channels':
         kodi.set_content('files')
         index, offset, limit = utils.calculate_pagination_values(index)
-        results = twitch.get_channel_search(query=query, offset=offset, limit=limit)
+        results = twitch.get_channel_search(search_query=query, offset=offset, limit=limit)
         if (results[Keys.TOTAL] > 0) and (Keys.CHANNELS in results):
             for channel in results[Keys.CHANNELS]:
                 if not utils.is_blacklisted(channel[Keys._ID]):
@@ -120,7 +120,7 @@ def search_results(content, query, index=0):
             kodi.update_container(kodi.get_plugin_url({'mode': MODES.SEARCH}))
     elif content == 'games':
         kodi.set_content('files')
-        results = twitch.get_game_search(query=query)
+        results = twitch.get_game_search(search_query=query)
         if (Keys.GAMES in results) and (results[Keys.GAMES]):
             for game in results[Keys.GAMES]:
                 if not utils.is_blacklisted(game[Keys._ID], list_type='game'):

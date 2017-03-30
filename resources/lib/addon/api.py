@@ -146,18 +146,18 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_channel_search(self, query, offset, limit):
-        return self.api.search.channels(query=query, limit=limit, offset=offset)
+    def get_channel_search(self, search_query, offset, limit):
+        return self.api.search.channels(search_query=search_query, limit=limit, offset=offset)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_stream_search(self, query, offset, limit):
-        return self.api.search.streams(query=query, limit=limit, offset=offset)
+    def get_stream_search(self, search_query, offset, limit):
+        return self.api.search.streams(search_query=search_query, limit=limit, offset=offset)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_game_search(self, query):
-        return self.api.search.games(query=query)
+    def get_game_search(self, search_query):
+        return self.api.search.games(query=search_query)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
