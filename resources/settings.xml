@@ -26,8 +26,10 @@
         <setting label="30153" type="lsep"/>
         <setting label="30154" id="remove_user_blacklist" type="action" action="RunPlugin(plugin://$ID/?mode=edit_blacklist&amp;list_type=user&amp;remove=true)"/>
         <setting label="30155" id="remove_game_blacklist" type="action" action="RunPlugin(plugin://$ID/?mode=edit_blacklist&amp;list_type=game&amp;remove=true)"/>
+        <setting label="30182" id="remove_community_blacklist" type="action" action="RunPlugin(plugin://$ID/?mode=edit_blacklist&amp;list_type=community&amp;remove=true)"/>
         <setting label="30156" id="clear_user_blacklist" type="action" action="RunPlugin(plugin://$ID/?mode=clear_list&amp;list_type=user&amp;list_name=blacklist)"/>
         <setting label="30157" id="clear_game_blacklist" type="action" action="RunPlugin(plugin://$ID/?mode=clear_list&amp;list_type=game&amp;list_name=blacklist)"/>
+        <setting label="30183" id="clear_community_blacklist" type="action" action="RunPlugin(plugin://$ID/?mode=clear_list&amp;list_type=community&amp;list_name=blacklist)"/>
     </category>
     <!-- Cache -->
     <category label="30120">

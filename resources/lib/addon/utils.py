@@ -191,7 +191,7 @@ def get_stored_json():
     needs_save = False
     # set defaults
     if 'blacklist' not in json_data:
-        json_data.update({'blacklist': {'user': [], 'game': []}})
+        json_data.update({'blacklist': {'user': [], 'game': [], 'community': []}})
         needs_save = True
     if 'qualities' not in json_data:
         json_data.update({'qualities': {'default': []}})
@@ -203,13 +203,22 @@ def get_stored_json():
 
 def is_blacklisted(target_id, list_type='user'):
     json_data = get_stored_json()
-    return any(str(target_id) == str(blacklist_id) for blacklist_id, blacklist_name in json_data['blacklist'][list_type])
+    blacklist = json_data['blacklist'].get(list_type)
+    if not blacklist:
+        return False
+    if list_type == 'user':
+        return any(str(target_id) == str(blacklist_id) for blacklist_id, blacklist_name in blacklist)
+    else:
+        return any((str(target_id) == str(blacklist_id) or str(target_id) == str(blacklist_name)) for blacklist_id, blacklist_name in blacklist)
 
 
 def add_blacklist(target_id, name, list_type='user'):
     json_data = get_stored_json()
 
-    if (list_type in json_data['blacklist']) and (not is_blacklisted(target_id, list_type)):
+    if not is_blacklisted(target_id, list_type):
+        blacklist = json_data['blacklist'].get(list_type)
+        if not blacklist:
+            json_data['blacklist'][list_type] = []
         json_data['blacklist'][list_type].append([target_id, name])
         STORAGE.save(json_data)
         return True
@@ -218,7 +227,8 @@ def add_blacklist(target_id, name, list_type='user'):
 
 def remove_blacklist(list_type='user'):
     json_data = get_stored_json()
-    result = kodi.Dialog().select(i18n('remove_from_blacklist') % list_type, [name for user_id, name in json_data['blacklist'][list_type]])
+    result = kodi.Dialog().select(i18n('remove_from_blacklist') % list_type,
+                                  [blacklist_name for blacklist_id, blacklist_name in json_data['blacklist'][list_type]])
     if result == -1:
         return None
     else:

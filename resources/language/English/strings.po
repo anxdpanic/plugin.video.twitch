@@ -650,3 +650,15 @@ msgstr ""
 msgctxt "#30180"
 msgid "Go to '%s' - '%s' - '%s' to generate a new token"
 msgstr ""
+
+msgctxt "#30181"
+msgid "Are you sure you want to blacklist %s?"
+msgstr ""
+
+msgctxt "#30182"
+msgid "Remove community"
+msgstr ""
+
+msgctxt "#30183"
+msgid "Remove all communities"
+msgstr ""
