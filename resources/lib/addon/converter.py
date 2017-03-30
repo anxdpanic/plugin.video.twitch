@@ -65,22 +65,36 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.clear_previews())
         context_menu.extend(menu_items.edit_follow_game(name))
-        context_menu.extend(menu_items.add_blacklist(game[Keys.ID], name, list_type='game'))
+        context_menu.extend(menu_items.add_blacklist(game[Keys._ID], name, list_type='game'))
         return {'label': name,
-                'path': kodi.get_plugin_url({'mode': MODES.GAMESTREAMS, 'game': name}),
+                'path': kodi.get_plugin_url({'mode': MODES.GAMELISTS, 'game_name': name}),
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
                 'context_menu': context_menu}
 
     @staticmethod
     def community_to_listitem(community):
         name = community[Keys.NAME].encode('utf-8')
-        _id = community[Keys.ID]
+        _id = community[Keys._ID]
         image = community.get(Keys.AVATAR_IMAGE, Images.THUMB)
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.clear_previews())
+        context_menu.extend(menu_items.add_blacklist(_id, name, list_type='community'))
         return {'label': name,
                 'path': kodi.get_plugin_url({'mode': MODES.COMMUNITYSTREAMS, 'community_id': _id}),
+                'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
+                'context_menu': context_menu}
+
+    @staticmethod
+    def collection_to_listitem(collection):
+        title = collection[Keys.TITLE].encode('utf-8')
+        _id = collection[Keys._ID]
+        image = collection[Keys.THUMBNAILS].get(Keys.MEDIUM, Images.THUMB)
+        context_menu = list()
+        context_menu.extend(menu_items.refresh())
+        context_menu.extend(menu_items.clear_previews())
+        return {'label': title,
+                'path': kodi.get_plugin_url({'mode': MODES.COLLECTIONVIDEOLIST, 'collection_id': _id}),
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
                 'context_menu': context_menu}
 
@@ -123,17 +137,70 @@ class JsonListItemConverter(object):
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.clear_previews())
-        context_menu.extend(menu_items.add_blacklist(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
         if self.has_token:
-            context_menu.extend(menu_items.edit_follow(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
-            context_menu.extend(menu_items.edit_block(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
+            context_menu.extend(menu_items.edit_follow(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
+            context_menu.extend(menu_items.edit_block(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
         return {'label': channel[Keys.DISPLAY_NAME],
-                'path': kodi.get_plugin_url({'mode': MODES.CHANNELVIDEOS, 'channel_id': channel[Keys.ID]}),
+                'path': kodi.get_plugin_url({'mode': MODES.CHANNELVIDEOS, 'channel_id': channel[Keys._ID], 'channel_name': channel[Keys.NAME]}),
                 'art': the_art({'fanart': video_banner, 'poster': image, 'thumb': image}),
                 'context_menu': context_menu}
 
+    def clip_to_listitem(self, clip):
+        duration = clip.get(Keys.DURATION)
+        plot = clip.get(Keys.DESCRIPTION)
+        date = clip.get(Keys.CREATED_AT)[:10] if clip.get(Keys.CREATED_AT) else ''
+        year = clip.get(Keys.CREATED_AT)[:4] if clip.get(Keys.CREATED_AT) else ''
+
+        image = clip.get(Keys.THUMBNAILS) if clip.get(Keys.THUMBNAILS) else Images.VIDEOTHUMB
+        if Keys.MEDIUM in image:
+            image = image.get(Keys.MEDIUM)
+        broadcaster = clip[Keys.BROADCASTER]
+        context_menu = list()
+        context_menu.extend(menu_items.refresh())
+        context_menu.extend(menu_items.channel_videos(broadcaster[Keys.ID], broadcaster[Keys.NAME], broadcaster[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.go_to_game(clip[Keys.GAME]))
+        context_menu.extend(menu_items.set_default_quality(broadcaster[Keys.ID], broadcaster[Keys.NAME], clip[Keys.ID]))
+        context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
+                                                  {'mode': MODES.PLAY, 'slug': clip[Keys.ID], 'source': False, 'use_player': True}))
+        return {'label': self.get_title_for_clip(clip),
+                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'slug': clip[Keys.ID]}),
+                'context_menu': context_menu,
+                'is_playable': True,
+                'info': {'duration': str(duration), 'plot': plot, 'plotoutline': plot, 'tagline': plot,
+                         'year': year, 'date': date, 'premiered': date, 'mediatype': 'video'},
+                'content_type': 'video',
+                'art': the_art({'poster': image, 'thumb': image, 'icon': image})}
+
     @staticmethod
-    def video_list_to_listitem(video):
+    def collection_video_to_listitem(video):
+        duration = video.get(Keys.DURATION)
+        plot = video.get(Keys.DESCRIPTION)
+        date = video.get(Keys.PUBLISHED_AT)[:10] if video.get(Keys.PUBLISHED_AT) else ''
+        year = video.get(Keys.PUBLISHED_AT)[:4] if video.get(Keys.PUBLISHED_AT) else ''
+
+        image = video.get(Keys.THUMBNAILS) if video.get(Keys.THUMBNAILS) else Images.VIDEOTHUMB
+        if Keys.MEDIUM in image:
+            image = image.get(Keys.MEDIUM)
+        owner = video[Keys.OWNER]
+        context_menu = list()
+        context_menu.extend(menu_items.refresh())
+        context_menu.extend(menu_items.channel_videos(owner[Keys._ID], owner[Keys.NAME], owner[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
+        owner = video[Keys.OWNER]
+        context_menu.extend(menu_items.set_default_quality(owner[Keys._ID], owner[Keys.NAME], video[Keys.ITEM_ID]))
+        context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
+                                                  {'mode': MODES.PLAY, 'video_id': video[Keys.ITEM_ID], 'source': False, 'use_player': True}))
+        return {'label': video[Keys.TITLE],
+                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video[Keys.ITEM_ID]}),
+                'context_menu': context_menu,
+                'is_playable': True,
+                'info': {'duration': str(duration), 'plot': plot, 'plotoutline': plot, 'tagline': plot,
+                         'year': year, 'date': date, 'premiered': date, 'mediatype': 'video'},
+                'content_type': 'video',
+                'art': the_art({'poster': image, 'thumb': image, 'icon': image})}
+
+    def video_list_to_listitem(self, video):
         duration = video.get(Keys.LENGTH)
         plot = video.get(Keys.DESCRIPTION)
         date = video.get(Keys.CREATED_AT)[:10] if video.get(Keys.CREATED_AT) else ''
@@ -141,15 +208,16 @@ class JsonListItemConverter(object):
         image = video.get(Keys.PREVIEW) if video.get(Keys.PREVIEW) else Images.VIDEOTHUMB
         if Keys.MEDIUM in image:
             image = image.get(Keys.MEDIUM)
+        channel = video[Keys.CHANNEL]
         context_menu = list()
         context_menu.extend(menu_items.refresh())
+        context_menu.extend(menu_items.channel_videos(channel[Keys._ID], channel[Keys.NAME], channel[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
-        channel = video[Keys.CHANNEL]
-        context_menu.extend(menu_items.set_default_quality(channel[Keys.ID], channel[Keys.NAME], video[Keys.ID]))
+        context_menu.extend(menu_items.set_default_quality(channel[Keys._ID], channel[Keys.NAME], video[Keys._ID]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'video_id': video[Keys.ID], 'source': False, 'use_player': True}))
-        return {'label': video[Keys.TITLE],
-                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video[Keys.ID]}),
+                                                  {'mode': MODES.PLAY, 'video_id': video[Keys._ID], 'source': False, 'use_player': True}))
+        return {'label': self.get_title_for_video(video),
+                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video[Keys._ID]}),
                 'context_menu': context_menu,
                 'is_playable': True,
                 'info': {'duration': str(duration), 'plot': plot, 'plotoutline': plot, 'tagline': plot,
@@ -172,22 +240,37 @@ class JsonListItemConverter(object):
         info.update({'mediatype': 'video'})
         context_menu = list()
         context_menu.extend(menu_items.refresh())
-        context_menu.extend(menu_items.channel_videos(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.channel_videos(channel[Keys._ID], channel[Keys.NAME], channel[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.go_to_game(channel[Keys.GAME]))
-        context_menu.extend(menu_items.add_blacklist(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
         if self.has_token:
-            context_menu.extend(menu_items.edit_follow(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
-            context_menu.extend(menu_items.edit_block(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
-        context_menu.extend(menu_items.set_default_quality(channel[Keys.ID], channel[Keys.NAME]))
+            context_menu.extend(menu_items.edit_follow(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
+            context_menu.extend(menu_items.edit_block(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.set_default_quality(channel[Keys._ID], channel[Keys.NAME]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys.ID], 'source': False, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys._ID], 'source': False, 'use_player': True}))
         return {'label': title,
-                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys.ID]}),
+                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys._ID]}),
                 'context_menu': context_menu,
                 'is_playable': True,
                 'info': info,
                 'content_type': 'video',
                 'art': the_art({'fanart': video_banner, 'poster': image, 'thumb': image, 'icon': image})}
+
+    def clip_to_playitem(self, clip):
+        # path is returned '' and must be set after
+        broadcaster = clip[Keys.BROADCASTER]
+        image = clip.get(Keys.THUMBNAILS)
+        if Keys.MEDIUM in image:
+            image = image.get(Keys.MEDIUM)
+        logo = broadcaster.get(Keys.LOGO) if broadcaster.get(Keys.LOGO) else Images.VIDEOTHUMB
+        image = image if image else logo
+        title = self.get_title_for_clip(clip)
+        return {'label': title,
+                'path': '',
+                'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
+                'content_type': 'video',
+                'is_playable': True}
 
     def video_to_playitem(self, video):
         # path is returned '' and must be set after
@@ -197,7 +280,7 @@ class JsonListItemConverter(object):
             preview = preview.get(Keys.MEDIUM)
         logo = channel.get(Keys.LOGO) if channel.get(Keys.LOGO) else Images.VIDEOTHUMB
         image = preview if preview else logo
-        title = self.get_title_for_stream(video)
+        title = self.get_title_for_video(video)
         return {'label': title,
                 'path': '',
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
@@ -234,6 +317,27 @@ class JsonListItemConverter(object):
                 'views': views,
                 'thumbnail': image}
 
+    def get_title_for_clip(self, clip):
+        title_values = self.extract_clip_title_values(clip)
+        return self.title_builder.format_title(title_values)
+
+    @staticmethod
+    def extract_clip_title_values(clip):
+        broadcaster = clip[Keys.BROADCASTER]
+        viewers = clip.get(Keys.VIEWS)
+        viewers = viewers if (viewers or isinstance(viewers, int)) else i18n('unknown_viewer_count')
+
+        streamer = broadcaster.get(Keys.DISPLAY_NAME) if broadcaster.get(Keys.DISPLAY_NAME) else i18n('unnamed_streamer')
+        title = clip.get(Keys.TITLE)
+        game = clip.get(Keys.GAME) if clip.get(Keys.GAME) else i18n('unknown_game')
+        broadcaster_language = clip.get(Keys.LANGUAGE) if clip.get(Keys.LANGUAGE) else i18n('unknown_language')
+
+        return {'streamer': streamer,
+                'title': title,
+                'game': game,
+                'viewers': viewers,
+                'broadcaster_language': broadcaster_language}
+
     def get_title_for_stream(self, stream):
         title_values = self.extract_stream_title_values(stream)
         return self.title_builder.format_title(title_values)
@@ -246,12 +350,33 @@ class JsonListItemConverter(object):
             viewers = channel.get(Keys.VIEWERS)
         else:
             viewers = stream.get(Keys.VIEWERS)
-        viewers = viewers if viewers else i18n('unknown_viewer_count')
+        viewers = viewers if (viewers or isinstance(viewers, int)) else i18n('unknown_viewer_count')
 
         streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else i18n('unnamed_streamer')
         title = channel.get(Keys.STATUS) if channel.get(Keys.STATUS) else i18n('untitled_stream')
         game = channel.get(Keys.GAME) if channel.get(Keys.GAME) else i18n('unknown_game')
         broadcaster_language = channel.get(Keys.BROADCASTER_LANGUAGE) if channel.get(Keys.BROADCASTER_LANGUAGE) else i18n('unknown_language')
+
+        return {'streamer': streamer,
+                'title': title,
+                'game': game,
+                'viewers': viewers,
+                'broadcaster_language': broadcaster_language}
+
+    def get_title_for_video(self, video):
+        title_values = self.extract_video_title_values(video)
+        return self.title_builder.format_title(title_values)
+
+    @staticmethod
+    def extract_video_title_values(video):
+        channel = video[Keys.CHANNEL]
+        viewers = video.get(Keys.VIEWS)
+        viewers = viewers if (viewers or isinstance(viewers, int)) else i18n('unknown_viewer_count')
+
+        streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else i18n('unnamed_streamer')
+        title = video.get(Keys.TITLE) if video.get(Keys.TITLE) else i18n('untitled_stream')
+        game = video.get(Keys.GAME) if video.get(Keys.GAME) else i18n('unknown_game')
+        broadcaster_language = video.get(Keys.LANGUAGE) if video.get(Keys.LANGUAGE) else i18n('unknown_language')
 
         return {'streamer': streamer,
                 'title': title,
@@ -266,7 +391,7 @@ class JsonListItemConverter(object):
         game = channel.get(Keys.GAME) if channel.get(Keys.GAME) else channel.get(Keys.META_GAME)
         game = game if game else i18n('unknown_game')
         viewers = channel.get(Keys.CURRENT_VIEWERS) \
-            if channel.get(Keys.CURRENT_VIEWERS) else i18n('unknown_viewer_count')
+            if (channel.get(Keys.CURRENT_VIEWERS) or isinstance(channel.get(Keys.CURRENT_VIEWERS), int)) else i18n('unknown_viewer_count')
         broadcaster_language = channel.get(Keys.BROADCASTER_LANGUAGE) if channel.get(Keys.BROADCASTER_LANGUAGE) else i18n('unknown_language')
 
         return {'streamer': streamer,
@@ -320,10 +445,9 @@ class JsonListItemConverter(object):
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
 
-    @staticmethod
-    def get_video_for_quality(videos, source=True, return_label=False, quality=None):
+    def get_video_for_quality(self, videos, source=True, return_label=False, quality=None):
         for quality_label, url in videos:
-            if ((quality) and (quality.lower() in quality_label.lower())) or len(videos) == 1:
+            if (quality and (quality.lower() in quality_label.lower())) or len(videos) == 1:
                 if return_label:
                     return quality_label, url
                 else:
@@ -335,6 +459,10 @@ class JsonListItemConverter(object):
                 else:
                     return url
 
+        return self.select_video_for_quality(videos, return_label=return_label)
+
+    @staticmethod
+    def select_video_for_quality(videos, return_label=False):
         result = kodi.Dialog().select(i18n('choose_quality'), [quality for quality, url in videos])
         if result == -1:
             return None

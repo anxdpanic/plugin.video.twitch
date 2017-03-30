@@ -18,13 +18,13 @@
 """
 
 import utils
+from common import kodi
 from error_handling import api_error_handler
 from constants import Keys, SCOPES
 from twitch import queries as twitch_queries
 from twitch import oauth
 from twitch.api import usher
 from twitch.api import v5 as twitch
-from base64 import b64encode
 
 i18n = utils.i18n
 
@@ -41,6 +41,33 @@ class Twitch:
         self.queries.CLIENT_ID = self.client_id
         self.queries.OAUTH_TOKEN = self.access_token
         self.client = oauth.MobileClient(self.client_id)
+        if self.access_token:
+            token_check = self.root()
+            if not token_check['token']['valid']:
+                self.queries.OAUTH_TOKEN = ''
+                self.access_token = ''
+                result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('invalid_token'),
+                                          line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
+            else:
+                if token_check['token']['client_id'] == self.client_id:
+                    if token_check['token']['authorization']:
+                        scopes = token_check['token']['authorization']['scopes']
+                        missing_scopes = [value for value in self.required_scopes if value not in scopes]
+                        if len(missing_scopes) > 0:
+                            self.queries.OAUTH_TOKEN = ''
+                            self.access_token = ''
+                            result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('missing_scopes') % missing_scopes,
+                                                      line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
+                else:
+                    self.queries.OAUTH_TOKEN = ''
+                    self.access_token = ''
+                    result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('client_id_mismatch'),
+                                              line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=1)
+    def root(self):
+        return self.api.root()
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=1)
@@ -59,13 +86,18 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_top_communities(self, index, limit):
-        return self.api.communities.get_top(cursor=b64encode(str(index)), limit=limit)
+    def get_top_communities(self, cursor, limit):
+        return self.api.communities.get_top(cursor=cursor, limit=limit)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_all_channels(self, offset, limit):
-        return self.api.streams.get_all(offset=offset, limit=limit)
+    def get_collections(self, channel_id, cursor, limit):
+        return self.api.collections.get_collections(channel_id=channel_id, cursor=cursor, limit=limit)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_all_streams(self, stream_type, platform, offset, limit):
+        return self.api.streams.get_all(stream_type=stream_type, platform=platform, offset=offset, limit=limit)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -79,8 +111,28 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_top_videos(self, offset, limit, broadcast_type, period='week'):
+        return self.api.videos.get_top(limit=limit, offset=offset, broadcast_type=broadcast_type, period=period)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_followed_clips(self, cursor, limit, trending='true'):
+        return self.api.clips.get_followed(limit=limit, cursor=cursor, trending=trending)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_top_clips(self, cursor, limit, channel=None, game=None, period='week', trending='true'):
+        return self.api.clips.get_top(limit=limit, cursor=cursor, channels=channel, games=game, period=period, trending=trending)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_channel_videos(self, channel_id, offset, limit, broadcast_type):
         return self.api.channels.get_videos(channel_id=channel_id, limit=limit, offset=offset, broadcast_type=broadcast_type)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_collection_videos(self, collection_id):
+        return self.api.collections.by_id(collection_id=collection_id, include_all='false')
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -111,21 +163,21 @@ class Twitch:
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def check_follow(self, channel_id):
         user = self.get_user()
-        user_id = user.get(Keys.ID)
+        user_id = user.get(Keys._ID)
         return self.api.users.check_follows(user_id=user_id, channel_id=channel_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def follow(self, channel_id):
         user = self.get_user()
-        user_id = user.get(Keys.ID)
+        user_id = user.get(Keys._ID)
         return self.api.users.follow_channel(user_id=user_id, channel_id=channel_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def unfollow(self, channel_id):
         user = self.get_user()
-        user_id = user.get(Keys.ID)
+        user_id = user.get(Keys._ID)
         return self.api.users.unfollow_channel(user_id=user_id, channel_id=channel_id)
 
     @api_error_handler
@@ -153,27 +205,32 @@ class Twitch:
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def blocks(self, offset, limit):
         user = self.get_user()
-        user_id = user.get(Keys.ID)
+        user_id = user.get(Keys._ID)
         return self.api.users.get_blocks(user_id=user_id, limit=limit, offset=offset)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def block_user(self, target_id):
         user = self.get_user()
-        user_id = user.get(Keys.ID)
+        user_id = user.get(Keys._ID)
         return self.api.users.block_user(user_id=user_id, target_id=target_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def unblock_user(self, target_id):
         user = self.get_user()
-        user_id = user.get(Keys.ID)
+        user_id = user.get(Keys._ID)
         return self.api.users.unblock_user(user_id=user_id, target_id=target_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_video_by_id(self, video_id):
         return self.api.videos.by_id(video_id=video_id)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_clip_by_slug(self, slug):
+        return self.api.clips.by_slug(slug=slug)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -206,6 +263,11 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
+    def get_clip(self, slug):
+        return self.usher.clip(slug)
+
+    @api_error_handler
+    @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_live(self, name):
         return self.usher.live(name)
 
@@ -220,7 +282,7 @@ class Twitch:
             if len(temp[Keys.BLOCKS]) == 0:
                 break
             for user in temp[Keys.BLOCKS]:
-                user_blocks.append((user[Keys.USER][Keys.ID], user[Keys.USER][Keys.DISPLAY_NAME]))
+                user_blocks.append((user[Keys.USER][Keys._ID], user[Keys.USER][Keys.DISPLAY_NAME]))
             offset += limit
             if temp[Keys.TOTAL] <= offset:
                 break

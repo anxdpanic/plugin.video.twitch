@@ -81,5 +81,19 @@ STRINGS = {
     'removed_default_quality': 30165,
     'remove_default_quality': 30166,
     'choose_quality': 30169,
-    'playlists': 30170
+    'playlists': 30170,
+    'collections': 30171,
+    'browse': 30172,
+    'xbox_one': 30173,
+    'ps4': 30174,
+    'videos': 30175,
+    'clips': 30176,
+    'oauth_token': 30099,
+    'invalid_token': 30177,
+    'missing_scopes': 30178,
+    'client_id_mismatch': 30179,
+    'get_new_oauth_token': 30180,
+    'get_oauth_token': 30135,
+    'confirm_blacklist': 30181,
+    'blacklist': 30153
 }

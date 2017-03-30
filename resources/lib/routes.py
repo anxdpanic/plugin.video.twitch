@@ -33,18 +33,33 @@ twitch = api.Twitch()
 @DISPATCHER.register(MODES.MAIN)
 @error_handler
 def main():
-    has_token = True if utils.get_oauth_token() else False
+    has_token = True if twitch.access_token else False
     kodi.set_content('files')
     context_menu = list()
     context_menu.extend(menu_items.clear_previews())
     kodi.create_item({'label': i18n('featured_streams'), 'path': {'mode': MODES.FEATUREDSTREAMS}, 'context_menu': context_menu})
     if has_token:
         kodi.create_item({'label': i18n('following'), 'path': {'mode': MODES.FOLLOWING}})
-    kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.CHANNELS}, 'context_menu': context_menu})
-    kodi.create_item({'label': i18n('communities'), 'path': {'mode': MODES.COMMUNITIES}})
-    kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.GAMES}})
+    kodi.create_item({'label': i18n('browse'), 'path': {'mode': MODES.BROWSE}, 'context_menu': context_menu})
     kodi.create_item({'label': i18n('search'), 'path': {'mode': MODES.SEARCH}, 'context_menu': context_menu})
     kodi.create_item({'label': i18n('settings'), 'path': {'mode': MODES.SETTINGS}})
+    kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.BROWSE)
+@error_handler
+def browse():
+    kodi.set_content('files')
+    context_menu = list()
+    context_menu.extend(menu_items.clear_previews())
+    kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.STREAMLIST, 'stream_type': 'live'}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('playlists'), 'path': {'mode': MODES.STREAMLIST, 'stream_type': 'playlist'}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('xbox_one'), 'path': {'mode': MODES.STREAMLIST, 'platform': 'xbox_one'}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('ps4'), 'path': {'mode': MODES.STREAMLIST, 'platform': 'ps4'}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('videos'), 'path': {'mode': MODES.CHANNELVIDEOS, 'channel_id': 'all'}})
+    kodi.create_item({'label': i18n('clips'), 'path': {'mode': MODES.CLIPSLIST, 'trending': 'true'}})
+    kodi.create_item({'label': i18n('communities'), 'path': {'mode': MODES.COMMUNITIES}})
+    kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.GAMES}})
     kodi.end_of_directory()
 
 
@@ -52,7 +67,9 @@ def main():
 @error_handler
 def search():
     kodi.set_content('files')
-    kodi.create_item({'label': i18n('streams'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'streams'}})
+    context_menu = list()
+    context_menu.extend(menu_items.clear_previews())
+    kodi.create_item({'label': i18n('streams'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'streams'}, 'context_menu': context_menu})
     kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'channels'}})
     kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'games'}})
     kodi.create_item({'label': i18n('video_id_url'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'id_url'}})
@@ -81,7 +98,7 @@ def search_results(content, query, index=0):
         if (results[Keys.TOTAL] > 0) and (Keys.STREAMS in results):
             for stream in results[Keys.STREAMS]:
                 channel = stream[Keys.CHANNEL]
-                if not utils.is_blacklisted(channel[Keys.ID]):
+                if not utils.is_blacklisted(channel[Keys._ID]):
                     kodi.create_item(converter.stream_to_listitem(stream))
             if results[Keys.TOTAL] > (offset + limit):
                 kodi.create_item(utils.link_to_next_page({'mode': MODES.SEARCHRESULTS, 'content': content, 'query': query, 'index': index}))
@@ -94,7 +111,7 @@ def search_results(content, query, index=0):
         results = twitch.get_channel_search(query=query, offset=offset, limit=limit)
         if (results[Keys.TOTAL] > 0) and (Keys.CHANNELS in results):
             for channel in results[Keys.CHANNELS]:
-                if not utils.is_blacklisted(channel[Keys.ID]):
+                if not utils.is_blacklisted(channel[Keys._ID]):
                     kodi.create_item(converter.channel_to_listitem(channel))
             if results[Keys.TOTAL] > (offset + limit):
                 kodi.create_item(utils.link_to_next_page({'mode': MODES.SEARCHRESULTS, 'content': content, 'query': query, 'index': index}))
@@ -106,7 +123,7 @@ def search_results(content, query, index=0):
         results = twitch.get_game_search(query=query)
         if (Keys.GAMES in results) and (results[Keys.GAMES]):
             for game in results[Keys.GAMES]:
-                if not utils.is_blacklisted(game[Keys.ID], list_type='game'):
+                if not utils.is_blacklisted(game[Keys._ID], list_type='game'):
                     kodi.create_item(converter.game_to_listitem(game))
             kodi.end_of_directory()
         else:
@@ -132,6 +149,7 @@ def following():
     kodi.create_item({'label': i18n('playlists'), 'path': {'mode': MODES.FOLLOWED, 'content': 'playlist', 'context_menu': context_menu}})
     kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.FOLLOWED, 'content': 'channels'}})
     kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.FOLLOWED, 'content': 'games'}})
+    kodi.create_item({'label': i18n('clips'), 'path': {'mode': MODES.FOLLOWED, 'content': 'clips'}})
     kodi.end_of_directory()
 
 
@@ -144,7 +162,7 @@ def list_featured_streams():
     if Keys.FEATURED in streams:
         for stream in streams[Keys.FEATURED]:
             channel = stream[Keys.STREAM][Keys.CHANNEL]
-            if not utils.is_blacklisted(channel[Keys.ID]):
+            if not utils.is_blacklisted(channel[Keys._ID]):
                 kodi.create_item(converter.stream_to_listitem(stream[Keys.STREAM]))
         kodi.end_of_directory()
 
@@ -159,61 +177,63 @@ def list_all_games(index=0):
     if (games[Keys.TOTAL] > 0) and (Keys.TOP in games):
         for element in games[Keys.TOP]:
             game = element[Keys.GAME]
-            if not utils.is_blacklisted(game[Keys.ID], list_type='game'):
+            if not utils.is_blacklisted(game[Keys._ID], list_type='game'):
                 kodi.create_item(converter.game_to_listitem(element[Keys.GAME]))
         if games[Keys.TOTAL] > (offset + limit):
             kodi.create_item(utils.link_to_next_page({'mode': MODES.GAMES, 'index': index}))
         kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.COMMUNITIES, kwargs=['index'])
+@DISPATCHER.register(MODES.COMMUNITIES, kwargs=['cursor'])
 @error_handler
-def list_all_communities(index=0):
+def list_all_communities(cursor='MA=='):
     kodi.set_content('files')
-    index, offset, limit = utils.calculate_pagination_values(index)
-    communities = twitch.get_top_communities(index, limit)
+    limit = utils.get_items_per_page()
+    communities = twitch.get_top_communities(cursor, limit)
     if (communities[Keys.TOTAL] > 0) and (Keys.COMMUNITIES in communities):
-        for element in communities[Keys.COMMUNITIES]:
-            kodi.create_item(converter.community_to_listitem(element))
-        if communities[Keys.TOTAL] > (offset + limit):
-            kodi.create_item(utils.link_to_next_page({'mode': MODES.COMMUNITIES, 'index': index}))
+        for community in communities[Keys.COMMUNITIES]:
+            if not utils.is_blacklisted(community[Keys._ID], list_type='community'):
+                kodi.create_item(converter.community_to_listitem(community))
+        if communities[Keys.CURSOR]:
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.COMMUNITIES, 'cursor': communities[Keys.CURSOR]}))
         kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.CHANNELS, kwargs=['index'])
+@DISPATCHER.register(MODES.STREAMLIST, kwargs=['stream_type', 'index', 'platform'])
 @error_handler
-def list_all_channels(index=0):
+def list_streams(stream_type='live', index=0, platform='all'):
     utils.refresh_previews()
     kodi.set_content('videos')
     index, offset, limit = utils.calculate_pagination_values(index)
 
-    streams = twitch.get_all_channels(offset, limit)
+    streams = twitch.get_all_streams(stream_type, platform, offset, limit)
     if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
         for stream in streams[Keys.STREAMS]:
             channel = stream[Keys.CHANNEL]
-            if not utils.is_blacklisted(channel[Keys.ID]):
+            if not utils.is_blacklisted(channel[Keys._ID]):
                 kodi.create_item(converter.stream_to_listitem(stream))
         if streams[Keys.TOTAL] > (offset + limit):
-            kodi.create_item(utils.link_to_next_page({'mode': MODES.CHANNELS, 'index': index}))
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.STREAMLIST, 'stream_type': stream_type, 'platform': platform, 'index': index}))
         kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.FOLLOWED, args=['content'], kwargs=['index'])
+@DISPATCHER.register(MODES.FOLLOWED, args=['content'], kwargs=['index', 'cursor'])
 @error_handler
-def list_followed(content, index=0):
+def list_followed(content, index=0, cursor='MA=='):
     user = twitch.get_user()
-    user_id = user.get(Keys.ID, None)
+    user_id = user.get(Keys._ID, None)
     username = user.get(Keys.NAME, None)
     if user_id:
         if content == 'live' or content == 'playlist':
-            utils.refresh_previews()
+            if content == 'live':
+                utils.refresh_previews()
             kodi.set_content('videos')
             index, offset, limit = utils.calculate_pagination_values(index)
             streams = twitch.get_followed_streams(stream_type=content, offset=offset, limit=limit)
             if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
                 for stream in streams[Keys.STREAMS]:
                     channel = stream[Keys.CHANNEL]
-                    if not utils.is_blacklisted(channel[Keys.ID]):
+                    if not utils.is_blacklisted(channel[Keys._ID]):
                         kodi.create_item(converter.stream_to_listitem(stream))
                 if streams[Keys.TOTAL] > (offset + limit):
                     kodi.create_item(utils.link_to_next_page({'mode': MODES.FOLLOWED, 'content': content, 'index': index}))
@@ -225,7 +245,7 @@ def list_followed(content, index=0):
             if (channels[Keys.TOTAL] > 0) and (Keys.FOLLOWS in channels):
                 for follow in channels[Keys.FOLLOWS]:
                     channel = follow[Keys.CHANNEL]
-                    if not utils.is_blacklisted(channel[Keys.ID]):
+                    if not utils.is_blacklisted(channel[Keys._ID]):
                         kodi.create_item(converter.channel_to_listitem(channel))
                 if channels[Keys.TOTAL] > (offset + limit):
                     kodi.create_item(utils.link_to_next_page({'mode': MODES.FOLLOWED, 'content': content, 'index': index}))
@@ -236,19 +256,86 @@ def list_followed(content, index=0):
                 games = twitch.get_followed_games(username)
                 if Keys.FOLLOWS in games:
                     for game in games[Keys.FOLLOWS]:
-                        if not utils.is_blacklisted(game[Keys.ID], list_type='game'):
+                        if not utils.is_blacklisted(game[Keys._ID], list_type='game'):
                             kodi.create_item(converter.game_to_listitem(game))
                     kodi.end_of_directory()
+        elif content == 'clips':
+            kodi.set_content('videos')
+            limit = utils.get_items_per_page()
+            clips = twitch.get_followed_clips(cursor=cursor, limit=limit)
+            if Keys.CLIPS in clips and len(clips[Keys.CLIPS]) > 0:
+                for clip in clips[Keys.CLIPS]:
+                    if not utils.is_blacklisted(clip[Keys.BROADCASTER][Keys.ID]):
+                        kodi.create_item(converter.clip_to_listitem(clip))
+                if clips[Keys.CURSOR]:
+                    kodi.create_item(utils.link_to_next_page({'mode': MODES.FOLLOWED, 'content': content, 'cursor': clips[Keys.CURSOR]}))
+                kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.CHANNELVIDEOS, args=['channel_id'])
+@DISPATCHER.register(MODES.CHANNELVIDEOS, args=['channel_id'], kwargs=['channel_name'])
 @error_handler
-def list_channel_video_types(channel_id):
+def list_channel_video_types(channel_id, channel_name=None):
     kodi.set_content('files')
     kodi.create_item({'label': i18n('past_broadcasts'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': 'archive'}})
     kodi.create_item({'label': i18n('uploads'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': 'upload'}})
     kodi.create_item({'label': i18n('video_highlights'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': 'highlight'}})
+    if channel_id != 'all':
+        if channel_name:
+            kodi.create_item({'label': i18n('clips'), 'path': {'mode': MODES.CLIPSLIST, 'trending': 'true', 'channel_name': channel_name}})
+        kodi.create_item({'label': i18n('collections'), 'path': {'mode': MODES.COLLECTIONS, 'channel_id': channel_id}})
     kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.COLLECTIONS, args=['channel_id'], kwargs=['cursor'])
+@error_handler
+def list_collections(channel_id, cursor='MA=='):
+    kodi.set_content('files')
+    limit = utils.get_items_per_page()
+    collections = twitch.get_collections(channel_id, cursor, limit)
+
+    if (Keys.COLLECTIONS in collections) and (len(collections[Keys.COLLECTIONS]) > 0):
+        has_collections = False
+        for collection in collections[Keys.COLLECTIONS]:
+            if collection[Keys.ITEMS_COUNT] > 0:
+                has_collections = True
+        if has_collections:
+            for collection in collections[Keys.COLLECTIONS]:
+                if collection[Keys.ITEMS_COUNT] > 0:
+                    kodi.create_item(converter.collection_to_listitem(collection))
+            if collections[Keys.CURSOR]:
+                kodi.create_item(utils.link_to_next_page({'mode': MODES.COLLECTIONS, 'channel_id': channel_id, 'cursor': collections[Keys.CURSOR]}))
+            kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.COLLECTIONVIDEOLIST, args=['collection_id'])
+@error_handler
+def list_collection_videos(collection_id):
+    kodi.set_content('videos')
+    videos = twitch.get_collection_videos(collection_id)
+    if (Keys.ITEMS in videos) and (len(videos[Keys.ITEMS]) > 0):
+        for video in videos[Keys.ITEMS]:
+            kodi.create_item(converter.collection_video_to_listitem(video))
+        kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.CLIPSLIST, kwargs=['cursor', 'channel_name', 'game_name'])
+@error_handler
+def list_clips(cursor='MA==', channel_name=None, game_name=None):
+    kodi.set_content('videos')
+    limit = utils.get_items_per_page()
+    clips = twitch.get_top_clips(cursor, limit, channel=channel_name, game=game_name)
+
+    if Keys.CLIPS in clips and len(clips[Keys.CLIPS]) > 0:
+        for clip in clips[Keys.CLIPS]:
+            broadcaster = clip[Keys.BROADCASTER]
+            if not utils.is_blacklisted(broadcaster[Keys.ID]):
+                kodi.create_item(converter.clip_to_listitem(clip))
+        if clips[Keys.CURSOR]:
+            item_dict = {'mode': MODES.CLIPSLIST, 'cursor': clips[Keys.CURSOR]}
+            if channel_name:
+                item_dict['channel_name'] = channel_name
+            kodi.create_item(utils.link_to_next_page(item_dict))
+        kodi.end_of_directory()
 
 
 @DISPATCHER.register(MODES.CHANNELVIDEOLIST, args=['channel_id', 'broadcast_type'], kwargs=['index'])
@@ -256,14 +343,28 @@ def list_channel_video_types(channel_id):
 def list_channel_videos(channel_id, broadcast_type, index=0):
     kodi.set_content('videos')
     index, offset, limit = utils.calculate_pagination_values(index)
-
-    videos = twitch.get_channel_videos(channel_id, offset, limit, broadcast_type)
-    if (videos[Keys.TOTAL] > 0) and (Keys.VIDEOS in videos):
-        for video in videos[Keys.VIDEOS]:
+    if channel_id == 'all':
+        videos = twitch.get_top_videos(offset, limit, broadcast_type)
+    else:
+        videos = twitch.get_channel_videos(channel_id, offset, limit, broadcast_type)
+    if Keys.VODS in videos or ((videos[Keys.TOTAL] > 0) and (Keys.VIDEOS in videos)):
+        key = Keys.VODS if Keys.VODS in videos else Keys.VIDEOS
+        for video in videos[key]:
             kodi.create_item(converter.video_list_to_listitem(video))
-        if videos[Keys.TOTAL] > (offset + limit):
+        if Keys.VODS in videos or videos[Keys.TOTAL] > (offset + limit):
             kodi.create_item(utils.link_to_next_page({'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': broadcast_type, 'index': index}))
         kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.GAMELISTS, args=['game_name'])
+@error_handler
+def game_lists(game_name):
+    kodi.set_content('files')
+    context_menu = list()
+    context_menu.extend(menu_items.clear_previews())
+    kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.GAMESTREAMS, 'game': game_name}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('clips'), 'path': {'mode': MODES.CLIPSLIST, 'game_name': game_name}})
+    kodi.end_of_directory()
 
 
 @DISPATCHER.register(MODES.GAMESTREAMS, args=['game'], kwargs=['index'])
@@ -276,7 +377,9 @@ def list_game_streams(game, index=0):
     streams = twitch.get_game_streams(game=game, offset=offset, limit=limit)
     if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
         for stream in streams[Keys.STREAMS]:
-            kodi.create_item(converter.stream_to_listitem(stream))
+            channel = stream[Keys.CHANNEL]
+            if not utils.is_blacklisted(channel[Keys._ID]):
+                kodi.create_item(converter.stream_to_listitem(stream))
         if streams[Keys.TOTAL] > (offset + limit):
             kodi.create_item(utils.link_to_next_page({'mode': MODES.GAMESTREAMS, 'game': game, 'index': index}))
         kodi.end_of_directory()
@@ -293,23 +396,23 @@ def list_community_streams(community_id, index=0):
     if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
         for stream in streams[Keys.STREAMS]:
             channel = stream[Keys.CHANNEL]
-            if not utils.is_blacklisted(channel[Keys.ID]):
+            if not utils.is_blacklisted(channel[Keys._ID]):
                 kodi.create_item(converter.stream_to_listitem(stream))
         if streams[Keys.TOTAL] > (offset + limit):
             kodi.create_item(utils.link_to_next_page({'mode': MODES.COMMUNITYSTREAMS, 'community_id': community_id, 'index': index}))
         kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.PLAY, kwargs=['name', 'channel_id', 'video_id', 'source', 'use_player'])
+@DISPATCHER.register(MODES.PLAY, kwargs=['name', 'channel_id', 'video_id', 'slug', 'source', 'use_player'])
 @error_handler
-def play(name=None, channel_id=None, video_id=None, source=True, use_player=False):
-    if (name is None or channel_id is None) and (video_id is None): return
+def play(name=None, channel_id=None, video_id=None, slug=None, source=True, use_player=False):
     videos = item_dict = quality = None
     if video_id:
-        videos = twitch.get_vod(video_id)
         result = twitch.get_video_by_id(video_id)
+        video_id = result[Keys._ID]
+        videos = twitch.get_vod(video_id)
         item_dict = converter.video_to_playitem(result)
-        channel_id = result[Keys.CHANNEL][Keys.ID]
+        channel_id = result[Keys.CHANNEL][Keys._ID]
         quality = utils.get_default_quality(channel_id)
         if quality:
             quality = quality[channel_id]['quality']
@@ -320,6 +423,10 @@ def play(name=None, channel_id=None, video_id=None, source=True, use_player=Fals
         videos = twitch.get_live(name)
         result = twitch.get_channel_stream(channel_id)[Keys.STREAM]
         item_dict = converter.stream_to_playitem(result)
+    elif slug:
+        videos = twitch.get_clip(slug)
+        result = twitch.get_clip_by_slug(slug)
+        item_dict = converter.clip_to_playitem(result)
     if item_dict and videos:
         if source:
             use_source = kodi.get_setting('video_quality') == '0'
@@ -335,7 +442,7 @@ def play(name=None, channel_id=None, video_id=None, source=True, use_player=Fals
                 kodi.Player().play(item_dict['path'], playback_item)
             else:
                 kodi.set_resolved_url(playback_item)
-            if utils.irc_enabled() and utils.get_oauth_token():
+            if utils.irc_enabled() and twitch.access_token:
                 user = twitch.get_user()
                 username = user.get(Keys.NAME, None)
                 if username:
@@ -408,9 +515,12 @@ def edit_user_blocks(target_id, name):
 def edit_blacklist(list_type='user', target_id=None, name=None, remove=False):
     if not remove:
         if not target_id or not name: return
-        result = utils.add_blacklist(target_id, name, list_type)
-        if result:
-            kodi.notify(msg=i18n('blacklisted') % name, sound=False)
+
+        confirmed = kodi.Dialog().yesno(i18n('blacklist'), i18n('confirm_blacklist') % name)
+        if confirmed:
+            result = utils.add_blacklist(target_id, name, list_type)
+            if result:
+                kodi.notify(msg=i18n('blacklisted') % name, sound=False)
     else:
         result = utils.remove_blacklist(list_type)
         if result:
@@ -426,7 +536,7 @@ def edit_qualities(target_id=None, name=None, video_id=None, remove=False):
             videos = twitch.get_vod(video_id)
         else:
             videos = twitch.get_live(name)
-        quality, url = converter.get_video_for_quality(videos, source=False, return_label=True)
+        quality, url = converter.select_video_for_quality(videos, return_label=True)
         result = utils.add_default_quality(target_id, name, quality)
         if result:
             kodi.notify(msg=i18n('default_quality_set') % (quality, name), sound=False)
