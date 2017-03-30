@@ -163,21 +163,21 @@ class Twitch:
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def check_follow(self, channel_id):
         user = self.get_user()
-        user_id = user.get(Keys.ID)
+        user_id = user.get(Keys._ID)
         return self.api.users.check_follows(user_id=user_id, channel_id=channel_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def follow(self, channel_id):
         user = self.get_user()
-        user_id = user.get(Keys.ID)
+        user_id = user.get(Keys._ID)
         return self.api.users.follow_channel(user_id=user_id, channel_id=channel_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def unfollow(self, channel_id):
         user = self.get_user()
-        user_id = user.get(Keys.ID)
+        user_id = user.get(Keys._ID)
         return self.api.users.unfollow_channel(user_id=user_id, channel_id=channel_id)
 
     @api_error_handler
@@ -205,21 +205,21 @@ class Twitch:
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def blocks(self, offset, limit):
         user = self.get_user()
-        user_id = user.get(Keys.ID)
+        user_id = user.get(Keys._ID)
         return self.api.users.get_blocks(user_id=user_id, limit=limit, offset=offset)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def block_user(self, target_id):
         user = self.get_user()
-        user_id = user.get(Keys.ID)
+        user_id = user.get(Keys._ID)
         return self.api.users.block_user(user_id=user_id, target_id=target_id)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def unblock_user(self, target_id):
         user = self.get_user()
-        user_id = user.get(Keys.ID)
+        user_id = user.get(Keys._ID)
         return self.api.users.unblock_user(user_id=user_id, target_id=target_id)
 
     @api_error_handler
@@ -282,7 +282,7 @@ class Twitch:
             if len(temp[Keys.BLOCKS]) == 0:
                 break
             for user in temp[Keys.BLOCKS]:
-                user_blocks.append((user[Keys.USER][Keys.ID], user[Keys.USER][Keys.DISPLAY_NAME]))
+                user_blocks.append((user[Keys.USER][Keys._ID], user[Keys.USER][Keys.DISPLAY_NAME]))
             offset += limit
             if temp[Keys.TOTAL] <= offset:
                 break

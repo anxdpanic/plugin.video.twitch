@@ -94,4 +94,6 @@ STRINGS = {
     'client_id_mismatch': 30179,
     'get_new_oauth_token': 30180,
     'get_oauth_token': 30135,
+    'confirm_blacklist': 30181,
+    'blacklist': 30153
 }

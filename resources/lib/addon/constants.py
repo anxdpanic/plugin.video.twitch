@@ -145,7 +145,8 @@ class Keys:
     DESCRIPTION = 'description'
     CREATED_AT = 'created_at'
     GAMES = 'games'
-    ID = '_id'
+    _ID = '_id'
+    ID = 'id'
     CURSOR = '_cursor'
     COMMUNITIES = 'communities'
     AVATAR_IMAGE = 'avatar_image_url'
@@ -164,7 +165,6 @@ class Keys:
     CLIPS = 'clips'
     BROADCASTER = 'broadcaster'
     VOD = 'vod'
-    CID = 'id'
     LANGUAGE = 'language'
 
 

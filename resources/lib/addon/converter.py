@@ -65,7 +65,7 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.clear_previews())
         context_menu.extend(menu_items.edit_follow_game(name))
-        context_menu.extend(menu_items.add_blacklist(game[Keys.ID], name, list_type='game'))
+        context_menu.extend(menu_items.add_blacklist(game[Keys._ID], name, list_type='game'))
         return {'label': name,
                 'path': kodi.get_plugin_url({'mode': MODES.GAMELISTS, 'game_name': name}),
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
@@ -74,11 +74,12 @@ class JsonListItemConverter(object):
     @staticmethod
     def community_to_listitem(community):
         name = community[Keys.NAME].encode('utf-8')
-        _id = community[Keys.ID]
+        _id = community[Keys._ID]
         image = community.get(Keys.AVATAR_IMAGE, Images.THUMB)
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.clear_previews())
+        context_menu.extend(menu_items.add_blacklist(_id, name, list_type='community'))
         return {'label': name,
                 'path': kodi.get_plugin_url({'mode': MODES.COMMUNITYSTREAMS, 'community_id': _id}),
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
@@ -87,7 +88,7 @@ class JsonListItemConverter(object):
     @staticmethod
     def collection_to_listitem(collection):
         title = collection[Keys.TITLE].encode('utf-8')
-        _id = collection[Keys.ID]
+        _id = collection[Keys._ID]
         image = collection[Keys.THUMBNAILS].get(Keys.MEDIUM, Images.THUMB)
         context_menu = list()
         context_menu.extend(menu_items.refresh())
@@ -136,12 +137,12 @@ class JsonListItemConverter(object):
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.clear_previews())
-        context_menu.extend(menu_items.add_blacklist(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
         if self.has_token:
-            context_menu.extend(menu_items.edit_follow(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
-            context_menu.extend(menu_items.edit_block(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
+            context_menu.extend(menu_items.edit_follow(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
+            context_menu.extend(menu_items.edit_block(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
         return {'label': channel[Keys.DISPLAY_NAME],
-                'path': kodi.get_plugin_url({'mode': MODES.CHANNELVIDEOS, 'channel_id': channel[Keys.ID], 'channel_name': channel[Keys.NAME]}),
+                'path': kodi.get_plugin_url({'mode': MODES.CHANNELVIDEOS, 'channel_id': channel[Keys._ID], 'channel_name': channel[Keys.NAME]}),
                 'art': the_art({'fanart': video_banner, 'poster': image, 'thumb': image}),
                 'context_menu': context_menu}
 
@@ -154,15 +155,16 @@ class JsonListItemConverter(object):
         image = clip.get(Keys.THUMBNAILS) if clip.get(Keys.THUMBNAILS) else Images.VIDEOTHUMB
         if Keys.MEDIUM in image:
             image = image.get(Keys.MEDIUM)
+        broadcaster = clip[Keys.BROADCASTER]
         context_menu = list()
         context_menu.extend(menu_items.refresh())
+        context_menu.extend(menu_items.channel_videos(broadcaster[Keys.ID], broadcaster[Keys.NAME], broadcaster[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.go_to_game(clip[Keys.GAME]))
-        broadcaster = clip[Keys.BROADCASTER]
-        context_menu.extend(menu_items.set_default_quality(broadcaster[Keys.CID], broadcaster[Keys.NAME], clip[Keys.CID]))
+        context_menu.extend(menu_items.set_default_quality(broadcaster[Keys.ID], broadcaster[Keys.NAME], clip[Keys.ID]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'slug': clip[Keys.CID], 'source': False, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'slug': clip[Keys.ID], 'source': False, 'use_player': True}))
         return {'label': self.get_title_for_clip(clip),
-                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'slug': clip[Keys.CID]}),
+                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'slug': clip[Keys.ID]}),
                 'context_menu': context_menu,
                 'is_playable': True,
                 'info': {'duration': str(duration), 'plot': plot, 'plotoutline': plot, 'tagline': plot,
@@ -180,11 +182,13 @@ class JsonListItemConverter(object):
         image = video.get(Keys.THUMBNAILS) if video.get(Keys.THUMBNAILS) else Images.VIDEOTHUMB
         if Keys.MEDIUM in image:
             image = image.get(Keys.MEDIUM)
+        owner = video[Keys.OWNER]
         context_menu = list()
         context_menu.extend(menu_items.refresh())
+        context_menu.extend(menu_items.channel_videos(owner[Keys._ID], owner[Keys.NAME], owner[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
         owner = video[Keys.OWNER]
-        context_menu.extend(menu_items.set_default_quality(owner[Keys.ID], owner[Keys.NAME], video[Keys.ITEM_ID]))
+        context_menu.extend(menu_items.set_default_quality(owner[Keys._ID], owner[Keys.NAME], video[Keys.ITEM_ID]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'video_id': video[Keys.ITEM_ID], 'source': False, 'use_player': True}))
         return {'label': video[Keys.TITLE],
@@ -204,15 +208,16 @@ class JsonListItemConverter(object):
         image = video.get(Keys.PREVIEW) if video.get(Keys.PREVIEW) else Images.VIDEOTHUMB
         if Keys.MEDIUM in image:
             image = image.get(Keys.MEDIUM)
+        channel = video[Keys.CHANNEL]
         context_menu = list()
         context_menu.extend(menu_items.refresh())
+        context_menu.extend(menu_items.channel_videos(channel[Keys._ID], channel[Keys.NAME], channel[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
-        channel = video[Keys.CHANNEL]
-        context_menu.extend(menu_items.set_default_quality(channel[Keys.ID], channel[Keys.NAME], video[Keys.ID]))
+        context_menu.extend(menu_items.set_default_quality(channel[Keys._ID], channel[Keys.NAME], video[Keys._ID]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'video_id': video[Keys.ID], 'source': False, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'video_id': video[Keys._ID], 'source': False, 'use_player': True}))
         return {'label': self.get_title_for_video(video),
-                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video[Keys.ID]}),
+                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video[Keys._ID]}),
                 'context_menu': context_menu,
                 'is_playable': True,
                 'info': {'duration': str(duration), 'plot': plot, 'plotoutline': plot, 'tagline': plot,
@@ -235,17 +240,17 @@ class JsonListItemConverter(object):
         info.update({'mediatype': 'video'})
         context_menu = list()
         context_menu.extend(menu_items.refresh())
-        context_menu.extend(menu_items.channel_videos(channel[Keys.ID], channel[Keys.NAME], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.channel_videos(channel[Keys._ID], channel[Keys.NAME], channel[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.go_to_game(channel[Keys.GAME]))
-        context_menu.extend(menu_items.add_blacklist(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
         if self.has_token:
-            context_menu.extend(menu_items.edit_follow(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
-            context_menu.extend(menu_items.edit_block(channel[Keys.ID], channel[Keys.DISPLAY_NAME]))
-        context_menu.extend(menu_items.set_default_quality(channel[Keys.ID], channel[Keys.NAME]))
+            context_menu.extend(menu_items.edit_follow(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
+            context_menu.extend(menu_items.edit_block(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.set_default_quality(channel[Keys._ID], channel[Keys.NAME]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys.ID], 'source': False, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys._ID], 'source': False, 'use_player': True}))
         return {'label': title,
-                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys.ID]}),
+                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys._ID]}),
                 'context_menu': context_menu,
                 'is_playable': True,
                 'info': info,
