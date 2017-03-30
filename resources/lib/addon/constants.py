@@ -62,7 +62,8 @@ MODES = __enum(
     COLLECTIONVIDEOLIST='collection_video_list',
     BROWSE='browse',
     STREAMLIST='stream_list',
-    CLIPSLIST='clips_list'
+    CLIPSLIST='clips_list',
+    GAMELISTS='game_lists'
 )
 
 LINE_LENGTH = 60

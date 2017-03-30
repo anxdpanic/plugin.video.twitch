@@ -69,7 +69,7 @@ def search():
     kodi.set_content('files')
     context_menu = list()
     context_menu.extend(menu_items.clear_previews())
-    kodi.create_item({'label': i18n('streams'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'streams'}})
+    kodi.create_item({'label': i18n('streams'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'streams'}, 'context_menu': context_menu})
     kodi.create_item({'label': i18n('channels'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'channels'}})
     kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'games'}})
     kodi.create_item({'label': i18n('video_id_url'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'id_url'}})
@@ -316,12 +316,12 @@ def list_collection_videos(collection_id):
         kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.CLIPSLIST, kwargs=['cursor', 'channel_name'])
+@DISPATCHER.register(MODES.CLIPSLIST, kwargs=['cursor', 'channel_name', 'game_name'])
 @error_handler
-def list_clips(cursor='MA==', channel_name=None):
+def list_clips(cursor='MA==', channel_name=None, game_name=None):
     kodi.set_content('videos')
     limit = utils.get_items_per_page()
-    clips = twitch.get_top_clips(cursor, limit, channel=channel_name)
+    clips = twitch.get_top_clips(cursor, limit, channel=channel_name, game=game_name)
 
     if Keys.CLIPS in clips and len(clips[Keys.CLIPS]) > 0:
         for clip in clips[Keys.CLIPS]:
@@ -350,6 +350,17 @@ def list_channel_videos(channel_id, broadcast_type, index=0):
         if Keys.VODS in videos or videos[Keys.TOTAL] > (offset + limit):
             kodi.create_item(utils.link_to_next_page({'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': broadcast_type, 'index': index}))
         kodi.end_of_directory()
+
+
+@DISPATCHER.register(MODES.GAMELISTS, args=['game_name'])
+@error_handler
+def game_lists(game_name):
+    kodi.set_content('files')
+    context_menu = list()
+    context_menu.extend(menu_items.clear_previews())
+    kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.GAMESTREAMS, 'game': game_name}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('clips'), 'path': {'mode': MODES.CLIPSLIST, 'game_name': game_name}})
+    kodi.end_of_directory()
 
 
 @DISPATCHER.register(MODES.GAMESTREAMS, args=['game'], kwargs=['index'])
