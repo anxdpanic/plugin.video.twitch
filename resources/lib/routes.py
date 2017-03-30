@@ -23,7 +23,7 @@ from addon.converter import JsonListItemConverter
 from addon.constants import DISPATCHER, MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, Keys
 from addon.googl_shorten import googl_url
 from addon.error_handling import error_handler, TwitchException
-from twitch.api.parameters import Boolean, Period, ClipPeriod, Direction, SortBy, VideoSort
+from twitch.api.parameters import Boolean, Period, ClipPeriod, Direction, SortBy, VideoSort, Language
 
 i18n = utils.i18n
 
@@ -214,8 +214,8 @@ def list_streams(stream_type='live', index=0, platform='all'):
     utils.refresh_previews()
     kodi.set_content('videos')
     index, offset, limit = utils.calculate_pagination_values(index)
-
-    streams = twitch.get_all_streams(stream_type, platform, offset, limit)
+    languages = ','.join(utils.get_languages())
+    streams = twitch.get_all_streams(stream_type=stream_type, platform=platform, offset=offset, limit=limit, language=languages)
     if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
         for stream in streams[Keys.STREAMS]:
             channel = stream[Keys.CHANNEL]
@@ -372,7 +372,8 @@ def list_channel_videos(channel_id, broadcast_type, index=0):
         videos = twitch.get_top_videos(offset, limit, broadcast_type=broadcast_type, period=period)
     else:
         sort_by = utils.get_sort('channel_videos', 'by')
-        videos = twitch.get_channel_videos(channel_id, offset, limit, broadcast_type=broadcast_type, sort_by=sort_by)
+        languages = ','.join(utils.get_languages())
+        videos = twitch.get_channel_videos(channel_id, offset, limit, broadcast_type=broadcast_type, sort_by=sort_by, language=languages)
     if Keys.VODS in videos or ((videos[Keys.TOTAL] > 0) and (Keys.VIDEOS in videos)):
         key = Keys.VODS if Keys.VODS in videos else Keys.VIDEOS
         for video in videos[key]:
@@ -402,8 +403,8 @@ def list_game_streams(game, index=0):
     utils.refresh_previews()
     kodi.set_content('videos')
     index, offset, limit = utils.calculate_pagination_values(index)
-
-    streams = twitch.get_game_streams(game=game, offset=offset, limit=limit)
+    languages = ','.join(utils.get_languages())
+    streams = twitch.get_game_streams(game=game, offset=offset, limit=limit, language=languages)
     if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
         for stream in streams[Keys.STREAMS]:
             channel = stream[Keys.CHANNEL]
@@ -420,8 +421,8 @@ def list_community_streams(community_id, index=0):
     utils.refresh_previews()
     kodi.set_content('videos')
     index, offset, limit = utils.calculate_pagination_values(index)
-
-    streams = twitch.get_community_streams(community_id=community_id, offset=offset, limit=limit)
+    languages = ','.join(utils.get_languages())
+    streams = twitch.get_community_streams(community_id=community_id, offset=offset, limit=limit, language=languages)
     if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
         for stream in streams[Keys.STREAMS]:
             channel = stream[Keys.CHANNEL]
@@ -613,6 +614,23 @@ def edit_sorting(list_type, sort_type):
             if result > -1:
                 sorting = utils.get_sort(list_type)
                 utils.set_sort(list_type, sort_by=sorting['by'], period=sorting['direction'], direction=choices[result][1])
+
+
+@DISPATCHER.register(MODES.EDITLANGUAGES, args=['action'])
+@error_handler
+def edit_languages(action):
+    if action == 'add':
+        current_languages = utils.get_languages()
+        valid_languages = Language.valid()
+        missing_languages = [language for language in valid_languages if language not in current_languages]
+        result = kodi.Dialog().select(i18n('add_language'), missing_languages)
+        if result > -1:
+            utils.add_language(missing_languages[result])
+    if action == 'remove':
+        current_languages = utils.get_languages()
+        result = kodi.Dialog().select(i18n('remove_language'), current_languages)
+        if result > -1:
+            utils.remove_language(current_languages[result])
 
 
 @DISPATCHER.register(MODES.CLEARLIST, args=['list_type', 'list_name'])
