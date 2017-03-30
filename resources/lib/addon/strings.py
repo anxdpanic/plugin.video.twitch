@@ -95,5 +95,12 @@ STRINGS = {
     'get_new_oauth_token': 30180,
     'get_oauth_token': 30135,
     'confirm_blacklist': 30181,
-    'blacklist': 30153
+    'blacklist': 30153,
+    'change_sort_by': 30184,
+    'change_direction': 30185,
+    'change_period': 30186,
+    'popular': 30187,
+    'views': 30188,
+    'add_language': 30189,
+    'remove_language': 30190
 }

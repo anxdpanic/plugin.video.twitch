@@ -64,10 +64,23 @@ def add_blacklist(target_id, display_name, list_type='user'):
                             {'mode': MODES.EDITBLACKLIST, 'target_id': target_id, 'name': display_name, 'list_type': list_type})
 
 
-def set_default_quality(target_id, name, video_id=None):
+def set_default_quality(content_type, target_id, name, video_id=None, clip_id=None):
     return update_container(i18n('set_default_quality'),
-                            {'mode': MODES.EDITQUALITIES, 'target_id': target_id, 'name': name, 'video_id': video_id})
+                            {'mode': MODES.EDITQUALITIES, 'content_type': content_type, 'target_id': target_id,
+                             'name': name, 'video_id': video_id, 'clip_id': clip_id})
 
 
 def edit_follow_game(game_name):
     return update_container(i18n('toggle_follow'), {'mode': MODES.EDITFOLLOW, 'game_name': game_name})
+
+
+def change_sort_by(for_type):
+    return update_container(i18n('change_sort_by'), {'mode': MODES.EDITSORTING, 'list_type': for_type, 'sort_type': 'by'})
+
+
+def change_period(for_type):
+    return update_container(i18n('change_period'), {'mode': MODES.EDITSORTING, 'list_type': for_type, 'sort_type': 'period'})
+
+
+def change_direction(for_type):
+    return update_container(i18n('change_direction'), {'mode': MODES.EDITSORTING, 'list_type': for_type, 'sort_type': 'direction'})
