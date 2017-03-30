@@ -320,7 +320,7 @@ class JsonListItemConverter(object):
     def extract_clip_title_values(clip):
         broadcaster = clip[Keys.BROADCASTER]
         viewers = clip.get(Keys.VIEWS)
-        viewers = viewers if viewers else i18n('unknown_viewer_count')
+        viewers = viewers if (viewers or isinstance(viewers, int)) else i18n('unknown_viewer_count')
 
         streamer = broadcaster.get(Keys.DISPLAY_NAME) if broadcaster.get(Keys.DISPLAY_NAME) else i18n('unnamed_streamer')
         title = clip.get(Keys.TITLE)
@@ -345,7 +345,7 @@ class JsonListItemConverter(object):
             viewers = channel.get(Keys.VIEWERS)
         else:
             viewers = stream.get(Keys.VIEWERS)
-        viewers = viewers if viewers else i18n('unknown_viewer_count')
+        viewers = viewers if (viewers or isinstance(viewers, int)) else i18n('unknown_viewer_count')
 
         streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else i18n('unnamed_streamer')
         title = channel.get(Keys.STATUS) if channel.get(Keys.STATUS) else i18n('untitled_stream')
@@ -366,7 +366,7 @@ class JsonListItemConverter(object):
     def extract_video_title_values(video):
         channel = video[Keys.CHANNEL]
         viewers = video.get(Keys.VIEWS)
-        viewers = viewers if viewers else i18n('unknown_viewer_count')
+        viewers = viewers if (viewers or isinstance(viewers, int)) else i18n('unknown_viewer_count')
 
         streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else i18n('unnamed_streamer')
         title = video.get(Keys.TITLE) if video.get(Keys.TITLE) else i18n('untitled_stream')
@@ -386,7 +386,7 @@ class JsonListItemConverter(object):
         game = channel.get(Keys.GAME) if channel.get(Keys.GAME) else channel.get(Keys.META_GAME)
         game = game if game else i18n('unknown_game')
         viewers = channel.get(Keys.CURRENT_VIEWERS) \
-            if channel.get(Keys.CURRENT_VIEWERS) else i18n('unknown_viewer_count')
+            if (channel.get(Keys.CURRENT_VIEWERS) or isinstance(channel.get(Keys.CURRENT_VIEWERS), int)) else i18n('unknown_viewer_count')
         broadcaster_language = channel.get(Keys.BROADCASTER_LANGUAGE) if channel.get(Keys.BROADCASTER_LANGUAGE) else i18n('unknown_language')
 
         return {'streamer': streamer,

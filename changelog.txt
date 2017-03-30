@@ -21,6 +21,8 @@
 - add blacklisting of users/games
 - add set default quality per stream
 - add offline playlists to Following
+- add Collections
+- add Clips
 
 1.4.6
 - Added new title formatting option which includes broadcaster language.

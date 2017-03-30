@@ -33,6 +33,8 @@
 - add blacklisting of users/games
 - add set default quality per stream
 - add offline playlists to Following
+- add Collections
+- add Clips
         </news>
         <assets>
             <icon>icon.png</icon>
