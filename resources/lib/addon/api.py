@@ -25,6 +25,7 @@ from twitch import queries as twitch_queries
 from twitch import oauth
 from twitch.api import usher
 from twitch.api import v5 as twitch
+from twitch.api.parameters import Boolean, Period, ClipPeriod, Direction, Language, SortBy, StreamType, VideoSort
 
 i18n = utils.i18n
 
@@ -96,8 +97,8 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_all_streams(self, stream_type, platform, offset, limit):
-        return self.api.streams.get_all(stream_type=stream_type, platform=platform, offset=offset, limit=limit)
+    def get_all_streams(self, stream_type, platform, offset, limit, language=Language.ALL):
+        return self.api.streams.get_all(stream_type=stream_type, platform=platform, offset=offset, limit=limit, language=language)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -106,43 +107,43 @@ class Twitch:
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_followed_channels(self, user_id, offset, limit):
-        return self.api.users.get_follows(user_id=user_id, limit=limit, offset=offset)
+    def get_followed_channels(self, user_id, offset, limit, direction=Direction.DESC, sort_by=SortBy.LAST_BROADCAST):
+        return self.api.users.get_follows(user_id=user_id, limit=limit, offset=offset, direction=direction, sort_by=sort_by)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_top_videos(self, offset, limit, broadcast_type, period='week'):
+    def get_top_videos(self, offset, limit, broadcast_type, period=Period.WEEK):
         return self.api.videos.get_top(limit=limit, offset=offset, broadcast_type=broadcast_type, period=period)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_followed_clips(self, cursor, limit, trending='true'):
+    def get_followed_clips(self, cursor, limit, trending=Boolean.TRUE):
         return self.api.clips.get_followed(limit=limit, cursor=cursor, trending=trending)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_top_clips(self, cursor, limit, channel=None, game=None, period='week', trending='true'):
+    def get_top_clips(self, cursor, limit, channel=None, game=None, period=ClipPeriod.WEEK, trending=Boolean.TRUE):
         return self.api.clips.get_top(limit=limit, cursor=cursor, channels=channel, games=game, period=period, trending=trending)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_channel_videos(self, channel_id, offset, limit, broadcast_type):
-        return self.api.channels.get_videos(channel_id=channel_id, limit=limit, offset=offset, broadcast_type=broadcast_type)
+    def get_channel_videos(self, channel_id, offset, limit, broadcast_type, sort_by=VideoSort.VIEWS, language=Language.ALL):
+        return self.api.channels.get_videos(channel_id=channel_id, limit=limit, offset=offset, broadcast_type=broadcast_type, sort_by=sort_by, language=language)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_collection_videos(self, collection_id):
-        return self.api.collections.by_id(collection_id=collection_id, include_all='false')
+        return self.api.collections.by_id(collection_id=collection_id, include_all=Boolean.FALSE)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_game_streams(self, game, offset, limit):
-        return self.api.streams.get_all(game=game, limit=limit, offset=offset)
+    def get_game_streams(self, game, offset, limit, language=Language.ALL):
+        return self.api.streams.get_all(game=game, limit=limit, offset=offset, language=language)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
-    def get_community_streams(self, community_id, offset, limit):
-        return self.api.streams.get_all(community_id=community_id, limit=limit, offset=offset)
+    def get_community_streams(self, community_id, offset, limit, language=Language.ALL):
+        return self.api.streams.get_all(community_id=community_id, limit=limit, offset=offset, language=language)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
@@ -235,7 +236,7 @@ class Twitch:
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)
     def get_channel_stream(self, channel_id):
-        return self.api.streams.by_id(channel_id=channel_id, stream_type='all')
+        return self.api.streams.by_id(channel_id=channel_id, stream_type=StreamType.ALL)
 
     @api_error_handler
     @utils.cache.cache_function(cache_limit=utils.cache_limit)

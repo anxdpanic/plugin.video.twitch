@@ -662,3 +662,23 @@ msgstr ""
 msgctxt "#30183"
 msgid "Remove all communities"
 msgstr ""
+
+msgctxt "#30184"
+msgid "Change sort by"
+msgstr ""
+
+msgctxt "#30185"
+msgid "Change sort direction"
+msgstr ""
+
+msgctxt "#30186"
+msgid "Change period"
+msgstr ""
+
+msgctxt "#30187"
+msgid "Popular"
+msgstr ""
+
+msgctxt "#30188"
+msgid "Views"
+msgstr ""
