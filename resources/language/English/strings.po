@@ -544,11 +544,11 @@ msgid "Blacklist"
 msgstr ""
 
 msgctxt "#30154"
-msgid "Remove user"
+msgid "Remove a user"
 msgstr ""
 
 msgctxt "#30155"
-msgid "Remove game"
+msgid "Remove a game"
 msgstr ""
 
 msgctxt "#30156"
@@ -584,15 +584,15 @@ msgid "Set default quality"
 msgstr ""
 
 msgctxt "#30164"
-msgid "Default quality [%s] set for %s"
+msgid "Default '%s' quality '%s' set for %s"
 msgstr ""
 
 msgctxt "#30165"
-msgid "Removed default quality for %s"
+msgid "Removed default '%s' quality for %s"
 msgstr ""
 
 msgctxt "#30166"
-msgid "Remove default quality"
+msgid "Remove %s quality"
 msgstr ""
 
 msgctxt "#30167"
@@ -656,7 +656,7 @@ msgid "Are you sure you want to blacklist %s?"
 msgstr ""
 
 msgctxt "#30182"
-msgid "Remove community"
+msgid "Remove a community"
 msgstr ""
 
 msgctxt "#30183"
@@ -684,9 +684,33 @@ msgid "Views"
 msgstr ""
 
 msgctxt "#30189"
-msgid "Add language"
+msgid "Add a language"
 msgstr ""
 
 msgctxt "#30190"
-msgid "Remove language"
+msgid "Remove a language"
+msgstr ""
+
+msgctxt "#30191"
+msgid "Remove a stream quality"
+msgstr ""
+
+msgctxt "#30192"
+msgid "Remove a video quality"
+msgstr ""
+
+msgctxt "#30193"
+msgid "Remove a clip quality"
+msgstr ""
+
+msgctxt "#30194"
+msgid "Remove all stream qualities"
+msgstr ""
+
+msgctxt "#30195"
+msgid "Remove all video qualities"
+msgstr ""
+
+msgctxt "#30196"
+msgid "Remove all clip qualities"
 msgstr ""

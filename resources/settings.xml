@@ -22,12 +22,17 @@
         <setting label="30190" id="remove_language" type="action" action="RunPlugin(plugin://$ID/?mode=edit_languages&amp;action=remove)"/>
     </category>
     <!-- Lists -->
-    <category label="30152">
+    <category label="30167">
         <setting label="30167" type="lsep"/>
-        <setting label="30166" id="remove_default_quality" type="action" action="RunPlugin(plugin://$ID/?mode=edit_qualities&amp;remove=true)"/>
-        <setting label="30168" id="clear_default_qualities" type="action" action="RunPlugin(plugin://$ID/?mode=clear_list&amp;list_type=default&amp;list_name=qualities)"/>
+        <setting label="30191" id="remove_default_stream_quality" type="action" action="RunPlugin(plugin://$ID/?mode=edit_qualities&amp;remove=true&amp;content_type=stream)"/>
+        <setting label="30192" id="remove_default_video_quality" type="action" action="RunPlugin(plugin://$ID/?mode=edit_qualities&amp;remove=true&amp;content_type=video)"/>
+        <setting label="30193" id="remove_default_clip_quality" type="action" action="RunPlugin(plugin://$ID/?mode=edit_qualities&amp;remove=true&amp;content_type=clip)"/>
 
-        <setting label="30153" type="lsep"/>
+        <setting label="30194" id="clear_default_stream_qualities" type="action" action="RunPlugin(plugin://$ID/?mode=clear_list&amp;list_type=stream&amp;list_name=qualities)"/>
+        <setting label="30195" id="clear_default_video_qualities" type="action" action="RunPlugin(plugin://$ID/?mode=clear_list&amp;list_type=video&amp;list_name=qualities)"/>
+        <setting label="30196" id="clear_default_clip_qualities" type="action" action="RunPlugin(plugin://$ID/?mode=clear_list&amp;list_type=clip&amp;list_name=qualities)"/>
+    </category>
+    <category label="30153">
         <setting label="30154" id="remove_user_blacklist" type="action" action="RunPlugin(plugin://$ID/?mode=edit_blacklist&amp;list_type=user&amp;remove=true)"/>
         <setting label="30155" id="remove_game_blacklist" type="action" action="RunPlugin(plugin://$ID/?mode=edit_blacklist&amp;list_type=game&amp;remove=true)"/>
         <setting label="30182" id="remove_community_blacklist" type="action" action="RunPlugin(plugin://$ID/?mode=edit_blacklist&amp;list_type=community&amp;remove=true)"/>

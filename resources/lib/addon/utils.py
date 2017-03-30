@@ -224,7 +224,7 @@ def get_stored_json():
         json_data['blacklist'] = {'user': [], 'game': [], 'community': []}
         needs_save = True
     if 'qualities' not in json_data:
-        json_data['qualities'] = {'default': []}
+        json_data['qualities'] = {'stream': [], 'video': [], 'clip': []}
         needs_save = True
     if 'sorting' not in json_data:
         json_data['sorting'] = _sorting_defaults
@@ -329,37 +329,39 @@ def set_sort(for_type, sort_by, direction, period):
     return True
 
 
-def get_default_quality(target_id):
+def get_default_quality(content_type, target_id):
     json_data = get_stored_json()
-    if any(str(target_id) in item for item in json_data['qualities']['default']):
-        return next(item for item in json_data['qualities']['default'] if str(target_id) in item)
+    if content_type not in json_data['qualities']:
+        json_data['qualities'][content_type] = []
+    if any(str(target_id) in item for item in json_data['qualities'][content_type]):
+        return next(item for item in json_data['qualities'][content_type] if str(target_id) in item)
     else:
         return None
 
 
-def add_default_quality(target_id, name, quality):
+def add_default_quality(content_type, target_id, name, quality):
     json_data = get_stored_json()
-    current_quality = get_default_quality(target_id)
+    current_quality = get_default_quality(content_type, target_id)
     if current_quality:
         current_quality = current_quality[target_id]['quality']
         if current_quality.lower() == quality.lower():
             return False
         else:
-            index = next(index for index, item in enumerate(json_data['qualities']['default']) if str(target_id) in item)
-            del json_data['qualities']['default'][index]
-    json_data['qualities']['default'].append({target_id: {'name': name, 'quality': quality}})
+            index = next(index for index, item in enumerate(json_data['qualities'][content_type]) if str(target_id) in item)
+            del json_data['qualities'][content_type][index]
+    json_data['qualities'][content_type].append({target_id: {'name': name, 'quality': quality}})
     STORAGE.save(json_data)
     return True
 
 
-def remove_default_quality():
+def remove_default_quality(content_type):
     json_data = get_stored_json()
-    result = kodi.Dialog().select(i18n('remove_default_quality'),
-                                  ['%s [%s]' % (user[user.keys()[0]]['name'], user[user.keys()[0]]['quality']) for user in json_data['qualities']['default']])
+    result = kodi.Dialog().select(i18n('remove_default_quality') % content_type,
+                                  ['%s [%s]' % (user[user.keys()[0]]['name'], user[user.keys()[0]]['quality']) for user in json_data['qualities'][content_type]])
     if result == -1:
         return None
     else:
-        result = json_data['qualities']['default'].pop(result)
+        result = json_data['qualities'][content_type].pop(result)
         STORAGE.save(json_data)
         return result
 
