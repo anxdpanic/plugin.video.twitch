@@ -16,6 +16,10 @@
         <!-- Truncate titles -->
         <setting id="title_truncate" type="bool" label="30065" default="true"/>
         <setting label="30123" type="slider" id="items_per_page" default="25" range="10,100" option="int"/>
+
+        <setting label="30090" type="lsep"/>
+        <setting label="30189" id="add_language" type="action" action="RunPlugin(plugin://$ID/?mode=edit_languages&amp;action=add)"/>
+        <setting label="30190" id="remove_language" type="action" action="RunPlugin(plugin://$ID/?mode=edit_languages&amp;action=remove)"/>
     </category>
     <!-- Lists -->
     <category label="30152">

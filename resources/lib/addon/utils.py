@@ -24,7 +24,7 @@ from common import kodi, cache
 from strings import STRINGS
 from tccleaner import TextureCacheCleaner
 from constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, STORAGE, ADDON_DATA_DIR
-from twitch.api.parameters import Boolean, Period, ClipPeriod, Direction, Language, SortBy, StreamType, VideoSort
+from twitch.api.parameters import Boolean, Period, ClipPeriod, Direction, Language, SortBy, VideoSort
 import xbmcvfs
 
 translations = kodi.Translations(STRINGS)
@@ -229,6 +229,9 @@ def get_stored_json():
     if 'sorting' not in json_data:
         json_data['sorting'] = _sorting_defaults
         needs_save = True
+    if 'languages' not in json_data:
+        json_data['languages'] = [Language.ALL]
+        needs_save = True
     if needs_save:
         STORAGE.save(json_data)
     return json_data
@@ -270,6 +273,38 @@ def remove_blacklist(list_type='user'):
         return result
 
 
+def get_languages():
+    json_data = get_stored_json()
+    return json_data['languages']
+
+
+def add_language(language):
+    json_data = get_stored_json()
+    language = Language.validate(language)
+    if language == Language.ALL:
+        json_data['languages'] = [language]
+    json_data['languages'].append(language)
+    new_languages = list(set(json_data['languages']))
+    try:
+        index_of_all = new_languages.index(Language.ALL)
+    except ValueError:
+        index_of_all = -1
+    if (index_of_all > -1) and len(new_languages) > 1:
+        new_languages.remove(Language.ALL)
+    json_data['languages'] = new_languages
+    STORAGE.save(json_data)
+
+
+def remove_language(language):
+    json_data = get_stored_json()
+    language = Language.validate(language)
+    new_languages = [lang for lang in json_data['languages'] if lang != language]
+    if len(new_languages) == 0:
+        new_languages.append(Language.ALL)
+    json_data['languages'] = new_languages
+    STORAGE.save(json_data)
+
+
 def get_sort(for_type, key=None):
     json_data = get_stored_json()
     sorting = json_data['sorting'].get(for_type)
@@ -289,7 +324,7 @@ def set_sort(for_type, sort_by, direction, period):
             json_data['sorting'][for_type] = _sorting_defaults[for_type]
         else:
             return False
-    json_data['sorting'][for_type].update({'by': sort_by, 'direction': direction, 'period': period})
+    json_data['sorting'][for_type] = {'by': sort_by, 'direction': direction, 'period': period}
     STORAGE.save(json_data)
     return True
 

@@ -100,5 +100,7 @@ STRINGS = {
     'change_direction': 30185,
     'change_period': 30186,
     'popular': 30187,
-    'views': 30188
+    'views': 30188,
+    'add_language': 30189,
+    'remove_language': 30190
 }

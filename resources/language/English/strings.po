@@ -682,3 +682,11 @@ msgstr ""
 msgctxt "#30188"
 msgid "Views"
 msgstr ""
+
+msgctxt "#30189"
+msgid "Add language"
+msgstr ""
+
+msgctxt "#30190"
+msgid "Remove language"
+msgstr ""
