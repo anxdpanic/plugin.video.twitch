@@ -71,3 +71,15 @@ def set_default_quality(target_id, name, video_id=None):
 
 def edit_follow_game(game_name):
     return update_container(i18n('toggle_follow'), {'mode': MODES.EDITFOLLOW, 'game_name': game_name})
+
+
+def change_sort_by(for_type):
+    return update_container(i18n('change_sort_by'), {'mode': MODES.EDITSORTING, 'list_type': for_type, 'sort_type': 'by'})
+
+
+def change_period(for_type):
+    return update_container(i18n('change_period'), {'mode': MODES.EDITSORTING, 'list_type': for_type, 'sort_type': 'period'})
+
+
+def change_direction(for_type):
+    return update_container(i18n('change_direction'), {'mode': MODES.EDITSORTING, 'list_type': for_type, 'sort_type': 'direction'})
