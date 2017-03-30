@@ -8,10 +8,10 @@ from urllib2 import Request, urlopen, URLError
 from constants import Keys
 from exception import TwitchException
 
-if sys.version_info >= (2, 7, 9):		
-     import ssl		
-     ssl._create_default_https_context = ssl._create_unverified_context
+if sys.version_info >= (2, 7, 9):
+    import ssl
 
+    ssl._create_default_https_context = ssl._create_unverified_context
 
 MAX_RETRIES = 5
 
@@ -35,21 +35,21 @@ class JSONScraper(object):
     def downloadWebData(self, url, headers=None):
         for _ in range(MAX_RETRIES):
             try:
-                req = Request(url)		
-                req.add_header(Keys.USER_AGENT, Keys.USER_AGENT_STRING)     
+                req = Request(url)
+                req.add_header(Keys.USER_AGENT, Keys.USER_AGENT_STRING)
                 if headers:
                     for key, value in headers.iteritems():
-                        req.add_header(key, value)		
-                response = urlopen(req)		
-                if sys.version_info < (3, 0):		
+                        req.add_header(key, value)
+                response = urlopen(req)
+                if sys.version_info < (3, 0):
                     data = response.read().decode('utf-8')
                 else:
                     data = response.readall().decode('utf-8')
                 response.close()
                 break
             except Exception as err:
-                if not isinstance(err, URLError):		
-                    self.logger.debug("Error %s during HTTP Request, abort", repr(err))		
+                if not isinstance(err, URLError):
+                    self.logger.debug("Error %s during HTTP Request, abort", repr(err))
                     raise  # propagate non-URLError
                 self.logger.debug("Error %s during HTTP Request, retrying", repr(err))
         else:
@@ -120,6 +120,7 @@ class M3UPlaylist(object):
         source = None
         lines = data.splitlines()
         linesIterator = iter(lines)
+        qualityMap = {'high': 1, 'medium': 2, 'low': 3, 'mobile': 4}
         for line in linesIterator:
             if line.startswith('#EXT-X-MEDIA:TYPE=VIDEO'):
                 group_id, quality, url = parseQuality(line, next(linesIterator), next(linesIterator))
@@ -136,6 +137,10 @@ class M3UPlaylist(object):
                 if quality in self.qualityList:  # check for quality in list before using it
                     qualityInt = self.qualityList.index(quality)
                     self.playlist[qualityInt] = url
+                elif quality.lower() in qualityMap:  # check for quality in list before using it
+                    qualityInt = qualityMap[quality.lower()]
+                    self.playlist[qualityInt] = url
+
         if (source) and (0 not in self.playlist):
             self.playlist[0] = source
         if not self.playlist:
