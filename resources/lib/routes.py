@@ -23,7 +23,7 @@ from addon.converter import JsonListItemConverter
 from addon.constants import DISPATCHER, MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, Keys
 from addon.googl_shorten import googl_url
 from addon.error_handling import error_handler, TwitchException
-from twitch.api.parameters import Boolean, Period, ClipPeriod, Direction, SortBy, VideoSort, Language
+from twitch.api.parameters import Boolean, Period, ClipPeriod, Direction, SortBy, VideoSort, Language, StreamType, Platform
 
 i18n = utils.i18n
 
@@ -53,10 +53,10 @@ def browse():
     kodi.set_content('files')
     context_menu = list()
     context_menu.extend(menu_items.clear_previews())
-    kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.STREAMLIST, 'stream_type': 'live'}, 'context_menu': context_menu})
-    kodi.create_item({'label': i18n('playlists'), 'path': {'mode': MODES.STREAMLIST, 'stream_type': 'playlist'}})
-    kodi.create_item({'label': i18n('xbox_one'), 'path': {'mode': MODES.STREAMLIST, 'platform': 'xbox_one'}, 'context_menu': context_menu})
-    kodi.create_item({'label': i18n('ps4'), 'path': {'mode': MODES.STREAMLIST, 'platform': 'ps4'}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.STREAMLIST, 'stream_type': StreamType.LIVE}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('playlists'), 'path': {'mode': MODES.STREAMLIST, 'stream_type': StreamType.PLAYLIST}})
+    kodi.create_item({'label': i18n('xbox_one'), 'path': {'mode': MODES.STREAMLIST, 'platform': Platform.XBOX_ONE}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('ps4'), 'path': {'mode': MODES.STREAMLIST, 'platform': Platform.PS4}, 'context_menu': context_menu})
     kodi.create_item({'label': i18n('videos'), 'path': {'mode': MODES.CHANNELVIDEOS, 'channel_id': 'all'}})
     context_menu = list()
     context_menu.extend(menu_items.change_sort_by('clips'))
@@ -149,8 +149,8 @@ def following():
     kodi.set_content('files')
     context_menu = list()
     context_menu.extend(menu_items.clear_previews())
-    kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.FOLLOWED, 'content': 'live'}, 'context_menu': context_menu})
-    kodi.create_item({'label': i18n('playlists'), 'path': {'mode': MODES.FOLLOWED, 'content': 'playlist'}})
+    kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.FOLLOWED, 'content': StreamType.LIVE}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('playlists'), 'path': {'mode': MODES.FOLLOWED, 'content': StreamType.PLAYLIST}})
     context_menu = list()
     context_menu.extend(menu_items.change_sort_by('followed_channels'))
     context_menu.extend(menu_items.change_direction('followed_channels'))
@@ -210,7 +210,7 @@ def list_all_communities(cursor='MA=='):
 
 @DISPATCHER.register(MODES.STREAMLIST, kwargs=['stream_type', 'index', 'platform'])
 @error_handler
-def list_streams(stream_type='live', index=0, platform='all'):
+def list_streams(stream_type=StreamType.LIVE, index=0, platform=Platform.ALL):
     utils.refresh_previews()
     kodi.set_content('videos')
     index, offset, limit = utils.calculate_pagination_values(index)
@@ -233,8 +233,8 @@ def list_followed(content, index=0, cursor='MA=='):
     user_id = user.get(Keys._ID, None)
     username = user.get(Keys.NAME, None)
     if user_id:
-        if content == 'live' or content == 'playlist':
-            if content == 'live':
+        if content == StreamType.LIVE or content == StreamType.PLAYLIST:
+            if content == StreamType.LIVE:
                 utils.refresh_previews()
             kodi.set_content('videos')
             index, offset, limit = utils.calculate_pagination_values(index)
@@ -443,17 +443,20 @@ def play(name=None, channel_id=None, video_id=None, slug=None, source=True, use_
         videos = twitch.get_vod(video_id)
         item_dict = converter.video_to_playitem(result)
         channel_id = result[Keys.CHANNEL][Keys._ID]
-        quality = utils.get_default_quality(channel_id)
+        quality = utils.get_default_quality('video', channel_id)
         if quality:
             quality = quality[channel_id]['quality']
     elif name and channel_id:
-        quality = utils.get_default_quality(channel_id)
+        quality = utils.get_default_quality('stream', channel_id)
         if quality:
             quality = quality[channel_id]['quality']
         videos = twitch.get_live(name)
         result = twitch.get_channel_stream(channel_id)[Keys.STREAM]
         item_dict = converter.stream_to_playitem(result)
-    elif slug:
+    elif slug and channel_id:
+        quality = utils.get_default_quality('clip', channel_id)
+        if quality:
+            quality = quality[channel_id]['quality']
         videos = twitch.get_clip(slug)
         result = twitch.get_clip_by_slug(slug)
         item_dict = converter.clip_to_playitem(result)
@@ -557,23 +560,27 @@ def edit_blacklist(list_type='user', target_id=None, name=None, remove=False):
             kodi.notify(msg=i18n('removed_from_blacklist') % result[1], sound=False)
 
 
-@DISPATCHER.register(MODES.EDITQUALITIES, kwargs=['video_id', 'target_id', 'name', 'remove'])
+@DISPATCHER.register(MODES.EDITQUALITIES, args=['content_type'], kwargs=['video_id', 'target_id', 'name', 'remove', 'clip_id'])
 @error_handler
-def edit_qualities(target_id=None, name=None, video_id=None, remove=False):
+def edit_qualities(content_type, target_id=None, name=None, video_id=None, remove=False, clip_id=None):
     if not remove:
+        videos = None
         if not target_id or not name: return
-        if video_id:
+        if content_type == 'video' and video_id:
             videos = twitch.get_vod(video_id)
-        else:
+        elif content_type == 'clip' and clip_id:
+            videos = twitch.get_clip(clip_id)
+        elif content_type == 'stream':
             videos = twitch.get_live(name)
-        quality, url = converter.select_video_for_quality(videos, return_label=True)
-        result = utils.add_default_quality(target_id, name, quality)
-        if result:
-            kodi.notify(msg=i18n('default_quality_set') % (quality, name), sound=False)
+        if videos:
+            quality, url = converter.select_video_for_quality(videos, return_label=True)
+            result = utils.add_default_quality(content_type, target_id, name, quality)
+            if result:
+                kodi.notify(msg=i18n('default_quality_set') % (content_type, quality, name), sound=False)
     else:
-        result = utils.remove_default_quality()
+        result = utils.remove_default_quality(content_type)
         if result:
-            kodi.notify(msg=i18n('removed_default_quality') % result[result.keys()[0]]['name'], sound=False)
+            kodi.notify(msg=i18n('removed_default_quality') % (content_type, result[result.keys()[0]]['name']), sound=False)
 
 
 @DISPATCHER.register(MODES.EDITSORTING, args=['list_type', 'sort_type'])
