@@ -170,8 +170,11 @@ def list_featured_streams():
     streams = twitch.get_featured_streams(offset=0, limit=100)
     if Keys.FEATURED in streams:
         for stream in streams[Keys.FEATURED]:
+            game = stream[Keys.STREAM][Keys.GAME]
+            game = game.encode('utf8', 'ignore') if game else ''
             channel = stream[Keys.STREAM][Keys.CHANNEL]
-            if not utils.is_blacklisted(channel[Keys._ID]):
+            if (not utils.is_blacklisted(channel[Keys._ID])) and \
+                    (not utils.is_blacklisted(game, list_type='game')):
                 kodi.create_item(converter.stream_to_listitem(stream[Keys.STREAM]))
         kodi.end_of_directory()
 
