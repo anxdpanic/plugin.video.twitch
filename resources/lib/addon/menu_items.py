@@ -44,7 +44,7 @@ def channel_videos(channel_id, channel_name, display_name):
 
 
 def go_to_game(game):
-    return update_container(i18n('go_to') % '[COLOR white][B]%s[/B][/COLOR]' % game, {'mode': MODES.GAMESTREAMS, 'game': game})
+    return update_container(i18n('go_to') % '[COLOR white][B]%s[/B][/COLOR]' % game, {'mode': MODES.GAMELISTS, 'game_name': game})
 
 
 def refresh():

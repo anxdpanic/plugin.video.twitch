@@ -26,6 +26,7 @@ from twitch import queries as twitch_queries
 from twitch import oauth
 from twitch.api import usher
 from twitch.api import v5 as twitch
+from twitch_exceptions import TwitchException
 from twitch.api.parameters import Boolean, Period, ClipPeriod, Direction, Language, SortBy, StreamType, VideoSort
 
 i18n = utils.i18n
@@ -44,12 +45,12 @@ class Twitch:
         self.queries.OAUTH_TOKEN = self.access_token
         self.client = oauth.MobileClient(self.client_id)
         if self.access_token:
-            if not self.valid_token():
+            if not self.valid_token(self.access_token, self.required_scopes):
                 self.queries.OAUTH_TOKEN = ''
                 self.access_token = ''
 
     @cache.cache_method(cache_limit=1)
-    def valid_token(self):
+    def valid_token(self, token, scopes):  # token used for unique caching only
         token_check = self.root()
         if not token_check['token']['valid']:
             result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('invalid_token'),
@@ -58,8 +59,8 @@ class Twitch:
         else:
             if token_check['token']['client_id'] == self.client_id:
                 if token_check['token']['authorization']:
-                    scopes = token_check['token']['authorization']['scopes']
-                    missing_scopes = [value for value in self.required_scopes if value not in scopes]
+                    token_scopes = token_check['token']['authorization']['scopes']
+                    missing_scopes = [value for value in scopes if value not in token_scopes]
                     if len(missing_scopes) > 0:
                         result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('missing_scopes') % missing_scopes,
                                                   line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
@@ -71,13 +72,12 @@ class Twitch:
         return True
 
     @api_error_handler
-    @cache.cache_method(cache_limit=1)
     def root(self):
         return self.api.root()
 
     @api_error_handler
     @cache.cache_method(cache_limit=1)
-    def get_user(self):
+    def get_user(self, token):  # token used for unique caching only
         return self.api.users.user()
 
     @api_error_handler
@@ -163,68 +163,75 @@ class Twitch:
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_game_search(self, search_query):
-        return self.api.search.games(query=search_query)
+        return self.api.search.games(search_query=search_query)
 
     @api_error_handler
-    @cache.cache_method(cache_limit=cache.limit)
     def check_follow(self, channel_id):
-        user = self.get_user()
+        user = self.get_user(self.access_token)
+        if 'error' in user: raise TwitchException(user)
         user_id = user.get(Keys._ID)
         return self.api.users.check_follows(user_id=user_id, channel_id=channel_id)
 
     @api_error_handler
-    @cache.cache_method(cache_limit=cache.limit)
     def follow(self, channel_id):
-        user = self.get_user()
+        user = self.get_user(self.access_token)
+        if 'error' in user: raise TwitchException(user)
         user_id = user.get(Keys._ID)
         return self.api.users.follow_channel(user_id=user_id, channel_id=channel_id)
 
     @api_error_handler
-    @cache.cache_method(cache_limit=cache.limit)
     def unfollow(self, channel_id):
-        user = self.get_user()
+        user = self.get_user(self.access_token)
+        if 'error' in user: raise TwitchException(user)
         user_id = user.get(Keys._ID)
         return self.api.users.unfollow_channel(user_id=user_id, channel_id=channel_id)
 
     @api_error_handler
-    @cache.cache_method(cache_limit=cache.limit)
     def check_follow_game(self, game_name):
-        user = self.get_user()
+        user = self.get_user(self.access_token)
+        if 'error' in user: raise TwitchException(user)
         username = user.get(Keys.NAME)
-        return self.api.games.check_follows(username=username, name=game_name)
+        return self.api.games._check_follows(username=username, name=game_name)
 
     @api_error_handler
-    @cache.cache_method(cache_limit=cache.limit)
     def follow_game(self, game_name):
-        user = self.get_user()
+        user = self.get_user(self.access_token)
+        if 'error' in user: raise TwitchException(user)
         username = user.get(Keys.NAME)
-        return self.api.games.follow(username=username, name=game_name)
+        return self.api.games._follow(username=username, name=game_name)
 
     @api_error_handler
-    @cache.cache_method(cache_limit=cache.limit)
     def unfollow_game(self, game_name):
-        user = self.get_user()
+        user = self.get_user(self.access_token)
+        if 'error' in user: raise TwitchException(user)
         username = user.get(Keys.NAME)
-        return self.api.games.unfollow(username=username, name=game_name)
+        return self.api.games._unfollow(username=username, name=game_name)
 
     @api_error_handler
-    @cache.cache_method(cache_limit=cache.limit)
+    def check_subscribed(self, channel_id):
+        user = self.get_user(self.access_token)
+        if 'error' in user: raise TwitchException(user)
+        user_id = user.get(Keys._ID)
+        return self.api.users.check_subscription(channel_id=channel_id, user_id=user_id)
+
+    @api_error_handler
     def blocks(self, offset, limit):
-        user = self.get_user()
+        user = self.get_user(self.access_token)
+        if 'error' in user: raise TwitchException(user)
         user_id = user.get(Keys._ID)
         return self.api.users.get_blocks(user_id=user_id, limit=limit, offset=offset)
 
     @api_error_handler
-    @cache.cache_method(cache_limit=cache.limit)
     def block_user(self, target_id):
-        user = self.get_user()
+        user = self.get_user(self.access_token)
+        if 'error' in user: raise TwitchException(user)
         user_id = user.get(Keys._ID)
         return self.api.users.block_user(user_id=user_id, target_id=target_id)
 
     @api_error_handler
-    @cache.cache_method(cache_limit=cache.limit)
     def unblock_user(self, target_id):
-        user = self.get_user()
+        user = self.get_user(self.access_token)
+        if 'error' in user: raise TwitchException(user)
         user_id = user.get(Keys._ID)
         return self.api.users.unblock_user(user_id=user_id, target_id=target_id)
 
@@ -232,6 +239,11 @@ class Twitch:
     @cache.cache_method(cache_limit=cache.limit)
     def get_video_by_id(self, video_id):
         return self.api.videos.by_id(video_id=video_id)
+
+    @api_error_handler
+    @cache.cache_method(cache_limit=cache.limit)
+    def _get_video_by_id(self, video_id):
+        return self.api.videos._by_id(video_id=video_id)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
@@ -255,7 +267,7 @@ class Twitch:
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_followed_games(self, name):
-        return self.api.games.get_followed(username=name)
+        return self.api.games._get_followed(username=name)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
@@ -277,7 +289,6 @@ class Twitch:
     def get_live(self, name):
         return self.usher.live(name)
 
-    @cache.cache_method(cache_limit=cache.limit)
     def get_user_blocks(self):
         limit = 100
         offset = 0
