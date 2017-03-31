@@ -16,10 +16,18 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
-from common import cache, kodi
+from twitch.exceptions import ResourceUnavailableException
 
-cache_function = cache.cache_function
-cache_method = cache.cache_method
-reset_cache = cache.reset_cache
-limit = float(kodi.get_setting('cache_expire_time')) / 60
-cache.cache_enabled = limit > 0
+ResourceUnavailableException = ResourceUnavailableException
+
+
+class TwitchException(Exception):
+    pass
+
+
+class SubRequired(Exception):
+    pass
+
+
+class NotFound(Exception):
+    pass

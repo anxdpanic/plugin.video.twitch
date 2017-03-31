@@ -718,3 +718,15 @@ msgstr ""
 msgctxt "#30197"
 msgid "Requires confirmation"
 msgstr ""
+
+msgctxt "#30198"
+msgid "Requires subscription to %s"
+msgstr ""
+
+msgctxt "#30199"
+msgid "Connection failed"
+msgstr ""
+
+msgctxt "#30200"
+msgid "No %s found"
+msgstr ""
