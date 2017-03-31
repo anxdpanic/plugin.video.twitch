@@ -233,15 +233,18 @@ def get_stored_json():
     return json_data
 
 
-def is_blacklisted(target_id, list_type='user'):
+def is_blacklisted(target, list_type='user'):
     json_data = get_stored_json()
     blacklist = json_data['blacklist'].get(list_type)
     if not blacklist:
         return False
+    if isinstance(target, int):
+        target = str(target)
     if list_type == 'user':
-        return any(str(target_id) == str(blacklist_id) for blacklist_id, blacklist_name in blacklist)
+        return any(target == blacklist_id for blacklist_id, blacklist_name in blacklist)
     else:
-        return any((str(target_id) == str(blacklist_id) or str(target_id) == str(blacklist_name)) for blacklist_id, blacklist_name in blacklist)
+        return any((target == blacklist_id or
+                    target == blacklist_name) for blacklist_id, blacklist_name in blacklist)
 
 
 def add_blacklist(target_id, name, list_type='user'):
