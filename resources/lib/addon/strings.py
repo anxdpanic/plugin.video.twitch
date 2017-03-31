@@ -102,5 +102,8 @@ STRINGS = {
     'popular': 30187,
     'views': 30188,
     'add_language': 30189,
-    'remove_language': 30190
+    'remove_language': 30190,
+    'subscription_required': 30198,
+    'connection_failed': 30199,
+    'none_found': 30200
 }

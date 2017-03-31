@@ -19,15 +19,11 @@
 
 import json
 from functools import wraps
-from common import kodi, log_utils
-from twitch.exceptions import ResourceUnavailableException
 import utils
+from common import kodi, log_utils
+from twitch_exceptions import TwitchException, SubRequired, ResourceUnavailableException, NotFound
 
 i18n = utils.i18n
-
-
-class TwitchException(Exception):
-    pass
 
 
 def error_handler(func):
@@ -37,11 +33,24 @@ def error_handler(func):
             result = func(*args, **kwargs)
             return result
         except ResourceUnavailableException as error:
-            log_utils.log('Error: Resource not available |{0}|'.format(error.message), log_utils.LOGERROR)
-            kodi.notify(i18n('error'), error.message, duration=7000, sound=False)
+            log_utils.log('Connection failed |{0}|'.format(error.message), log_utils.LOGERROR)
+            kodi.notify(i18n('connection_failed'), error.message, duration=7000, sound=False)
+        except SubRequired as error:
+            log_utils.log('Requires subscription to |{0}|'.format(error.message), log_utils.LOGDEBUG)
+            kodi.notify(kodi.get_name(), i18n('subscription_required') % error.message, duration=5000, sound=False)
+        except NotFound as error:
+            log_utils.log('Not found |{0}|'.format(error.message), log_utils.LOGDEBUG)
+            kodi.notify(kodi.get_name(), i18n('none_found') % error.message.lower(), duration=5000, sound=False)
         except TwitchException as error:
-            log_utils.log('Error: |{0}|'.format(error.message), log_utils.LOGERROR)
-            kodi.notify(i18n('error'), error.message, duration=7000, sound=False)
+            _error = ''
+            try:
+                _message = error.message
+                _error = _message['error']
+                message = '[{0}] {1}'.format(_message['status'], _message['message'])
+            except:
+                message = error.message
+            log_utils.log('Error |{0}| |{1}|'.format(_error, message.strip()), log_utils.LOGERROR)
+            kodi.notify(_error if _error else i18n('error'), message.strip(), duration=7000, sound=False)
 
     return wrapper
 
@@ -56,13 +65,8 @@ def api_error_handler(func):
             except:
                 logging_result = result
             log_utils.log(logging_result, log_utils.LOGDEBUG)
-            if 'error' in result:
-                message = '[Status {0}] {1}'.format(result['status'], result['message'])
-                raise TwitchException(message)
-            if not result or (isinstance(result, dict) and ('_total' in result) and (int(result['_total'] == 0))):
-                raise TwitchException('No results returned')
             return result
-        except ResourceUnavailableException:
+        except:
             raise
 
     return wrapper
