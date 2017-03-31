@@ -44,12 +44,12 @@ class Twitch:
         self.queries.OAUTH_TOKEN = self.access_token
         self.client = oauth.MobileClient(self.client_id)
         if self.access_token:
-            if not self.valid_token():
+            if not self.valid_token(self.access_token):
                 self.queries.OAUTH_TOKEN = ''
                 self.access_token = ''
 
     @cache.cache_method(cache_limit=1)
-    def valid_token(self):
+    def valid_token(self, token):  # token used for unique caching only
         token_check = self.root()
         if not token_check['token']['valid']:
             result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('invalid_token'),
@@ -71,7 +71,6 @@ class Twitch:
         return True
 
     @api_error_handler
-    @cache.cache_method(cache_limit=1)
     def root(self):
         return self.api.root()
 
