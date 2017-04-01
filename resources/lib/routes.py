@@ -100,7 +100,6 @@ def search_results(content, query, index=0):
         kodi.set_content('videos')
         index, offset, limit = utils.calculate_pagination_values(index)
         results = twitch.get_stream_search(search_query=query, offset=offset, limit=limit)
-        if 'error' in results: raise TwitchException(results)
         if (results[Keys.TOTAL] > 0) and (Keys.STREAMS in results):
             for stream in results[Keys.STREAMS]:
                 channel = stream[Keys.CHANNEL]
@@ -115,7 +114,6 @@ def search_results(content, query, index=0):
         kodi.set_content('files')
         index, offset, limit = utils.calculate_pagination_values(index)
         results = twitch.get_channel_search(search_query=query, offset=offset, limit=limit)
-        if 'error' in results: raise TwitchException(results)
         if (results[Keys.TOTAL] > 0) and (Keys.CHANNELS in results):
             for channel in results[Keys.CHANNELS]:
                 if not utils.is_blacklisted(channel[Keys._ID]):
@@ -128,7 +126,6 @@ def search_results(content, query, index=0):
     elif content == 'games':
         kodi.set_content('files')
         results = twitch.get_game_search(search_query=query)
-        if 'error' in results: raise TwitchException(results)
         if (Keys.GAMES in results) and (results[Keys.GAMES]):
             for game in results[Keys.GAMES]:
                 if not utils.is_blacklisted(game[Keys._ID], list_type='game'):
@@ -140,7 +137,6 @@ def search_results(content, query, index=0):
         kodi.set_content('videos')
         video_id = utils.extract_video_id(query)
         results = twitch.get_video_by_id(video_id)
-        if 'error' in results: raise TwitchException(results)
         if video_id.startswith('a') or video_id.startswith('c') or video_id.startswith('v'):
             kodi.create_item(converter.video_list_to_listitem(results))
             kodi.end_of_directory()
@@ -175,7 +171,6 @@ def list_featured_streams():
     utils.refresh_previews()
     kodi.set_content('videos')
     streams = twitch.get_featured_streams(offset=0, limit=100)
-    if 'error' in streams: raise TwitchException(streams)
     if Keys.FEATURED in streams:
         for stream in streams[Keys.FEATURED]:
             game = stream[Keys.STREAM][Keys.GAME]
@@ -196,7 +191,6 @@ def list_all_games(index=0):
     index, offset, limit = utils.calculate_pagination_values(index)
 
     games = twitch.get_top_games(offset, limit)
-    if 'error' in games: raise TwitchException(games)
     if (games[Keys.TOTAL] > 0) and (Keys.TOP in games):
         for element in games[Keys.TOP]:
             game = element[Keys.GAME]
@@ -215,7 +209,6 @@ def list_all_communities(cursor='MA=='):
     kodi.set_content('files')
     limit = utils.get_items_per_page()
     communities = twitch.get_top_communities(cursor, limit)
-    if 'error' in communities: raise TwitchException(communities)
     if (communities[Keys.TOTAL] > 0) and (Keys.COMMUNITIES in communities):
         for community in communities[Keys.COMMUNITIES]:
             if not utils.is_blacklisted(community[Keys._ID], list_type='community'):
@@ -235,7 +228,6 @@ def list_streams(stream_type=StreamType.LIVE, index=0, platform=Platform.ALL):
     index, offset, limit = utils.calculate_pagination_values(index)
     languages = ','.join(utils.get_languages())
     streams = twitch.get_all_streams(stream_type=stream_type, platform=platform, offset=offset, limit=limit, language=languages)
-    if 'error' in streams: raise TwitchException(streams)
     if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
         for stream in streams[Keys.STREAMS]:
             channel = stream[Keys.CHANNEL]
@@ -251,10 +243,8 @@ def list_streams(stream_type=StreamType.LIVE, index=0, platform=Platform.ALL):
 @DISPATCHER.register(MODES.FOLLOWED, args=['content'], kwargs=['index', 'cursor'])
 @error_handler
 def list_followed(content, index=0, cursor='MA=='):
-    user = twitch.get_user(twitch.access_token)
-    if 'error' in user: raise TwitchException(user)
-    user_id = user.get(Keys._ID)
-    username = user.get(Keys.NAME)
+    user_id = twitch.get_user_id()
+    username = twitch.get_username()
     if user_id:
         if content == StreamType.LIVE or content == StreamType.PLAYLIST:
             if content == StreamType.LIVE:
@@ -262,7 +252,6 @@ def list_followed(content, index=0, cursor='MA=='):
             kodi.set_content('videos')
             index, offset, limit = utils.calculate_pagination_values(index)
             streams = twitch.get_followed_streams(stream_type=content, offset=offset, limit=limit)
-            if 'error' in streams: raise TwitchException(streams)
             if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
                 for stream in streams[Keys.STREAMS]:
                     channel = stream[Keys.CHANNEL]
@@ -281,7 +270,6 @@ def list_followed(content, index=0, cursor='MA=='):
             index, offset, limit = utils.calculate_pagination_values(index)
             sorting = utils.get_sort('followed_channels')
             channels = twitch.get_followed_channels(user_id=user_id, offset=offset, limit=limit, direction=sorting['direction'], sort_by=sorting['by'])
-            if 'error' in channels: raise TwitchException(channels)
             if (channels[Keys.TOTAL] > 0) and (Keys.FOLLOWS in channels):
                 for follow in channels[Keys.FOLLOWS]:
                     channel = follow[Keys.CHANNEL]
@@ -296,7 +284,6 @@ def list_followed(content, index=0, cursor='MA=='):
             if username:
                 kodi.set_content('files')
                 games = twitch.get_followed_games(username)
-                if 'error' in games: raise TwitchException(games)
                 if Keys.FOLLOWS in games:
                     for game in games[Keys.FOLLOWS]:
                         if not utils.is_blacklisted(game[Keys._ID], list_type='game'):
@@ -309,7 +296,6 @@ def list_followed(content, index=0, cursor='MA=='):
             limit = utils.get_items_per_page()
             sort_by = utils.get_sort('clips', 'by')
             clips = twitch.get_followed_clips(cursor=cursor, limit=limit, trending=sort_by)
-            if 'error' in clips: raise TwitchException(clips)
             if Keys.CLIPS in clips and len(clips[Keys.CLIPS]) > 0:
                 for clip in clips[Keys.CLIPS]:
                     if not utils.is_blacklisted(clip[Keys.BROADCASTER][Keys.ID]):
@@ -353,7 +339,6 @@ def list_collections(channel_id, cursor='MA=='):
     kodi.set_content('files')
     limit = utils.get_items_per_page()
     collections = twitch.get_collections(channel_id, cursor, limit)
-    if 'error' in collections: raise TwitchException(collections)
     has_collections = False
     if (Keys.COLLECTIONS in collections) and (len(collections[Keys.COLLECTIONS]) > 0):
         for collection in collections[Keys.COLLECTIONS]:
@@ -375,7 +360,6 @@ def list_collections(channel_id, cursor='MA=='):
 def list_collection_videos(collection_id):
     kodi.set_content('videos')
     videos = twitch.get_collection_videos(collection_id)
-    if 'error' in videos: raise TwitchException(videos)
     if (Keys.ITEMS in videos) and (len(videos[Keys.ITEMS]) > 0):
         for video in videos[Keys.ITEMS]:
             kodi.create_item(converter.collection_video_to_listitem(video))
@@ -391,7 +375,6 @@ def list_clips(cursor='MA==', channel_name=None, game_name=None):
     limit = utils.get_items_per_page()
     sorting = utils.get_sort('clips')
     clips = twitch.get_top_clips(cursor, limit, channel=channel_name, game=game_name, period=sorting['period'], trending=sorting['by'])
-    if 'error' in clips: raise TwitchException(clips)
     if Keys.CLIPS in clips and len(clips[Keys.CLIPS]) > 0:
         for clip in clips[Keys.CLIPS]:
             broadcaster = clip[Keys.BROADCASTER]
@@ -419,7 +402,6 @@ def list_channel_videos(channel_id, broadcast_type, index=0):
         sort_by = utils.get_sort('channel_videos', 'by')
         languages = ','.join(utils.get_languages())
         videos = twitch.get_channel_videos(channel_id, offset, limit, broadcast_type=broadcast_type, sort_by=sort_by, language=languages)
-    if 'error' in videos: raise TwitchException(videos)
     if Keys.VODS in videos or ((videos[Keys.TOTAL] > 0) and (Keys.VIDEOS in videos)):
         key = Keys.VODS if Keys.VODS in videos else Keys.VIDEOS
         for video in videos[key]:
@@ -453,7 +435,6 @@ def list_game_streams(game, index=0):
     index, offset, limit = utils.calculate_pagination_values(index)
     languages = ','.join(utils.get_languages())
     streams = twitch.get_game_streams(game=game, offset=offset, limit=limit, language=languages)
-    if 'error' in streams: raise TwitchException(streams)
     if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
         for stream in streams[Keys.STREAMS]:
             channel = stream[Keys.CHANNEL]
@@ -474,7 +455,6 @@ def list_community_streams(community_id, index=0):
     index, offset, limit = utils.calculate_pagination_values(index)
     languages = ','.join(utils.get_languages())
     streams = twitch.get_community_streams(community_id=community_id, offset=offset, limit=limit, language=languages)
-    if 'error' in streams: raise TwitchException(streams)
     if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
         for stream in streams[Keys.STREAMS]:
             channel = stream[Keys.CHANNEL]
@@ -494,23 +474,17 @@ def play(name=None, channel_id=None, video_id=None, slug=None, source=True, use_
     if video_id:
         audio_sub = chunked_sub = restricted = False
         result = twitch.get_video_by_id(video_id)
-        if 'error' in result: raise TwitchException(result)
         video_id = result[Keys._ID]
         channel_id = result[Keys.CHANNEL][Keys._ID]
         channel_name = result[Keys.CHANNEL][Keys.DISPLAY_NAME] if result[Keys.CHANNEL][Keys.DISPLAY_NAME] else result[Keys.CHANNEL][Keys.NAME]
         extra_info = twitch._get_video_by_id(video_id)
-        if 'error' in extra_info: raise TwitchException(extra_info)
         if 'restrictions' in extra_info:
             if ('audio_only' in extra_info['restrictions']) and (extra_info['restrictions']['audio_only'] == 'chansub'):
                 audio_sub = True
             if ('chunked' in extra_info['restrictions']) and (extra_info['restrictions']['chunked'] == 'chansub'):
                 chunked_sub = True
             if chunked_sub or audio_sub:
-                is_subscribed = twitch.check_subscribed(channel_id)
-                if ('error' in is_subscribed) and (is_subscribed['status'] == 404):
-                    restricted = True
-                elif 'error' in result:
-                    raise TwitchException(result)
+                restricted = not twitch.check_subscribed(channel_id)
         if not restricted:
             videos = twitch.get_vod(video_id)
             item_dict = converter.video_to_playitem(result)
@@ -525,7 +499,6 @@ def play(name=None, channel_id=None, video_id=None, slug=None, source=True, use_
             quality = quality[channel_id]['quality']
         videos = twitch.get_live(name)
         result = twitch.get_channel_stream(channel_id)[Keys.STREAM]
-        if 'error' in result: raise TwitchException(result)
         item_dict = converter.stream_to_playitem(result)
     elif slug and channel_id:
         quality = utils.get_default_quality('clip', channel_id)
@@ -533,7 +506,6 @@ def play(name=None, channel_id=None, video_id=None, slug=None, source=True, use_
             quality = quality[channel_id]['quality']
         videos = twitch.get_clip(slug)
         result = twitch.get_clip_by_slug(slug)
-        if 'error' in result: raise TwitchException(result)
         item_dict = converter.clip_to_playitem(result)
     if item_dict and videos:
         if source:
@@ -551,9 +523,7 @@ def play(name=None, channel_id=None, video_id=None, slug=None, source=True, use_
             else:
                 kodi.set_resolved_url(playback_item)
             if utils.irc_enabled() and twitch.access_token:
-                user = twitch.get_user(twitch.access_token)
-                if 'error' in user: raise TwitchException(user)
-                username = user.get(Keys.NAME, None)
+                username = twitch.get_username()
                 if username:
                     utils.exec_irc_script(username, name)
 
@@ -563,15 +533,12 @@ def play(name=None, channel_id=None, video_id=None, slug=None, source=True, use_
 def edit_user_follows(channel_id=None, channel_name=None, game_name=None):
     if (channel_id is None or channel_name is None) and game_name is None:
         return
-    is_following = True
+
     if not game_name:
-        result = twitch.check_follow(channel_id)
+        is_following = twitch.check_follow(channel_id)
     else:
-        result = twitch.check_follow_game(game_name)
-    if ('error' in result) and (result['status'] == 404):
-        is_following = False
-    elif 'error' in result:
-        raise TwitchException(result)
+        is_following = twitch.check_follow_game(game_name)
+
     if not game_name:
         display_name = channel_name
     else:
@@ -584,7 +551,6 @@ def edit_user_follows(channel_id=None, channel_name=None, game_name=None):
                 result = twitch.unfollow(channel_id)
             else:
                 result = twitch.unfollow_game(game_name)
-            if 'error' in result: raise TwitchException(result)
             kodi.notify(msg=i18n('unfollowed') % display_name, sound=False)
     else:
         confirmed = kodi.Dialog().yesno(i18n('toggle_follow'), i18n('follow_confirm') % display_name)
@@ -593,7 +559,6 @@ def edit_user_follows(channel_id=None, channel_name=None, game_name=None):
                 result = twitch.follow(channel_id)
             else:
                 result = twitch.follow_game(game_name)
-            if 'error' in result: raise TwitchException(result)
             kodi.notify(msg=i18n('now_following') % display_name, sound=False)
 
 
@@ -601,20 +566,17 @@ def edit_user_follows(channel_id=None, channel_name=None, game_name=None):
 @error_handler
 def edit_user_blocks(target_id, name):
     block_list = twitch.get_user_blocks()
-    if 'error' in block_list: raise TwitchException(block_list)
     is_blocked = any(target_id == blocked_id for blocked_id, blocked_name in block_list)
 
     if is_blocked:
         confirmed = kodi.Dialog().yesno(i18n('toggle_block'), i18n('unblock_confirm') % name)
         if confirmed:
             result = twitch.unblock_user(target_id)
-            if 'error' in result: raise TwitchException(result)
             kodi.notify(msg=i18n('unblocked') % name, sound=False)
     else:
         confirmed = kodi.Dialog().yesno(i18n('toggle_block'), i18n('block_confirm') % name)
         if confirmed:
             result = twitch.block_user(target_id)
-            if 'error' in result: raise TwitchException(result)
             kodi.notify(msg=i18n('blocked') % name, sound=False)
 
 
