@@ -23,7 +23,7 @@ from base64 import b64decode
 from common import kodi
 from strings import STRINGS
 from tccleaner import TextureCacheCleaner
-from constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, STORAGE, ADDON_DATA_DIR
+from constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, STORAGE, ADDON_DATA_DIR, REQUEST_LIMIT
 from twitch.api.parameters import Boolean, Period, ClipPeriod, Direction, Language, SortBy, VideoSort
 import xbmcvfs
 
@@ -89,6 +89,16 @@ def calculate_pagination_values(index):
     limit = get_items_per_page()
     offset = index * limit
     return index, offset, limit
+
+
+def get_offset(offset, item, items, key=None):
+    try:
+        if key is None:
+            return int(offset) + next(index for (index, _item) in enumerate(items) if item == _item)
+        else:
+            return int(offset) + next(index for (index, _item) in enumerate(items) if item == _item[key])
+    except:
+        return None
 
 
 def the_art(art=None):
@@ -373,6 +383,30 @@ def clear_list(list_type, list_name):
         return True
     else:
         return False
+
+
+class BlacklistFilter(object):
+    def by_type(self, results, result_key, parent_keys=None,
+                id_key=None, game_key=None, list_type='user'):
+        if (id_key is None) and (game_key is None): return
+        # list_type = user, game, community
+        filtered_results = {result_key: list()}
+        for result in results[result_key]:
+            identification = None
+            id_parent = result
+            key = id_key if id_key else game_key
+            if parent_keys is None:
+                identification = id_parent[key]
+            else:
+                for parent_key in parent_keys:
+                    id_parent = id_parent[parent_key]
+                    identification = id_parent[key]
+            if game_key and identification:
+                identification = identification if identification else ''
+            if identification:
+                if not is_blacklisted(identification, list_type=list_type):
+                    filtered_results[result_key].append(result)
+        return filtered_results
 
 
 class TitleBuilder(object):

@@ -70,6 +70,9 @@ MODES = __enum(
 
 LINE_LENGTH = 60
 
+REQUEST_LIMIT = 25
+CURSOR_LIMIT = 10
+
 ICON = kodi.get_icon()
 FANART = kodi.get_fanart()
 
