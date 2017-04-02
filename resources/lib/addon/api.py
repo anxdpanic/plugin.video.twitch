@@ -73,187 +73,208 @@ class Twitch:
 
     @api_error_handler
     def root(self):
-        return self.api.root()
+        results = self.api.root()
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=1)
     def get_user(self, token):  # token used for unique caching only
-        return self.api.users.user()
+        results = self.api.users.user()
+        return self.error_check(results)
+
+    def get_user_id(self):
+        results = self.get_user(self.access_token)
+        return results.get(Keys._ID)
+
+    def get_username(self):
+        results = self.get_user(self.access_token)
+        return results.get(Keys.NAME)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_featured_streams(self, offset, limit):
-        return self.api.streams.get_featured(offset=offset, limit=limit)
+        results = self.api.streams.get_featured(offset=offset, limit=limit)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_top_games(self, offset, limit):
-        return self.api.games.get_top(offset=offset, limit=limit)
+        results = self.api.games.get_top(offset=offset, limit=limit)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_top_communities(self, cursor, limit):
-        return self.api.communities.get_top(cursor=cursor, limit=limit)
+        results = self.api.communities.get_top(cursor=cursor, limit=limit)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_collections(self, channel_id, cursor, limit):
-        return self.api.collections.get_collections(channel_id=channel_id, cursor=cursor, limit=limit)
+        results = self.api.collections.get_collections(channel_id=channel_id, cursor=cursor, limit=limit)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_all_streams(self, stream_type, platform, offset, limit, language=Language.ALL):
-        return self.api.streams.get_all(stream_type=stream_type, platform=platform, offset=offset, limit=limit, language=language)
+        results = self.api.streams.get_all(stream_type=stream_type, platform=platform, offset=offset, limit=limit, language=language)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_all_teams(self, offset, limit):
-        return self.api.teams.get_active(offset=offset, limit=limit)
+        results = self.api.teams.get_active(offset=offset, limit=limit)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_followed_channels(self, user_id, offset, limit, direction=Direction.DESC, sort_by=SortBy.LAST_BROADCAST):
-        return self.api.users.get_follows(user_id=user_id, limit=limit, offset=offset, direction=direction, sort_by=sort_by)
+        results = self.api.users.get_follows(user_id=user_id, limit=limit, offset=offset, direction=direction, sort_by=sort_by)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_top_videos(self, offset, limit, broadcast_type, period=Period.WEEK):
-        return self.api.videos.get_top(limit=limit, offset=offset, broadcast_type=broadcast_type, period=period)
+        results = self.api.videos.get_top(limit=limit, offset=offset, broadcast_type=broadcast_type, period=period)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_followed_clips(self, cursor, limit, trending=Boolean.TRUE):
-        return self.api.clips.get_followed(limit=limit, cursor=cursor, trending=trending)
+        results = self.api.clips.get_followed(limit=limit, cursor=cursor, trending=trending)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_top_clips(self, cursor, limit, channel=None, game=None, period=ClipPeriod.WEEK, trending=Boolean.TRUE):
-        return self.api.clips.get_top(limit=limit, cursor=cursor, channels=channel, games=game, period=period, trending=trending)
+        results = self.api.clips.get_top(limit=limit, cursor=cursor, channels=channel, games=game, period=period, trending=trending)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_channel_videos(self, channel_id, offset, limit, broadcast_type, sort_by=VideoSort.VIEWS, language=Language.ALL):
-        return self.api.channels.get_videos(channel_id=channel_id, limit=limit, offset=offset, broadcast_type=broadcast_type, sort_by=sort_by, language=language)
+        results = self.api.channels.get_videos(channel_id=channel_id, limit=limit, offset=offset, broadcast_type=broadcast_type, sort_by=sort_by, language=language)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_collection_videos(self, collection_id):
-        return self.api.collections.by_id(collection_id=collection_id, include_all=Boolean.FALSE)
+        results = self.api.collections.by_id(collection_id=collection_id, include_all=Boolean.FALSE)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_game_streams(self, game, offset, limit, language=Language.ALL):
-        return self.api.streams.get_all(game=game, limit=limit, offset=offset, language=language)
+        results = self.api.streams.get_all(game=game, limit=limit, offset=offset, language=language)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_community_streams(self, community_id, offset, limit, language=Language.ALL):
-        return self.api.streams.get_all(community_id=community_id, limit=limit, offset=offset, language=language)
+        results = self.api.streams.get_all(community_id=community_id, limit=limit, offset=offset, language=language)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_channel_search(self, search_query, offset, limit):
-        return self.api.search.channels(search_query=search_query, limit=limit, offset=offset)
+        results = self.api.search.channels(search_query=search_query, limit=limit, offset=offset)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_stream_search(self, search_query, offset, limit):
-        return self.api.search.streams(search_query=search_query, limit=limit, offset=offset)
+        results = self.api.search.streams(search_query=search_query, limit=limit, offset=offset)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_game_search(self, search_query):
-        return self.api.search.games(search_query=search_query)
+        results = self.api.search.games(search_query=search_query)
+        return self.error_check(results)
 
     @api_error_handler
     def check_follow(self, channel_id):
-        user = self.get_user(self.access_token)
-        if 'error' in user: raise TwitchException(user)
-        user_id = user.get(Keys._ID)
-        return self.api.users.check_follows(user_id=user_id, channel_id=channel_id)
+        user_id = self.get_user_id()
+        results = self.api.users.check_follows(user_id=user_id, channel_id=channel_id)
+        return self.return_boolean(results)
 
     @api_error_handler
     def follow(self, channel_id):
-        user = self.get_user(self.access_token)
-        if 'error' in user: raise TwitchException(user)
-        user_id = user.get(Keys._ID)
-        return self.api.users.follow_channel(user_id=user_id, channel_id=channel_id)
+        user_id = self.get_user_id()
+        results = self.api.users.follow_channel(user_id=user_id, channel_id=channel_id)
+        return self.error_check(results)
 
     @api_error_handler
     def unfollow(self, channel_id):
-        user = self.get_user(self.access_token)
-        if 'error' in user: raise TwitchException(user)
-        user_id = user.get(Keys._ID)
-        return self.api.users.unfollow_channel(user_id=user_id, channel_id=channel_id)
+        user_id = self.get_user_id()
+        results = self.api.users.unfollow_channel(user_id=user_id, channel_id=channel_id)
+        return self.error_check(results)
 
     @api_error_handler
     def check_follow_game(self, game_name):
-        user = self.get_user(self.access_token)
-        if 'error' in user: raise TwitchException(user)
-        username = user.get(Keys.NAME)
-        return self.api.games._check_follows(username=username, name=game_name)
+        username = self.get_username()
+        results = self.api.games._check_follows(username=username, name=game_name)
+        return self.return_boolean(results)
 
     @api_error_handler
     def follow_game(self, game_name):
-        user = self.get_user(self.access_token)
-        if 'error' in user: raise TwitchException(user)
-        username = user.get(Keys.NAME)
-        return self.api.games._follow(username=username, name=game_name)
+        username = self.get_username()
+        results = self.api.games._follow(username=username, name=game_name)
+        return self.error_check(results)
 
     @api_error_handler
     def unfollow_game(self, game_name):
-        user = self.get_user(self.access_token)
-        if 'error' in user: raise TwitchException(user)
-        username = user.get(Keys.NAME)
-        return self.api.games._unfollow(username=username, name=game_name)
+        username = self.get_username()
+        results = self.api.games._unfollow(username=username, name=game_name)
+        return self.error_check(results)
 
     @api_error_handler
     def check_subscribed(self, channel_id):
-        user = self.get_user(self.access_token)
-        if 'error' in user: raise TwitchException(user)
-        user_id = user.get(Keys._ID)
-        return self.api.users.check_subscription(channel_id=channel_id, user_id=user_id)
+        user_id = self.get_user_id()
+        results = self.api.users.check_subscription(channel_id=channel_id, user_id=user_id)
+        return self.return_boolean(results)
 
     @api_error_handler
     def blocks(self, offset, limit):
-        user = self.get_user(self.access_token)
-        if 'error' in user: raise TwitchException(user)
-        user_id = user.get(Keys._ID)
-        return self.api.users.get_blocks(user_id=user_id, limit=limit, offset=offset)
+        user_id = self.get_user_id()
+        results = self.api.users.get_blocks(user_id=user_id, limit=limit, offset=offset)
+        return self.error_check(results)
 
     @api_error_handler
     def block_user(self, target_id):
-        user = self.get_user(self.access_token)
-        if 'error' in user: raise TwitchException(user)
-        user_id = user.get(Keys._ID)
-        return self.api.users.block_user(user_id=user_id, target_id=target_id)
+        user_id = self.get_user_id()
+        results = self.api.users.block_user(user_id=user_id, target_id=target_id)
+        return self.error_check(results)
 
     @api_error_handler
     def unblock_user(self, target_id):
-        user = self.get_user(self.access_token)
-        if 'error' in user: raise TwitchException(user)
-        user_id = user.get(Keys._ID)
-        return self.api.users.unblock_user(user_id=user_id, target_id=target_id)
+        user_id = self.get_user_id()
+        results = self.api.users.unblock_user(user_id=user_id, target_id=target_id)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_video_by_id(self, video_id):
-        return self.api.videos.by_id(video_id=video_id)
+        results = self.api.videos.by_id(video_id=video_id)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def _get_video_by_id(self, video_id):
-        return self.api.videos._by_id(video_id=video_id)
+        results = self.api.videos._by_id(video_id=video_id)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_clip_by_slug(self, slug):
-        return self.api.clips.by_slug(slug=slug)
+        results = self.api.clips.by_slug(slug=slug)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_channel_stream(self, channel_id):
-        return self.api.streams.by_id(channel_id=channel_id, stream_type=StreamType.ALL)
+        results = self.api.streams.by_id(channel_id=channel_id, stream_type=StreamType.ALL)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
@@ -262,17 +283,20 @@ class Twitch:
         query.add_param('offset', offset)
         query.add_param('limit', limit)
         query.add_param('channel', names)
-        return query.execute()
+        results = query.execute()
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_followed_games(self, name):
-        return self.api.games._get_followed(username=name)
+        results = self.api.games._get_followed(username=name)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_followed_streams(self, stream_type, offset, limit):
-        return self.api.streams.get_followed(stream_type=stream_type, limit=limit, offset=offset)
+        results = self.api.streams.get_followed(stream_type=stream_type, limit=limit, offset=offset)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
@@ -305,3 +329,17 @@ class Twitch:
                 break
 
         return user_blocks
+
+    @staticmethod
+    def error_check(results):
+        if 'error' in results: raise TwitchException(results)
+        return results
+
+    @staticmethod
+    def return_boolean(results):
+        if ('error' in results) and (results['status'] == 404):
+            return False
+        elif 'error' in results:
+            raise TwitchException(results)
+        else:
+            return True
