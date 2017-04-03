@@ -730,3 +730,7 @@ msgstr ""
 msgctxt "#30200"
 msgid "No %s found"
 msgstr ""
+
+msgctxt "#30201"
+msgid "Bandwidth"
+msgstr ""

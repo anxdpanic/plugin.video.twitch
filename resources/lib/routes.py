@@ -18,7 +18,7 @@
 """
 
 from addon import utils, api, menu_items, cache
-from addon.common import kodi
+from addon.common import kodi, log_utils
 from addon.converter import JsonListItemConverter
 from addon.constants import DISPATCHER, MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, Keys, REQUEST_LIMIT, CURSOR_LIMIT
 from addon.googl_shorten import googl_url
@@ -630,9 +630,9 @@ def list_community_streams(community_id, offset=0):
     raise NotFound(i18n('streams'))
 
 
-@DISPATCHER.register(MODES.PLAY, kwargs=['name', 'channel_id', 'video_id', 'slug', 'source', 'use_player'])
+@DISPATCHER.register(MODES.PLAY, kwargs=['name', 'channel_id', 'video_id', 'slug', 'ask', 'use_player'])
 @error_handler
-def play(name=None, channel_id=None, video_id=None, slug=None, source=True, use_player=False):
+def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_player=False):
     videos = item_dict = quality = None
     if video_id:
         audio_sub = chunked_sub = restricted = False
@@ -671,13 +671,8 @@ def play(name=None, channel_id=None, video_id=None, slug=None, source=True, use_
         result = twitch.get_clip_by_slug(slug)
         item_dict = converter.clip_to_playitem(result)
     if item_dict and videos:
-        if source:
-            use_source = kodi.get_setting('video_quality') == '0'
-        else:
-            use_source = False
-
-        play_url = converter.get_video_for_quality(videos, source=use_source, quality=quality)
-
+        quality_label, play_url = converter.get_video_for_quality(videos, return_label=True, ask=ask, quality=quality)
+        log_utils.log('Attempting playback using quality |%s| @ |%s|' % (quality_label, play_url), log_utils.LOGDEBUG)
         if play_url:
             item_dict['path'] = play_url
             playback_item = kodi.create_item(item_dict, add=False)
