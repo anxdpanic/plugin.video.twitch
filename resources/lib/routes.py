@@ -671,7 +671,8 @@ def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_pl
         result = twitch.get_clip_by_slug(slug)
         item_dict = converter.clip_to_playitem(result)
     if item_dict and videos:
-        quality_label, play_url = converter.get_video_for_quality(videos, return_label=True, ask=ask, quality=quality)
+        clip = False if slug is None else True
+        quality_label, play_url = converter.get_video_for_quality(videos, return_label=True, ask=ask, quality=quality, clip=clip)
         log_utils.log('Attempting playback using quality |%s| @ |%s|' % (quality_label, play_url), log_utils.LOGDEBUG)
         if play_url:
             item_dict['path'] = play_url
