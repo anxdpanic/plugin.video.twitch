@@ -124,7 +124,7 @@ class JsonListItemConverter(object):
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'name': channel_name, 'source': False, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'name': channel_name, 'ask': True, 'use_player': True}))
         return {'label': title,
                 'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel_name}),
                 'context_menu': context_menu,
@@ -168,7 +168,7 @@ class JsonListItemConverter(object):
             context_menu.extend(menu_items.edit_block(broadcaster[Keys.ID], broadcaster[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.set_default_quality('clip', broadcaster[Keys.ID], broadcaster[Keys.NAME], clip_id=clip[Keys.ID]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'channel_id': broadcaster[Keys.ID], 'slug': clip[Keys.ID], 'source': False, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'channel_id': broadcaster[Keys.ID], 'slug': clip[Keys.ID], 'ask': True, 'use_player': True}))
         return {'label': self.get_title_for_clip(clip),
                 'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'channel_id': broadcaster[Keys.ID], 'slug': clip[Keys.ID]}),
                 'context_menu': context_menu,
@@ -198,7 +198,7 @@ class JsonListItemConverter(object):
             context_menu.extend(menu_items.edit_block(owner[Keys._ID], owner[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.set_default_quality('video', owner[Keys._ID], owner[Keys.NAME], video[Keys.ITEM_ID]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'video_id': video[Keys.ITEM_ID], 'source': False, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'video_id': video[Keys.ITEM_ID], 'ask': True, 'use_player': True}))
         return {'label': video[Keys.TITLE],
                 'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video[Keys.ITEM_ID]}),
                 'context_menu': context_menu,
@@ -227,7 +227,7 @@ class JsonListItemConverter(object):
             context_menu.extend(menu_items.edit_follow(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
             context_menu.extend(menu_items.edit_block(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'video_id': video[Keys._ID], 'source': False, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'video_id': video[Keys._ID], 'ask': True, 'use_player': True}))
         return {'label': self.get_title_for_video(video),
                 'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video[Keys._ID]}),
                 'context_menu': context_menu,
@@ -260,7 +260,7 @@ class JsonListItemConverter(object):
             context_menu.extend(menu_items.edit_block(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.set_default_quality('stream', channel[Keys._ID], channel[Keys.NAME]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys._ID], 'source': False, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys._ID], 'ask': True, 'use_player': True}))
         return {'label': title,
                 'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys._ID]}),
                 'context_menu': context_menu,
@@ -457,27 +457,58 @@ class JsonListItemConverter(object):
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
 
-    def get_video_for_quality(self, videos, source=True, return_label=False, quality=None):
-        for quality_label, url in videos:
-            if (quality and (quality.lower() in quality_label.lower())) or len(videos) == 1:
-                if return_label:
-                    return quality_label, url
-                else:
-                    return url
-        for quality_label, url in videos:
-            if (source) and ('source' in quality_label.lower()):
-                if return_label:
-                    return quality_label, url
-                else:
-                    return url
-
-        return self.select_video_for_quality(videos, return_label=return_label)
+    def get_video_for_quality(self, videos, ask=True, return_label=False, quality=None, clip=False):
+        if ask is True:
+            return self.select_video_for_quality(videos, return_label=return_label)
+        else:
+            video_quality = kodi.get_setting('video_quality')
+            source = video_quality == '0'
+            ask = video_quality == '1'
+            bandwidth = video_quality == '2'
+            try:
+                bandwidth_value = int(kodi.get_setting('bandwidth'))
+            except:
+                bandwidth_value = None
+            if quality or len(videos) == 1:
+                for quality_label, url, bandwidth in videos:
+                    if (quality and (quality.lower() in quality_label.lower())) or len(videos) == 1:
+                        if return_label:
+                            return quality_label, url
+                        else:
+                            return url
+            elif ask:
+                return self.select_video_for_quality(videos, return_label=return_label)
+            elif source:
+                for quality_label, url, bandwidth in videos:
+                    if (source) and ('source' in quality_label.lower()):
+                        if return_label:
+                            return quality_label, url
+                        else:
+                            return url
+            elif bandwidth and bandwidth_value and not clip:
+                bandwidths = []
+                for quality_label, url, bwidth in videos:
+                    if int(bwidth) < bandwidth_value:
+                        bandwidths.append(int(bwidth))
+                best_match = max(bandwidths)
+                try:
+                    index = next(idx for idx, video in enumerate(videos) if int(video[2]) == best_match)
+                    if return_label:
+                        return videos[index][0], videos[index][1]
+                    else:
+                        return videos[index][1]
+                except:
+                    pass
+            return self.select_video_for_quality(videos, return_label=return_label)
 
     @staticmethod
     def select_video_for_quality(videos, return_label=False):
-        result = kodi.Dialog().select(i18n('choose_quality'), [quality for quality, url in videos])
+        result = kodi.Dialog().select(i18n('choose_quality'), [quality for quality, url, bandwidth in videos])
         if result == -1:
-            return None
+            if return_label:
+                return None, None
+            else:
+                return None
         else:
             if return_label:
                 return videos[result][0], videos[result][1]
