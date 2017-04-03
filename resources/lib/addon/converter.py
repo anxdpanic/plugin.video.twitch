@@ -457,7 +457,7 @@ class JsonListItemConverter(object):
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
 
-    def get_video_for_quality(self, videos, ask=True, return_label=False, quality=None):
+    def get_video_for_quality(self, videos, ask=True, return_label=False, quality=None, clip=False):
         if ask is True:
             return self.select_video_for_quality(videos, return_label=return_label)
         else:
@@ -485,7 +485,7 @@ class JsonListItemConverter(object):
                             return quality_label, url
                         else:
                             return url
-            elif bandwidth and bandwidth_value:
+            elif bandwidth and bandwidth_value and not clip:
                 bandwidths = []
                 for quality_label, url, bwidth in videos:
                     if int(bwidth) < bandwidth_value:
