@@ -162,10 +162,9 @@ def get_refresh_stamp():
     return kodi.get_info_label('Window(10000).Property({key})'.format(key='%s-lpr_stamp' % kodi.get_id()))
 
 
-def get_refresh_diff():
+def get_stamp_diff(current_stamp):
     stamp_format = '%Y-%m-%d %H:%M:%S.%f'
     current_datetime = datetime.now()
-    current_stamp = get_refresh_stamp()
     if not current_stamp: return 86400  # 24 hrs
     stamp_datetime = datetime(*(time.strptime(current_stamp, stamp_format)[0:6]))  # datetime.strptime has issues
     time_delta = current_datetime - stamp_datetime
@@ -173,6 +172,10 @@ def get_refresh_diff():
     if time_delta:
         total_seconds = ((time_delta.seconds + time_delta.days * 24 * 3600) * 10 ** 6) / 10 ** 6
     return total_seconds
+
+
+def get_refresh_diff():
+    return get_stamp_diff(get_refresh_stamp())
 
 
 def extract_video_id(url):
