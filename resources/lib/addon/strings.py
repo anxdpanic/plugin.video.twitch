@@ -105,5 +105,7 @@ STRINGS = {
     'remove_language': 30190,
     'subscription_required': 30198,
     'connection_failed': 30199,
-    'none_found': 30200
+    'none_found': 30200,
+    'currently_live': 30202,
+    'went_live': 30203
 }

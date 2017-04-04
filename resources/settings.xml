@@ -18,6 +18,9 @@
         <setting id="title_truncate" type="bool" label="30065" default="true"/>
         <setting label="30123" type="slider" id="items_per_page" default="25" range="10,100" option="int"/>
 
+        <setting label="30204" id="live_notify" type="bool" default="false"/>
+        <setting label="30205" id="live_notify_audible" type="bool" default="false" enable="eq(-1,true)" visible="eq(-1,true)"/>
+
         <setting label="30090" type="lsep"/>
         <setting label="30189" id="add_language" type="action" action="RunPlugin(plugin://$ID/?mode=edit_languages&amp;action=add)"/>
         <setting label="30190" id="remove_language" type="action" action="RunPlugin(plugin://$ID/?mode=edit_languages&amp;action=remove)"/>
@@ -41,10 +44,12 @@
         <setting label="30157" id="clear_game_blacklist" type="action" action="RunPlugin(plugin://$ID/?mode=clear_list&amp;list_type=game&amp;list_name=blacklist)"/>
         <setting label="30183" id="clear_community_blacklist" type="action" action="RunPlugin(plugin://$ID/?mode=clear_list&amp;list_type=community&amp;list_name=blacklist)"/>
     </category>
-    <!-- Cache -->
-    <category label="30120">
-        <setting label="30121" type="slider" id="cache_expire_time" default="3" range="0,60" option="int"/>
-        <setting label="30122" id="reset_cache" type="action" action="RunPlugin(plugin://$ID/?mode=reset_cache)"/>
+    <!-- IRC -->
+    <category label="30081">
+        <!-- Enable IRC Chat -->
+        <setting id="irc_enable" type="bool" label="30052" default="false" enable="System.HasAddon(script.ircchat)"/>
+        <setting label="30075" id="install_ircscript" type="action" action="RunPlugin(plugin://$ID/?mode=install_ircchat)"
+                 enable="!System.HasAddon(script.ircchat)" visible="!System.HasAddon(script.ircchat)" option="close"/>
     </category>
     <!-- Live Previews -->
     <category label="30082">
@@ -67,12 +72,10 @@
         <setting id="notify_refresh" type="bool" label="30087" default="true"
                  enable="eq(-6,true)" visible="eq(-6,true)"/>
     </category>
-    <!-- IRC -->
-    <category label="30081">
-        <!-- Enable IRC Chat -->
-        <setting id="irc_enable" type="bool" label="30052" default="false" enable="System.HasAddon(script.ircchat)"/>
-        <setting label="30075" id="install_ircscript" type="action" action="RunPlugin(plugin://$ID/?mode=install_ircchat)"
-                 enable="!System.HasAddon(script.ircchat)" visible="!System.HasAddon(script.ircchat)" option="close"/>
+    <!-- Cache -->
+    <category label="30120">
+        <setting label="30121" type="slider" id="cache_expire_time" default="3" range="0,60" option="int"/>
+        <setting label="30122" id="reset_cache" type="action" action="RunPlugin(plugin://$ID/?mode=reset_cache)"/>
     </category>
     <!-- Developer -->
     <category label="30118">
