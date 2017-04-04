@@ -818,7 +818,7 @@ def edit_sorting(list_type, sort_type):
             result = kodi.Dialog().select(i18n('change_direction'), [label for label, value in choices])
             if result > -1:
                 sorting = utils.get_sort(list_type)
-                utils.set_sort(list_type, sort_by=sorting['by'], period=sorting['direction'], direction=choices[result][1])
+                utils.set_sort(list_type, sort_by=sorting['by'], period=sorting['period'], direction=choices[result][1])
 
 
 @DISPATCHER.register(MODES.EDITLANGUAGES, args=['action'])
