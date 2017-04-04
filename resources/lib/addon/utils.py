@@ -92,6 +92,8 @@ def calculate_pagination_values(index):
 
 
 def get_offset(offset, item, items, key=None):
+    if item is None:
+        return int(offset) + REQUEST_LIMIT
     try:
         if key is None:
             return int(offset) + next(index for (index, _item) in enumerate(items) if item == _item)
