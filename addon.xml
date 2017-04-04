@@ -12,28 +12,28 @@
     <extension point='xbmc.addon.metadata'>
         <platform>all</platform>
         <news>
-*** v1 favorites, routes will NOT work. NOT backwards compatible with v1
+*** NOT backwards compatible with v1 (favorites, routes will NOT work)
 *** New OAuth token required, see Settings - Get OAuth token
-- revisit, refactor and rewrite v1 code where necessary
+- Kodi 17 ready, content/media types set per new official repository requirements
 - remove xbmcswift dependency
 - remove api portion in favor of new module script.module.python.twitch (based on python-twitch by ingwinlu)
-- use ssl (script.module.python.twitch handles this with requests)
-- api calls are cached, cache can be set/cleared from settings
-- menu and setting layouts updated
-- more search options
-- 'refresh' from context menus
-- 'go to' channel videos(display name) from context menu for streams
-- 'go to' game from context menu for streams and videos
-- uniform pagination where possible, 'items per page' can be changed in settings
-- remove Teams, end-points no longer available
-- Kodi 17 ready, content/media types set per new official repository requirements
-- update to use Twitch API v5
+- remove Teams, end-points (no longer available)
+- use Twitch API v5
+- add caching for api calls, cache can be set/cleared from settings
+- add token generation, checking
+- add context menus:
+    - refresh
+    - 'go to' channel videos(display name) for streams
+    - 'go to' game for streams and videos
+- quality selection ask/source/bandwidth (clips excluded from bandwidth)
+- add Live notifications for following
+- add more search options
 - add Communities
 - add Follow/Unfollow
 - add Block/Unblock user
-- add blacklisting of users/games/communities
+- add blacklisting of users/games/communities (search excluded)
 - add set default quality for stream/video/clips per channel
-- add offline playlists to Following
+- add Playlists
 - add Collections
 - add Clips
 - add Languages
