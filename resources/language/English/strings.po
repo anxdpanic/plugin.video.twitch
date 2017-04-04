@@ -734,3 +734,19 @@ msgstr ""
 msgctxt "#30201"
 msgid "Bandwidth"
 msgstr ""
+
+msgctxt "#30202"
+msgid "Currently Live"
+msgstr ""
+
+msgctxt "#30203"
+msgid "Went Live"
+msgstr ""
+
+msgctxt "#30204"
+msgid "Live notifications"
+msgstr ""
+
+msgctxt "#30205"
+msgid "Audible live notifications"
+msgstr ""
