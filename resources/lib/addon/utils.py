@@ -156,12 +156,13 @@ def refresh_previews():
 
 
 def set_refresh_stamp():
-    builtin = 'SetProperty({key}, {value}, 10000)'
-    kodi.execute_builtin(builtin.format(key='%s-lpr_stamp' % kodi.get_id(), value=datetime.now()))
+    window = kodi.Window(10000)
+    window.setProperty(key='%s-lpr_stamp' % kodi.get_id(), value=datetime.now())
 
 
 def get_refresh_stamp():
-    return kodi.get_info_label('Window(10000).Property({key})'.format(key='%s-lpr_stamp' % kodi.get_id()))
+    window = kodi.Window(10000)
+    return window.getProperty(key='%s-lpr_stamp' % kodi.get_id())
 
 
 def get_stamp_diff(current_stamp):
