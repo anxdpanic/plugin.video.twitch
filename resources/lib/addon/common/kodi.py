@@ -42,6 +42,7 @@ __log = xbmc.log
 Dialog = xbmcgui.Dialog
 PlayList = xbmc.PlayList
 Player = xbmc.Player
+Window = xbmcgui.Window
 
 
 def execute_jsonrpc(command):

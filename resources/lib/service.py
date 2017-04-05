@@ -29,6 +29,7 @@ import xbmc
 
 blacklist_filter = BlacklistFilter()
 monitor = xbmc.Monitor()
+window = kodi.Window(10000)
 
 
 def grouped(items):
@@ -69,12 +70,11 @@ def get_followed_streams(twitch_api):
 
 
 def set_online_followed(value):
-    builtin = 'SetProperty({key}, {value}, 10000)'
-    kodi.execute_builtin(builtin.format(key='%s-online_followers' % kodi.get_id(), value=quote(str(value))))
+    window.setProperty(key='%s-online_followers' % kodi.get_id(), value=quote(str(value)))
 
 
 def get_online_followed():
-    result = unquote(kodi.get_info_label('Window(10000).Property({key})'.format(key='%s-online_followers' % kodi.get_id())))
+    result = unquote(window.getProperty(key='%s-online_followers' % kodi.get_id()))
     if result:
         return literal_eval(result)
     else:
