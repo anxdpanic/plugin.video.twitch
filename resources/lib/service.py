@@ -57,7 +57,7 @@ def get_followed_streams(twitch_api):
         if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
             for stream in streams[Keys.STREAMS]:
                 all_followed[Keys.STREAMS].append(stream)
-            if streams[Keys.TOTAL] <= offset:
+            if streams[Keys.TOTAL] <= (offset + 100):
                 break
             else:
                 offset += 100
