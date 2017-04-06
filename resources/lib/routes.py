@@ -23,7 +23,7 @@ from addon.converter import JsonListItemConverter
 from addon.constants import DISPATCHER, MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, Keys, REQUEST_LIMIT, CURSOR_LIMIT
 from addon.googl_shorten import googl_url
 from addon.error_handling import error_handler
-from addon.twitch_exceptions import SubRequired, NotFound
+from addon.twitch_exceptions import SubRequired, NotFound, PlaybackFailed
 from twitch.api.parameters import Boolean, Period, ClipPeriod, Direction, SortBy, VideoSort, Language, StreamType, Platform
 
 i18n = utils.i18n
@@ -132,9 +132,14 @@ def search_results(content, query, index=0):
             kodi.update_container(kodi.get_plugin_url({'mode': MODES.SEARCH}))
     elif content == 'id_url':
         kodi.set_content('videos')
-        video_id = utils.extract_video_id(query)
+        video_id, seek_time = utils.extract_video(query)
         results = twitch.get_video_by_id(video_id)
         if video_id.startswith('a') or video_id.startswith('c') or video_id.startswith('v'):
+            window = kodi.Window(10000)
+            if seek_time > 0:
+                window.setProperty(kodi.get_id() + '-_seek', '%s,%d' % (video_id, seek_time))
+            else:
+                window.clearProperty(kodi.get_id() + '-_seek')
             kodi.create_item(converter.video_list_to_listitem(results))
             kodi.end_of_directory()
         else:
@@ -658,58 +663,91 @@ def list_community_streams(community_id, offset=0):
 @DISPATCHER.register(MODES.PLAY, kwargs=['name', 'channel_id', 'video_id', 'slug', 'ask', 'use_player'])
 @error_handler
 def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_player=False):
-    videos = item_dict = quality = None
-    if video_id:
-        audio_sub = chunked_sub = restricted = False
-        result = twitch.get_video_by_id(video_id)
-        video_id = result[Keys._ID]
-        channel_id = result[Keys.CHANNEL][Keys._ID]
-        channel_name = result[Keys.CHANNEL][Keys.DISPLAY_NAME] if result[Keys.CHANNEL][Keys.DISPLAY_NAME] else result[Keys.CHANNEL][Keys.NAME]
-        extra_info = twitch._get_video_by_id(video_id)
-        if 'restrictions' in extra_info:
-            if ('audio_only' in extra_info['restrictions']) and (extra_info['restrictions']['audio_only'] == 'chansub'):
-                audio_sub = True
-            if ('chunked' in extra_info['restrictions']) and (extra_info['restrictions']['chunked'] == 'chansub'):
-                chunked_sub = True
-            if chunked_sub or audio_sub:
-                restricted = not twitch.check_subscribed(channel_id)
-        if not restricted:
-            videos = twitch.get_vod(video_id)
-            item_dict = converter.video_to_playitem(result)
-            quality = utils.get_default_quality('video', channel_id)
+    window = kodi.Window(10000)
+
+    def _reset():
+        window.clearProperty(kodi.get_id() + '-_seek')
+        window.clearProperty(kodi.get_id() + '-seek_time')
+        window.clearProperty(kodi.get_id() + '-twitch_playing')
+
+    def _get_seek():
+        result = window.getProperty(kodi.get_id() + '-_seek')
+        if result:
+            return result.split(',')
+        return None, None
+
+    def _set_playing():
+        window.setProperty(kodi.get_id() + '-twitch_playing', str(True))
+
+    def _set_seek_time(value):
+        window.setProperty(kodi.get_id() + '-seek_time', str(value))
+
+    try:
+        videos = item_dict = quality = None
+        seek_time = 0
+        if video_id:
+            seek_id, _seek_time = _get_seek()
+            if seek_id == video_id:
+                seek_time = int(_seek_time)
+            audio_sub = chunked_sub = restricted = False
+            result = twitch.get_video_by_id(video_id)
+            video_id = result[Keys._ID]
+            channel_id = result[Keys.CHANNEL][Keys._ID]
+            channel_name = result[Keys.CHANNEL][Keys.DISPLAY_NAME] if result[Keys.CHANNEL][Keys.DISPLAY_NAME] else result[Keys.CHANNEL][Keys.NAME]
+            extra_info = twitch._get_video_by_id(video_id)
+            if 'restrictions' in extra_info:
+                if ('audio_only' in extra_info['restrictions']) and (extra_info['restrictions']['audio_only'] == 'chansub'):
+                    audio_sub = True
+                if ('chunked' in extra_info['restrictions']) and (extra_info['restrictions']['chunked'] == 'chansub'):
+                    chunked_sub = True
+                if chunked_sub or audio_sub:
+                    restricted = not twitch.check_subscribed(channel_id)
+            if not restricted:
+                videos = twitch.get_vod(video_id)
+                item_dict = converter.video_to_playitem(result)
+                quality = utils.get_default_quality('video', channel_id)
+                if quality:
+                    quality = quality[channel_id]['quality']
+            else:
+                raise SubRequired(channel_name)
+        elif name and channel_id:
+            quality = utils.get_default_quality('stream', channel_id)
             if quality:
                 quality = quality[channel_id]['quality']
-        else:
-            raise SubRequired(channel_name)
-    elif name and channel_id:
-        quality = utils.get_default_quality('stream', channel_id)
-        if quality:
-            quality = quality[channel_id]['quality']
-        videos = twitch.get_live(name)
-        result = twitch.get_channel_stream(channel_id)[Keys.STREAM]
-        item_dict = converter.stream_to_playitem(result)
-    elif slug and channel_id:
-        quality = utils.get_default_quality('clip', channel_id)
-        if quality:
-            quality = quality[channel_id]['quality']
-        videos = twitch.get_clip(slug)
-        result = twitch.get_clip_by_slug(slug)
-        item_dict = converter.clip_to_playitem(result)
-    if item_dict and videos:
-        clip = False if slug is None else True
-        quality_label, play_url = converter.get_video_for_quality(videos, return_label=True, ask=ask, quality=quality, clip=clip)
-        log_utils.log('Attempting playback using quality |%s| @ |%s|' % (quality_label, play_url), log_utils.LOGDEBUG)
-        if play_url:
-            item_dict['path'] = play_url
-            playback_item = kodi.create_item(item_dict, add=False)
-            if use_player:
-                kodi.Player().play(item_dict['path'], playback_item)
-            else:
-                kodi.set_resolved_url(playback_item)
-            if utils.irc_enabled() and twitch.access_token:
-                username = twitch.get_username()
-                if username:
-                    utils.exec_irc_script(username, name)
+            videos = twitch.get_live(name)
+            result = twitch.get_channel_stream(channel_id)[Keys.STREAM]
+            item_dict = converter.stream_to_playitem(result)
+        elif slug and channel_id:
+            quality = utils.get_default_quality('clip', channel_id)
+            if quality:
+                quality = quality[channel_id]['quality']
+            videos = twitch.get_clip(slug)
+            result = twitch.get_clip_by_slug(slug)
+            item_dict = converter.clip_to_playitem(result)
+        _reset()
+        if item_dict and videos:
+            clip = False if slug is None else True
+            quality_label, play_url = converter.get_video_for_quality(videos, return_label=True, ask=ask, quality=quality, clip=clip)
+            log_utils.log('Attempting playback using quality |%s| @ |%s|' % (quality_label, play_url), log_utils.LOGDEBUG)
+            if play_url:
+                item_dict['path'] = play_url
+                playback_item = kodi.create_item(item_dict, add=False)
+                if seek_time > 0:
+                    _set_seek_time(seek_time)
+                _set_playing()
+                if use_player:
+                    kodi.Player().play(item_dict['path'], playback_item)
+                else:
+                    kodi.set_resolved_url(playback_item)
+                if utils.irc_enabled() and twitch.access_token:
+                    username = twitch.get_username()
+                    if username:
+                        utils.exec_irc_script(username, name)
+                return
+        raise PlaybackFailed()
+    except:
+        _reset()
+        raise
 
 
 @DISPATCHER.register(MODES.EDITFOLLOW, kwargs=['channel_id', 'channel_name', 'game_name'])

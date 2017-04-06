@@ -107,5 +107,6 @@ STRINGS = {
     'connection_failed': 30199,
     'none_found': 30200,
     'currently_live': 30202,
-    'went_live': 30203
+    'went_live': 30203,
+    'playback_failed': 30206
 }

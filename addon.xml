@@ -38,6 +38,7 @@
 - add Clips
 - add Languages
 - add Change sort by/period/direction
+- add support for timestamp in urls (Search - Video Id/Url)
         </news>
         <assets>
             <icon>icon.png</icon>
