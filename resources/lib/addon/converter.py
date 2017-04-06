@@ -488,7 +488,7 @@ class JsonListItemConverter(object):
             elif bandwidth and bandwidth_value and not clip:
                 bandwidths = []
                 for quality_label, url, bwidth in videos:
-                    if int(bwidth) < bandwidth_value:
+                    if int(bwidth) <= bandwidth_value:
                         bandwidths.append(int(bwidth))
                 best_match = max(bandwidths)
                 try:
