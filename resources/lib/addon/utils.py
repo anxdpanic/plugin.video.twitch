@@ -17,6 +17,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
+import re
 import time
 from datetime import datetime
 from base64 import b64decode
@@ -156,12 +157,13 @@ def refresh_previews():
 
 
 def set_refresh_stamp():
-    builtin = 'SetProperty({key}, {value}, 10000)'
-    kodi.execute_builtin(builtin.format(key='%s-lpr_stamp' % kodi.get_id(), value=datetime.now()))
+    window = kodi.Window(10000)
+    window.setProperty(key='%s-lpr_stamp' % kodi.get_id(), value=datetime.now())
 
 
 def get_refresh_stamp():
-    return kodi.get_info_label('Window(10000).Property({key})'.format(key='%s-lpr_stamp' % kodi.get_id()))
+    window = kodi.Window(10000)
+    return window.getProperty(key='%s-lpr_stamp' % kodi.get_id())
 
 
 def get_stamp_diff(current_stamp):
@@ -180,20 +182,40 @@ def get_refresh_diff():
     return get_stamp_diff(get_refresh_stamp())
 
 
-def extract_video_id(url):
-    video_id = url  # http://twitch.tv/a/v/12345678?t=9m1s
-    idx = video_id.find('?')
+def extract_video(url):
+    video_id = None
+    seek_time = 0
+    id_string = url  # http://twitch.tv/a/v/12345678?t=9m1s
+    idx = id_string.find('?')
     if idx >= 0:
-        video_id = video_id[:idx]  # https://twitch.tv/a/v/12345678
-    idx = video_id.rfind('/')
+        id_string = id_string[:idx]  # https://twitch.tv/a/v/12345678
+    idx = id_string.rfind('/')
     if idx >= 0:
-        video_id = video_id[:idx] + video_id[idx + 1:]  # https://twitch.tv/a/v12345678
-    idx = video_id.rfind('/')
+        id_string = id_string[:idx] + id_string[idx + 1:]  # https://twitch.tv/a/v12345678
+    idx = id_string.rfind('/')
     if idx >= 0:
-        video_id = video_id[idx + 1:]  # v12345678
-    if video_id.startswith("videos"):  # videos12345678
-        video_id = "v" + video_id[6:]  # v12345678
-    return video_id
+        id_string = id_string[idx + 1:]  # v12345678
+    if id_string.startswith("videos"):  # videos12345678
+        id_string = "v" + id_string[6:]  # v12345678
+    start_time = url  # http://twitch.tv/a/v/12345678?t=9m1s
+    idx = url.find('?')
+    if idx >= 0:
+        time_string = start_time[idx:]  # t=9m1s
+        pattern = re.compile('t=(?:(?P<hours>[0-9]+)(?:h))?(?:(?P<minutes>[0-9]+)(?:m))?(?:(?P<seconds>[0-9]+)(?:s))?')
+        match = re.search(pattern, time_string)
+        if match:
+            hours = match.group('hours')
+            minutes = match.group('minutes')
+            seconds = match.group('seconds')
+            if hours:
+                seek_time += int(hours) * 3600
+            if minutes:
+                seek_time += int(minutes) * 60
+            if seconds:
+                seek_time += int(seconds)
+    if id_string.startswith('v') or id_string.startswith('c') or id_string.startswith('a'):
+        video_id = id_string
+    return video_id, seek_time
 
 
 _sorting_defaults = \

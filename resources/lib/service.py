@@ -24,11 +24,13 @@ from urllib2 import quote, unquote
 from addon.common import kodi, log_utils
 from addon.constants import Keys
 from addon.utils import BlacklistFilter, i18n, get_stamp_diff
+from addon.player import TwitchPlayer
 from addon import api
 import xbmc
 
 blacklist_filter = BlacklistFilter()
 monitor = xbmc.Monitor()
+window = kodi.Window(10000)
 
 
 def grouped(items):
@@ -52,11 +54,14 @@ def get_followed_streams(twitch_api):
         if offset > 0:
             if monitor.waitForAbort(1):
                 return None
-        streams = twitch_api.get_followed_streams(stream_type='live', offset=offset, limit=100)
+        try:
+            streams = twitch_api.get_followed_streams(stream_type='live', offset=offset, limit=100)
+        except:
+            break
         if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
             for stream in streams[Keys.STREAMS]:
                 all_followed[Keys.STREAMS].append(stream)
-            if streams[Keys.TOTAL] <= offset:
+            if streams[Keys.TOTAL] <= (offset + 100):
                 break
             else:
                 offset += 100
@@ -69,12 +74,11 @@ def get_followed_streams(twitch_api):
 
 
 def set_online_followed(value):
-    builtin = 'SetProperty({key}, {value}, 10000)'
-    kodi.execute_builtin(builtin.format(key='%s-online_followers' % kodi.get_id(), value=quote(str(value))))
+    window.setProperty(key='%s-online_followers' % kodi.get_id(), value=quote(str(value)))
 
 
 def get_online_followed():
-    result = unquote(kodi.get_info_label('Window(10000).Property({key})'.format(key='%s-online_followers' % kodi.get_id())))
+    result = unquote(window.getProperty(key='%s-online_followers' % kodi.get_id()))
     if result:
         return literal_eval(result)
     else:
@@ -93,6 +97,8 @@ abort = False
 
 log_utils.log('Service: Start', log_utils.LOGNOTICE)
 
+player = TwitchPlayer()
+
 while not monitor.abortRequested():
     if (timestamp is None) or (get_stamp_diff(timestamp) >= delay_time):
         timestamp = str(datetime.now())
@@ -102,36 +108,37 @@ while not monitor.abortRequested():
         if has_token and do_notification:
             current_live = get_followed_streams(twitch)
             if current_live is None: break  # if aborted during api requests
-            current_online = get_online_followed()
-            if not current_online:
-                log_utils.log('Service: Now online |%s|' % current_live, log_utils.LOGDEBUG)
-                set_online_followed(value=current_live)
-                names = [display_name for _id, name, display_name in current_live]
-                triplets = grouped(names)
-                for followed_names in triplets:
-                    message = ', '.join(followed_names)
-                    message = message.rstrip(', ').rstrip(', ')
-                    kodi.notify(i18n('currently_live'), message, duration=notification_duration, sound=make_audible)
-                    if monitor.waitForAbort(notification_sleep):
-                        abort = True
-                        break
-            else:
-                log_utils.log('Service: Was online |%s|' % current_online, log_utils.LOGDEBUG)
-                current_online = [match for match in current_online if match in current_live]
-                new_online = [match for match in current_live if match not in current_online]
-                log_utils.log('Service: New online |%s|' % new_online, log_utils.LOGDEBUG)
-                current_online += new_online
-                log_utils.log('Service: Now online |%s|' % current_online, log_utils.LOGDEBUG)
-                set_online_followed(current_online)
-                names = [display_name for _id, name, display_name in new_online]
-                triplets = grouped(names)
-                for followed_names in triplets:
-                    message = ', '.join(followed_names)
-                    message = message.rstrip(', ').rstrip(', ')
-                    kodi.notify(i18n('went_live'), message, duration=notification_duration, sound=make_audible)
-                    if monitor.waitForAbort(notification_sleep):
-                        abort = True
-                        break
+            if current_live:
+                current_online = get_online_followed()
+                if not current_online:
+                    log_utils.log('Service: Now online |%s|' % current_live, log_utils.LOGDEBUG)
+                    set_online_followed(value=current_live)
+                    names = [display_name for _id, name, display_name in current_live]
+                    triplets = grouped(names)
+                    for followed_names in triplets:
+                        message = ', '.join(followed_names)
+                        message = message.rstrip(', ').rstrip(', ')
+                        kodi.notify(i18n('currently_live'), message, duration=notification_duration, sound=make_audible)
+                        if monitor.waitForAbort(notification_sleep):
+                            abort = True
+                            break
+                else:
+                    log_utils.log('Service: Was online |%s|' % current_online, log_utils.LOGDEBUG)
+                    current_online = [match for match in current_online if match in current_live]
+                    new_online = [match for match in current_live if match not in current_online]
+                    log_utils.log('Service: New online |%s|' % new_online, log_utils.LOGDEBUG)
+                    current_online += new_online
+                    log_utils.log('Service: Now online |%s|' % current_online, log_utils.LOGDEBUG)
+                    set_online_followed(current_online)
+                    names = [display_name for _id, name, display_name in new_online]
+                    triplets = grouped(names)
+                    for followed_names in triplets:
+                        message = ', '.join(followed_names)
+                        message = message.rstrip(', ').rstrip(', ')
+                        kodi.notify(i18n('went_live'), message, duration=notification_duration, sound=make_audible)
+                        if monitor.waitForAbort(notification_sleep):
+                            abort = True
+                            break
     if monitor.waitForAbort(sleep_time) or abort:
         break
 

@@ -31,3 +31,7 @@ class SubRequired(Exception):
 
 class NotFound(Exception):
     pass
+
+
+class PlaybackFailed(Exception):
+    pass

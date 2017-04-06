@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
-<addon id='plugin.video.twitch' version='2.0.0~alpha11' name='Twitch' provider-name='A Talented Community'>
+<addon id='plugin.video.twitch' version='2.0.0~alpha12' name='Twitch' provider-name='A Talented Community'>
     <requires>
         <import addon='xbmc.python' version='2.20.0'/>
         <import addon="script.module.python.twitch"/>
@@ -38,6 +38,7 @@
 - add Clips
 - add Languages
 - add Change sort by/period/direction
+- add support for timestamp in urls (Search - Video Id/Url)
         </news>
         <assets>
             <icon>icon.png</icon>

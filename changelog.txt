@@ -25,6 +25,7 @@
 - add Clips
 - add Languages
 - add Change sort by/period/direction
+- add support for timestamp in urls (Search - Video Id/Url)
 
 1.4.6
 - Added new title formatting option which includes broadcaster language.

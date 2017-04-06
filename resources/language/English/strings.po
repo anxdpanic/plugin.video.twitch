@@ -750,3 +750,7 @@ msgstr ""
 msgctxt "#30205"
 msgid "Audible live notifications"
 msgstr ""
+
+msgctxt "#30206"
+msgid "Playback failed"
+msgstr ""

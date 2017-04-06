@@ -301,7 +301,8 @@ class Twitch:
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_vod(self, video_id):
-        return self.usher.video(video_id)
+        results = self.usher.video(video_id)
+        return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
@@ -311,7 +312,8 @@ class Twitch:
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_live(self, name):
-        return self.usher.live(name)
+        results = self.usher.live(name)
+        return self.error_check(results)
 
     def get_user_blocks(self):
         limit = 100
