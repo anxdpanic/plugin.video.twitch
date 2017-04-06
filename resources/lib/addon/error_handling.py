@@ -21,7 +21,7 @@ import json
 from functools import wraps
 import utils
 from common import kodi, log_utils
-from twitch_exceptions import TwitchException, SubRequired, ResourceUnavailableException, NotFound
+from twitch_exceptions import TwitchException, SubRequired, ResourceUnavailableException, NotFound, PlaybackFailed
 
 i18n = utils.i18n
 
@@ -41,6 +41,9 @@ def error_handler(func):
         except NotFound as error:
             log_utils.log('Not found |{0}|'.format(error.message), log_utils.LOGDEBUG)
             kodi.notify(kodi.get_name(), i18n('none_found') % error.message.lower(), duration=5000, sound=False)
+        except PlaybackFailed as error:
+            log_utils.log('Playback Failed |{0}|'.format(error.message), log_utils.LOGDEBUG)
+            kodi.notify(kodi.get_name(), i18n('playback_failed'), duration=5000, sound=False)
         except TwitchException as error:
             _error = ''
             try:
