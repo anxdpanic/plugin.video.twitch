@@ -748,9 +748,33 @@ msgid "Live notifications"
 msgstr ""
 
 msgctxt "#30205"
-msgid "Audible live notifications"
+msgid "Audible"
 msgstr ""
 
 msgctxt "#30206"
 msgid "Playback failed"
+msgstr ""
+
+msgctxt "#30207"
+msgid "Retrying in %d seconds"
+msgstr ""
+
+msgctxt "#30208"
+msgid "Attempting to reconnect to %s"
+msgstr ""
+
+msgctxt "#30209"
+msgid "Attempt #%d"
+msgstr ""
+
+msgctxt "#30210"
+msgid "Attempt reconnection to live streams"
+msgstr ""
+
+msgctxt "#30211"
+msgid "Enabled"
+msgstr ""
+
+msgctxt "#30212"
+msgid "Failed to connect to Twitch API"
 msgstr ""

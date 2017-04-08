@@ -671,6 +671,9 @@ def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_pl
         window.clearProperty(kodi.get_id() + '-seek_time')
         window.clearProperty(kodi.get_id() + '-twitch_playing')
 
+    def _reset_live():
+        window.clearProperty(kodi.get_id() + '-livestream')
+
     def _get_seek():
         result = window.getProperty(kodi.get_id() + '-_seek')
         if result:
@@ -680,10 +683,14 @@ def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_pl
     def _set_playing():
         window.setProperty(kodi.get_id() + '-twitch_playing', str(True))
 
+    def _set_live(channel_id, name, display_name):
+        window.setProperty(kodi.get_id() + '-livestream', '%s,%s,%s' % (channel_id, name, display_name))
+
     def _set_seek_time(value):
         window.setProperty(kodi.get_id() + '-seek_time', str(value))
 
     try:
+        _reset_live()
         videos = item_dict = quality = None
         seek_time = 0
         if video_id:
@@ -718,6 +725,7 @@ def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_pl
             videos = twitch.get_live(name)
             result = twitch.get_channel_stream(channel_id)[Keys.STREAM]
             item_dict = converter.stream_to_playitem(result)
+            _set_live(channel_id, name, result[Keys.CHANNEL][Keys.DISPLAY_NAME])
         elif slug and channel_id:
             quality = utils.get_default_quality('clip', channel_id)
             if quality:
@@ -745,9 +753,12 @@ def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_pl
                     if username:
                         utils.exec_irc_script(username, name)
                 return
+            else:
+                return
         raise PlaybackFailed()
     except:
         _reset()
+        _reset_live()
         raise
 
 
