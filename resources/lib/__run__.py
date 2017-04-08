@@ -18,10 +18,10 @@
 """
 
 import sys
-import routes
 from addon.common import kodi
 from addon.common import log_utils
 from addon.constants import DISPATCHER
+from addon import api, utils
 
 
 def main(argv=None):
@@ -35,7 +35,13 @@ def main(argv=None):
     plugin_url = 'plugin://%s/' % kodi.get_id()
     if argv[0] != plugin_url:
         return
+    try:
+        twitch = api.Twitch()
+    except:
+        kodi.notify(utils.i18n('connection_failed'), utils.i18n('failed_connect_api'))
+        return
 
+    import routes
     mode = queries.get('mode', None)
     DISPATCHER.dispatch(mode, queries)
 

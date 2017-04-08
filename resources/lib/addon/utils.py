@@ -158,7 +158,7 @@ def refresh_previews():
 
 def set_refresh_stamp():
     window = kodi.Window(10000)
-    window.setProperty(key='%s-lpr_stamp' % kodi.get_id(), value=datetime.now())
+    window.setProperty(key='%s-lpr_stamp' % kodi.get_id(), value=str(datetime.now()))
 
 
 def get_refresh_stamp():
