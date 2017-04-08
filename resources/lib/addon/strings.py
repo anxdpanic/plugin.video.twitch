@@ -108,5 +108,9 @@ STRINGS = {
     'none_found': 30200,
     'currently_live': 30202,
     'went_live': 30203,
-    'playback_failed': 30206
+    'playback_failed': 30206,
+    'retry_seconds': 30207,
+    'attempt_reconnect': 30208,
+    'attempt_number': 30209,
+    'failed_connect_api': 30212
 }

@@ -18,7 +18,10 @@
         <setting id="title_truncate" type="bool" label="30065" default="true"/>
         <setting label="30123" type="slider" id="items_per_page" default="25" range="10,100" option="int"/>
 
-        <setting label="30204" id="live_notify" type="bool" default="false"/>
+        <setting label="30210" id="live_reconnect" type="bool" default="false"/>
+
+        <setting label="30204" type="lsep"/>
+        <setting label="30211" id="live_notify" type="bool" default="false"/>
         <setting label="30205" id="live_notify_audible" type="bool" default="false" enable="eq(-1,true)" visible="eq(-1,true)"/>
 
         <setting label="30090" type="lsep"/>

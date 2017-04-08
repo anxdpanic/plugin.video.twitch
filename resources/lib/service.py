@@ -25,8 +25,13 @@ from addon.common import kodi, log_utils
 from addon.constants import Keys
 from addon.utils import BlacklistFilter, i18n, get_stamp_diff
 from addon.player import TwitchPlayer
-from addon import api
+from addon import api, cache
 import xbmc
+
+try:
+    cache.reset_cache()
+except:
+    pass
 
 blacklist_filter = BlacklistFilter()
 monitor = xbmc.Monitor()
@@ -102,43 +107,47 @@ player = TwitchPlayer()
 while not monitor.abortRequested():
     if (timestamp is None) or (get_stamp_diff(timestamp) >= delay_time):
         timestamp = str(datetime.now())
-        twitch = api.Twitch()
-        has_token = True if twitch.access_token else False
-        do_notification, make_audible = notify_live()
-        if has_token and do_notification:
-            current_live = get_followed_streams(twitch)
-            if current_live is None: break  # if aborted during api requests
-            if current_live:
-                current_online = get_online_followed()
-                if not current_online:
-                    log_utils.log('Service: Now online |%s|' % current_live, log_utils.LOGDEBUG)
-                    set_online_followed(value=current_live)
-                    names = [display_name for _id, name, display_name in current_live]
-                    triplets = grouped(names)
-                    for followed_names in triplets:
-                        message = ', '.join(followed_names)
-                        message = message.rstrip(', ').rstrip(', ')
-                        kodi.notify(i18n('currently_live'), message, duration=notification_duration, sound=make_audible)
-                        if monitor.waitForAbort(notification_sleep):
-                            abort = True
-                            break
-                else:
-                    log_utils.log('Service: Was online |%s|' % current_online, log_utils.LOGDEBUG)
-                    current_online = [match for match in current_online if match in current_live]
-                    new_online = [match for match in current_live if match not in current_online]
-                    log_utils.log('Service: New online |%s|' % new_online, log_utils.LOGDEBUG)
-                    current_online += new_online
-                    log_utils.log('Service: Now online |%s|' % current_online, log_utils.LOGDEBUG)
-                    set_online_followed(current_online)
-                    names = [display_name for _id, name, display_name in new_online]
-                    triplets = grouped(names)
-                    for followed_names in triplets:
-                        message = ', '.join(followed_names)
-                        message = message.rstrip(', ').rstrip(', ')
-                        kodi.notify(i18n('went_live'), message, duration=notification_duration, sound=make_audible)
-                        if monitor.waitForAbort(notification_sleep):
-                            abort = True
-                            break
+        try:
+            twitch = api.Twitch()
+        except:
+            twitch = None
+        if twitch:
+            has_token = True if twitch.access_token else False
+            do_notification, make_audible = notify_live()
+            if has_token and do_notification:
+                current_live = get_followed_streams(twitch)
+                if current_live is None: break  # if aborted during api requests
+                if current_live:
+                    current_online = get_online_followed()
+                    if not current_online:
+                        log_utils.log('Service: Now online |%s|' % current_live, log_utils.LOGDEBUG)
+                        set_online_followed(value=current_live)
+                        names = [display_name for _id, name, display_name in current_live]
+                        triplets = grouped(names)
+                        for followed_names in triplets:
+                            message = ', '.join(followed_names)
+                            message = message.rstrip(', ').rstrip(', ')
+                            kodi.notify(i18n('currently_live'), message, duration=notification_duration, sound=make_audible)
+                            if monitor.waitForAbort(notification_sleep):
+                                abort = True
+                                break
+                    else:
+                        log_utils.log('Service: Was online |%s|' % current_online, log_utils.LOGDEBUG)
+                        current_online = [match for match in current_online if match in current_live]
+                        new_online = [match for match in current_live if match not in current_online]
+                        log_utils.log('Service: New online |%s|' % new_online, log_utils.LOGDEBUG)
+                        current_online += new_online
+                        log_utils.log('Service: Now online |%s|' % current_online, log_utils.LOGDEBUG)
+                        set_online_followed(current_online)
+                        names = [display_name for _id, name, display_name in new_online]
+                        triplets = grouped(names)
+                        for followed_names in triplets:
+                            message = ', '.join(followed_names)
+                            message = message.rstrip(', ').rstrip(', ')
+                            kodi.notify(i18n('went_live'), message, duration=notification_duration, sound=make_audible)
+                            if monitor.waitForAbort(notification_sleep):
+                                abort = True
+                                break
     if monitor.waitForAbort(sleep_time) or abort:
         break
 
