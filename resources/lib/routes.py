@@ -88,9 +88,10 @@ def new_search(content):
     kodi.set_content('files')
     user_input = kodi.get_keyboard(i18n('search'))
     if user_input:
+        kodi.end_of_directory()
         kodi.update_container(kodi.get_plugin_url({'mode': MODES.SEARCHRESULTS, 'content': content, 'query': user_input, 'index': 0}))
     else:
-        kodi.update_container(kodi.get_plugin_url({'mode': MODES.SEARCH}))
+        return
 
 
 @DISPATCHER.register(MODES.SEARCHRESULTS, args=['content', 'query'], kwargs=['index'])
