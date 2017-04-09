@@ -17,23 +17,25 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
+import sys
 from addon import utils, api, menu_items, cache
 from addon.common import kodi, log_utils
+from addon.common.url_dispatcher import URL_Dispatcher
 from addon.converter import JsonListItemConverter
-from addon.constants import DISPATCHER, MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, Keys, REQUEST_LIMIT, CURSOR_LIMIT
+from addon.constants import MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, Keys, REQUEST_LIMIT, CURSOR_LIMIT
 from addon.googl_shorten import googl_url
 from addon.error_handling import error_handler
 from addon.twitch_exceptions import SubRequired, NotFound, PlaybackFailed
 from twitch.api.parameters import Boolean, Period, ClipPeriod, Direction, SortBy, VideoSort, Language, StreamType, Platform
 
 i18n = utils.i18n
-
+dispatcher = URL_Dispatcher()
 converter = JsonListItemConverter(LINE_LENGTH)
-twitch = api.Twitch()
 blacklist_filter = utils.BlacklistFilter()
+twitch = None
 
 
-@DISPATCHER.register(MODES.MAIN)
+@dispatcher.register(MODES.MAIN)
 @error_handler
 def main():
     has_token = True if twitch.access_token else False
@@ -49,7 +51,7 @@ def main():
     kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.BROWSE)
+@dispatcher.register(MODES.BROWSE)
 @error_handler
 def browse():
     kodi.set_content('files')
@@ -69,7 +71,7 @@ def browse():
     kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.SEARCH)
+@dispatcher.register(MODES.SEARCH)
 @error_handler
 def search():
     kodi.set_content('files')
@@ -82,7 +84,7 @@ def search():
     kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.NEWSEARCH, args=['content'])
+@dispatcher.register(MODES.NEWSEARCH, args=['content'])
 @error_handler
 def new_search(content):
     kodi.set_content('files')
@@ -94,7 +96,7 @@ def new_search(content):
         return
 
 
-@DISPATCHER.register(MODES.SEARCHRESULTS, args=['content', 'query'], kwargs=['index'])
+@dispatcher.register(MODES.SEARCHRESULTS, args=['content', 'query'], kwargs=['index'])
 @error_handler
 def search_results(content, query, index=0):
     if content == 'streams':
@@ -149,7 +151,7 @@ def search_results(content, query, index=0):
         kodi.update_container(kodi.get_plugin_url({'mode': MODES.SEARCH}))
 
 
-@DISPATCHER.register(MODES.FOLLOWING)
+@dispatcher.register(MODES.FOLLOWING)
 @error_handler
 def following():
     kodi.set_content('files')
@@ -168,7 +170,7 @@ def following():
     kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.FEATUREDSTREAMS)
+@dispatcher.register(MODES.FEATUREDSTREAMS)
 @error_handler
 def list_featured_streams():
     utils.refresh_previews()
@@ -187,7 +189,7 @@ def list_featured_streams():
     raise NotFound('streams')
 
 
-@DISPATCHER.register(MODES.GAMES, kwargs=['offset'])
+@dispatcher.register(MODES.GAMES, kwargs=['offset'])
 @error_handler
 def list_all_games(offset=0):
     kodi.set_content('files')
@@ -223,7 +225,7 @@ def list_all_games(offset=0):
     raise NotFound('games')
 
 
-@DISPATCHER.register(MODES.COMMUNITIES, kwargs=['cursor'])
+@dispatcher.register(MODES.COMMUNITIES, kwargs=['cursor'])
 @error_handler
 def list_all_communities(cursor='MA=='):
     kodi.set_content('files')
@@ -250,7 +252,7 @@ def list_all_communities(cursor='MA=='):
     raise NotFound('communities')
 
 
-@DISPATCHER.register(MODES.STREAMLIST, kwargs=['stream_type', 'offset', 'platform'])
+@dispatcher.register(MODES.STREAMLIST, kwargs=['stream_type', 'offset', 'platform'])
 @error_handler
 def list_streams(stream_type=StreamType.LIVE, offset=0, platform=Platform.ALL):
     utils.refresh_previews()
@@ -290,7 +292,7 @@ def list_streams(stream_type=StreamType.LIVE, offset=0, platform=Platform.ALL):
     raise NotFound(i18n('streams'))
 
 
-@DISPATCHER.register(MODES.FOLLOWED, args=['content'], kwargs=['offset', 'cursor'])
+@dispatcher.register(MODES.FOLLOWED, args=['content'], kwargs=['offset', 'cursor'])
 @error_handler
 def list_followed(content, offset=0, cursor='MA=='):
     user_id = twitch.get_user_id()
@@ -413,7 +415,7 @@ def list_followed(content, offset=0, cursor='MA=='):
         raise NotFound(i18n('clips'))
 
 
-@DISPATCHER.register(MODES.CHANNELVIDEOS, args=['channel_id'], kwargs=['channel_name'])
+@dispatcher.register(MODES.CHANNELVIDEOS, args=['channel_id'], kwargs=['channel_name'])
 @error_handler
 def list_channel_video_types(channel_id, channel_name=None):
     kodi.set_content('files')
@@ -439,7 +441,7 @@ def list_channel_video_types(channel_id, channel_name=None):
     kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.COLLECTIONS, args=['channel_id'], kwargs=['cursor'])
+@dispatcher.register(MODES.COLLECTIONS, args=['channel_id'], kwargs=['cursor'])
 @error_handler
 def list_collections(channel_id, cursor='MA=='):
     kodi.set_content('files')
@@ -467,7 +469,7 @@ def list_collections(channel_id, cursor='MA=='):
     raise NotFound(i18n('collections'))
 
 
-@DISPATCHER.register(MODES.COLLECTIONVIDEOLIST, args=['collection_id'])
+@dispatcher.register(MODES.COLLECTIONVIDEOLIST, args=['collection_id'])
 @error_handler
 def list_collection_videos(collection_id):
     kodi.set_content('videos')
@@ -490,7 +492,7 @@ def list_collection_videos(collection_id):
     raise NotFound(i18n('videos'))
 
 
-@DISPATCHER.register(MODES.CLIPSLIST, kwargs=['cursor', 'channel_name', 'game_name'])
+@dispatcher.register(MODES.CLIPSLIST, kwargs=['cursor', 'channel_name', 'game_name'])
 @error_handler
 def list_clips(cursor='MA==', channel_name=None, game_name=None):
     kodi.set_content('videos')
@@ -523,7 +525,7 @@ def list_clips(cursor='MA==', channel_name=None, game_name=None):
     raise NotFound(i18n('clips'))
 
 
-@DISPATCHER.register(MODES.CHANNELVIDEOLIST, args=['channel_id', 'broadcast_type'], kwargs=['offset'])
+@dispatcher.register(MODES.CHANNELVIDEOLIST, args=['channel_id', 'broadcast_type'], kwargs=['offset'])
 @error_handler
 def list_channel_videos(channel_id, broadcast_type, offset=0):
     kodi.set_content('videos')
@@ -568,7 +570,7 @@ def list_channel_videos(channel_id, broadcast_type, offset=0):
     raise NotFound(i18n('videos'))
 
 
-@DISPATCHER.register(MODES.GAMELISTS, args=['game_name'])
+@dispatcher.register(MODES.GAMELISTS, args=['game_name'])
 @error_handler
 def game_lists(game_name):
     kodi.set_content('files')
@@ -582,7 +584,7 @@ def game_lists(game_name):
     kodi.end_of_directory()
 
 
-@DISPATCHER.register(MODES.GAMESTREAMS, args=['game'], kwargs=['offset'])
+@dispatcher.register(MODES.GAMESTREAMS, args=['game'], kwargs=['offset'])
 @error_handler
 def list_game_streams(game, offset=0):
     utils.refresh_previews()
@@ -620,7 +622,7 @@ def list_game_streams(game, offset=0):
     raise NotFound(i18n('streams'))
 
 
-@DISPATCHER.register(MODES.COMMUNITYSTREAMS, args=['community_id'], kwargs=['offset'])
+@dispatcher.register(MODES.COMMUNITYSTREAMS, args=['community_id'], kwargs=['offset'])
 @error_handler
 def list_community_streams(community_id, offset=0):
     utils.refresh_previews()
@@ -661,7 +663,7 @@ def list_community_streams(community_id, offset=0):
     raise NotFound(i18n('streams'))
 
 
-@DISPATCHER.register(MODES.PLAY, kwargs=['name', 'channel_id', 'video_id', 'slug', 'ask', 'use_player'])
+@dispatcher.register(MODES.PLAY, kwargs=['name', 'channel_id', 'video_id', 'slug', 'ask', 'use_player'])
 @error_handler
 def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_player=False):
     window = kodi.Window(10000)
@@ -762,7 +764,7 @@ def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_pl
         raise
 
 
-@DISPATCHER.register(MODES.EDITFOLLOW, kwargs=['channel_id', 'channel_name', 'game_name'])
+@dispatcher.register(MODES.EDITFOLLOW, kwargs=['channel_id', 'channel_name', 'game_name'])
 @error_handler
 def edit_user_follows(channel_id=None, channel_name=None, game_name=None):
     if (channel_id is None or channel_name is None) and game_name is None:
@@ -796,7 +798,7 @@ def edit_user_follows(channel_id=None, channel_name=None, game_name=None):
             kodi.notify(msg=i18n('now_following') % display_name, sound=False)
 
 
-@DISPATCHER.register(MODES.EDITBLOCK, args=['target_id', 'name'])
+@dispatcher.register(MODES.EDITBLOCK, args=['target_id', 'name'])
 @error_handler
 def edit_user_blocks(target_id, name):
     block_list = twitch.get_user_blocks()
@@ -814,7 +816,7 @@ def edit_user_blocks(target_id, name):
             kodi.notify(msg=i18n('blocked') % name, sound=False)
 
 
-@DISPATCHER.register(MODES.EDITBLACKLIST, kwargs=['list_type', 'target_id', 'name', 'remove'])
+@dispatcher.register(MODES.EDITBLACKLIST, kwargs=['list_type', 'target_id', 'name', 'remove'])
 @error_handler
 def edit_blacklist(list_type='user', target_id=None, name=None, remove=False):
     if not remove:
@@ -833,7 +835,7 @@ def edit_blacklist(list_type='user', target_id=None, name=None, remove=False):
             kodi.notify(msg=i18n('removed_from_blacklist') % result[1], sound=False)
 
 
-@DISPATCHER.register(MODES.EDITQUALITIES, args=['content_type'], kwargs=['video_id', 'target_id', 'name', 'remove', 'clip_id'])
+@dispatcher.register(MODES.EDITQUALITIES, args=['content_type'], kwargs=['video_id', 'target_id', 'name', 'remove', 'clip_id'])
 @error_handler
 def edit_qualities(content_type, target_id=None, name=None, video_id=None, remove=False, clip_id=None):
     if not remove:
@@ -856,7 +858,7 @@ def edit_qualities(content_type, target_id=None, name=None, video_id=None, remov
             kodi.notify(msg=i18n('removed_default_quality') % (content_type, result[result.keys()[0]]['name']), sound=False)
 
 
-@DISPATCHER.register(MODES.EDITSORTING, args=['list_type', 'sort_type'])
+@dispatcher.register(MODES.EDITSORTING, args=['list_type', 'sort_type'])
 @error_handler
 def edit_sorting(list_type, sort_type):
     if sort_type == 'by':
@@ -896,7 +898,7 @@ def edit_sorting(list_type, sort_type):
                 utils.set_sort(list_type, sort_by=sorting['by'], period=sorting['period'], direction=choices[result][1])
 
 
-@DISPATCHER.register(MODES.EDITLANGUAGES, args=['action'])
+@dispatcher.register(MODES.EDITLANGUAGES, args=['action'])
 @error_handler
 def edit_languages(action):
     if action == 'add':
@@ -913,7 +915,7 @@ def edit_languages(action):
             utils.remove_language(current_languages[result])
 
 
-@DISPATCHER.register(MODES.CLEARLIST, args=['list_type', 'list_name'])
+@dispatcher.register(MODES.CLEARLIST, args=['list_type', 'list_name'])
 @error_handler
 def clear_list(list_type, list_name):
     confirmed = kodi.Dialog().yesno(i18n('clear_list'), i18n('confirm_clear') % (list_type, list_name))
@@ -923,7 +925,7 @@ def clear_list(list_type, list_name):
             kodi.notify(msg=i18n('cleared_list') % (list_type, list_name), sound=False)
 
 
-@DISPATCHER.register(MODES.SETTINGS, kwargs=['refresh'])
+@dispatcher.register(MODES.SETTINGS, kwargs=['refresh'])
 @error_handler
 def settings(refresh=True):
     kodi.show_settings()
@@ -931,7 +933,7 @@ def settings(refresh=True):
         kodi.refresh_container()
 
 
-@DISPATCHER.register(MODES.RESETCACHE)
+@dispatcher.register(MODES.RESETCACHE)
 @error_handler
 def reset_cache():
     confirmed = kodi.Dialog().yesno(i18n('confirm'), i18n('cache_reset_confirm'))
@@ -943,13 +945,13 @@ def reset_cache():
             kodi.notify(msg=i18n('cache_reset_failed'), sound=False)
 
 
-@DISPATCHER.register(MODES.CLEARLIVEPREVIEWS, kwargs=['notify'])
+@dispatcher.register(MODES.CLEARLIVEPREVIEWS, kwargs=['notify'])
 @error_handler
 def clear_live_previews(notify=True):
     utils.TextureCacheCleaner().remove_like(LIVE_PREVIEW_TEMPLATE, notify)
 
 
-@DISPATCHER.register(MODES.INSTALLIRCCHAT)
+@dispatcher.register(MODES.INSTALLIRCCHAT)
 @error_handler
 def install_ircchat():
     if kodi.get_kodi_version().major > 16:
@@ -958,7 +960,7 @@ def install_ircchat():
         kodi.execute_builtin('RunPlugin(plugin://script.ircchat/)')
 
 
-@DISPATCHER.register(MODES.TOKENURL)
+@dispatcher.register(MODES.TOKENURL)
 @error_handler
 def get_token_url():
     redirect_uri = utils.get_redirect_uri()
@@ -971,3 +973,29 @@ def get_token_url():
     result = kodi.Dialog().ok(heading=i18n('authorize_heading'), line1=i18n('authorize_message'),
                               line2=' %s' % prompt_url)
     kodi.show_settings()
+
+
+def run(argv=None):
+    if sys.argv:
+        argv = sys.argv
+    queries = kodi.parse_query(sys.argv[2])
+    log_utils.log('Version: |%s| Kodi Version: %s' % (kodi.get_version(), kodi.get_kodi_version()), log_utils.LOGDEBUG)
+    log_utils.log('Queries: |%s| Args: |%s|' % (queries, argv), log_utils.LOGDEBUG)
+
+    # don't process params that don't match our url exactly
+    plugin_url = 'plugin://%s/' % kodi.get_id()
+    if argv[0] != plugin_url:
+        return
+    try:
+        global twitch
+        twitch = api.Twitch()
+    except:
+        kodi.notify(utils.i18n('connection_failed'), utils.i18n('failed_connect_api'))
+        return
+
+    mode = queries.get('mode', None)
+    dispatcher.dispatch(mode, queries)
+
+
+if __name__ == '__main__':
+    sys.exit(run())
