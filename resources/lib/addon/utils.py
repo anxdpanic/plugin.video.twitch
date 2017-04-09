@@ -170,6 +170,10 @@ def get_stamp_diff(current_stamp):
     stamp_format = '%Y-%m-%d %H:%M:%S.%f'
     current_datetime = datetime.now()
     if not current_stamp: return 86400  # 24 hrs
+    try:
+        time.strptime('01 01 2012', '%d %m %Y')  # dummy call
+    except:
+        pass
     stamp_datetime = datetime(*(time.strptime(current_stamp, stamp_format)[0:6]))  # datetime.strptime has issues
     time_delta = current_datetime - stamp_datetime
     total_seconds = 0
