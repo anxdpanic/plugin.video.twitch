@@ -5,7 +5,7 @@
         <import addon="script.module.python.twitch"/>
         <import addon="script.module.requests" version="2.9.1"/>
     </requires>
-    <extension point='xbmc.python.pluginsource' library='resources/lib/__run__.py'>
+    <extension point='xbmc.python.pluginsource' library='resources/lib/routes.py'>
         <provides>video</provides>
     </extension>
     <extension point="xbmc.service" library="resources/lib/service.py"/>

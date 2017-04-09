@@ -21,10 +21,10 @@ import re
 import time
 from datetime import datetime
 from base64 import b64decode
-from common import kodi
+from common import kodi, json_store
 from strings import STRINGS
 from tccleaner import TextureCacheCleaner
-from constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, STORAGE, ADDON_DATA_DIR, REQUEST_LIMIT
+from constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, ADDON_DATA_DIR, REQUEST_LIMIT
 from twitch.api.parameters import Boolean, Period, ClipPeriod, Direction, Language, SortBy, VideoSort
 import xbmcvfs
 
@@ -250,7 +250,8 @@ _sorting_defaults = \
 def get_stored_json():
     if not xbmcvfs.exists(ADDON_DATA_DIR):
         result = xbmcvfs.mkdir(ADDON_DATA_DIR)
-    json_data = STORAGE.load()
+    storage = json_store.JSONStore(ADDON_DATA_DIR + 'storage.json')
+    json_data = storage.load()
     needs_save = False
     # set defaults
     if 'blacklist' not in json_data:
@@ -266,12 +267,12 @@ def get_stored_json():
         json_data['languages'] = [Language.ALL]
         needs_save = True
     if needs_save:
-        STORAGE.save(json_data)
-    return json_data
+        storage.save(json_data)
+    return storage, json_data
 
 
 def is_blacklisted(target, list_type='user'):
-    json_data = get_stored_json()
+    storage, json_data = get_stored_json()
     blacklist = json_data['blacklist'].get(list_type)
     if not blacklist:
         return False
@@ -285,37 +286,37 @@ def is_blacklisted(target, list_type='user'):
 
 
 def add_blacklist(target_id, name, list_type='user'):
-    json_data = get_stored_json()
+    storage, json_data = get_stored_json()
 
     if not is_blacklisted(target_id, list_type):
         blacklist = json_data['blacklist'].get(list_type)
         if not blacklist:
             json_data['blacklist'][list_type] = []
         json_data['blacklist'][list_type].append([target_id, name])
-        STORAGE.save(json_data)
+        storage.save(json_data)
         return True
     return False
 
 
 def remove_blacklist(list_type='user'):
-    json_data = get_stored_json()
+    storage, json_data = get_stored_json()
     result = kodi.Dialog().select(i18n('remove_from_blacklist') % list_type,
                                   [blacklist_name for blacklist_id, blacklist_name in json_data['blacklist'][list_type]])
     if result == -1:
         return None
     else:
         result = json_data['blacklist'][list_type].pop(result)
-        STORAGE.save(json_data)
+        storage.save(json_data)
         return result
 
 
 def get_languages():
-    json_data = get_stored_json()
+    storage, json_data = get_stored_json()
     return json_data['languages']
 
 
 def add_language(language):
-    json_data = get_stored_json()
+    storage, json_data = get_stored_json()
     language = Language.validate(language)
     if language == Language.ALL:
         json_data['languages'] = [language]
@@ -328,21 +329,21 @@ def add_language(language):
     if (index_of_all > -1) and len(new_languages) > 1:
         new_languages.remove(Language.ALL)
     json_data['languages'] = new_languages
-    STORAGE.save(json_data)
+    storage.save(json_data)
 
 
 def remove_language(language):
-    json_data = get_stored_json()
+    storage, json_data = get_stored_json()
     language = Language.validate(language)
     new_languages = [lang for lang in json_data['languages'] if lang != language]
     if len(new_languages) == 0:
         new_languages.append(Language.ALL)
     json_data['languages'] = new_languages
-    STORAGE.save(json_data)
+    storage.save(json_data)
 
 
 def get_sort(for_type, key=None):
-    json_data = get_stored_json()
+    storage, json_data = get_stored_json()
     sorting = json_data['sorting'].get(for_type)
     if not sorting:
         return None
@@ -353,7 +354,7 @@ def get_sort(for_type, key=None):
 
 
 def set_sort(for_type, sort_by, direction, period):
-    json_data = get_stored_json()
+    storage, json_data = get_stored_json()
     sorting = json_data['sorting'].get(for_type)
     if not sorting:
         if for_type in _sorting_defaults:
@@ -361,12 +362,12 @@ def set_sort(for_type, sort_by, direction, period):
         else:
             return False
     json_data['sorting'][for_type] = {'by': sort_by, 'direction': direction, 'period': period}
-    STORAGE.save(json_data)
+    storage.save(json_data)
     return True
 
 
 def get_default_quality(content_type, target_id):
-    json_data = get_stored_json()
+    storage, json_data = get_stored_json()
     if content_type not in json_data['qualities']:
         json_data['qualities'][content_type] = []
     if any(str(target_id) in item for item in json_data['qualities'][content_type]):
@@ -376,7 +377,7 @@ def get_default_quality(content_type, target_id):
 
 
 def add_default_quality(content_type, target_id, name, quality):
-    json_data = get_stored_json()
+    storage, json_data = get_stored_json()
     current_quality = get_default_quality(content_type, target_id)
     if current_quality:
         current_quality = current_quality[target_id]['quality']
@@ -386,27 +387,27 @@ def add_default_quality(content_type, target_id, name, quality):
             index = next(index for index, item in enumerate(json_data['qualities'][content_type]) if str(target_id) in item)
             del json_data['qualities'][content_type][index]
     json_data['qualities'][content_type].append({target_id: {'name': name, 'quality': quality}})
-    STORAGE.save(json_data)
+    storage.save(json_data)
     return True
 
 
 def remove_default_quality(content_type):
-    json_data = get_stored_json()
+    storage, json_data = get_stored_json()
     result = kodi.Dialog().select(i18n('remove_default_quality') % content_type,
                                   ['%s [%s]' % (user[user.keys()[0]]['name'], user[user.keys()[0]]['quality']) for user in json_data['qualities'][content_type]])
     if result == -1:
         return None
     else:
         result = json_data['qualities'][content_type].pop(result)
-        STORAGE.save(json_data)
+        storage.save(json_data)
         return result
 
 
 def clear_list(list_type, list_name):
-    json_data = get_stored_json()
+    storage, json_data = get_stored_json()
     if (list_name in json_data) and (list_type in json_data[list_name]):
         json_data[list_name][list_type] = []
-        STORAGE.save(json_data)
+        storage.save(json_data)
         return True
     else:
         return False
