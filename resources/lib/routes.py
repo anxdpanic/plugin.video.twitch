@@ -22,7 +22,7 @@ from addon import utils, api, menu_items, cache
 from addon.common import kodi, log_utils
 from addon.common.url_dispatcher import URL_Dispatcher
 from addon.converter import JsonListItemConverter
-from addon.constants import MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, Keys, REQUEST_LIMIT, CURSOR_LIMIT
+from addon.constants import MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, Keys, REQUEST_LIMIT, CURSOR_LIMIT, MAX_REQUESTS
 from addon.googl_shorten import googl_url
 from addon.error_handling import error_handler
 from addon.twitch_exceptions import SubRequired, NotFound, PlaybackFailed
@@ -196,7 +196,9 @@ def list_all_games(offset=0):
     per_page = utils.get_items_per_page()
     games = None
     all_items = list()
-    while per_page >= (len(all_items) + 1):
+    requests = 0
+    while (per_page >= (len(all_items) + 1)) and (requests < MAX_REQUESTS):
+        requests += 1
         games = twitch.get_top_games(offset, limit=REQUEST_LIMIT)
         if (games[Keys.TOTAL] > 0) and (Keys.TOP in games):
             filtered = \
@@ -215,11 +217,15 @@ def list_all_games(offset=0):
                 break
         else:
             break
+    has_items = False
     if len(all_items) > 0:
+        has_items = True
         for game in all_items:
             kodi.create_item(converter.game_to_listitem(game))
-        if games[Keys.TOTAL] > (offset + 1):
-            kodi.create_item(utils.link_to_next_page({'mode': MODES.GAMES, 'offset': offset}))
+    if games[Keys.TOTAL] > (offset + 1):
+        has_items = True
+        kodi.create_item(utils.link_to_next_page({'mode': MODES.GAMES, 'offset': offset}))
+    if has_items:
         kodi.end_of_directory()
         return
     raise NotFound('games')
@@ -230,7 +236,9 @@ def list_all_games(offset=0):
 def list_all_communities(cursor='MA=='):
     kodi.set_content('files')
     all_items = list()
-    while (CURSOR_LIMIT >= (len(all_items) + 1)) and cursor:
+    requests = 0
+    while (CURSOR_LIMIT >= (len(all_items) + 1)) and cursor and (requests < MAX_REQUESTS):
+        requests += 1
         communities = twitch.get_top_communities(cursor, limit=CURSOR_LIMIT)
         if (communities[Keys.TOTAL] > 0) and (Keys.COMMUNITIES in communities):
             filtered = \
@@ -242,11 +250,15 @@ def list_all_communities(cursor='MA=='):
             cursor = communities[Keys.CURSOR]
         else:
             break
+    has_items = False
     if len(all_items) > 0:
+        has_items = True
         for community in all_items:
             kodi.create_item(converter.community_to_listitem(community))
-        if cursor:
-            kodi.create_item(utils.link_to_next_page({'mode': MODES.COMMUNITIES, 'cursor': cursor}))
+    if cursor:
+        has_items = True
+        kodi.create_item(utils.link_to_next_page({'mode': MODES.COMMUNITIES, 'cursor': cursor}))
+    if has_items:
         kodi.end_of_directory()
         return
     raise NotFound('communities')
@@ -260,7 +272,9 @@ def list_streams(stream_type=StreamType.LIVE, offset=0, platform=Platform.ALL):
     per_page = utils.get_items_per_page()
     streams = None
     all_items = list()
-    while per_page >= (len(all_items) + 1):
+    requests = 0
+    while (per_page >= (len(all_items) + 1)) and (requests < MAX_REQUESTS):
+        requests += 1
         languages = ','.join(utils.get_languages())
         streams = twitch.get_all_streams(stream_type=stream_type, platform=platform, offset=offset, limit=REQUEST_LIMIT, language=languages)
         if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
@@ -282,11 +296,15 @@ def list_streams(stream_type=StreamType.LIVE, offset=0, platform=Platform.ALL):
                 break
         else:
             break
+    has_items = False
     if len(all_items) > 0:
+        has_items = True
         for stream in all_items:
             kodi.create_item(converter.stream_to_listitem(stream))
-        if streams[Keys.TOTAL] > (offset + 1):
-            kodi.create_item(utils.link_to_next_page({'mode': MODES.STREAMLIST, 'stream_type': stream_type, 'platform': platform, 'offset': offset}))
+    if streams[Keys.TOTAL] > (offset + 1):
+        has_items = True
+        kodi.create_item(utils.link_to_next_page({'mode': MODES.STREAMLIST, 'stream_type': stream_type, 'platform': platform, 'offset': offset}))
+    if has_items:
         kodi.end_of_directory()
         return
     raise NotFound(i18n('streams'))
@@ -304,7 +322,9 @@ def list_followed(content, offset=0, cursor='MA=='):
         kodi.set_content('videos')
         streams = None
         all_items = list()
-        while per_page >= (len(all_items) + 1):
+        requests = 0
+        while (per_page >= (len(all_items) + 1)) and (requests < MAX_REQUESTS):
+            requests += 1
             streams = twitch.get_followed_streams(stream_type=content, offset=offset, limit=REQUEST_LIMIT)
             if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
                 filtered = \
@@ -325,11 +345,15 @@ def list_followed(content, offset=0, cursor='MA=='):
                     break
             else:
                 break
+        has_items = False
         if len(all_items) > 0:
+            has_items = True
             for stream in all_items:
                 kodi.create_item(converter.stream_to_listitem(stream))
-            if streams[Keys.TOTAL] > (offset + 1):
-                kodi.create_item(utils.link_to_next_page({'mode': MODES.FOLLOWED, 'content': content, 'offset': offset}))
+        if streams[Keys.TOTAL] > (offset + 1):
+            has_items = True
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.FOLLOWED, 'content': content, 'offset': offset}))
+        if has_items:
             kodi.end_of_directory()
             return
         if content == StreamType.LIVE:
@@ -341,7 +365,9 @@ def list_followed(content, offset=0, cursor='MA=='):
         sorting = utils.get_sort('followed_channels')
         channels = None
         all_items = list()
-        while per_page >= (len(all_items) + 1):
+        requests = 0
+        while (per_page >= (len(all_items) + 1)) and (requests < MAX_REQUESTS):
+            requests += 1
             channels = twitch.get_followed_channels(user_id=user_id, offset=offset, limit=REQUEST_LIMIT, direction=sorting['direction'], sort_by=sorting['by'])
             if (channels[Keys.TOTAL] > 0) and (Keys.FOLLOWS in channels):
                 filtered = \
@@ -361,11 +387,15 @@ def list_followed(content, offset=0, cursor='MA=='):
                     break
             else:
                 break
+        has_items = False
         if len(all_items) > 0:
+            has_items = True
             for channel in all_items:
                 kodi.create_item(converter.channel_to_listitem(channel))
-            if channels[Keys.TOTAL] > (offset + 1):
-                kodi.create_item(utils.link_to_next_page({'mode': MODES.FOLLOWED, 'content': content, 'offset': offset}))
+        if channels[Keys.TOTAL] > (offset + 1):
+            has_items = True
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.FOLLOWED, 'content': content, 'offset': offset}))
+        if has_items:
             kodi.end_of_directory()
             return
         raise NotFound(i18n('channels'))
@@ -390,9 +420,10 @@ def list_followed(content, offset=0, cursor='MA=='):
         kodi.set_content('videos')
         sort_by = utils.get_sort('clips', 'by')
         all_items = list()
-        while (CURSOR_LIMIT >= (len(all_items) + 1)) and cursor:
+        requests = 0
+        while (CURSOR_LIMIT >= (len(all_items) + 1)) and cursor and (requests < MAX_REQUESTS):
+            requests += 1
             clips = twitch.get_followed_clips(cursor=cursor, limit=CURSOR_LIMIT, trending=sort_by)
-
             if Keys.CLIPS in clips and len(clips[Keys.CLIPS]) > 0:
                 filtered = \
                     blacklist_filter.by_type(clips, Keys.CLIPS, parent_keys=[Keys.BROADCASTER], id_key=Keys.ID, list_type='user')
@@ -405,11 +436,15 @@ def list_followed(content, offset=0, cursor='MA=='):
                 cursor = clips[Keys.CURSOR]
             else:
                 break
+        has_items = False
         if len(all_items) > 0:
+            has_items = True
             for clip in all_items:
                 kodi.create_item(converter.clip_to_listitem(clip))
-            if cursor:
-                kodi.create_item(utils.link_to_next_page({'mode': MODES.FOLLOWED, 'content': content, 'cursor': cursor}))
+        if cursor:
+            has_items = True
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.FOLLOWED, 'content': content, 'cursor': cursor}))
+        if has_items:
             kodi.end_of_directory()
             return
         raise NotFound(i18n('clips'))
@@ -446,7 +481,9 @@ def list_channel_video_types(channel_id, channel_name=None):
 def list_collections(channel_id, cursor='MA=='):
     kodi.set_content('files')
     all_items = list()
-    while (CURSOR_LIMIT >= (len(all_items) + 1)) and cursor:
+    requests = 0
+    while (CURSOR_LIMIT >= (len(all_items) + 1)) and cursor and (requests < MAX_REQUESTS):
+        requests += 1
         collections = twitch.get_collections(channel_id, cursor, limit=CURSOR_LIMIT)
         if (Keys.COLLECTIONS in collections) and (len(collections[Keys.COLLECTIONS]) > 0):
             filtered = \
@@ -459,11 +496,15 @@ def list_collections(channel_id, cursor='MA=='):
             cursor = collections[Keys.CURSOR]
         else:
             break
+    has_items = False
     if len(all_items) > 0:
+        has_items = True
         for collection in all_items:
             kodi.create_item(converter.collection_to_listitem(collection))
-        if cursor:
-            kodi.create_item(utils.link_to_next_page({'mode': MODES.COLLECTIONS, 'channel_id': channel_id, 'cursor': cursor}))
+    if cursor:
+        has_items = True
+        kodi.create_item(utils.link_to_next_page({'mode': MODES.COLLECTIONS, 'channel_id': channel_id, 'cursor': cursor}))
+    if has_items:
         kodi.end_of_directory()
         return
     raise NotFound(i18n('collections'))
@@ -498,7 +539,9 @@ def list_clips(cursor='MA==', channel_name=None, game=None):
     kodi.set_content('videos')
     sorting = utils.get_sort('clips')
     all_items = list()
-    while (CURSOR_LIMIT >= (len(all_items) + 1)) and cursor:
+    requests = 0
+    while (CURSOR_LIMIT >= (len(all_items) + 1)) and cursor and (requests < MAX_REQUESTS):
+        requests += 1
         clips = twitch.get_top_clips(cursor, limit=CURSOR_LIMIT, channel=channel_name, game=game, period=sorting['period'], trending=sorting['by'])
         if Keys.CLIPS in clips and len(clips[Keys.CLIPS]) > 0:
             filtered = \
@@ -512,14 +555,18 @@ def list_clips(cursor='MA==', channel_name=None, game=None):
             cursor = clips[Keys.CURSOR]
         else:
             break
+    has_items = False
     if len(all_items) > 0:
+        has_items = True
         for clip in all_items:
             kodi.create_item(converter.clip_to_listitem(clip))
-        if cursor:
-            item_dict = {'mode': MODES.CLIPSLIST, 'cursor': cursor}
-            if channel_name:
-                item_dict['channel_name'] = channel_name
-            kodi.create_item(utils.link_to_next_page(item_dict))
+    if cursor:
+        has_items = True
+        item_dict = {'mode': MODES.CLIPSLIST, 'cursor': cursor}
+        if channel_name:
+            item_dict['channel_name'] = channel_name
+        kodi.create_item(utils.link_to_next_page(item_dict))
+    if has_items:
         kodi.end_of_directory()
         return
     raise NotFound(i18n('clips'))
@@ -532,7 +579,9 @@ def list_channel_videos(channel_id, broadcast_type, offset=0):
     per_page = utils.get_items_per_page()
     videos = None
     all_items = list()
-    while per_page >= (len(all_items) + 1):
+    requests = 0
+    while (per_page >= (len(all_items) + 1)) and (requests < MAX_REQUESTS):
+        requests += 1
         if channel_id == 'all':
             period = utils.get_sort('top_videos', 'period')
             videos = twitch.get_top_videos(offset, limit=REQUEST_LIMIT, broadcast_type=broadcast_type, period=period)
@@ -560,11 +609,15 @@ def list_channel_videos(channel_id, broadcast_type, offset=0):
                 break
         else:
             break
+    has_items = False
     if len(all_items) > 0 and videos is not None:
+        has_items = True
         for video in all_items:
             kodi.create_item(converter.video_list_to_listitem(video))
-        if Keys.VODS in videos or videos[Keys.TOTAL] > (offset + 1):
-            kodi.create_item(utils.link_to_next_page({'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': broadcast_type, 'offset': offset}))
+    if Keys.VODS in videos or videos[Keys.TOTAL] > (offset + 1):
+        has_items = True
+        kodi.create_item(utils.link_to_next_page({'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': broadcast_type, 'offset': offset}))
+    if has_items:
         kodi.end_of_directory()
         return
     raise NotFound(i18n('videos'))
@@ -592,7 +645,9 @@ def list_game_streams(game, offset=0):
     per_page = utils.get_items_per_page()
     streams = None
     all_items = list()
-    while per_page >= (len(all_items) + 1):
+    requests = 0
+    while (per_page >= (len(all_items) + 1)) and (requests < MAX_REQUESTS):
+        requests += 1
         languages = ','.join(utils.get_languages())
         streams = twitch.get_game_streams(game=game, offset=offset, limit=REQUEST_LIMIT, language=languages)
         if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
@@ -612,11 +667,15 @@ def list_game_streams(game, offset=0):
                 break
         else:
             break
+    has_items = False
     if len(all_items) > 0:
+        has_items = True
         for stream in all_items:
             kodi.create_item(converter.stream_to_listitem(stream))
-        if streams[Keys.TOTAL] > (offset + 1):
-            kodi.create_item(utils.link_to_next_page({'mode': MODES.GAMESTREAMS, 'game': game, 'offset': offset}))
+    if streams[Keys.TOTAL] > (offset + 1):
+        has_items = True
+        kodi.create_item(utils.link_to_next_page({'mode': MODES.GAMESTREAMS, 'game': game, 'offset': offset}))
+    if has_items:
         kodi.end_of_directory()
         return
     raise NotFound(i18n('streams'))
@@ -630,7 +689,9 @@ def list_community_streams(community_id, offset=0):
     per_page = utils.get_items_per_page()
     streams = None
     all_items = list()
-    while per_page >= (len(all_items) + 1):
+    requests = 0
+    while (per_page >= (len(all_items) + 1)) and (requests < MAX_REQUESTS):
+        requests += 1
         languages = ','.join(utils.get_languages())
         streams = twitch.get_community_streams(community_id=community_id, offset=offset, limit=REQUEST_LIMIT, language=languages)
         if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
@@ -653,11 +714,15 @@ def list_community_streams(community_id, offset=0):
                 break
         else:
             break
+    has_items = False
     if len(all_items) > 0:
+        has_items = True
         for stream in all_items:
             kodi.create_item(converter.stream_to_listitem(stream))
         if streams[Keys.TOTAL] > (offset + 1):
+            has_items = True
             kodi.create_item(utils.link_to_next_page({'mode': MODES.COMMUNITYSTREAMS, 'community_id': community_id, 'offset': offset}))
+    if has_items:
         kodi.end_of_directory()
         return
     raise NotFound(i18n('streams'))
