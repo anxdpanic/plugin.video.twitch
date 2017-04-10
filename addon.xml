@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
-<addon id='plugin.video.twitch' version='2.0.0~alpha13' name='Twitch' provider-name='A Talented Community'>
+<addon id='plugin.video.twitch' version='2.0.0~beta1' name='Twitch' provider-name='A Talented Community'>
     <requires>
         <import addon='xbmc.python' version='2.20.0'/>
         <import addon="script.module.python.twitch"/>
@@ -30,7 +30,6 @@
 - add more search options
 - add Communities
 - add Follow/Unfollow
-- add Block/Unblock user
 - add blacklisting of users/games/communities (search excluded)
 - add set default quality for stream/video/clips per channel
 - add Playlists
