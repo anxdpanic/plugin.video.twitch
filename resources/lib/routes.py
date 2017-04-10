@@ -798,6 +798,8 @@ def edit_user_follows(channel_id=None, channel_name=None, game=None):
             kodi.notify(msg=i18n('now_following') % display_name, sound=False)
 
 
+"""
+# unused, requires scopes [scopes.user_blocks_edit, scopes.user_blocks_read]
 @dispatcher.register(MODES.EDITBLOCK, args=['target_id', 'name'])
 @error_handler
 def edit_user_blocks(target_id, name):
@@ -814,6 +816,7 @@ def edit_user_blocks(target_id, name):
         if confirmed:
             result = twitch.block_user(target_id)
             kodi.notify(msg=i18n('blocked') % name, sound=False)
+"""
 
 
 @dispatcher.register(MODES.EDITBLACKLIST, kwargs=['list_type', 'target_id', 'name', 'remove'])
