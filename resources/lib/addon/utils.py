@@ -30,6 +30,7 @@ import xbmcvfs
 
 translations = kodi.Translations(STRINGS)
 i18n = translations.i18n
+storage = json_store.JSONStore(ADDON_DATA_DIR + 'storage.json')
 
 
 def get_redirect_uri():
@@ -254,7 +255,6 @@ _sorting_defaults = \
 def get_stored_json():
     if not xbmcvfs.exists(ADDON_DATA_DIR):
         result = xbmcvfs.mkdir(ADDON_DATA_DIR)
-    storage = json_store.JSONStore(ADDON_DATA_DIR + 'storage.json')
     json_data = storage.load()
     needs_save = False
     # set defaults
@@ -272,11 +272,11 @@ def get_stored_json():
         needs_save = True
     if needs_save:
         storage.save(json_data)
-    return storage, json_data
+    return json_data
 
 
 def is_blacklisted(target, list_type='user'):
-    storage, json_data = get_stored_json()
+    json_data = get_stored_json()
     blacklist = json_data['blacklist'].get(list_type)
     if not blacklist:
         return False
@@ -290,7 +290,7 @@ def is_blacklisted(target, list_type='user'):
 
 
 def add_blacklist(target_id, name, list_type='user'):
-    storage, json_data = get_stored_json()
+    json_data = get_stored_json()
 
     if not is_blacklisted(target_id, list_type):
         blacklist = json_data['blacklist'].get(list_type)
@@ -303,7 +303,7 @@ def add_blacklist(target_id, name, list_type='user'):
 
 
 def remove_blacklist(list_type='user'):
-    storage, json_data = get_stored_json()
+    json_data = get_stored_json()
     result = kodi.Dialog().select(i18n('remove_from_blacklist') % list_type,
                                   [blacklist_name for blacklist_id, blacklist_name in json_data['blacklist'][list_type]])
     if result == -1:
@@ -315,12 +315,12 @@ def remove_blacklist(list_type='user'):
 
 
 def get_languages():
-    storage, json_data = get_stored_json()
+    json_data = get_stored_json()
     return json_data['languages']
 
 
 def add_language(language):
-    storage, json_data = get_stored_json()
+    json_data = get_stored_json()
     language = Language.validate(language)
     if language == Language.ALL:
         json_data['languages'] = [language]
@@ -337,7 +337,7 @@ def add_language(language):
 
 
 def remove_language(language):
-    storage, json_data = get_stored_json()
+    json_data = get_stored_json()
     language = Language.validate(language)
     new_languages = [lang for lang in json_data['languages'] if lang != language]
     if len(new_languages) == 0:
@@ -347,7 +347,7 @@ def remove_language(language):
 
 
 def get_sort(for_type, key=None):
-    storage, json_data = get_stored_json()
+    json_data = get_stored_json()
     sorting = json_data['sorting'].get(for_type)
     if not sorting:
         return None
@@ -358,7 +358,7 @@ def get_sort(for_type, key=None):
 
 
 def set_sort(for_type, sort_by, direction, period):
-    storage, json_data = get_stored_json()
+    json_data = get_stored_json()
     sorting = json_data['sorting'].get(for_type)
     if not sorting:
         if for_type in _sorting_defaults:
@@ -371,7 +371,7 @@ def set_sort(for_type, sort_by, direction, period):
 
 
 def get_default_quality(content_type, target_id):
-    storage, json_data = get_stored_json()
+    json_data = get_stored_json()
     if content_type not in json_data['qualities']:
         json_data['qualities'][content_type] = []
     if any(str(target_id) in item for item in json_data['qualities'][content_type]):
@@ -381,7 +381,7 @@ def get_default_quality(content_type, target_id):
 
 
 def add_default_quality(content_type, target_id, name, quality):
-    storage, json_data = get_stored_json()
+    json_data = get_stored_json()
     current_quality = get_default_quality(content_type, target_id)
     if current_quality:
         current_quality = current_quality[target_id]['quality']
@@ -396,7 +396,7 @@ def add_default_quality(content_type, target_id, name, quality):
 
 
 def remove_default_quality(content_type):
-    storage, json_data = get_stored_json()
+    json_data = get_stored_json()
     result = kodi.Dialog().select(i18n('remove_default_quality') % content_type,
                                   ['%s [%s]' % (user[user.keys()[0]]['name'], user[user.keys()[0]]['quality']) for user in json_data['qualities'][content_type]])
     if result == -1:
@@ -408,7 +408,7 @@ def remove_default_quality(content_type):
 
 
 def clear_list(list_type, list_name):
-    storage, json_data = get_stored_json()
+    json_data = get_stored_json()
     if (list_name in json_data) and (list_type in json_data[list_name]):
         json_data[list_name][list_type] = []
         storage.save(json_data)

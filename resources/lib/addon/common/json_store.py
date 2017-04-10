@@ -30,6 +30,7 @@ class JSONStore:
         self._data = None
 
     def save(self, data):
+        self._data = data
         with open(self.filename, 'wb') as jsonfile:
             log_utils.log('JSONStore Save |{filename}| Data |{data}|'.format(filename=self.filename,
                                                                              data=json.dumps(data, indent=4, sort_keys=True)))
