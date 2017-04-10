@@ -492,14 +492,14 @@ def list_collection_videos(collection_id):
     raise NotFound(i18n('videos'))
 
 
-@dispatcher.register(MODES.CLIPSLIST, kwargs=['cursor', 'channel_name', 'game_name'])
+@dispatcher.register(MODES.CLIPSLIST, kwargs=['cursor', 'channel_name', 'game'])
 @error_handler
-def list_clips(cursor='MA==', channel_name=None, game_name=None):
+def list_clips(cursor='MA==', channel_name=None, game=None):
     kodi.set_content('videos')
     sorting = utils.get_sort('clips')
     all_items = list()
     while (CURSOR_LIMIT >= (len(all_items) + 1)) and cursor:
-        clips = twitch.get_top_clips(cursor, limit=CURSOR_LIMIT, channel=channel_name, game=game_name, period=sorting['period'], trending=sorting['by'])
+        clips = twitch.get_top_clips(cursor, limit=CURSOR_LIMIT, channel=channel_name, game=game, period=sorting['period'], trending=sorting['by'])
         if Keys.CLIPS in clips and len(clips[Keys.CLIPS]) > 0:
             filtered = \
                 blacklist_filter.by_type(clips, Keys.CLIPS, parent_keys=[Keys.BROADCASTER], id_key=Keys.ID, list_type='user')
@@ -570,17 +570,17 @@ def list_channel_videos(channel_id, broadcast_type, offset=0):
     raise NotFound(i18n('videos'))
 
 
-@dispatcher.register(MODES.GAMELISTS, args=['game_name'])
+@dispatcher.register(MODES.GAMELISTS, args=['game'])
 @error_handler
-def game_lists(game_name):
+def game_lists(game):
     kodi.set_content('files')
     context_menu = list()
     context_menu.extend(menu_items.clear_previews())
-    kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.GAMESTREAMS, 'game': game_name}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.GAMESTREAMS, 'game': game}, 'context_menu': context_menu})
     context_menu = list()
     context_menu.extend(menu_items.change_sort_by('clips'))
     context_menu.extend(menu_items.change_period('clips'))
-    kodi.create_item({'label': i18n('clips'), 'path': {'mode': MODES.CLIPSLIST, 'game_name': game_name}, 'context_menu': context_menu})
+    kodi.create_item({'label': i18n('clips'), 'path': {'mode': MODES.CLIPSLIST, 'game': game}, 'context_menu': context_menu})
     kodi.end_of_directory()
 
 
@@ -685,8 +685,8 @@ def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_pl
     def _set_playing():
         window.setProperty(kodi.get_id() + '-twitch_playing', str(True))
 
-    def _set_live(channel_id, name, display_name):
-        window.setProperty(kodi.get_id() + '-livestream', '%s,%s,%s' % (channel_id, name, display_name))
+    def _set_live(_id, _name, _display_name):
+        window.setProperty(kodi.get_id() + '-livestream', '%s,%s,%s' % (_id, _name, _display_name))
 
     def _set_seek_time(value):
         window.setProperty(kodi.get_id() + '-seek_time', str(value))
@@ -764,37 +764,37 @@ def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_pl
         raise
 
 
-@dispatcher.register(MODES.EDITFOLLOW, kwargs=['channel_id', 'channel_name', 'game_name'])
+@dispatcher.register(MODES.EDITFOLLOW, kwargs=['channel_id', 'channel_name', 'game'])
 @error_handler
-def edit_user_follows(channel_id=None, channel_name=None, game_name=None):
-    if (channel_id is None or channel_name is None) and game_name is None:
+def edit_user_follows(channel_id=None, channel_name=None, game=None):
+    if (channel_id is None or channel_name is None) and game is None:
         return
 
-    if not game_name:
+    if not game:
         is_following = twitch.check_follow(channel_id)
     else:
-        is_following = twitch.check_follow_game(game_name)
+        is_following = twitch.check_follow_game(game)
 
-    if not game_name:
+    if not game:
         display_name = channel_name
     else:
-        display_name = game_name
+        display_name = game
 
     if is_following:
         confirmed = kodi.Dialog().yesno(i18n('toggle_follow'), i18n('unfollow_confirm') % display_name)
         if confirmed:
-            if not game_name:
+            if not game:
                 result = twitch.unfollow(channel_id)
             else:
-                result = twitch.unfollow_game(game_name)
+                result = twitch.unfollow_game(game)
             kodi.notify(msg=i18n('unfollowed') % display_name, sound=False)
     else:
         confirmed = kodi.Dialog().yesno(i18n('toggle_follow'), i18n('follow_confirm') % display_name)
         if confirmed:
-            if not game_name:
+            if not game:
                 result = twitch.follow(channel_id)
             else:
-                result = twitch.follow_game(game_name)
+                result = twitch.follow_game(game)
             kodi.notify(msg=i18n('now_following') % display_name, sound=False)
 
 
@@ -908,7 +908,7 @@ def edit_languages(action):
         result = kodi.Dialog().select(i18n('add_language'), missing_languages)
         if result > -1:
             utils.add_language(missing_languages[result])
-    if action == 'remove':
+    elif action == 'remove':
         current_languages = utils.get_languages()
         result = kodi.Dialog().select(i18n('remove_language'), current_languages)
         if result > -1:

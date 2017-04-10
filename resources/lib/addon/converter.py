@@ -66,7 +66,7 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.edit_follow_game(name))
         context_menu.extend(menu_items.add_blacklist(game[Keys._ID], name, list_type='game'))
         return {'label': name,
-                'path': kodi.get_plugin_url({'mode': MODES.GAMELISTS, 'game_name': name}),
+                'path': kodi.get_plugin_url({'mode': MODES.GAMELISTS, 'game': name}),
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
                 'context_menu': context_menu}
 
