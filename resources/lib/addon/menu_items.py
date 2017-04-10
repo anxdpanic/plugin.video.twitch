@@ -44,7 +44,7 @@ def channel_videos(channel_id, channel_name, display_name):
 
 
 def go_to_game(game):
-    return update_container(i18n('go_to') % '[COLOR white][B]%s[/B][/COLOR]' % game, {'mode': MODES.GAMELISTS, 'game_name': game})
+    return update_container(i18n('go_to') % '[COLOR white][B]%s[/B][/COLOR]' % game, {'mode': MODES.GAMELISTS, 'game': game})
 
 
 def refresh():
@@ -70,8 +70,8 @@ def set_default_quality(content_type, target_id, name, video_id=None, clip_id=No
                              'name': name, 'video_id': video_id, 'clip_id': clip_id})
 
 
-def edit_follow_game(game_name):
-    return update_container(i18n('toggle_follow'), {'mode': MODES.EDITFOLLOW, 'game_name': game_name})
+def edit_follow_game(game):
+    return update_container(i18n('toggle_follow'), {'mode': MODES.EDITFOLLOW, 'game': game})
 
 
 def change_sort_by(for_type):

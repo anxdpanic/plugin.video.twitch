@@ -21,15 +21,16 @@ import re
 import time
 from datetime import datetime
 from base64 import b64decode
-from common import kodi
+from common import kodi, json_store
 from strings import STRINGS
 from tccleaner import TextureCacheCleaner
-from constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, STORAGE, ADDON_DATA_DIR, REQUEST_LIMIT
+from constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, ADDON_DATA_DIR, REQUEST_LIMIT
 from twitch.api.parameters import Boolean, Period, ClipPeriod, Direction, Language, SortBy, VideoSort
 import xbmcvfs
 
 translations = kodi.Translations(STRINGS)
 i18n = translations.i18n
+storage = json_store.JSONStore(ADDON_DATA_DIR + 'storage.json')
 
 
 def get_redirect_uri():
@@ -170,6 +171,10 @@ def get_stamp_diff(current_stamp):
     stamp_format = '%Y-%m-%d %H:%M:%S.%f'
     current_datetime = datetime.now()
     if not current_stamp: return 86400  # 24 hrs
+    try:
+        time.strptime('01 01 2012', '%d %m %Y')  # dummy call
+    except:
+        pass
     stamp_datetime = datetime(*(time.strptime(current_stamp, stamp_format)[0:6]))  # datetime.strptime has issues
     time_delta = current_datetime - stamp_datetime
     total_seconds = 0
@@ -250,7 +255,7 @@ _sorting_defaults = \
 def get_stored_json():
     if not xbmcvfs.exists(ADDON_DATA_DIR):
         result = xbmcvfs.mkdir(ADDON_DATA_DIR)
-    json_data = STORAGE.load()
+    json_data = storage.load()
     needs_save = False
     # set defaults
     if 'blacklist' not in json_data:
@@ -266,7 +271,7 @@ def get_stored_json():
         json_data['languages'] = [Language.ALL]
         needs_save = True
     if needs_save:
-        STORAGE.save(json_data)
+        storage.save(json_data)
     return json_data
 
 
@@ -292,7 +297,7 @@ def add_blacklist(target_id, name, list_type='user'):
         if not blacklist:
             json_data['blacklist'][list_type] = []
         json_data['blacklist'][list_type].append([target_id, name])
-        STORAGE.save(json_data)
+        storage.save(json_data)
         return True
     return False
 
@@ -305,7 +310,7 @@ def remove_blacklist(list_type='user'):
         return None
     else:
         result = json_data['blacklist'][list_type].pop(result)
-        STORAGE.save(json_data)
+        storage.save(json_data)
         return result
 
 
@@ -328,7 +333,7 @@ def add_language(language):
     if (index_of_all > -1) and len(new_languages) > 1:
         new_languages.remove(Language.ALL)
     json_data['languages'] = new_languages
-    STORAGE.save(json_data)
+    storage.save(json_data)
 
 
 def remove_language(language):
@@ -338,7 +343,7 @@ def remove_language(language):
     if len(new_languages) == 0:
         new_languages.append(Language.ALL)
     json_data['languages'] = new_languages
-    STORAGE.save(json_data)
+    storage.save(json_data)
 
 
 def get_sort(for_type, key=None):
@@ -361,7 +366,7 @@ def set_sort(for_type, sort_by, direction, period):
         else:
             return False
     json_data['sorting'][for_type] = {'by': sort_by, 'direction': direction, 'period': period}
-    STORAGE.save(json_data)
+    storage.save(json_data)
     return True
 
 
@@ -386,7 +391,7 @@ def add_default_quality(content_type, target_id, name, quality):
             index = next(index for index, item in enumerate(json_data['qualities'][content_type]) if str(target_id) in item)
             del json_data['qualities'][content_type][index]
     json_data['qualities'][content_type].append({target_id: {'name': name, 'quality': quality}})
-    STORAGE.save(json_data)
+    storage.save(json_data)
     return True
 
 
@@ -398,7 +403,7 @@ def remove_default_quality(content_type):
         return None
     else:
         result = json_data['qualities'][content_type].pop(result)
-        STORAGE.save(json_data)
+        storage.save(json_data)
         return result
 
 
@@ -406,7 +411,7 @@ def clear_list(list_type, list_name):
     json_data = get_stored_json()
     if (list_name in json_data) and (list_type in json_data[list_name]):
         json_data[list_name][list_type] = []
-        STORAGE.save(json_data)
+        storage.save(json_data)
         return True
     else:
         return False

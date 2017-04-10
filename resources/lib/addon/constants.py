@@ -17,8 +17,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-from common import kodi, json_store
-from common.url_dispatcher import URL_Dispatcher
+from common import kodi
 from twitch import scopes
 
 
@@ -26,11 +25,7 @@ def __enum(**enums):
     return type('Enum', (), enums)
 
 
-DISPATCHER = URL_Dispatcher()
-
 ADDON_DATA_DIR = kodi.translate_path('special://profile/addon_data/{0!s}/'.format(kodi.get_id()))
-
-STORAGE = json_store.JSONStore(ADDON_DATA_DIR + 'storage.json')
 
 MODES = __enum(
     MAIN='main',
@@ -69,7 +64,7 @@ MODES = __enum(
 )
 
 LINE_LENGTH = 60
-
+MAX_REQUESTS = 5
 REQUEST_LIMIT = 25
 CURSOR_LIMIT = 10
 
@@ -173,4 +168,4 @@ class Keys:
     LANGUAGE = 'language'
 
 
-SCOPES = [scopes.user_read, scopes.user_blocks_edit, scopes.user_blocks_read, scopes.user_follows_edit, scopes.user_subscriptions, scopes.chat_login]
+SCOPES = [scopes.user_read, scopes.user_follows_edit, scopes.user_subscriptions, scopes.chat_login]

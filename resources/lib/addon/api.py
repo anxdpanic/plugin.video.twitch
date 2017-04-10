@@ -211,21 +211,21 @@ class Twitch:
         return self.error_check(results)
 
     @api_error_handler
-    def check_follow_game(self, game_name):
+    def check_follow_game(self, game):
         username = self.get_username()
-        results = self.api.games._check_follows(username=username, name=game_name)
+        results = self.api.games._check_follows(username=username, name=game)
         return self.return_boolean(results)
 
     @api_error_handler
-    def follow_game(self, game_name):
+    def follow_game(self, game):
         username = self.get_username()
-        results = self.api.games._follow(username=username, name=game_name)
+        results = self.api.games._follow(username=username, name=game)
         return self.error_check(results)
 
     @api_error_handler
-    def unfollow_game(self, game_name):
+    def unfollow_game(self, game):
         username = self.get_username()
-        results = self.api.games._unfollow(username=username, name=game_name)
+        results = self.api.games._unfollow(username=username, name=game)
         return self.error_check(results)
 
     @api_error_handler
