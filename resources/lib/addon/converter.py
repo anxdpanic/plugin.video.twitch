@@ -21,6 +21,7 @@ import menu_items
 from common import kodi
 from utils import the_art, TitleBuilder, i18n, get_oauth_token
 from constants import Keys, Images, MODES
+from base64 import b64encode
 
 
 class PlaylistConverter(object):
@@ -91,10 +92,10 @@ class JsonListItemConverter(object):
         owner = collection[Keys.OWNER]
         context_menu = list()
         context_menu.extend(menu_items.refresh())
-        context_menu.extend(menu_items.add_blacklist(owner[Keys._ID], owner[Keys.DISPLAY_NAME]))
         if self.has_token:
             context_menu.extend(menu_items.edit_follow(owner[Keys._ID], owner[Keys.DISPLAY_NAME]))
             # context_menu.extend(menu_items.edit_block(owner[Keys._ID], owner[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.add_blacklist(owner[Keys._ID], owner[Keys.DISPLAY_NAME]))
         return {'label': title,
                 'path': kodi.get_plugin_url({'mode': MODES.COLLECTIONVIDEOLIST, 'collection_id': _id}),
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
@@ -139,10 +140,10 @@ class JsonListItemConverter(object):
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.clear_previews())
-        context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
         if self.has_token:
             context_menu.extend(menu_items.edit_follow(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
             # context_menu.extend(menu_items.edit_block(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
         return {'label': channel[Keys.DISPLAY_NAME],
                 'path': kodi.get_plugin_url({'mode': MODES.CHANNELVIDEOS, 'channel_id': channel[Keys._ID], 'channel_name': channel[Keys.NAME]}),
                 'art': the_art({'fanart': video_banner, 'poster': image, 'thumb': image}),
@@ -160,12 +161,13 @@ class JsonListItemConverter(object):
         broadcaster = clip[Keys.BROADCASTER]
         context_menu = list()
         context_menu.extend(menu_items.refresh())
-        context_menu.extend(menu_items.channel_videos(broadcaster[Keys.ID], broadcaster[Keys.NAME], broadcaster[Keys.DISPLAY_NAME]))
-        context_menu.extend(menu_items.go_to_game(clip[Keys.GAME]))
-        context_menu.extend(menu_items.add_blacklist(broadcaster[Keys.ID], broadcaster[Keys.DISPLAY_NAME]))
         if self.has_token:
             context_menu.extend(menu_items.edit_follow(broadcaster[Keys.ID], broadcaster[Keys.DISPLAY_NAME]))
             # context_menu.extend(menu_items.edit_block(broadcaster[Keys.ID], broadcaster[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.channel_videos(broadcaster[Keys.ID], broadcaster[Keys.NAME], broadcaster[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.go_to_game(clip[Keys.GAME]))
+        context_menu.extend(menu_items.add_blacklist(broadcaster[Keys.ID], broadcaster[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.add_blacklist(b64encode(clip[Keys.GAME]), clip[Keys.GAME], list_type='game'))
         context_menu.extend(menu_items.set_default_quality('clip', broadcaster[Keys.ID], broadcaster[Keys.NAME], clip_id=clip[Keys.ID]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'channel_id': broadcaster[Keys.ID], 'slug': clip[Keys.ID], 'ask': True, 'use_player': True}))
@@ -190,12 +192,13 @@ class JsonListItemConverter(object):
         owner = video[Keys.OWNER]
         context_menu = list()
         context_menu.extend(menu_items.refresh())
-        context_menu.extend(menu_items.channel_videos(owner[Keys._ID], owner[Keys.NAME], owner[Keys.DISPLAY_NAME]))
-        context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
-        context_menu.extend(menu_items.add_blacklist(owner[Keys._ID], owner[Keys.DISPLAY_NAME]))
         if self.has_token:
             context_menu.extend(menu_items.edit_follow(owner[Keys._ID], owner[Keys.DISPLAY_NAME]))
             # context_menu.extend(menu_items.edit_block(owner[Keys._ID], owner[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.channel_videos(owner[Keys._ID], owner[Keys.NAME], owner[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
+        context_menu.extend(menu_items.add_blacklist(owner[Keys._ID], owner[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.add_blacklist(b64encode(video[Keys.GAME]), video[Keys.GAME], list_type='game'))
         context_menu.extend(menu_items.set_default_quality('video', owner[Keys._ID], owner[Keys.NAME], video[Keys.ITEM_ID]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'video_id': video[Keys.ITEM_ID], 'ask': True, 'use_player': True}))
@@ -219,13 +222,14 @@ class JsonListItemConverter(object):
         channel = video[Keys.CHANNEL]
         context_menu = list()
         context_menu.extend(menu_items.refresh())
-        context_menu.extend(menu_items.channel_videos(channel[Keys._ID], channel[Keys.NAME], channel[Keys.DISPLAY_NAME]))
-        context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
-        context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
-        context_menu.extend(menu_items.set_default_quality('video', channel[Keys._ID], channel[Keys.NAME], video[Keys._ID]))
         if self.has_token:
             context_menu.extend(menu_items.edit_follow(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
             # context_menu.extend(menu_items.edit_block(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.channel_videos(channel[Keys._ID], channel[Keys.NAME], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
+        context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.add_blacklist(b64encode(video[Keys.GAME]), video[Keys.GAME], list_type='game'))
+        context_menu.extend(menu_items.set_default_quality('video', channel[Keys._ID], channel[Keys.NAME], video[Keys._ID]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'video_id': video[Keys._ID], 'ask': True, 'use_player': True}))
         return {'label': self.get_title_for_video(video),
@@ -252,12 +256,13 @@ class JsonListItemConverter(object):
         info.update({'mediatype': 'video'})
         context_menu = list()
         context_menu.extend(menu_items.refresh())
-        context_menu.extend(menu_items.channel_videos(channel[Keys._ID], channel[Keys.NAME], channel[Keys.DISPLAY_NAME]))
-        context_menu.extend(menu_items.go_to_game(channel[Keys.GAME]))
-        context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
         if self.has_token:
             context_menu.extend(menu_items.edit_follow(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
             # context_menu.extend(menu_items.edit_block(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.channel_videos(channel[Keys._ID], channel[Keys.NAME], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.go_to_game(channel[Keys.GAME]))
+        context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.add_blacklist(b64encode(channel[Keys.GAME]), channel[Keys.GAME], list_type='game'))
         context_menu.extend(menu_items.set_default_quality('stream', channel[Keys._ID], channel[Keys.NAME]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys._ID], 'ask': True, 'use_player': True}))
