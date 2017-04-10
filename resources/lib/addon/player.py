@@ -67,7 +67,7 @@ class TwitchPlayer(xbmc.Player):
         seek_time = self.window.getProperty(key=self.seek_keys['seek_time'])
         log_utils.log('Player: |onPlayBackStarted| isTwitch |{0}| SeekTime |{1}|'.format(is_playing, seek_time), log_utils.LOGDEBUG)
         if not is_playing:
-            self.reset_seek()
+            self.reset()
         else:
             if seek_time:
                 seek_time = float(seek_time)
@@ -109,8 +109,9 @@ class TwitchPlayer(xbmc.Player):
                                         abort = True
                                         break
                                     wait_time += 0.5
-                                    percent = int(((wait_time / 120) * 100))
-                                    dialog.update(percent=percent, line3=utils.i18n('retry_seconds') % (((120.0 - wait_time) // 2) + 1))
+                                    if wait_time.is_integer():
+                                        percent = int(((wait_time / 120) * 100))
+                                        dialog.update(percent=percent, line3=utils.i18n('retry_seconds') % ((120.0 - wait_time) / 2))
                                 if abort:
                                     break
                                 retries += 1
@@ -131,7 +132,6 @@ class TwitchPlayer(xbmc.Player):
                                     if play_url:
                                         item_dict['path'] = play_url
                                         playback_item = kodi.create_item(item_dict, add=False)
-                                        kodi.Player().play(item_dict['path'], playback_item)
                                         self.window.setProperty(self.reconnect_keys['stream'], ''.format(name, result[Keys.CHANNEL][Keys.DISPLAY_NAME]))
                                         self.play(item_dict['path'], playback_item)
                                         if utils.irc_enabled() and twitch.access_token:
