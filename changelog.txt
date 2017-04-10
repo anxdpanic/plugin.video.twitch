@@ -17,7 +17,6 @@
 - add more search options
 - add Communities
 - add Follow/Unfollow
-- add Block/Unblock user
 - add blacklisting of users/games/communities (search excluded)
 - add set default quality for stream/video/clips per channel
 - add Playlists
