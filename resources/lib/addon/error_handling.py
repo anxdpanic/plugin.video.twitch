@@ -64,6 +64,8 @@ def api_error_handler(func):
         try:
             result = func(*args, **kwargs)
             try:
+                if u'email' in result:
+                    result[u'email'] = 'addon@removed.org'
                 logging_result = json.dumps(result, indent=4)
             except:
                 logging_result = result
