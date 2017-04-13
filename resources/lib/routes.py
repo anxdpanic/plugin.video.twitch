@@ -25,7 +25,7 @@ from addon.converter import JsonListItemConverter
 from addon.constants import MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, Keys, REQUEST_LIMIT, CURSOR_LIMIT, MAX_REQUESTS
 from addon.googl_shorten import googl_url
 from addon.error_handling import error_handler
-from addon.twitch_exceptions import SubRequired, NotFound, PlaybackFailed
+from addon.twitch_exceptions import SubRequired, NotFound, PlaybackFailed, TwitchException
 from twitch.api.parameters import Boolean, Period, ClipPeriod, Direction, SortBy, VideoSort, Language, StreamType, Platform
 
 i18n = utils.i18n
@@ -764,21 +764,38 @@ def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_pl
             seek_id, _seek_time = _get_seek()
             if seek_id == video_id:
                 seek_time = int(_seek_time)
-            audio_sub = chunked_sub = restricted = False
+            restricted = False
+            unrestricted = None
             result = twitch.get_video_by_id(video_id)
             video_id = result[Keys._ID]
             channel_id = result[Keys.CHANNEL][Keys._ID]
             channel_name = result[Keys.CHANNEL][Keys.DISPLAY_NAME] if result[Keys.CHANNEL][Keys.DISPLAY_NAME] else result[Keys.CHANNEL][Keys.NAME]
             extra_info = twitch._get_video_by_id(video_id)
-            if 'restrictions' in extra_info:
-                if ('audio_only' in extra_info['restrictions']) and (extra_info['restrictions']['audio_only'] == 'chansub'):
-                    audio_sub = True
-                if ('chunked' in extra_info['restrictions']) and (extra_info['restrictions']['chunked'] == 'chansub'):
-                    chunked_sub = True
-                if chunked_sub or audio_sub:
-                    restricted = not twitch.check_subscribed(channel_id)
+            try:
+                subscribed = twitch.check_subscribed(channel_id)
+            except TwitchException as e:
+                if ('status' in e.message) and (e.message['status'] == 422):
+                    subscribed = True  # no subscription program
+                else:
+                    raise
+            if not subscribed:
+                if ('restrictions' in extra_info) and ('chunks' in extra_info):
+                    unrestricted = extra_info['chunks']
+                    for key in list(extra_info['chunks']):
+                        if key in extra_info['restrictions']:
+                            if extra_info['restrictions'][key] == 'chansub':
+                                del unrestricted[key]
+                    if unrestricted == {}:
+                        restricted = True
             if not restricted:
-                videos = twitch.get_vod(video_id)
+                _videos = twitch.get_vod(video_id)
+                if unrestricted:
+                    videos = list()
+                    for _video in _videos:
+                        if _video['id'] in list(unrestricted):
+                            videos.append(_video)
+                else:
+                    videos = _videos
                 item_dict = converter.video_to_playitem(result)
                 quality = utils.get_default_quality('video', channel_id)
                 if quality:
@@ -803,9 +820,11 @@ def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_pl
         _reset()
         if item_dict and videos:
             clip = False if slug is None else True
-            quality_label, play_url = converter.get_video_for_quality(videos, return_label=True, ask=ask, quality=quality, clip=clip)
-            log_utils.log('Attempting playback using quality |%s| @ |%s|' % (quality_label, play_url), log_utils.LOGDEBUG)
-            if play_url:
+            result = converter.get_video_for_quality(videos, ask=ask, quality=quality, clip=clip)
+            if result:
+                play_url = result['url']
+                quality_label = result['name']
+                log_utils.log('Attempting playback using quality |%s| @ |%s|' % (quality_label, play_url), log_utils.LOGDEBUG)
                 item_dict['path'] = play_url
                 playback_item = kodi.create_item(item_dict, add=False)
                 if seek_time > 0:
@@ -916,10 +935,12 @@ def edit_qualities(content_type, target_id=None, name=None, video_id=None, remov
         elif content_type == 'stream':
             videos = twitch.get_live(name)
         if videos:
-            quality, url = converter.select_video_for_quality(videos, return_label=True)
-            result = utils.add_default_quality(content_type, target_id, name, quality)
+            result = converter.select_video_for_quality(videos)
             if result:
-                kodi.notify(msg=i18n('default_quality_set') % (content_type, quality, name), sound=False)
+                quality = result['name']
+                result = utils.add_default_quality(content_type, target_id, name, quality)
+                if result:
+                    kodi.notify(msg=i18n('default_quality_set') % (content_type, quality, name), sound=False)
     else:
         result = utils.remove_default_quality(content_type)
         if result:

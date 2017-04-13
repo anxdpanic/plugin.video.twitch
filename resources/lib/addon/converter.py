@@ -462,9 +462,9 @@ class JsonListItemConverter(object):
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
 
-    def get_video_for_quality(self, videos, ask=True, return_label=False, quality=None, clip=False):
+    def get_video_for_quality(self, videos, ask=True, quality=None, clip=False):
         if ask is True:
-            return self.select_video_for_quality(videos, return_label=return_label)
+            return self.select_video_for_quality(videos)
         else:
             video_quality = kodi.get_setting('video_quality')
             source = video_quality == '0'
@@ -475,47 +475,33 @@ class JsonListItemConverter(object):
             except:
                 bandwidth_value = None
             if quality or len(videos) == 1:
-                for quality_label, url, bandwidth in videos:
-                    if (quality and (quality.lower() in quality_label.lower())) or len(videos) == 1:
-                        if return_label:
-                            return quality_label, url
-                        else:
-                            return url
+                for video in videos:
+                    if (quality and (quality.lower() in video['name'].lower())) or len(videos) == 1:
+                        return video
             elif ask:
-                return self.select_video_for_quality(videos, return_label=return_label)
+                return self.select_video_for_quality(videos)
             elif source:
-                for quality_label, url, bandwidth in videos:
-                    if (source) and ('source' in quality_label.lower()):
-                        if return_label:
-                            return quality_label, url
-                        else:
-                            return url
+                for video in videos:
+                    if 'chunked' in video['id']:
+                        return video
             elif bandwidth and bandwidth_value and not clip:
                 bandwidths = []
-                for quality_label, url, bwidth in videos:
-                    if int(bwidth) <= bandwidth_value:
-                        bandwidths.append(int(bwidth))
+                for video in videos:
+                    bwidth = int(video['bandwidth'])
+                    if bwidth <= bandwidth_value:
+                        bandwidths.append(bwidth)
                 best_match = max(bandwidths)
                 try:
-                    index = next(idx for idx, video in enumerate(videos) if int(video[2]) == best_match)
-                    if return_label:
-                        return videos[index][0], videos[index][1]
-                    else:
-                        return videos[index][1]
+                    index = next(idx for idx, video in enumerate(videos) if int(video['bandwidth']) == best_match)
+                    return videos[index]
                 except:
                     pass
-            return self.select_video_for_quality(videos, return_label=return_label)
+            return self.select_video_for_quality(videos)
 
     @staticmethod
-    def select_video_for_quality(videos, return_label=False):
-        result = kodi.Dialog().select(i18n('choose_quality'), [quality for quality, url, bandwidth in videos])
+    def select_video_for_quality(videos):
+        result = kodi.Dialog().select(i18n('choose_quality'), [video['name'] for video in videos])
         if result == -1:
-            if return_label:
-                return None, None
-            else:
-                return None
+            return None
         else:
-            if return_label:
-                return videos[result][0], videos[result][1]
-            else:
-                return videos[result][1]
+            return videos[result]
