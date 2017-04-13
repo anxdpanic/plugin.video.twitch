@@ -771,13 +771,16 @@ def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_pl
             channel_id = result[Keys.CHANNEL][Keys._ID]
             channel_name = result[Keys.CHANNEL][Keys.DISPLAY_NAME] if result[Keys.CHANNEL][Keys.DISPLAY_NAME] else result[Keys.CHANNEL][Keys.NAME]
             extra_info = twitch._get_video_by_id(video_id)
-            try:
-                subscribed = twitch.check_subscribed(channel_id)
-            except TwitchException as e:
-                if ('status' in e.message) and (e.message['status'] == 422):
-                    subscribed = True  # no subscription program
-                else:
-                    raise
+            if twitch.access_token:
+                try:
+                    subscribed = twitch.check_subscribed(channel_id)
+                except TwitchException as e:
+                    if ('status' in e.message) and (e.message['status'] == 422):
+                        subscribed = True  # no subscription program
+                    else:
+                        raise
+            else:
+                subscribed = False
             if not subscribed:
                 if ('restrictions' in extra_info) and ('chunks' in extra_info):
                     unrestricted = extra_info['chunks']
