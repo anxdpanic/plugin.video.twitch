@@ -127,7 +127,7 @@ def link_to_next_page(queries):
 
 
 def irc_enabled():
-    return kodi.get_setting('irc_enable') != 'true'
+    return (kodi.get_setting('irc_enable') == 'true') and kodi.has_addon('script.ircchat')
 
 
 def exec_irc_script(username, channel):
