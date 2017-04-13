@@ -93,9 +93,11 @@ def cache_method(cache_limit):
             in_cache, result = _get_func(full_name, real_args, kwargs, cache_limit=cache_limit)
             if in_cache:
                 # log_utils.log('Using method cache for: |%s|%s|%s| -> |%d|' % (full_name, args, kwargs, len(pickle.dumps(result))), log_utils.LOGDEBUG)
+                log_utils.log('Using method cache for: |%s| -> |%d|' % (full_name, len(pickle.dumps(result))), log_utils.LOGDEBUG)
                 return result
             else:
                 # log_utils.log('Calling cached method: |%s|%s|%s|' % (full_name, args, kwargs), log_utils.LOGDEBUG)
+                log_utils.log('Calling cached method: |%s|' % (full_name), log_utils.LOGDEBUG)
                 result = func(*args, **kwargs)
                 if cache_enabled and cache_limit > 0:
                     _save_func(full_name, real_args, kwargs, result)
@@ -115,9 +117,11 @@ def cache_function(cache_limit):
             in_cache, result = _get_func(name, args, kwargs, cache_limit=cache_limit)
             if in_cache:
                 # log_utils.log('Using function cache for: |%s|%s|%s| -> |%d|' % (name, args, kwargs, len(pickle.dumps(result))), log_utils.LOGDEBUG)
+                log_utils.log('Using function cache for: |%s| -> |%d|' % (name, len(pickle.dumps(result))), log_utils.LOGDEBUG)
                 return result
             else:
                 # log_utils.log('Calling cached function: |%s|%s|%s|' % (name, args, kwargs), log_utils.LOGDEBUG)
+                log_utils.log('Calling cached function: |%s|' % (name), log_utils.LOGDEBUG)
                 result = func(*args, **kwargs)
                 if cache_enabled and cache_limit > 0:
                     _save_func(name, args, kwargs, result)
