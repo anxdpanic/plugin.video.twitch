@@ -42,7 +42,7 @@
         </news>
         <assets>
             <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
+            <fanart>fanart.png</fanart>
         </assets>
         <language>en</language>
         <source>https://github.com/MrSprigster/Twitch-on-Kodi</source>
