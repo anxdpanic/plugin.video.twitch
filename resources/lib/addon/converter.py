@@ -167,7 +167,7 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.channel_videos(broadcaster[Keys.ID], broadcaster[Keys.NAME], broadcaster[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.go_to_game(clip[Keys.GAME]))
         context_menu.extend(menu_items.add_blacklist(broadcaster[Keys.ID], broadcaster[Keys.DISPLAY_NAME]))
-        context_menu.extend(menu_items.add_blacklist(b64encode(clip[Keys.GAME]), clip[Keys.GAME], list_type='game'))
+        context_menu.extend(menu_items.add_blacklist(b64encode(clip[Keys.GAME].encode('utf-8', 'ignore')), clip[Keys.GAME], list_type='game'))
         context_menu.extend(menu_items.set_default_quality('clip', broadcaster[Keys.ID], broadcaster[Keys.NAME], clip_id=clip[Keys.ID]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'channel_id': broadcaster[Keys.ID], 'slug': clip[Keys.ID], 'ask': True, 'use_player': True}))
@@ -198,7 +198,7 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.channel_videos(owner[Keys._ID], owner[Keys.NAME], owner[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
         context_menu.extend(menu_items.add_blacklist(owner[Keys._ID], owner[Keys.DISPLAY_NAME]))
-        context_menu.extend(menu_items.add_blacklist(b64encode(video[Keys.GAME]), video[Keys.GAME], list_type='game'))
+        context_menu.extend(menu_items.add_blacklist(b64encode(video[Keys.GAME].encode('utf-8', 'ignore')), video[Keys.GAME], list_type='game'))
         context_menu.extend(menu_items.set_default_quality('video', owner[Keys._ID], owner[Keys.NAME], video[Keys.ITEM_ID]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'video_id': video[Keys.ITEM_ID], 'ask': True, 'use_player': True}))
@@ -228,7 +228,7 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.channel_videos(channel[Keys._ID], channel[Keys.NAME], channel[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
         context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
-        context_menu.extend(menu_items.add_blacklist(b64encode(video[Keys.GAME]), video[Keys.GAME], list_type='game'))
+        context_menu.extend(menu_items.add_blacklist(b64encode(video[Keys.GAME].encode('utf-8', 'ignore')), video[Keys.GAME], list_type='game'))
         context_menu.extend(menu_items.set_default_quality('video', channel[Keys._ID], channel[Keys.NAME], video[Keys._ID]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'video_id': video[Keys._ID], 'ask': True, 'use_player': True}))
@@ -262,7 +262,7 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.channel_videos(channel[Keys._ID], channel[Keys.NAME], channel[Keys.DISPLAY_NAME]))
         context_menu.extend(menu_items.go_to_game(channel[Keys.GAME]))
         context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
-        context_menu.extend(menu_items.add_blacklist(b64encode(channel[Keys.GAME]), channel[Keys.GAME], list_type='game'))
+        context_menu.extend(menu_items.add_blacklist(b64encode(channel[Keys.GAME].encode('utf-8', 'ignore')), channel[Keys.GAME], list_type='game'))
         context_menu.extend(menu_items.set_default_quality('stream', channel[Keys._ID], channel[Keys.NAME]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys._ID], 'ask': True, 'use_player': True}))
@@ -462,9 +462,9 @@ class JsonListItemConverter(object):
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
 
-    def get_video_for_quality(self, videos, ask=True, return_label=False, quality=None, clip=False):
+    def get_video_for_quality(self, videos, ask=True, quality=None, clip=False):
         if ask is True:
-            return self.select_video_for_quality(videos, return_label=return_label)
+            return self.select_video_for_quality(videos)
         else:
             video_quality = kodi.get_setting('video_quality')
             source = video_quality == '0'
@@ -475,47 +475,33 @@ class JsonListItemConverter(object):
             except:
                 bandwidth_value = None
             if quality or len(videos) == 1:
-                for quality_label, url, bandwidth in videos:
-                    if (quality and (quality.lower() in quality_label.lower())) or len(videos) == 1:
-                        if return_label:
-                            return quality_label, url
-                        else:
-                            return url
+                for video in videos:
+                    if (quality and (quality.lower() in video['name'].lower())) or len(videos) == 1:
+                        return video
             elif ask:
-                return self.select_video_for_quality(videos, return_label=return_label)
+                return self.select_video_for_quality(videos)
             elif source:
-                for quality_label, url, bandwidth in videos:
-                    if (source) and ('source' in quality_label.lower()):
-                        if return_label:
-                            return quality_label, url
-                        else:
-                            return url
+                for video in videos:
+                    if 'chunked' in video['id']:
+                        return video
             elif bandwidth and bandwidth_value and not clip:
                 bandwidths = []
-                for quality_label, url, bwidth in videos:
-                    if int(bwidth) <= bandwidth_value:
-                        bandwidths.append(int(bwidth))
+                for video in videos:
+                    bwidth = int(video['bandwidth'])
+                    if bwidth <= bandwidth_value:
+                        bandwidths.append(bwidth)
                 best_match = max(bandwidths)
                 try:
-                    index = next(idx for idx, video in enumerate(videos) if int(video[2]) == best_match)
-                    if return_label:
-                        return videos[index][0], videos[index][1]
-                    else:
-                        return videos[index][1]
+                    index = next(idx for idx, video in enumerate(videos) if int(video['bandwidth']) == best_match)
+                    return videos[index]
                 except:
                     pass
-            return self.select_video_for_quality(videos, return_label=return_label)
+            return self.select_video_for_quality(videos)
 
     @staticmethod
-    def select_video_for_quality(videos, return_label=False):
-        result = kodi.Dialog().select(i18n('choose_quality'), [quality for quality, url, bandwidth in videos])
+    def select_video_for_quality(videos):
+        result = kodi.Dialog().select(i18n('choose_quality'), [video['name'] for video in videos])
         if result == -1:
-            if return_label:
-                return None, None
-            else:
-                return None
+            return None
         else:
-            if return_label:
-                return videos[result][0], videos[result][1]
-            else:
-                return videos[result][1]
+            return videos[result]
