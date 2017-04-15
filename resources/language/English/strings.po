@@ -794,3 +794,7 @@ msgstr ""
 msgctxt "#30216"
 msgid "Curated"
 msgstr ""
+
+msgctxt "#30217"
+msgid "Press OK to resolve"
+msgstr ""
