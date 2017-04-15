@@ -636,7 +636,7 @@ msgid "Clips"
 msgstr ""
 
 msgctxt "#30177"
-msgid "Ivalid OAuth token"
+msgid "Invalid OAuth token"
 msgstr ""
 
 msgctxt "#30178"
