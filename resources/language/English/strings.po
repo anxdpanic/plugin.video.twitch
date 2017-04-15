@@ -778,3 +778,23 @@ msgstr ""
 msgctxt "#30212"
 msgid "Failed to connect to Twitch API"
 msgstr ""
+
+msgctxt "#30213"
+msgid "Followers"
+msgstr ""
+
+msgctxt "#30214"
+msgid "Items"
+msgstr ""
+
+msgctxt "#30215"
+msgid "Duration"
+msgstr ""
+
+msgctxt "#30216"
+msgid "Curated"
+msgstr ""
+
+msgctxt "#30217"
+msgid "Press OK to resolve"
+msgstr ""

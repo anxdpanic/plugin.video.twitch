@@ -40,7 +40,7 @@ def clear_previews():
 
 def channel_videos(channel_id, channel_name, display_name):
     return update_container(i18n('go_to') % '[COLOR white][B]%s[/B][/COLOR]' % display_name,
-                            {'mode': MODES.CHANNELVIDEOS, 'channel_id': channel_id, 'channel_name': channel_name})
+                            {'mode': MODES.CHANNELVIDEOS, 'channel_id': channel_id, 'channel_name': channel_name, 'display_name': display_name})
 
 
 def go_to_game(game):

@@ -105,10 +105,6 @@ log_utils.log('Service: Start', log_utils.LOGNOTICE)
 player = TwitchPlayer()
 
 while not monitor.abortRequested():
-    try:
-        datetime.strptime('2012-01-01', '%Y-%m-%d')  # dummy call
-    except:
-        pass
     time_diff = get_stamp_diff(timestamp)
     if (timestamp is None) or (time_diff >= delay_time):
         timestamp = str(datetime.now())
@@ -144,7 +140,7 @@ while not monitor.abortRequested():
                         current_online += new_online
                         log_utils.log('Service: Now online |%s|' % current_online, log_utils.LOGDEBUG)
                         set_online_followed(current_online)
-                        names = [display_name for _id, name, display_name in new_online]
+                        names = [display_name if display_name else name for _id, name, display_name in new_online]
                         triplets = grouped(names)
                         for followed_names in triplets:
                             message = ', '.join(followed_names)

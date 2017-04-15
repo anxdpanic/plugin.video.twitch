@@ -112,5 +112,10 @@ STRINGS = {
     'retry_seconds': 30207,
     'attempt_reconnect': 30208,
     'attempt_number': 30209,
-    'failed_connect_api': 30212
+    'failed_connect_api': 30212,
+    'followers': 30213,
+    'items': 30214,
+    'duration': 30215,
+    'curated': 30216,
+    'ok_to_resolve': 30217
 }

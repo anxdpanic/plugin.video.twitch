@@ -45,16 +45,20 @@ def get_redirect_uri():
         return REDIRECT_URI.decode('utf-8')
 
 
-def get_client_id():
+def get_client_id(default=False):
     settings_id = kodi.get_setting('oauth_clientid')
     stripped_id = settings_id.strip()
     if settings_id != stripped_id:
         settings_id = stripped_id
         kodi.set_setting('oauth_clientid', settings_id)
-    if settings_id:
+    if settings_id and not default:
         return settings_id.decode('utf-8')
     else:
         return b64decode(CLIENT_ID).decode('utf-8')
+
+
+def clear_client_id():
+    kodi.set_setting('oauth_clientid', '')
 
 
 def get_oauth_token(token_only=True, required=False):
@@ -123,7 +127,8 @@ def link_to_next_page(queries):
         queries['index'] += 1
     return {'label': i18n('next_page'),
             'art': the_art(),
-            'path': kodi.get_plugin_url(queries)}
+            'path': kodi.get_plugin_url(queries),
+            'info': {'plot': i18n('next_page')}}
 
 
 def irc_enabled():
@@ -167,15 +172,25 @@ def get_refresh_stamp():
     return window.getProperty(key='%s-lpr_stamp' % kodi.get_id())
 
 
+def strptime(stamp, stamp_fmt):
+    import _strptime
+    try:
+        time.strptime('01 01 2012', '%d %m %Y')  # dummy call
+    except:
+        pass
+    return time.strptime(stamp, stamp_fmt)
+
+
 def get_stamp_diff(current_stamp):
     stamp_format = '%Y-%m-%d %H:%M:%S.%f'
     current_datetime = datetime.now()
     if not current_stamp: return 86400  # 24 hrs
     try:
-        time.strptime('01 01 2012', '%d %m %Y')  # dummy call
-    except:
-        pass
-    stamp_datetime = datetime(*(time.strptime(current_stamp, stamp_format)[0:6]))  # datetime.strptime has issues
+        stamp_datetime = datetime(*(strptime(current_stamp, stamp_format)[0:6]))
+    except ValueError:  # current_stamp has no microseconds
+        stamp_format = '%Y-%m-%d %H:%M:%S'
+        stamp_datetime = datetime(*(strptime(current_stamp, stamp_format)[0:6]))
+
     time_delta = current_datetime - stamp_datetime
     total_seconds = 0
     if time_delta:
