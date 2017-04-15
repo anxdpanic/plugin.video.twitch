@@ -430,7 +430,8 @@ class JsonListItemConverter(object):
                 'broadcaster_language': broadcaster_language}
 
     @staticmethod
-    def _format_key(item_template, key, headings, info):
+    def _format_key(key, headings, info):
+        item_template = u'{head}:{info}  '  # no whitespace around {head} and {info} for word wrapping in Kodi
         value = ''
         if info.get(key) is not None:
             try:
@@ -464,15 +465,14 @@ class JsonListItemConverter(object):
         }
         title = channel.get(Keys.STATUS) + u'\r\n' if channel.get(Keys.STATUS) else u''
 
-        item_template = u'{head}:{info}  '  # no whitespace around {head} and {info} for word wrapping in Kodi
         plot_template = u'{title}{game}{viewers}{broadcaster_language}{mature}{partner}{delay}'
 
-        plot = plot_template.format(title=title, game=self._format_key(item_template, Keys.GAME, headings, info),
-                                    viewers=self._format_key(item_template, Keys.VIEWERS, headings, info),
-                                    delay=self._format_key(item_template, Keys.DELAY, headings, info),
-                                    broadcaster_language=self._format_key(item_template, Keys.BROADCASTER_LANGUAGE, headings, info),
-                                    mature=self._format_key(item_template, Keys.MATURE, headings, info),
-                                    partner=self._format_key(item_template, Keys.PARTNER, headings, info))
+        plot = plot_template.format(title=title, game=self._format_key(Keys.GAME, headings, info),
+                                    viewers=self._format_key(Keys.VIEWERS, headings, info),
+                                    delay=self._format_key(Keys.DELAY, headings, info),
+                                    broadcaster_language=self._format_key(Keys.BROADCASTER_LANGUAGE, headings, info),
+                                    mature=self._format_key(Keys.MATURE, headings, info),
+                                    partner=self._format_key(Keys.PARTNER, headings, info))
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
 
@@ -496,16 +496,15 @@ class JsonListItemConverter(object):
         title = name + u' (' + channel.get(Keys.CREATED_AT) + u')\r\n' \
             if channel.get(Keys.CREATED_AT) else name + u'\r\n'
 
-        item_template = u'{head}:{info}  '  # no whitespace around {head} and {info} for word wrapping in Kodi
         plot_template = u'{title}{views}{followers}{broadcaster_language}{mature}{partner}{delay}'
 
         plot = plot_template.format(title=title,
-                                    views=self._format_key(item_template, Keys.VIEWS, headings, info),
-                                    delay=self._format_key(item_template, Keys.DELAY, headings, info),
-                                    broadcaster_language=self._format_key(item_template, Keys.BROADCASTER_LANGUAGE, headings, info),
-                                    mature=self._format_key(item_template, Keys.MATURE, headings, info),
-                                    partner=self._format_key(item_template, Keys.PARTNER, headings, info),
-                                    followers=self._format_key(item_template, Keys.FOLLOWERS, headings, info))
+                                    views=self._format_key(Keys.VIEWS, headings, info),
+                                    delay=self._format_key(Keys.DELAY, headings, info),
+                                    broadcaster_language=self._format_key(Keys.BROADCASTER_LANGUAGE, headings, info),
+                                    mature=self._format_key(Keys.MATURE, headings, info),
+                                    partner=self._format_key(Keys.PARTNER, headings, info),
+                                    followers=self._format_key(Keys.FOLLOWERS, headings, info))
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
 
@@ -518,11 +517,10 @@ class JsonListItemConverter(object):
         }
         title = community.get(Keys.NAME) + u'\r\n'
 
-        item_template = u'{head}:{info}  '  # no whitespace around {head} and {info} for word wrapping in Kodi
         plot_template = u'{title}{viewers}{channels}'
 
-        plot = plot_template.format(title=title, channels=self._format_key(item_template, Keys.CHANNELS, headings, info),
-                                    viewers=self._format_key(item_template, Keys.VIEWERS, headings, info))
+        plot = plot_template.format(title=title, channels=self._format_key(Keys.CHANNELS, headings, info),
+                                    viewers=self._format_key(Keys.VIEWERS, headings, info))
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
 
@@ -540,12 +538,11 @@ class JsonListItemConverter(object):
         }
         title = collection.get(Keys.TITLE) + u'\r\n'
 
-        item_template = u'{head}:{info}  '  # no whitespace around {head} and {info} for word wrapping in Kodi
         plot_template = u'{title}{views}{items_count}{total_duration}'
 
-        plot = plot_template.format(title=title, total_duration=self._format_key(item_template, Keys.TOTAL_DURATION, headings, info),
-                                    views=self._format_key(item_template, Keys.VIEWS, headings, info),
-                                    items_count=self._format_key(item_template, Keys.ITEMS_COUNT, headings, info))
+        plot = plot_template.format(title=title, total_duration=self._format_key(Keys.TOTAL_DURATION, headings, info),
+                                    views=self._format_key(Keys.VIEWS, headings, info),
+                                    items_count=self._format_key(Keys.ITEMS_COUNT, headings, info))
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
 
@@ -563,15 +560,14 @@ class JsonListItemConverter(object):
             Keys.CURATOR: curator
         }
 
-        item_template = u'{head}:{info}  '  # no whitespace around {head} and {info} for word wrapping in Kodi
         plot_template = u'{title}{curator}{game}{views}{language}'
 
         title = clip.get(Keys.TITLE) + u'\r\n'
 
-        plot = plot_template.format(title=title, game=self._format_key(item_template, Keys.GAME, headings, info),
-                                    views=self._format_key(item_template, Keys.VIEWS, headings, info),
-                                    language=self._format_key(item_template, Keys.LANGUAGE, headings, info),
-                                    curator=self._format_key(item_template, Keys.CURATOR, headings, info))
+        plot = plot_template.format(title=title, game=self._format_key(Keys.GAME, headings, info),
+                                    views=self._format_key(Keys.VIEWS, headings, info),
+                                    language=self._format_key(Keys.LANGUAGE, headings, info),
+                                    curator=self._format_key(Keys.CURATOR, headings, info))
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
 
@@ -585,14 +581,13 @@ class JsonListItemConverter(object):
             Keys.GAME: video.get(Keys.GAME) if video.get(Keys.GAME) else i18n('unknown_game').decode('utf-8'),
         }
 
-        item_template = u'{head}:{info}  '  # no whitespace around {head} and {info} for word wrapping in Kodi
         plot_template = u'{description}{game}{views}{language}'
 
         title = video.get(Keys.TITLE) + u'\r\n'
 
-        plot = plot_template.format(game=self._format_key(item_template, Keys.GAME, headings, info),
-                                    views=self._format_key(item_template, Keys.VIEWS, headings, info),
-                                    language=self._format_key(item_template, Keys.LANGUAGE, headings, info),
+        plot = plot_template.format(game=self._format_key(Keys.GAME, headings, info),
+                                    views=self._format_key(Keys.VIEWS, headings, info),
+                                    language=self._format_key(Keys.LANGUAGE, headings, info),
                                     description=video.get(Keys.DESCRIPTION) + u'\r\n' if video.get(Keys.DESCRIPTION) else title)
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
