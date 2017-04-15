@@ -134,8 +134,8 @@ class Twitch:
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
-    def get_top_videos(self, offset, limit, broadcast_type, period=Period.WEEK):
-        results = self.api.videos.get_top(limit=limit, offset=offset, broadcast_type=broadcast_type, period=period)
+    def get_top_videos(self, offset, limit, broadcast_type, period=Period.WEEK, game=None):
+        results = self.api.videos.get_top(limit=limit, offset=offset, game=game, broadcast_type=broadcast_type, period=period)
         return self.error_check(results)
 
     @api_error_handler
