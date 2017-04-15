@@ -338,7 +338,8 @@ class Twitch:
             if len(temp[Keys.BLOCKS]) == 0:
                 break
             for user in temp[Keys.BLOCKS]:
-                user_blocks.append((user[Keys.USER][Keys._ID], user[Keys.USER][Keys.DISPLAY_NAME]))
+                user_blocks.append((user[Keys.USER][Keys._ID],
+                                    user[Keys.USER][Keys.DISPLAY_NAME] if user[Keys.USER][Keys.DISPLAY_NAME] else user[Keys.USER][Keys.NAME]))
             offset += limit
             if temp[Keys.TOTAL] <= offset:
                 break

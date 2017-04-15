@@ -127,12 +127,14 @@ class TwitchPlayer(xbmc.Player):
                                     videos = twitch.get_live(name)
                                     result = twitch.get_channel_stream(channel_id)[Keys.STREAM]
                                     item_dict = converter.stream_to_playitem(result)
-                                    quality_label, play_url = converter.get_video_for_quality(videos, return_label=True, ask=False, quality=quality)
+                                    quality_label, play_url = converter.get_video_for_quality(videos, ask=False, quality=quality)
                                     log_utils.log('Attempting playback using quality |%s| @ |%s|' % (quality_label, play_url), log_utils.LOGDEBUG)
                                     if play_url:
                                         item_dict['path'] = play_url
                                         playback_item = kodi.create_item(item_dict, add=False)
-                                        self.window.setProperty(self.reconnect_keys['stream'], ''.format(name, result[Keys.CHANNEL][Keys.DISPLAY_NAME]))
+                                        stream_name = result[Keys.CHANNEL][Keys.DISPLAY_NAME] \
+                                            if result[Keys.CHANNEL][Keys.DISPLAY_NAME] else result[Keys.CHANNEL][Keys.NAME]
+                                        self.window.setProperty(self.reconnect_keys['stream'], ''.format(name, stream_name))
                                         self.play(item_dict['path'], playback_item)
                                         if utils.irc_enabled() and twitch.access_token:
                                             username = twitch.get_username()
