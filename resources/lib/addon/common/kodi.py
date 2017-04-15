@@ -100,7 +100,7 @@ def get_icon():
 
 
 def get_fanart():
-    return translate_path('special://home/addons/{0!s}/fanart.jpg'.format(get_id()))
+    return translate_path('special://home/addons/{0!s}/fanart.png'.format(get_id()))
 
 
 def get_kodi_version():
