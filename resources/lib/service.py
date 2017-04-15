@@ -105,10 +105,6 @@ log_utils.log('Service: Start', log_utils.LOGNOTICE)
 player = TwitchPlayer()
 
 while not monitor.abortRequested():
-    try:
-        datetime.strptime('2012-01-01', '%Y-%m-%d')  # dummy call
-    except:
-        pass
     time_diff = get_stamp_diff(timestamp)
     if (timestamp is None) or (time_diff >= delay_time):
         timestamp = str(datetime.now())

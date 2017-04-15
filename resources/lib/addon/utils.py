@@ -172,15 +172,25 @@ def get_refresh_stamp():
     return window.getProperty(key='%s-lpr_stamp' % kodi.get_id())
 
 
+def strptime(stamp, stamp_fmt):
+    import _strptime
+    try:
+        time.strptime('01 01 2012', '%d %m %Y')  # dummy call
+    except:
+        pass
+    return time.strptime(stamp, stamp_fmt)
+
+
 def get_stamp_diff(current_stamp):
     stamp_format = '%Y-%m-%d %H:%M:%S.%f'
     current_datetime = datetime.now()
     if not current_stamp: return 86400  # 24 hrs
     try:
-        time.strptime('01 01 2012', '%d %m %Y')  # dummy call
-    except:
-        pass
-    stamp_datetime = datetime(*(time.strptime(current_stamp, stamp_format)[0:6]))  # datetime.strptime has issues
+        stamp_datetime = datetime(*(strptime(current_stamp, stamp_format)[0:6]))
+    except ValueError:  # current_stamp has no microseconds
+        stamp_format = '%Y-%m-%d %H:%M:%S'
+        stamp_datetime = datetime(*(strptime(current_stamp, stamp_format)[0:6]))
+
     time_delta = current_datetime - stamp_datetime
     total_seconds = 0
     if time_delta:
