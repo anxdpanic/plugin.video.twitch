@@ -19,7 +19,7 @@
 
 import utils
 import cache
-from common import kodi
+from common import kodi, log_utils
 from error_handling import api_error_handler
 from constants import Keys, SCOPES
 from twitch import queries as twitch_queries
@@ -45,31 +45,44 @@ class Twitch:
         self.queries.OAUTH_TOKEN = self.access_token
         self.client = oauth.MobileClient(self.client_id)
         if self.access_token:
-            if not self.valid_token(self.access_token, self.required_scopes):
+            if not self.valid_token(self.client_id, self.access_token, self.required_scopes):
                 self.queries.OAUTH_TOKEN = ''
                 self.access_token = ''
 
     @cache.cache_method(cache_limit=1)
-    def valid_token(self, token, scopes):  # token used for unique caching only
+    def valid_token(self, client_id, token, scopes):  # client_id, token used for unique caching only
         token_check = self.root()
-        if not token_check['token']['valid']:
-            result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('invalid_token'),
-                                      line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
-            return False
-        else:
-            if token_check['token']['client_id'] == self.client_id:
-                if token_check['token']['authorization']:
-                    token_scopes = token_check['token']['authorization']['scopes']
-                    missing_scopes = [value for value in scopes if value not in token_scopes]
-                    if len(missing_scopes) > 0:
-                        result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('missing_scopes') % missing_scopes,
+        while True:
+            if not token_check['token']['valid']:
+                result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('invalid_token'),
+                                          line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
+                log_utils.log('Error: Current OAuth token is invalid.', log_utils.LOGERROR)
+                return False
+            else:
+                if token_check['token']['client_id'] == self.client_id:
+                    if token_check['token']['authorization']:
+                        token_scopes = token_check['token']['authorization']['scopes']
+                        missing_scopes = [value for value in scopes if value not in token_scopes]
+                        if len(missing_scopes) > 0:
+                            result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('missing_scopes') % missing_scopes,
+                                                      line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
+                            log_utils.log('Error: Current OAuth token is missing required scopes |%s|' % missing_scopes, log_utils.LOGERROR)
+                            return False
+                else:
+                    matches_default = token_check['token']['client_id'] == utils.get_client_id(default=True)
+                    message = 'Token created using default Client-ID |%s|' % str(matches_default)
+                    log_utils.log('Error: OAuth Client-ID mismatch: %s' % message, log_utils.LOGERROR)
+                    if matches_default:
+                        result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('client_id_mismatch'), line2=i18n('ok_to_resolve'))
+                        utils.clear_client_id()
+                        self.client_id = utils.get_client_id(default=True)
+                        self.queries.CLIENT_ID = self.client_id
+                        self.client = oauth.MobileClient(self.client_id)
+                    else:
+                        result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('client_id_mismatch'),
                                                   line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
                         return False
-            else:
-                result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('client_id_mismatch'),
-                                          line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
-                return False
-        return True
+            return True
 
     @api_error_handler
     def root(self):

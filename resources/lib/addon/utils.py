@@ -45,16 +45,20 @@ def get_redirect_uri():
         return REDIRECT_URI.decode('utf-8')
 
 
-def get_client_id():
+def get_client_id(default=False):
     settings_id = kodi.get_setting('oauth_clientid')
     stripped_id = settings_id.strip()
     if settings_id != stripped_id:
         settings_id = stripped_id
         kodi.set_setting('oauth_clientid', settings_id)
-    if settings_id:
+    if settings_id and not default:
         return settings_id.decode('utf-8')
     else:
         return b64decode(CLIENT_ID).decode('utf-8')
+
+
+def clear_client_id():
+    kodi.set_setting('oauth_clientid', '')
 
 
 def get_oauth_token(token_only=True, required=False):

@@ -116,5 +116,6 @@ STRINGS = {
     'followers': 30213,
     'items': 30214,
     'duration': 30215,
-    'curated': 30216
+    'curated': 30216,
+    'ok_to_resolve': 30217
 }
