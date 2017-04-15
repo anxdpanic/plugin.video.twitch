@@ -69,10 +69,10 @@ class JsonListItemConverter(object):
         return {'label': name,
                 'path': kodi.get_plugin_url({'mode': MODES.GAMELISTS, 'game': name}),
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
-                'context_menu': context_menu}
+                'context_menu': context_menu,
+                'info': {u'plot': name, u'plotoutline': name, u'tagline': name}}
 
-    @staticmethod
-    def community_to_listitem(community):
+    def community_to_listitem(self, community):
         name = community[Keys.NAME].encode('utf-8')
         _id = community[Keys._ID]
         image = community.get(Keys.AVATAR_IMAGE, Images.THUMB)
@@ -83,7 +83,8 @@ class JsonListItemConverter(object):
         return {'label': name,
                 'path': kodi.get_plugin_url({'mode': MODES.COMMUNITYSTREAMS, 'community_id': _id}),
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
-                'context_menu': context_menu}
+                'context_menu': context_menu,
+                'info': self.get_plot_for_community(community)}
 
     def collection_to_listitem(self, collection):
         title = collection[Keys.TITLE].encode('utf-8')
@@ -92,14 +93,16 @@ class JsonListItemConverter(object):
         owner = collection[Keys.OWNER]
         context_menu = list()
         context_menu.extend(menu_items.refresh())
+        name = owner.get(Keys.DISPLAY_NAME) if owner.get(Keys.DISPLAY_NAME) else owner.get(Keys.NAME)
         if self.has_token:
-            context_menu.extend(menu_items.edit_follow(owner[Keys._ID], owner[Keys.DISPLAY_NAME]))
-            # context_menu.extend(menu_items.edit_block(owner[Keys._ID], owner[Keys.DISPLAY_NAME]))
-        context_menu.extend(menu_items.add_blacklist(owner[Keys._ID], owner[Keys.DISPLAY_NAME]))
+            context_menu.extend(menu_items.edit_follow(owner[Keys._ID], name))
+            # context_menu.extend(menu_items.edit_block(owner[Keys._ID], name))
+        context_menu.extend(menu_items.add_blacklist(owner[Keys._ID], name))
         return {'label': title,
                 'path': kodi.get_plugin_url({'mode': MODES.COLLECTIONVIDEOLIST, 'collection_id': _id}),
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
-                'context_menu': context_menu}
+                'context_menu': context_menu,
+                'info': self.get_plot_for_collection(collection)}
 
     @staticmethod
     def team_to_listitem(team):
@@ -140,14 +143,17 @@ class JsonListItemConverter(object):
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.clear_previews())
+        name = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.NAME)
         if self.has_token:
-            context_menu.extend(menu_items.edit_follow(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
-            # context_menu.extend(menu_items.edit_block(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
-        context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
-        return {'label': channel[Keys.DISPLAY_NAME],
-                'path': kodi.get_plugin_url({'mode': MODES.CHANNELVIDEOS, 'channel_id': channel[Keys._ID], 'channel_name': channel[Keys.NAME]}),
+            context_menu.extend(menu_items.edit_follow(channel[Keys._ID], name))
+            # context_menu.extend(menu_items.edit_block(channel[Keys._ID], name))
+        context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], name))
+        return {'label': name,
+                'path': kodi.get_plugin_url({'mode': MODES.CHANNELVIDEOS, 'channel_id': channel[Keys._ID],
+                                             'channel_name': channel[Keys.NAME], 'display_name': name}),
                 'art': the_art({'fanart': video_banner, 'poster': image, 'thumb': image}),
-                'context_menu': context_menu}
+                'context_menu': context_menu,
+                'info': self.get_plot_for_channel(channel)}
 
     def clip_to_listitem(self, clip):
         duration = clip.get(Keys.DURATION)
@@ -161,28 +167,30 @@ class JsonListItemConverter(object):
         broadcaster = clip[Keys.BROADCASTER]
         context_menu = list()
         context_menu.extend(menu_items.refresh())
+        name = broadcaster.get(Keys.DISPLAY_NAME) if broadcaster.get(Keys.DISPLAY_NAME) else broadcaster.get(Keys.NAME)
         if self.has_token:
-            context_menu.extend(menu_items.edit_follow(broadcaster[Keys.ID], broadcaster[Keys.DISPLAY_NAME]))
-            # context_menu.extend(menu_items.edit_block(broadcaster[Keys.ID], broadcaster[Keys.DISPLAY_NAME]))
-        context_menu.extend(menu_items.channel_videos(broadcaster[Keys.ID], broadcaster[Keys.NAME], broadcaster[Keys.DISPLAY_NAME]))
+            context_menu.extend(menu_items.edit_follow(broadcaster[Keys.ID], name))
+            # context_menu.extend(menu_items.edit_block(broadcaster[Keys.ID], name))
+        context_menu.extend(menu_items.channel_videos(broadcaster[Keys.ID], broadcaster[Keys.NAME], name))
         context_menu.extend(menu_items.go_to_game(clip[Keys.GAME]))
-        context_menu.extend(menu_items.add_blacklist(broadcaster[Keys.ID], broadcaster[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.add_blacklist(broadcaster[Keys.ID], name))
         context_menu.extend(menu_items.add_blacklist(b64encode(clip[Keys.GAME].encode('utf-8', 'ignore')), clip[Keys.GAME], list_type='game'))
         context_menu.extend(menu_items.set_default_quality('clip', broadcaster[Keys.ID], broadcaster[Keys.NAME], clip_id=clip[Keys.ID]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'channel_id': broadcaster[Keys.ID], 'slug': clip[Keys.ID], 'ask': True, 'use_player': True}))
+        info = self.get_plot_for_clip(clip)
+        info.update({'duration': str(duration), 'year': year, 'date': date, 'premiered': date, 'mediatype': 'video'})
+
         return {'label': self.get_title_for_clip(clip),
                 'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'channel_id': broadcaster[Keys.ID], 'slug': clip[Keys.ID]}),
                 'context_menu': context_menu,
                 'is_playable': True,
-                'info': {'duration': str(duration), 'plot': plot, 'plotoutline': plot, 'tagline': plot,
-                         'year': year, 'date': date, 'premiered': date, 'mediatype': 'video'},
+                'info': info,
                 'content_type': 'video',
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image})}
 
     def collection_video_to_listitem(self, video):
         duration = video.get(Keys.DURATION)
-        plot = video.get(Keys.DESCRIPTION)
         date = video.get(Keys.PUBLISHED_AT)[:10] if video.get(Keys.PUBLISHED_AT) else ''
         year = video.get(Keys.PUBLISHED_AT)[:4] if video.get(Keys.PUBLISHED_AT) else ''
 
@@ -192,28 +200,29 @@ class JsonListItemConverter(object):
         owner = video[Keys.OWNER]
         context_menu = list()
         context_menu.extend(menu_items.refresh())
+        name = owner.get(Keys.DISPLAY_NAME) if owner.get(Keys.DISPLAY_NAME) else owner.get(Keys.NAME)
         if self.has_token:
-            context_menu.extend(menu_items.edit_follow(owner[Keys._ID], owner[Keys.DISPLAY_NAME]))
-            # context_menu.extend(menu_items.edit_block(owner[Keys._ID], owner[Keys.DISPLAY_NAME]))
-        context_menu.extend(menu_items.channel_videos(owner[Keys._ID], owner[Keys.NAME], owner[Keys.DISPLAY_NAME]))
+            context_menu.extend(menu_items.edit_follow(owner[Keys._ID], name))
+            # context_menu.extend(menu_items.edit_block(owner[Keys._ID], name))
+        context_menu.extend(menu_items.channel_videos(owner[Keys._ID], owner[Keys.NAME], name))
         context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
-        context_menu.extend(menu_items.add_blacklist(owner[Keys._ID], owner[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.add_blacklist(owner[Keys._ID], name))
         context_menu.extend(menu_items.add_blacklist(b64encode(video[Keys.GAME].encode('utf-8', 'ignore')), video[Keys.GAME], list_type='game'))
         context_menu.extend(menu_items.set_default_quality('video', owner[Keys._ID], owner[Keys.NAME], video[Keys.ITEM_ID]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'video_id': video[Keys.ITEM_ID], 'ask': True, 'use_player': True}))
+        info = self.get_plot_for_video(video)
+        info.update({'duration': str(duration), 'year': year, 'date': date, 'premiered': date, 'mediatype': 'video'})
         return {'label': video[Keys.TITLE],
                 'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video[Keys.ITEM_ID]}),
                 'context_menu': context_menu,
                 'is_playable': True,
-                'info': {'duration': str(duration), 'plot': plot, 'plotoutline': plot, 'tagline': plot,
-                         'year': year, 'date': date, 'premiered': date, 'mediatype': 'video'},
+                'info': info,
                 'content_type': 'video',
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image})}
 
     def video_list_to_listitem(self, video):
         duration = video.get(Keys.LENGTH)
-        plot = video.get(Keys.DESCRIPTION)
         date = video.get(Keys.CREATED_AT)[:10] if video.get(Keys.CREATED_AT) else ''
         year = video.get(Keys.CREATED_AT)[:4] if video.get(Keys.CREATED_AT) else ''
         image = video.get(Keys.PREVIEW) if video.get(Keys.PREVIEW) else Images.VIDEOTHUMB
@@ -222,22 +231,24 @@ class JsonListItemConverter(object):
         channel = video[Keys.CHANNEL]
         context_menu = list()
         context_menu.extend(menu_items.refresh())
+        name = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.NAME)
         if self.has_token:
-            context_menu.extend(menu_items.edit_follow(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
-            # context_menu.extend(menu_items.edit_block(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
-        context_menu.extend(menu_items.channel_videos(channel[Keys._ID], channel[Keys.NAME], channel[Keys.DISPLAY_NAME]))
+            context_menu.extend(menu_items.edit_follow(channel[Keys._ID], name))
+            # context_menu.extend(menu_items.edit_block(channel[Keys._ID], name))
+        context_menu.extend(menu_items.channel_videos(channel[Keys._ID], channel[Keys.NAME], name))
         context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
-        context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], name))
         context_menu.extend(menu_items.add_blacklist(b64encode(video[Keys.GAME].encode('utf-8', 'ignore')), video[Keys.GAME], list_type='game'))
         context_menu.extend(menu_items.set_default_quality('video', channel[Keys._ID], channel[Keys.NAME], video[Keys._ID]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'video_id': video[Keys._ID], 'ask': True, 'use_player': True}))
+        info = self.get_plot_for_video(video)
+        info.update({'duration': str(duration), 'year': year, 'date': date, 'premiered': date, 'mediatype': 'video'})
         return {'label': self.get_title_for_video(video),
                 'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video[Keys._ID]}),
                 'context_menu': context_menu,
                 'is_playable': True,
-                'info': {'duration': str(duration), 'plot': plot, 'plotoutline': plot, 'tagline': plot,
-                         'year': year, 'date': date, 'premiered': date, 'mediatype': 'video'},
+                'info': info,
                 'content_type': 'video',
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image})}
 
@@ -256,12 +267,13 @@ class JsonListItemConverter(object):
         info.update({'mediatype': 'video'})
         context_menu = list()
         context_menu.extend(menu_items.refresh())
+        name = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.NAME)
         if self.has_token:
-            context_menu.extend(menu_items.edit_follow(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
-            # context_menu.extend(menu_items.edit_block(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
-        context_menu.extend(menu_items.channel_videos(channel[Keys._ID], channel[Keys.NAME], channel[Keys.DISPLAY_NAME]))
+            context_menu.extend(menu_items.edit_follow(channel[Keys._ID], name))
+            # context_menu.extend(menu_items.edit_block(channel[Keys._ID], name))
+        context_menu.extend(menu_items.channel_videos(channel[Keys._ID], channel[Keys.NAME], name))
         context_menu.extend(menu_items.go_to_game(channel[Keys.GAME]))
-        context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], channel[Keys.DISPLAY_NAME]))
+        context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], name))
         context_menu.extend(menu_items.add_blacklist(b64encode(channel[Keys.GAME].encode('utf-8', 'ignore')), channel[Keys.GAME], list_type='game'))
         context_menu.extend(menu_items.set_default_quality('stream', channel[Keys._ID], channel[Keys.NAME]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
@@ -322,7 +334,7 @@ class JsonListItemConverter(object):
     @staticmethod
     def get_video_info(video):
         channel = video.get(Keys.CHANNEL)
-        streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else i18n('unnamed_streamer')
+        streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.NAME)
         game = video.get(Keys.GAME) if video.get(Keys.GAME) else video.get(Keys.META_GAME)
         game = game if game else i18n('unknown_game')
         views = video.get(Keys.VIEWS) if video.get(Keys.VIEWS) else '0'
@@ -344,7 +356,7 @@ class JsonListItemConverter(object):
         viewers = clip.get(Keys.VIEWS)
         viewers = viewers if (viewers or isinstance(viewers, int)) else i18n('unknown_viewer_count')
 
-        streamer = broadcaster.get(Keys.DISPLAY_NAME) if broadcaster.get(Keys.DISPLAY_NAME) else i18n('unnamed_streamer')
+        streamer = broadcaster.get(Keys.DISPLAY_NAME) if broadcaster.get(Keys.DISPLAY_NAME) else broadcaster.get(Keys.NAME)
         title = clip.get(Keys.TITLE)
         game = clip.get(Keys.GAME) if clip.get(Keys.GAME) else i18n('unknown_game')
         broadcaster_language = clip.get(Keys.LANGUAGE) if clip.get(Keys.LANGUAGE) else i18n('unknown_language')
@@ -369,7 +381,7 @@ class JsonListItemConverter(object):
             viewers = stream.get(Keys.VIEWERS)
         viewers = viewers if (viewers or isinstance(viewers, int)) else i18n('unknown_viewer_count')
 
-        streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else i18n('unnamed_streamer')
+        streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.NAME)
         title = channel.get(Keys.STATUS) if channel.get(Keys.STATUS) else i18n('untitled_stream')
         game = channel.get(Keys.GAME) if channel.get(Keys.GAME) else i18n('unknown_game')
         broadcaster_language = channel.get(Keys.BROADCASTER_LANGUAGE) if channel.get(Keys.BROADCASTER_LANGUAGE) else i18n('unknown_language')
@@ -390,7 +402,7 @@ class JsonListItemConverter(object):
         viewers = video.get(Keys.VIEWS)
         viewers = viewers if (viewers or isinstance(viewers, int)) else i18n('unknown_viewer_count')
 
-        streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else i18n('unnamed_streamer')
+        streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.NAME)
         title = video.get(Keys.TITLE) if video.get(Keys.TITLE) else i18n('untitled_stream')
         game = video.get(Keys.GAME) if video.get(Keys.GAME) else i18n('unknown_game')
         broadcaster_language = video.get(Keys.LANGUAGE) if video.get(Keys.LANGUAGE) else i18n('unknown_language')
@@ -403,7 +415,7 @@ class JsonListItemConverter(object):
 
     @staticmethod
     def extract_channel_title_values(channel):
-        streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else i18n('unnamed_streamer')
+        streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.NAME)
         title = channel.get(Keys.TITLE) if channel.get(Keys.TITLE) else i18n('untitled_stream')
         game = channel.get(Keys.GAME) if channel.get(Keys.GAME) else channel.get(Keys.META_GAME)
         game = game if game else i18n('unknown_game')
@@ -418,7 +430,21 @@ class JsonListItemConverter(object):
                 'broadcaster_language': broadcaster_language}
 
     @staticmethod
-    def get_plot_for_stream(stream):
+    def _format_key(item_template, key, headings, info):
+        value = ''
+        if info.get(key) is not None:
+            try:
+                val_heading = headings.get(key)
+            except:
+                val_heading = headings.get(key)
+            try:
+                val_info = info.get(key)
+            except:
+                val_info = info.get(key)
+            value = item_template.format(head=val_heading, info=val_info)
+        return value
+
+    def get_plot_for_stream(self, stream):
         channel = stream[Keys.CHANNEL]
 
         headings = {Keys.GAME: i18n('game').decode('utf-8'),
@@ -441,24 +467,133 @@ class JsonListItemConverter(object):
         item_template = u'{head}:{info}  '  # no whitespace around {head} and {info} for word wrapping in Kodi
         plot_template = u'{title}{game}{viewers}{broadcaster_language}{mature}{partner}{delay}'
 
-        def format_key(key):
-            value = ''
-            if info.get(key) is not None:
-                try:
-                    val_heading = headings.get(key)
-                except:
-                    val_heading = headings.get(key)
-                try:
-                    val_info = info.get(key)
-                except:
-                    val_info = info.get(key)
-                value = item_template.format(head=val_heading, info=val_info)
-            return value
+        plot = plot_template.format(title=title, game=self._format_key(item_template, Keys.GAME, headings, info),
+                                    viewers=self._format_key(item_template, Keys.VIEWERS, headings, info),
+                                    delay=self._format_key(item_template, Keys.DELAY, headings, info),
+                                    broadcaster_language=self._format_key(item_template, Keys.BROADCASTER_LANGUAGE, headings, info),
+                                    mature=self._format_key(item_template, Keys.MATURE, headings, info),
+                                    partner=self._format_key(item_template, Keys.PARTNER, headings, info))
 
-        plot = plot_template.format(title=title, game=format_key(Keys.GAME),
-                                    viewers=format_key(Keys.VIEWERS), delay=format_key(Keys.DELAY),
-                                    broadcaster_language=format_key(Keys.BROADCASTER_LANGUAGE),
-                                    mature=format_key(Keys.MATURE), partner=format_key(Keys.PARTNER))
+        return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
+
+    def get_plot_for_channel(self, channel):
+        headings = {Keys.VIEWS: i18n('views').decode('utf-8'),
+                    Keys.BROADCASTER_LANGUAGE: i18n('language').decode('utf-8'),
+                    Keys.MATURE: i18n('mature').decode('utf-8'),
+                    Keys.PARTNER: i18n('partner').decode('utf-8'),
+                    Keys.DELAY: i18n('delay').decode('utf-8'),
+                    Keys.FOLLOWERS: i18n('followers').decode('utf-8')}
+        info = {
+            Keys.VIEWS: str(channel.get(Keys.VIEWS)) if channel.get(Keys.VIEWS) else u'0',
+            Keys.BROADCASTER_LANGUAGE: channel.get(Keys.BROADCASTER_LANGUAGE)
+            if channel.get(Keys.BROADCASTER_LANGUAGE) else None,
+            Keys.MATURE: str(channel.get(Keys.MATURE)) if channel.get(Keys.MATURE) else u'False',
+            Keys.PARTNER: str(channel.get(Keys.PARTNER)) if channel.get(Keys.PARTNER) else u'False',
+            Keys.DELAY: str(channel.get(Keys.DELAY)) if channel.get(Keys.DELAY) else u'0',
+            Keys.FOLLOWERS: str(channel.get(Keys.FOLLOWERS)) if channel.get(Keys.FOLLOWERS) else u'0'
+        }
+        name = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.NAME)
+        title = name + u' (' + channel.get(Keys.CREATED_AT) + u')\r\n' \
+            if channel.get(Keys.CREATED_AT) else name + u'\r\n'
+
+        item_template = u'{head}:{info}  '  # no whitespace around {head} and {info} for word wrapping in Kodi
+        plot_template = u'{title}{views}{followers}{broadcaster_language}{mature}{partner}{delay}'
+
+        plot = plot_template.format(title=title,
+                                    views=self._format_key(item_template, Keys.VIEWS, headings, info),
+                                    delay=self._format_key(item_template, Keys.DELAY, headings, info),
+                                    broadcaster_language=self._format_key(item_template, Keys.BROADCASTER_LANGUAGE, headings, info),
+                                    mature=self._format_key(item_template, Keys.MATURE, headings, info),
+                                    partner=self._format_key(item_template, Keys.PARTNER, headings, info),
+                                    followers=self._format_key(item_template, Keys.FOLLOWERS, headings, info))
+
+        return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
+
+    def get_plot_for_community(self, community):
+        headings = {Keys.VIEWERS: i18n('viewers').decode('utf-8'),
+                    Keys.CHANNELS: i18n('channels').decode('utf-8')}
+        info = {
+            Keys.VIEWERS: str(community.get(Keys.VIEWERS)) if community.get(Keys.VIEWERS) else u'0',
+            Keys.CHANNELS: str(community.get(Keys.CHANNELS)) if community.get(Keys.CHANNELS) else u'0'
+        }
+        title = community.get(Keys.NAME) + u'\r\n'
+
+        item_template = u'{head}:{info}  '  # no whitespace around {head} and {info} for word wrapping in Kodi
+        plot_template = u'{title}{viewers}{channels}'
+
+        plot = plot_template.format(title=title, channels=self._format_key(item_template, Keys.CHANNELS, headings, info),
+                                    viewers=self._format_key(item_template, Keys.VIEWERS, headings, info))
+
+        return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
+
+    def get_plot_for_collection(self, collection):
+        headings = {Keys.VIEWS: i18n('views').decode('utf-8'),
+                    Keys.ITEMS_COUNT: i18n('items').decode('utf-8'),
+                    Keys.TOTAL_DURATION: i18n('duration').decode('utf-8')}
+        minutes, seconds = divmod(collection.get(Keys.TOTAL_DURATION) if collection.get(Keys.TOTAL_DURATION) else 0, 60)
+        hours, minutes = divmod(minutes, 60)
+        total_duration = '%dh%02dm%02ds' % (hours, minutes, seconds)
+        info = {
+            Keys.VIEWS: str(collection.get(Keys.VIEWS)) if collection.get(Keys.VIEWS) else u'0',
+            Keys.ITEMS_COUNT: str(collection.get(Keys.ITEMS_COUNT)) if collection.get(Keys.ITEMS_COUNT) else u'0',
+            Keys.TOTAL_DURATION: total_duration
+        }
+        title = collection.get(Keys.TITLE) + u'\r\n'
+
+        item_template = u'{head}:{info}  '  # no whitespace around {head} and {info} for word wrapping in Kodi
+        plot_template = u'{title}{views}{items_count}{total_duration}'
+
+        plot = plot_template.format(title=title, total_duration=self._format_key(item_template, Keys.TOTAL_DURATION, headings, info),
+                                    views=self._format_key(item_template, Keys.VIEWS, headings, info),
+                                    items_count=self._format_key(item_template, Keys.ITEMS_COUNT, headings, info))
+
+        return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
+
+    def get_plot_for_clip(self, clip):
+        headings = {Keys.VIEWS: i18n('views').decode('utf-8'),
+                    Keys.CURATOR: i18n('curated').decode('utf-8'),
+                    Keys.GAME: i18n('game').decode('utf-8'),
+                    Keys.LANGUAGE: i18n('language').decode('utf-8')}
+        curator = clip[Keys.CURATOR].get(Keys.DISPLAY_NAME) if clip[Keys.CURATOR].get(Keys.DISPLAY_NAME) else clip[Keys.CURATOR].get(Keys.NAME)
+        curator += u' (' + clip.get(Keys.CREATED_AT) + u')' if clip.get(Keys.CREATED_AT) else u''
+        info = {
+            Keys.VIEWS: str(clip.get(Keys.VIEWS)) if clip.get(Keys.VIEWS) else u'0',
+            Keys.LANGUAGE: clip.get(Keys.LANGUAGE) if clip.get(Keys.LANGUAGE) else None,
+            Keys.GAME: clip.get(Keys.GAME) if clip.get(Keys.GAME) else i18n('unknown_game').decode('utf-8'),
+            Keys.CURATOR: curator
+        }
+
+        item_template = u'{head}:{info}  '  # no whitespace around {head} and {info} for word wrapping in Kodi
+        plot_template = u'{title}{curator}{game}{views}{language}'
+
+        title = clip.get(Keys.TITLE) + u'\r\n'
+
+        plot = plot_template.format(title=title, game=self._format_key(item_template, Keys.GAME, headings, info),
+                                    views=self._format_key(item_template, Keys.VIEWS, headings, info),
+                                    language=self._format_key(item_template, Keys.LANGUAGE, headings, info),
+                                    curator=self._format_key(item_template, Keys.CURATOR, headings, info))
+
+        return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
+
+    def get_plot_for_video(self, video):
+        headings = {Keys.VIEWS: i18n('views').decode('utf-8'),
+                    Keys.GAME: i18n('game').decode('utf-8'),
+                    Keys.LANGUAGE: i18n('language').decode('utf-8')}
+        info = {
+            Keys.VIEWS: str(video.get(Keys.VIEWS)) if video.get(Keys.VIEWS) else u'0',
+            Keys.LANGUAGE: video.get(Keys.LANGUAGE) if video.get(Keys.LANGUAGE) else None,
+            Keys.GAME: video.get(Keys.GAME) if video.get(Keys.GAME) else i18n('unknown_game').decode('utf-8'),
+        }
+
+        item_template = u'{head}:{info}  '  # no whitespace around {head} and {info} for word wrapping in Kodi
+        plot_template = u'{description}{game}{views}{language}'
+
+        title = video.get(Keys.TITLE) + u'\r\n'
+
+        plot = plot_template.format(game=self._format_key(item_template, Keys.GAME, headings, info),
+                                    views=self._format_key(item_template, Keys.VIEWS, headings, info),
+                                    language=self._format_key(item_template, Keys.LANGUAGE, headings, info),
+                                    description=video.get(Keys.DESCRIPTION) + u'\r\n' if video.get(Keys.DESCRIPTION) else title)
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
 

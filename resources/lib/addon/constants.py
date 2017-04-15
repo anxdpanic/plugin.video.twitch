@@ -166,6 +166,9 @@ class Keys:
     BROADCASTER = 'broadcaster'
     VOD = 'vod'
     LANGUAGE = 'language'
+    FOLLOWERS = 'followers'
+    TOTAL_DURATION = 'total_duration'
+    CURATOR = 'curator'
 
 
 SCOPES = [scopes.user_read, scopes.user_follows_edit, scopes.user_subscriptions, scopes.chat_login]
