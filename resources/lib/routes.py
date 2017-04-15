@@ -841,7 +841,9 @@ def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_pl
             videos = twitch.get_live(name)
             result = twitch.get_channel_stream(channel_id)[Keys.STREAM]
             item_dict = converter.stream_to_playitem(result)
-            _set_live(channel_id, name, result[Keys.CHANNEL][Keys.DISPLAY_NAME])
+            channel_name = result[Keys.CHANNEL][Keys.DISPLAY_NAME] \
+                if result[Keys.CHANNEL][Keys.DISPLAY_NAME] else result[Keys.CHANNEL][Keys.NAME]
+            _set_live(channel_id, name, channel_name)
         elif slug and channel_id:
             quality = utils.get_default_quality('clip', channel_id)
             if quality:

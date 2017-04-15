@@ -144,7 +144,7 @@ while not monitor.abortRequested():
                         current_online += new_online
                         log_utils.log('Service: Now online |%s|' % current_online, log_utils.LOGDEBUG)
                         set_online_followed(current_online)
-                        names = [display_name for _id, name, display_name in new_online]
+                        names = [display_name if display_name else name for _id, name, display_name in new_online]
                         triplets = grouped(names)
                         for followed_names in triplets:
                             message = ', '.join(followed_names)
