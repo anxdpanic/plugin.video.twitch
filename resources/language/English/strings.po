@@ -798,3 +798,7 @@ msgstr ""
 msgctxt "#30217"
 msgid "Press OK to resolve"
 msgstr ""
+
+msgctxt "#30218"
+msgid "Supported video ids: a123435, c123435, v123435, videos123435[CR]Example urls:[CR]https://twitch.tv/gamesdonequick...[CR].../v/113336135[CR].../v/113336135?t=1h52m35s"
+msgstr ""

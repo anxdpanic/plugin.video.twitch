@@ -93,7 +93,7 @@ def search():
     kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'games'},
                       'info': {'plot': '%s - %s' % (i18n('search'), i18n('games'))}})
     kodi.create_item({'label': i18n('video_id_url'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'id_url'},
-                      'info': {'plot': '%s - %s' % (i18n('search'), i18n('video_id_url'))}})
+                      'info': {'plot': '%s - %s[CR]%s' % (i18n('search'), i18n('video_id_url'), i18n('search_id_url_description'))}})
     kodi.end_of_directory()
 
 
