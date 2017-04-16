@@ -492,19 +492,19 @@ class JsonListItemConverter(object):
             Keys.DELAY: str(channel.get(Keys.DELAY)) if channel.get(Keys.DELAY) else u'0',
             Keys.FOLLOWERS: str(channel.get(Keys.FOLLOWERS)) if channel.get(Keys.FOLLOWERS) else u'0'
         }
-        name = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.NAME)
-        title = name + u' (' + channel.get(Keys.CREATED_AT) + u')\r\n' \
-            if channel.get(Keys.CREATED_AT) else name + u'\r\n'
+        title = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.NAME)
+        date = '%s %s\r\n' % (channel.get(Keys.CREATED_AT)[:10], channel.get(Keys.CREATED_AT)[11:19]) if channel.get(Keys.CREATED_AT) else ''
 
-        plot_template = u'{title}{views}{followers}{broadcaster_language}{mature}{partner}{delay}'
+        plot_template = u'{title}{date}{views}{followers}{broadcaster_language}{mature}{partner}{delay}'
 
-        plot = plot_template.format(title=title,
+        plot = plot_template.format(title=title + '\r\n',
                                     views=self._format_key(Keys.VIEWS, headings, info),
                                     delay=self._format_key(Keys.DELAY, headings, info),
                                     broadcaster_language=self._format_key(Keys.BROADCASTER_LANGUAGE, headings, info),
                                     mature=self._format_key(Keys.MATURE, headings, info),
                                     partner=self._format_key(Keys.PARTNER, headings, info),
-                                    followers=self._format_key(Keys.FOLLOWERS, headings, info))
+                                    followers=self._format_key(Keys.FOLLOWERS, headings, info),
+                                    date=date)
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
 
@@ -552,7 +552,7 @@ class JsonListItemConverter(object):
                     Keys.GAME: i18n('game').decode('utf-8'),
                     Keys.LANGUAGE: i18n('language').decode('utf-8')}
         curator = clip[Keys.CURATOR].get(Keys.DISPLAY_NAME) if clip[Keys.CURATOR].get(Keys.DISPLAY_NAME) else clip[Keys.CURATOR].get(Keys.NAME)
-        curator += u' (' + clip.get(Keys.CREATED_AT) + u')' if clip.get(Keys.CREATED_AT) else u''
+        date = '%s %s\r\n' % (clip.get(Keys.CREATED_AT)[:10], clip.get(Keys.CREATED_AT)[11:19]) if clip.get(Keys.CREATED_AT) else ''
         info = {
             Keys.VIEWS: str(clip.get(Keys.VIEWS)) if clip.get(Keys.VIEWS) else u'0',
             Keys.LANGUAGE: clip.get(Keys.LANGUAGE) if clip.get(Keys.LANGUAGE) else None,
@@ -560,14 +560,15 @@ class JsonListItemConverter(object):
             Keys.CURATOR: curator
         }
 
-        plot_template = u'{title}{curator}{game}{views}{language}'
+        plot_template = u'{title}{date}{curator}{game}{views}{language}'
 
         title = clip.get(Keys.TITLE) + u'\r\n'
 
         plot = plot_template.format(title=title, game=self._format_key(Keys.GAME, headings, info),
                                     views=self._format_key(Keys.VIEWS, headings, info),
                                     language=self._format_key(Keys.LANGUAGE, headings, info),
-                                    curator=self._format_key(Keys.CURATOR, headings, info))
+                                    curator=self._format_key(Keys.CURATOR, headings, info),
+                                    date=date)
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
 
@@ -580,15 +581,16 @@ class JsonListItemConverter(object):
             Keys.LANGUAGE: video.get(Keys.LANGUAGE) if video.get(Keys.LANGUAGE) else None,
             Keys.GAME: video.get(Keys.GAME) if video.get(Keys.GAME) else i18n('unknown_game').decode('utf-8'),
         }
-
-        plot_template = u'{description}{game}{views}{language}'
+        plot_template = u'{description}{date}{game}{views}{language}'
 
         title = video.get(Keys.TITLE) + u'\r\n'
+        date = '%s %s \r\n' % (video.get(Keys.CREATED_AT)[:10], video.get(Keys.CREATED_AT)[11:19]) if video.get(Keys.CREATED_AT) else ''
 
         plot = plot_template.format(game=self._format_key(Keys.GAME, headings, info),
                                     views=self._format_key(Keys.VIEWS, headings, info),
                                     language=self._format_key(Keys.LANGUAGE, headings, info),
-                                    description=video.get(Keys.DESCRIPTION) + u'\r\n' if video.get(Keys.DESCRIPTION) else title)
+                                    description=video.get(Keys.DESCRIPTION) + u'\r\n' if video.get(Keys.DESCRIPTION) else title,
+                                    date=date)
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
 

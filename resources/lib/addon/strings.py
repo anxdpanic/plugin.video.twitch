@@ -117,5 +117,6 @@ STRINGS = {
     'items': 30214,
     'duration': 30215,
     'curated': 30216,
-    'ok_to_resolve': 30217
+    'ok_to_resolve': 30217,
+    'search_id_url_description': 30218
 }
