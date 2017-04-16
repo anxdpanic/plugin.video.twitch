@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
-<addon id='plugin.video.twitch' version='2.0.0~beta3' name='Twitch' provider-name='A Talented Community'>
+<addon id='plugin.video.twitch' version='2.0.0~beta4' name='Twitch' provider-name='A Talented Community'>
     <requires>
         <import addon='xbmc.python' version='2.20.0'/>
         <import addon="script.module.python.twitch"/>
@@ -39,6 +39,7 @@
 - add Change sort by/period/direction
 - add support for timestamp in urls (Search - Video Id/Url)
 - add Attempt reconnection to live streams
+- add/remove menu items to/from the Main Menu
         </news>
         <assets>
             <icon>icon.png</icon>
