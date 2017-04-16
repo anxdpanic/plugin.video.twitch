@@ -33,6 +33,14 @@ i18n = translations.i18n
 storage = json_store.JSONStore(ADDON_DATA_DIR + 'storage.json')
 
 
+def show_menu(menu, parent=None):
+    setting_id = 'menu'
+    if parent:
+        setting_id += '_%s' % parent
+    setting_id += '_%s' % menu
+    return kodi.get_setting(setting_id) == 'true'
+
+
 def get_redirect_uri():
     settings_id = kodi.get_setting('oauth_redirecturi')
     stripped_id = settings_id.strip()
