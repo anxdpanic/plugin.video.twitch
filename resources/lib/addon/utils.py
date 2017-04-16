@@ -30,6 +30,9 @@ import xbmcvfs
 
 translations = kodi.Translations(STRINGS)
 i18n = translations.i18n
+
+if not xbmcvfs.exists(ADDON_DATA_DIR):
+    result = xbmcvfs.mkdir(ADDON_DATA_DIR)
 storage = json_store.JSONStore(ADDON_DATA_DIR + 'storage.json')
 
 
@@ -276,8 +279,6 @@ _sorting_defaults = \
 
 
 def get_stored_json():
-    if not xbmcvfs.exists(ADDON_DATA_DIR):
-        result = xbmcvfs.mkdir(ADDON_DATA_DIR)
     json_data = storage.load()
     needs_save = False
     # set defaults

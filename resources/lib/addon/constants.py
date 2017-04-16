@@ -25,7 +25,7 @@ def __enum(**enums):
     return type('Enum', (), enums)
 
 
-ADDON_DATA_DIR = kodi.translate_path('special://profile/addon_data/{0!s}/'.format(kodi.get_id()))
+ADDON_DATA_DIR = kodi.translate_path(kodi.get_profile())
 
 MODES = __enum(
     MAIN='main',
