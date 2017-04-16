@@ -68,6 +68,10 @@ class Twitch:
                                                       line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
                             log_utils.log('Error: Current OAuth token is missing required scopes |%s|' % missing_scopes, log_utils.LOGERROR)
                             return False
+                        else:
+                            return True
+                    else:
+                        return False
                 else:
                     matches_default = token_check['token']['client_id'] == utils.get_client_id(default=True)
                     message = 'Token created using default Client-ID |%s|' % str(matches_default)
@@ -82,7 +86,6 @@ class Twitch:
                         result = kodi.Dialog().ok(heading=i18n('oauth_token'), line1=i18n('client_id_mismatch'),
                                                   line2=i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token')))
                         return False
-            return True
 
     @api_error_handler
     def root(self):
