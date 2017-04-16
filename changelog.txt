@@ -26,6 +26,7 @@
 - add Change sort by/period/direction
 - add support for timestamp in urls (Search - Video Id/Url)
 - add Attempt reconnection to live streams
+- add/remove menu items to/from the Main Menu
 
 1.4.6
 - Added new title formatting option which includes broadcaster language.
