@@ -165,7 +165,7 @@ class Twitch:
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
-    def get_channel_videos(self, channel_id, offset, limit, broadcast_type, sort_by=VideoSort.VIEWS, language=Language.ALL):
+    def get_channel_videos(self, channel_id, offset, limit, broadcast_type, sort_by=VideoSort.TIME, language=Language.ALL):
         results = self.api.channels.get_videos(channel_id=channel_id, limit=limit, offset=offset, broadcast_type=broadcast_type, sort_by=sort_by, language=language)
         return self.error_check(results)
 
