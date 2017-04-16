@@ -256,7 +256,7 @@ _sorting_defaults = \
             },
         'channel_videos':
             {
-                'by': VideoSort.VIEWS,
+                'by': VideoSort.TIME,
                 'direction': None,
                 'period': None
             },
