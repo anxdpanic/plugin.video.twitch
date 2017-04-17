@@ -295,9 +295,12 @@ class JsonListItemConverter(object):
         logo = broadcaster.get(Keys.LOGO) if broadcaster.get(Keys.LOGO) else Images.VIDEOTHUMB
         image = image if image else logo
         title = self.get_title_for_clip(clip)
+        info = self.get_plot_for_clip(clip, include_title=False)
+        info.update({'mediatype': 'video'})
         return {'label': title,
                 'path': '',
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
+                'info': info,
                 'content_type': 'video',
                 'is_playable': True}
 
@@ -310,9 +313,12 @@ class JsonListItemConverter(object):
         logo = channel.get(Keys.LOGO) if channel.get(Keys.LOGO) else Images.VIDEOTHUMB
         image = preview if preview else logo
         title = self.get_title_for_video(video)
+        info = self.get_plot_for_video(video, include_title=False)
+        info.update({'mediatype': 'video'})
         return {'label': title,
                 'path': '',
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
+                'info': info,
                 'content_type': 'video',
                 'is_playable': True}
 
@@ -325,9 +331,12 @@ class JsonListItemConverter(object):
         logo = channel.get(Keys.LOGO) if channel.get(Keys.LOGO) else Images.VIDEOTHUMB
         image = preview if preview else logo
         title = self.get_title_for_stream(stream)
+        info = self.get_plot_for_stream(stream, include_title=False)
+        info.update({'mediatype': 'video'})
         return {'label': title,
                 'path': '',
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
+                'info': info,
                 'content_type': 'video',
                 'is_playable': True}
 
@@ -445,7 +454,7 @@ class JsonListItemConverter(object):
             value = item_template.format(head=val_heading, info=val_info)
         return value
 
-    def get_plot_for_stream(self, stream):
+    def get_plot_for_stream(self, stream, include_title=True):
         channel = stream[Keys.CHANNEL]
 
         headings = {Keys.GAME: i18n('game').decode('utf-8'),
@@ -463,8 +472,10 @@ class JsonListItemConverter(object):
             Keys.PARTNER: str(channel.get(Keys.PARTNER)) if channel.get(Keys.PARTNER) else u'False',
             Keys.DELAY: str(stream.get(Keys.DELAY)) if stream.get(Keys.DELAY) else u'0'
         }
-        title = channel.get(Keys.STATUS) + u'\r\n' if channel.get(Keys.STATUS) else u''
-
+        _title = channel.get(Keys.STATUS) + u'\r\n' if channel.get(Keys.STATUS) else u''
+        title = _title
+        if not include_title:
+            title = ''
         plot_template = u'{title}{game}{viewers}{broadcaster_language}{mature}{partner}{delay}'
 
         plot = plot_template.format(title=title, game=self._format_key(Keys.GAME, headings, info),
@@ -474,7 +485,7 @@ class JsonListItemConverter(object):
                                     mature=self._format_key(Keys.MATURE, headings, info),
                                     partner=self._format_key(Keys.PARTNER, headings, info))
 
-        return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
+        return {u'plot': plot, u'plotoutline': plot, u'tagline': _title.rstrip('\r\n')}
 
     def get_plot_for_channel(self, channel):
         headings = {Keys.VIEWS: i18n('views').decode('utf-8'),
@@ -546,7 +557,7 @@ class JsonListItemConverter(object):
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
 
-    def get_plot_for_clip(self, clip):
+    def get_plot_for_clip(self, clip, include_title=True):
         headings = {Keys.VIEWS: i18n('views').decode('utf-8'),
                     Keys.CURATOR: i18n('curated').decode('utf-8'),
                     Keys.GAME: i18n('game').decode('utf-8'),
@@ -561,8 +572,10 @@ class JsonListItemConverter(object):
         }
 
         plot_template = u'{title}{date}{curator}{game}{views}{language}'
-
-        title = clip.get(Keys.TITLE) + u'\r\n'
+        _title = clip.get(Keys.TITLE) + u'\r\n'
+        title = _title
+        if not include_title:
+            title = ''
 
         plot = plot_template.format(title=title, game=self._format_key(Keys.GAME, headings, info),
                                     views=self._format_key(Keys.VIEWS, headings, info),
@@ -570,9 +583,9 @@ class JsonListItemConverter(object):
                                     curator=self._format_key(Keys.CURATOR, headings, info),
                                     date=date)
 
-        return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
+        return {u'plot': plot, u'plotoutline': plot, u'tagline': _title.rstrip('\r\n')}
 
-    def get_plot_for_video(self, video):
+    def get_plot_for_video(self, video, include_title=True):
         headings = {Keys.VIEWS: i18n('views').decode('utf-8'),
                     Keys.GAME: i18n('game').decode('utf-8'),
                     Keys.LANGUAGE: i18n('language').decode('utf-8')}
@@ -583,7 +596,10 @@ class JsonListItemConverter(object):
         }
         plot_template = u'{description}{date}{game}{views}{language}'
 
-        title = video.get(Keys.TITLE) + u'\r\n'
+        _title = video.get(Keys.TITLE) + u'\r\n'
+        title = _title
+        if not include_title:
+            title = ''
         date = '%s %s \r\n' % (video.get(Keys.CREATED_AT)[:10], video.get(Keys.CREATED_AT)[11:19]) if video.get(Keys.CREATED_AT) else ''
 
         plot = plot_template.format(game=self._format_key(Keys.GAME, headings, info),
@@ -592,7 +608,7 @@ class JsonListItemConverter(object):
                                     description=video.get(Keys.DESCRIPTION) + u'\r\n' if video.get(Keys.DESCRIPTION) else title,
                                     date=date)
 
-        return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
+        return {u'plot': plot, u'plotoutline': plot, u'tagline': _title.rstrip('\r\n')}
 
     def get_video_for_quality(self, videos, ask=True, quality=None, clip=False):
         if ask is True:
