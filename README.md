@@ -3,6 +3,14 @@ Twitch on Kodi
 
 Watch your favorite gaming streams on Kodi.
 
+LOGIN
+----------------
+
+1. Go to __Settings - Login - Get OAuth token__ and visit the url you are prompted with  
+   _The prompted url is case-sensitive, if your skin's text is all UPPERCASE you will need to switch to Estuary/Confluence to see the proper url_
+2. Login/Sign-up and Authorize Twitch on Kodi
+3. Input your new OAuth token in __Settings - Login__
+
 FAQ
 ----------------
 
@@ -12,9 +20,12 @@ FAQ
 
 * I'm having issues with the playback of streams (buffering, dropping, stuttering).
 
-> This Addon does not handle any aspect of the playback of Twitch streams (that would be the Kodi Video Player), it simply tells Kodi what to play.
-> The Addon does however provide Quality Options which may help if your internet connection / computer specs are below requirements for HD streams.
+> This Add-on does not handle any aspect of the playback of Twitch streams (that would be the Kodi Video Player), it simply tells Kodi what to play.
+> The Add-on does however provide Quality Options which may help if your internet connection / computer specs are below requirements for HD streams.
 
+* Which features require an OAuth token?
+
+> Live Notifications, Following (all menus), Follow/Unfollow, Subscriber only content, IRC (Chat)
 
 What's next?
 ----------------
