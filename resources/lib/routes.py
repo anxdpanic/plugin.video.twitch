@@ -18,6 +18,7 @@
 """
 
 import sys
+import traceback
 from addon import utils, api, menu_items, cache
 from addon.common import kodi, log_utils
 from addon.common.url_dispatcher import URL_Dispatcher
@@ -516,9 +517,10 @@ def list_followed(content, offset=0, cursor='MA=='):
         sort_by = utils.get_sort('clips', 'by')
         all_items = list()
         requests = 0
+        languages = ','.join(utils.get_languages())
         while (CURSOR_LIMIT >= (len(all_items) + 1)) and cursor and (requests < MAX_REQUESTS):
             requests += 1
-            clips = twitch.get_followed_clips(cursor=cursor, limit=CURSOR_LIMIT, trending=sort_by)
+            clips = twitch.get_followed_clips(cursor=cursor, limit=CURSOR_LIMIT, trending=sort_by, language=languages)
             cursor = clips[Keys.CURSOR]
             if Keys.CLIPS in clips and len(clips[Keys.CLIPS]) > 0:
                 filtered = \
@@ -642,9 +644,10 @@ def list_clips(cursor='MA==', channel_name=None, game=None):
     sorting = utils.get_sort('clips')
     all_items = list()
     requests = 0
+    languages = ','.join(utils.get_languages())
     while (CURSOR_LIMIT >= (len(all_items) + 1)) and cursor and (requests < MAX_REQUESTS):
         requests += 1
-        clips = twitch.get_top_clips(cursor, limit=CURSOR_LIMIT, channel=channel_name, game=game, period=sorting['period'], trending=sorting['by'])
+        clips = twitch.get_top_clips(cursor, limit=CURSOR_LIMIT, channel=channel_name, game=game, period=sorting['period'], trending=sorting['by'], language=languages)
         cursor = clips[Keys.CURSOR]
         if Keys.CLIPS in clips and len(clips[Keys.CLIPS]) > 0:
             filtered = \
@@ -1191,6 +1194,7 @@ def run(argv=None):
         twitch = api.Twitch()
     except:
         kodi.notify(utils.i18n('connection_failed'), utils.i18n('failed_connect_api'))
+        log_utils.log(traceback.print_exc(), log_utils.LOGERROR)
         return
 
     mode = queries.get('mode', None)

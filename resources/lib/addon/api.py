@@ -156,14 +156,14 @@ class Twitch:
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
-    def get_followed_clips(self, cursor, limit, trending=Boolean.TRUE):
-        results = self.api.clips.get_followed(limit=limit, cursor=cursor, trending=trending)
+    def get_followed_clips(self, cursor, limit, trending=Boolean.TRUE, language=Language.ALL):
+        results = self.api.clips.get_followed(limit=limit, cursor=cursor, trending=trending, language=language)
         return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
-    def get_top_clips(self, cursor, limit, channel=None, game=None, period=ClipPeriod.WEEK, trending=Boolean.TRUE):
-        results = self.api.clips.get_top(limit=limit, cursor=cursor, channels=channel, games=game, period=period, trending=trending)
+    def get_top_clips(self, cursor, limit, channel=None, game=None, period=ClipPeriod.WEEK, trending=Boolean.TRUE, language=Language.ALL):
+        results = self.api.clips.get_top(limit=limit, cursor=cursor, channels=channel, games=game, period=period, trending=trending, language=language)
         return self.error_check(results)
 
     @api_error_handler
