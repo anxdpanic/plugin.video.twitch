@@ -17,6 +17,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
+import copy
 import json
 from functools import wraps
 import utils
@@ -63,7 +64,7 @@ def api_error_handler(func):
     def wrapper(*args, **kwargs):
         try:
             result = func(*args, **kwargs)
-            logging_result = result
+            logging_result = copy.deepcopy(result)
             try:
                 if u'email' in logging_result:
                     logging_result[u'email'] = 'addon@removed.org'
