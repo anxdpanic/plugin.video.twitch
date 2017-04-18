@@ -175,14 +175,14 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.go_to_game(clip[Keys.GAME]))
         context_menu.extend(menu_items.add_blacklist(broadcaster[Keys.ID], name))
         context_menu.extend(menu_items.add_blacklist(b64encode(clip[Keys.GAME].encode('utf-8', 'ignore')), clip[Keys.GAME], list_type='game'))
-        context_menu.extend(menu_items.set_default_quality('clip', broadcaster[Keys.ID], broadcaster[Keys.NAME], clip_id=clip[Keys.ID]))
+        context_menu.extend(menu_items.set_default_quality('clip', broadcaster[Keys.ID], broadcaster[Keys.NAME], clip_id=clip[Keys.SLUG]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'channel_id': broadcaster[Keys.ID], 'slug': clip[Keys.ID], 'ask': True, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'channel_id': broadcaster[Keys.ID], 'slug': clip[Keys.SLUG], 'ask': True, 'use_player': True}))
         info = self.get_plot_for_clip(clip)
         info.update({'duration': str(duration), 'year': year, 'date': date, 'premiered': date, 'mediatype': 'video'})
 
         return {'label': self.get_title_for_clip(clip),
-                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'channel_id': broadcaster[Keys.ID], 'slug': clip[Keys.ID]}),
+                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'channel_id': broadcaster[Keys.ID], 'slug': clip[Keys.SLUG]}),
                 'context_menu': context_menu,
                 'is_playable': True,
                 'info': info,
