@@ -111,8 +111,8 @@ class TwitchPlayer(xbmc.Player):
                                     if monitor.waitForAbort(0.5) or dialog.is_canceled():
                                         abort = True
                                         break
-                                    wait_time += 0.5
-                                    if wait_time.is_integer():
+                                    wait_time += 1.0
+                                    if (wait_time % 2) == 0:
                                         percent = int(((wait_time / 120) * 100))
                                         dialog.update(percent=percent, line3=utils.i18n('retry_seconds') % ((120.0 - wait_time) / 2))
                                 if abort:
