@@ -220,4 +220,4 @@ class TwitchTV(object):
 
     def _fetchItems(self, url, key):
         items = self.scraper.getJson(url)
-        return items[key] if items else []
+        return items[key] if items and items[key] else []
