@@ -47,16 +47,16 @@ def getVideoQuality(quality=''):
     i18n: 0 = 30102 ... 9 = 30111
     """
     qualities = {'-1': -1, '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9 }
-    i18n_qualities = [PLUGIN.get_string(30102), PLUGIN.get_string(30103), PLUGIN.get_string(30104),
-                      PLUGIN.get_string(30105), PLUGIN.get_string(30106), PLUGIN.get_string(30107),
-                      PLUGIN.get_string(30108), PLUGIN.get_string(30109), PLUGIN.get_string(30110),
-                      PLUGIN.get_string(30111)]
+    i18n_qualities = [PLUGIN.get_string(30102).encode('utf-8'), PLUGIN.get_string(30103).encode('utf-8'), PLUGIN.get_string(30104).encode('utf-8'),
+                      PLUGIN.get_string(30105).encode('utf-8'), PLUGIN.get_string(30106).encode('utf-8'), PLUGIN.get_string(30107).encode('utf-8'),
+                      PLUGIN.get_string(30108).encode('utf-8'), PLUGIN.get_string(30109).encode('utf-8'), PLUGIN.get_string(30110).encode('utf-8'),
+                      PLUGIN.get_string(30111).encode('utf-8')]
     try:
         quality = int(quality)
         if 9 >= quality >= 0:
             chosenQuality = str(quality)
         elif quality == -1:
-            chosenQuality = str(xbmcgui.Dialog().select(PLUGIN.get_string(30077), i18n_qualities))
+            chosenQuality = str(xbmcgui.Dialog().select(PLUGIN.get_string(30077).encode('utf-8'), i18n_qualities))
         else:
             raise ValueError
     except ValueError:
@@ -107,7 +107,7 @@ def getMediaType():
 
 
 def linkToNextPage(target, currentIndex, **kwargs):
-    return {'label': PLUGIN.get_string(30011),
+    return {'label': PLUGIN.get_string(30011).encode('utf-8'),
             'icon': Images.ICON,
             'thumbnail': Images.THUMB,
             'art': theArt(),
@@ -168,7 +168,7 @@ def contextClearPreviews():
     context_menu = []
     if PLUGIN.get_setting('live_previews_enable', unicode) == 'true':
         notify = str(notifyRefresh())
-        context_menu.extend([(PLUGIN.get_string(30084), 'RunPlugin(%s)' %
+        context_menu.extend([(PLUGIN.get_string(30084).encode('utf-8'), 'RunPlugin(%s)' %
                               PLUGIN.url_for(endpoint='clearLivePreviews', notify=notify))])
     return context_menu
 
