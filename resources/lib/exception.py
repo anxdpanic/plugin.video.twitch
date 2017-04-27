@@ -24,4 +24,4 @@ def handleTwitchException(exception):
     code = exception.code
     title = 30010
     msg = codeTranslations[code]
-    PLUGIN.notify(PLUGIN.get_string(title), PLUGIN.get_string(msg), image=Images.ICON)
+    PLUGIN.notify(PLUGIN.get_string(title).encode('utf-8', 'ignore'), PLUGIN.get_string(msg).encode('utf-8', 'ignore'), image=Images.ICON)

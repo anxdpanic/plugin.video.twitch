@@ -38,7 +38,7 @@ class JsonListItemConverter(object):
     def convertGameToListItem(self, game):
         name = game[Keys.NAME].encode('utf-8')
         if not name:
-            name = self.plugin.get_string(30064)
+            name = self.plugin.get_string(30064).encode('utf-8')
         image = Images.BOXART
         if game.get(Keys.BOX):
             image = game[Keys.BOX].get(Keys.LARGE) if game[Keys.BOX].get(Keys.LARGE) else image
@@ -68,7 +68,7 @@ class JsonListItemConverter(object):
         title = self.titleBuilder.formatTitle(titleValues)
         return {'label': title,
                 'path': self.plugin.url_for(endpoint='playLive', name=channelname, quality='-2'),
-                'context_menu': [(self.plugin.get_string(30077), 'RunPlugin(%s)' %
+                'context_menu': [(self.plugin.get_string(30077).encode('utf-8'), 'RunPlugin(%s)' %
                                   self.plugin.url_for(endpoint='playLive', name=channelname, quality='-1'))],
                 'is_playable': True,
                 'icon': image,
@@ -95,7 +95,7 @@ class JsonListItemConverter(object):
         image = video.get(Keys.PREVIEW) if video.get(Keys.PREVIEW) else Images.VIDEOTHUMB
         return {'label': video[Keys.TITLE],
                 'path': self.plugin.url_for(endpoint='playVideo', _id=video['_id'], quality='-2'),
-                'context_menu': [(self.plugin.get_string(30077), 'RunPlugin(%s)' %
+                'context_menu': [(self.plugin.get_string(30077).encode('utf-8'), 'RunPlugin(%s)' %
                                   self.plugin.url_for(endpoint='playVideo', _id=video['_id'], quality='-1'))],
                 'is_playable': True,
                 'icon': image,
@@ -120,7 +120,7 @@ class JsonListItemConverter(object):
         info['mediatype'] = getMediaType()
         return {'label': title,
                 'path': self.plugin.url_for(endpoint='playLive', name=channel[Keys.NAME], quality='-2'),
-                'context_menu': [(self.plugin.get_string(30077), 'RunPlugin(%s)' %
+                'context_menu': [(self.plugin.get_string(30077).encode('utf-8'), 'RunPlugin(%s)' %
                                   self.plugin.url_for(endpoint='playLive', name=channel[Keys.NAME], quality='-1'))],
                 'is_playable': True,
                 'icon': image,
@@ -146,11 +146,11 @@ class JsonListItemConverter(object):
 
     def getVideoInfo(self, video):
         channel = video.get(Keys.CHANNEL)
-        streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else self.plugin.get_string(30060)
+        streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else self.plugin.get_string(30060).encode('utf-8')
         game = video.get(Keys.GAME) if video.get(Keys.GAME) else video.get(Keys.META_GAME)
-        game = game if game else self.plugin.get_string(30064)
+        game = game if game else self.plugin.get_string(30064).encode('utf-8')
         views = video.get(Keys.VIEWS) if video.get(Keys.VIEWS) else '0'
-        title = video.get(Keys.TITLE) if video.get(Keys.TITLE) else self.plugin.get_string(30061)
+        title = video.get(Keys.TITLE) if video.get(Keys.TITLE) else self.plugin.get_string(30061).encode('utf-8')
         image = video.get(Keys.PREVIEW) if video.get(Keys.PREVIEW) else Images.VIDEOTHUMB
         return {'streamer': streamer,
                 'title': title,
@@ -169,12 +169,12 @@ class JsonListItemConverter(object):
             viewers = channel.get(Keys.VIEWERS)
         else:
             viewers = stream.get(Keys.VIEWERS)
-        viewers = viewers if viewers else self.plugin.get_string(30062)
+        viewers = viewers if viewers else self.plugin.get_string(30062).encode('utf-8')
 
-        streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else self.plugin.get_string(30060)
-        title = channel.get(Keys.STATUS) if channel.get(Keys.STATUS) else self.plugin.get_string(30061)
-        game = channel.get(Keys.GAME) if channel.get(Keys.GAME) else self.plugin.get_string(30064)
-        broadcaster_language = channel.get(Keys.BROADCASTER_LANGUAGE) if channel.get(Keys.BROADCASTER_LANGUAGE) else self.plugin.get_string(30063)
+        streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else self.plugin.get_string(30060).encode('utf-8')
+        title = channel.get(Keys.STATUS) if channel.get(Keys.STATUS) else self.plugin.get_string(30061).encode('utf-8')
+        game = channel.get(Keys.GAME) if channel.get(Keys.GAME) else self.plugin.get_string(30064).encode('utf-8')
+        broadcaster_language = channel.get(Keys.BROADCASTER_LANGUAGE) if channel.get(Keys.BROADCASTER_LANGUAGE) else self.plugin.get_string(30063).encode('utf-8')
         return {'streamer': streamer,
                 'title': title,
                 'game': game,
@@ -182,12 +182,12 @@ class JsonListItemConverter(object):
                 'broadcaster_language': broadcaster_language}
 
     def extractChannelTitleValues(self, channel):
-        streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else self.plugin.get_string(30060)
-        title = channel.get(Keys.TITLE) if channel.get(Keys.TITLE) else self.plugin.get_string(30061)
+        streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else self.plugin.get_string(30060).encode('utf-8')
+        title = channel.get(Keys.TITLE) if channel.get(Keys.TITLE) else self.plugin.get_string(30061).encode('utf-8')
         game = channel.get(Keys.GAME) if channel.get(Keys.GAME) else channel.get(Keys.META_GAME)
-        game = game if game else self.plugin.get_string(30064)
+        game = game if game else self.plugin.get_string(30064).encode('utf-8')
         viewers = channel.get(Keys.CURRENT_VIEWERS) \
-            if channel.get(Keys.CURRENT_VIEWERS) else self.plugin.get_string(30062)
+            if channel.get(Keys.CURRENT_VIEWERS) else self.plugin.get_string(30062).encode('utf-8')
 
         return {'streamer': streamer,
                 'title': title,
@@ -204,7 +204,7 @@ class JsonListItemConverter(object):
                     Keys.PARTNER: self.plugin.get_string(30092).encode('utf-8'),
                     Keys.DELAY: self.plugin.get_string(30093).encode('utf-8')}
         info = {
-            Keys.GAME: stream.get(Keys.GAME).encode('utf-8') if stream.get(Keys.GAME) else self.plugin.get_string(30064),
+            Keys.GAME: stream.get(Keys.GAME).encode('utf-8') if stream.get(Keys.GAME) else self.plugin.get_string(30064).encode('utf-8'),
             Keys.VIEWERS: str(stream.get(Keys.VIEWERS)) if stream.get(Keys.VIEWERS) else '0',
             Keys.BROADCASTER_LANGUAGE: channel.get(Keys.BROADCASTER_LANGUAGE).encode('utf-8')
             if channel.get(Keys.BROADCASTER_LANGUAGE) else None,

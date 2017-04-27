@@ -17,63 +17,63 @@ def createMainListing():
     context_menu = []
     context_menu.extend(utils.contextClearPreviews())
     items = [
-        {'label': PLUGIN.get_string(30005),
+        {'label': PLUGIN.get_string(30005).encode('utf-8'),
          'icon': Images.ICON,
          'thumbnail': Images.THUMB,
          'art': utils.theArt(),
          'context_menu': context_menu,
          'path': PLUGIN.url_for(endpoint='createListOfFeaturedStreams')
          },
-        {'label': PLUGIN.get_string(30001),
+        {'label': PLUGIN.get_string(30001).encode('utf-8'),
          'icon': Images.ICON,
          'thumbnail': Images.THUMB,
          'art': utils.theArt(),
          'context_menu': context_menu,
          'path': PLUGIN.url_for(endpoint='createListOfGames', index='0')
          },
-        {'label': PLUGIN.get_string(30008),
+        {'label': PLUGIN.get_string(30008).encode('utf-8'),
          'icon': Images.ICON,
          'thumbnail': Images.THUMB,
          'art': utils.theArt(),
          'context_menu': context_menu,
          'path': PLUGIN.url_for(endpoint='createListOfChannels', index='0')
          },
-        {'label': PLUGIN.get_string(30002),
+        {'label': PLUGIN.get_string(30002).encode('utf-8'),
          'icon': Images.ICON,
          'thumbnail': Images.THUMB,
          'art': utils.theArt(),
          'context_menu': context_menu,
          'path': PLUGIN.url_for(endpoint='createFollowingList')
          },
-        {'label': PLUGIN.get_string(30066),
+        {'label': PLUGIN.get_string(30066).encode('utf-8'),
          'icon': Images.ICON,
          'thumbnail': Images.THUMB,
          'art': utils.theArt(),
          'context_menu': context_menu,
          'path': PLUGIN.url_for(endpoint='createFollowingGameList')
          },
-        {'label': PLUGIN.get_string(30006),
+        {'label': PLUGIN.get_string(30006).encode('utf-8'),
          'icon': Images.ICON,
          'thumbnail': Images.THUMB,
          'art': utils.theArt(),
          'context_menu': context_menu,
          'path': PLUGIN.url_for(endpoint='createListOfTeams', index='0')
          },
-        {'label': PLUGIN.get_string(30098),
+        {'label': PLUGIN.get_string(30098).encode('utf-8'),
          'icon': Images.ICON,
          'thumbnail': Images.THUMB,
          'art': utils.theArt(),
          'context_menu': context_menu,
          'path': PLUGIN.url_for(endpoint='createListForSelectedVideo')
          },
-        {'label': PLUGIN.get_string(30003),
+        {'label': PLUGIN.get_string(30003).encode('utf-8'),
          'icon': Images.ICON,
          'thumbnail': Images.THUMB,
          'art': utils.theArt(),
          'context_menu': context_menu,
          'path': PLUGIN.url_for(endpoint='search')
          },
-        {'label': PLUGIN.get_string(30004),
+        {'label': PLUGIN.get_string(30004).encode('utf-8'),
          'icon': Images.ICON,
          'thumbnail': Images.THUMB,
          'art': utils.theArt(),
@@ -139,16 +139,16 @@ def createListForGame(gameName, index):
 def createFollowingList():
     username = utils.getUserName()
     if not username:
-        utils.notification(PLUGIN.get_string(30095))
+        utils.notification(PLUGIN.get_string(30095).encode('utf-8'))
     else:
         streams = TWITCHTV.getFollowingStreams(username)
         liveStreams = [CONVERTER.convertStreamToListItem(stream) for stream in streams[Keys.LIVE]]
         liveStreams.insert(0, {'path': PLUGIN.url_for(endpoint='createFollowingList'), 'icon': Images.ICON,
                                'thumbnail': Images.THUMB, 'art': utils.theArt(), 'is_playable': False,
-                               'label': PLUGIN.get_string(30012)})
+                               'label': PLUGIN.get_string(30012).encode('utf-8')})
         liveStreams.append({'path': PLUGIN.url_for(endpoint='createFollowingList'), 'icon': Images.ICON,
                             'thumbnail': Images.THUMB, 'art': utils.theArt(), 'is_playable': False,
-                            'label': PLUGIN.get_string(30013)})
+                            'label': PLUGIN.get_string(30013).encode('utf-8')})
         liveStreams.extend([CONVERTER.convertFollowersToListItem(follower) for follower in streams[Keys.OTHERS]])
         utils.refreshPreviews()
         PLUGIN.set_content(utils.getContentType())
@@ -160,7 +160,7 @@ def createFollowingList():
 def createFollowingGameList():
     username = utils.getUserName()
     if not username:
-        utils.notification(PLUGIN.get_string(30095))
+        utils.notification(PLUGIN.get_string(30095).encode('utf-8'))
     else:
         games = TWITCHTV.getFollowingGames(username)
         items = [CONVERTER.convertGameToListItem(element) for element in games]
@@ -171,11 +171,11 @@ def createFollowingGameList():
 @PLUGIN.route('/channelVideos/<name>/')
 @managedTwitchExceptions
 def channelVideos(name):
-    items = [{'label': PLUGIN.get_string(30078), 'icon': Images.ICON, 'thumbnail': Images.THUMB, 'art': utils.theArt(),
+    items = [{'label': PLUGIN.get_string(30078).encode('utf-8'), 'icon': Images.ICON, 'thumbnail': Images.THUMB, 'art': utils.theArt(),
               'path': PLUGIN.url_for(endpoint='channelVideosList', name=name, index=0, broadcast_type='archive')},
-             {'label': PLUGIN.get_string(30113), 'icon': Images.ICON, 'thumbnail': Images.THUMB, 'art': utils.theArt(),
+             {'label': PLUGIN.get_string(30113).encode('utf-8'), 'icon': Images.ICON, 'thumbnail': Images.THUMB, 'art': utils.theArt(),
               'path': PLUGIN.url_for(endpoint='channelVideosList', name=name, index=0, broadcast_type='upload')},
-             {'label': PLUGIN.get_string(30079), 'icon': Images.ICON, 'thumbnail': Images.THUMB, 'art': utils.theArt(),
+             {'label': PLUGIN.get_string(30079).encode('utf-8'), 'icon': Images.ICON, 'thumbnail': Images.THUMB, 'art': utils.theArt(),
               'path': PLUGIN.url_for(endpoint='channelVideosList', name=name, index=0, broadcast_type='highlight')}]
     PLUGIN.set_content(utils.getContentType())
     return items
@@ -259,7 +259,7 @@ def oldplayVideo(_id):
 @PLUGIN.route('/search/')
 @managedTwitchExceptions
 def search():
-    query = PLUGIN.keyboard('', PLUGIN.get_string(30007))
+    query = PLUGIN.keyboard('', PLUGIN.get_string(30007).encode('utf-8'))
     if query:
         target = PLUGIN.url_for(endpoint='searchresults', query=query, index='0')
     else:
