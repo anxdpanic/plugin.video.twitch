@@ -948,10 +948,11 @@ def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_pl
                     kodi.Player().play(item_dict['path'], playback_item)
                 else:
                     kodi.set_resolved_url(playback_item)
-                if utils.irc_enabled() and twitch.access_token:
-                    username = twitch.get_username()
-                    if username:
-                        utils.exec_irc_script(username, name)
+                if (not slug and not video_id) and (name is not None):
+                    if utils.irc_enabled() and twitch.access_token:
+                        username = twitch.get_username()
+                        if username:
+                            utils.exec_irc_script(username, name)
                 return
             else:
                 return
