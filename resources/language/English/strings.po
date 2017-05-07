@@ -806,3 +806,7 @@ msgstr ""
 msgctxt "#30219"
 msgid "Main Menu"
 msgstr ""
+
+msgctxt "#30220"
+msgid "Failed to get url, try again shortly."
+msgstr ""

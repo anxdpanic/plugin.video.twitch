@@ -40,7 +40,7 @@ twitch = None
 @error_handler
 def main():
     has_token = True if twitch.access_token else False
-    kodi.set_content('files')
+    kodi.set_view('files', set_sort=False)
     show_menu = utils.show_menu
 
     if show_menu('featured'):
@@ -133,7 +133,7 @@ def main():
 @dispatcher.register(MODES.BROWSE)
 @error_handler
 def browse():
-    kodi.set_content('files')
+    kodi.set_view('files', set_sort=False)
     context_menu = list()
     context_menu.extend(menu_items.clear_previews())
     kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.STREAMLIST, 'stream_type': StreamType.LIVE},
@@ -161,7 +161,7 @@ def browse():
 @dispatcher.register(MODES.SEARCH)
 @error_handler
 def search():
-    kodi.set_content('files')
+    kodi.set_view('files', set_sort=False)
     context_menu = list()
     context_menu.extend(menu_items.clear_previews())
     kodi.create_item({'label': i18n('streams'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'streams'}, 'context_menu': context_menu,
@@ -178,7 +178,7 @@ def search():
 @dispatcher.register(MODES.NEWSEARCH, args=['content'])
 @error_handler
 def new_search(content):
-    kodi.set_content('files')
+    kodi.set_view('files', set_sort=False)
     user_input = kodi.get_keyboard(i18n('search'))
     if user_input:
         kodi.end_of_directory()
@@ -192,7 +192,7 @@ def new_search(content):
 def search_results(content, query, index=0):
     if content == 'streams':
         utils.refresh_previews()
-        kodi.set_content('videos')
+        kodi.set_view('videos', set_sort=True)
         index, offset, limit = utils.calculate_pagination_values(index)
         results = twitch.get_stream_search(search_query=query, offset=offset, limit=limit)
         if (results[Keys.TOTAL] > 0) and (Keys.STREAMS in results):
@@ -204,7 +204,7 @@ def search_results(content, query, index=0):
         else:
             kodi.update_container(kodi.get_plugin_url({'mode': MODES.SEARCH}))
     elif content == 'channels':
-        kodi.set_content('files')
+        kodi.set_view('files', set_sort=False)
         index, offset, limit = utils.calculate_pagination_values(index)
         results = twitch.get_channel_search(search_query=query, offset=offset, limit=limit)
         if (results[Keys.TOTAL] > 0) and (Keys.CHANNELS in results):
@@ -216,7 +216,7 @@ def search_results(content, query, index=0):
         else:
             kodi.update_container(kodi.get_plugin_url({'mode': MODES.SEARCH}))
     elif content == 'games':
-        kodi.set_content('files')
+        kodi.set_view('files', set_sort=False)
         results = twitch.get_game_search(search_query=query)
         if (Keys.GAMES in results) and (results[Keys.GAMES]):
             for game in results[Keys.GAMES]:
@@ -225,7 +225,7 @@ def search_results(content, query, index=0):
         else:
             kodi.update_container(kodi.get_plugin_url({'mode': MODES.SEARCH}))
     elif content == 'id_url':
-        kodi.set_content('videos')
+        kodi.set_view('videos', set_sort=True)
         video_id, seek_time = utils.extract_video(query)
         results = twitch.get_video_by_id(video_id)
         if video_id.startswith('a') or video_id.startswith('c') or video_id.startswith('v'):
@@ -245,7 +245,7 @@ def search_results(content, query, index=0):
 @dispatcher.register(MODES.FOLLOWING)
 @error_handler
 def following():
-    kodi.set_content('files')
+    kodi.set_view('files', set_sort=False)
     context_menu = list()
     context_menu.extend(menu_items.clear_previews())
     kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.FOLLOWED, 'content': StreamType.LIVE}, 'context_menu': context_menu,
@@ -270,7 +270,7 @@ def following():
 @error_handler
 def list_featured_streams():
     utils.refresh_previews()
-    kodi.set_content('videos')
+    kodi.set_view('videos', set_sort=True)
     streams = twitch.get_featured_streams(offset=0, limit=100)
     if Keys.FEATURED in streams:
         filtered = \
@@ -288,7 +288,7 @@ def list_featured_streams():
 @dispatcher.register(MODES.GAMES, kwargs=['offset'])
 @error_handler
 def list_all_games(offset=0):
-    kodi.set_content('files')
+    kodi.set_view('files', set_sort=False)
     per_page = utils.get_items_per_page()
     games = None
     all_items = list()
@@ -330,7 +330,7 @@ def list_all_games(offset=0):
 @dispatcher.register(MODES.COMMUNITIES, kwargs=['cursor'])
 @error_handler
 def list_all_communities(cursor='MA=='):
-    kodi.set_content('files')
+    kodi.set_view('files', set_sort=False)
     all_items = list()
     requests = 0
     while (CURSOR_LIMIT >= (len(all_items) + 1)) and cursor and (requests < MAX_REQUESTS):
@@ -364,7 +364,7 @@ def list_all_communities(cursor='MA=='):
 @error_handler
 def list_streams(stream_type=StreamType.LIVE, offset=0, platform=Platform.ALL):
     utils.refresh_previews()
-    kodi.set_content('videos')
+    kodi.set_view('videos', set_sort=True)
     per_page = utils.get_items_per_page()
     streams = None
     all_items = list()
@@ -415,7 +415,7 @@ def list_followed(content, offset=0, cursor='MA=='):
     if content == StreamType.LIVE or content == StreamType.PLAYLIST:
         if content == StreamType.LIVE:
             utils.refresh_previews()
-        kodi.set_content('videos')
+        kodi.set_view('videos', set_sort=True)
         streams = None
         all_items = list()
         requests = 0
@@ -457,7 +457,7 @@ def list_followed(content, offset=0, cursor='MA=='):
         else:
             raise NotFound(i18n('playlists'))
     elif content == 'channels':
-        kodi.set_content('files')
+        kodi.set_view('files', set_sort=False)
         sorting = utils.get_sort('followed_channels')
         channels = None
         all_items = list()
@@ -496,7 +496,7 @@ def list_followed(content, offset=0, cursor='MA=='):
             return
         raise NotFound(i18n('channels'))
     elif content == 'games':
-        kodi.set_content('files')
+        kodi.set_view('files', set_sort=False)
         all_items = list()
         games = twitch.get_followed_games(username)
         if (games[Keys.TOTAL] > 0) and (Keys.FOLLOWS in games):
@@ -513,7 +513,7 @@ def list_followed(content, offset=0, cursor='MA=='):
             return
         raise NotFound(i18n('games'))
     elif content == 'clips':
-        kodi.set_content('videos')
+        kodi.set_view('videos', set_sort=True)
         sort_by = utils.get_sort('clips', 'by')
         all_items = list()
         requests = 0
@@ -551,7 +551,7 @@ def list_followed(content, offset=0, cursor='MA=='):
 @error_handler
 def list_channel_video_types(channel_id=None, channel_name=None, display_name=None, game=None):
     if (channel_id is None) and (game is None): return
-    kodi.set_content('files')
+    kodi.set_view('files', set_sort=False)
     context_menu = list()
     if channel_id == 'all' or game is not None:
         context_menu.extend(menu_items.change_period('top_videos'))
@@ -583,7 +583,7 @@ def list_channel_video_types(channel_id=None, channel_name=None, display_name=No
 @dispatcher.register(MODES.COLLECTIONS, args=['channel_id'], kwargs=['cursor'])
 @error_handler
 def list_collections(channel_id, cursor='MA=='):
-    kodi.set_content('files')
+    kodi.set_view('files', set_sort=False)
     all_items = list()
     requests = 0
     while (CURSOR_LIMIT >= (len(all_items) + 1)) and cursor and (requests < MAX_REQUESTS):
@@ -617,7 +617,7 @@ def list_collections(channel_id, cursor='MA=='):
 @dispatcher.register(MODES.COLLECTIONVIDEOLIST, args=['collection_id'])
 @error_handler
 def list_collection_videos(collection_id):
-    kodi.set_content('videos')
+    kodi.set_view('videos', set_sort=True)
     videos = twitch.get_collection_videos(collection_id)
     all_items = list()
     if (Keys.ITEMS in videos) and (len(videos[Keys.ITEMS]) > 0):
@@ -640,7 +640,7 @@ def list_collection_videos(collection_id):
 @dispatcher.register(MODES.CLIPSLIST, kwargs=['cursor', 'channel_name', 'game'])
 @error_handler
 def list_clips(cursor='MA==', channel_name=None, game=None):
-    kodi.set_content('videos')
+    kodi.set_view('videos', set_sort=True)
     sorting = utils.get_sort('clips')
     all_items = list()
     requests = 0
@@ -681,7 +681,7 @@ def list_clips(cursor='MA==', channel_name=None, game=None):
 @error_handler
 def list_channel_videos(broadcast_type, channel_id=None, game=None, offset=0):
     if (channel_id is None) and (game is None): return
-    kodi.set_content('videos')
+    kodi.set_view('videos', set_sort=True)
     per_page = utils.get_items_per_page()
     videos = None
     all_items = list()
@@ -736,7 +736,7 @@ def list_channel_videos(broadcast_type, channel_id=None, game=None, offset=0):
 @dispatcher.register(MODES.GAMELISTS, args=['game'])
 @error_handler
 def game_lists(game):
-    kodi.set_content('files')
+    kodi.set_view('files', set_sort=False)
     context_menu = list()
     context_menu.extend(menu_items.clear_previews())
     kodi.create_item({'label': i18n('live_channels'), 'path': {'mode': MODES.GAMESTREAMS, 'game': game}, 'context_menu': context_menu,
@@ -750,7 +750,7 @@ def game_lists(game):
 @error_handler
 def list_game_streams(game, offset=0):
     utils.refresh_previews()
-    kodi.set_content('videos')
+    kodi.set_view('videos', set_sort=True)
     per_page = utils.get_items_per_page()
     streams = None
     all_items = list()
@@ -794,7 +794,7 @@ def list_game_streams(game, offset=0):
 @error_handler
 def list_community_streams(community_id, offset=0):
     utils.refresh_previews()
-    kodi.set_content('videos')
+    kodi.set_view('videos', set_sort=True)
     per_page = utils.get_items_per_page()
     streams = None
     all_items = list()
@@ -1173,7 +1173,7 @@ def get_token_url():
         short_url = googl_url(request_url)
     except:
         short_url = None
-    prompt_url = short_url if short_url else request_url
+    prompt_url = short_url if short_url else i18n('authorize_url_fail')
     result = kodi.Dialog().ok(heading=i18n('authorize_heading'), line1=i18n('authorize_message'),
                               line2=' %s' % prompt_url)
     kodi.show_settings()

@@ -172,7 +172,8 @@ class JsonListItemConverter(object):
             context_menu.extend(menu_items.edit_follow(broadcaster[Keys.ID], name))
             # context_menu.extend(menu_items.edit_block(broadcaster[Keys.ID], name))
         context_menu.extend(menu_items.channel_videos(broadcaster[Keys.ID], broadcaster[Keys.NAME], name))
-        context_menu.extend(menu_items.go_to_game(clip[Keys.GAME]))
+        if clip[Keys.GAME]:
+            context_menu.extend(menu_items.go_to_game(clip[Keys.GAME]))
         context_menu.extend(menu_items.add_blacklist(broadcaster[Keys.ID], name))
         context_menu.extend(menu_items.add_blacklist(b64encode(clip[Keys.GAME].encode('utf-8', 'ignore')), clip[Keys.GAME], list_type='game'))
         context_menu.extend(menu_items.set_default_quality('clip', broadcaster[Keys.ID], broadcaster[Keys.NAME], clip_id=clip[Keys.SLUG]))
@@ -205,7 +206,8 @@ class JsonListItemConverter(object):
             context_menu.extend(menu_items.edit_follow(owner[Keys._ID], name))
             # context_menu.extend(menu_items.edit_block(owner[Keys._ID], name))
         context_menu.extend(menu_items.channel_videos(owner[Keys._ID], owner[Keys.NAME], name))
-        context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
+        if video[Keys.GAME]:
+            context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
         context_menu.extend(menu_items.add_blacklist(owner[Keys._ID], name))
         context_menu.extend(menu_items.add_blacklist(b64encode(video[Keys.GAME].encode('utf-8', 'ignore')), video[Keys.GAME], list_type='game'))
         context_menu.extend(menu_items.set_default_quality('video', owner[Keys._ID], owner[Keys.NAME], video[Keys.ITEM_ID]))
@@ -236,7 +238,8 @@ class JsonListItemConverter(object):
             context_menu.extend(menu_items.edit_follow(channel[Keys._ID], name))
             # context_menu.extend(menu_items.edit_block(channel[Keys._ID], name))
         context_menu.extend(menu_items.channel_videos(channel[Keys._ID], channel[Keys.NAME], name))
-        context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
+        if video[Keys.GAME]:
+            context_menu.extend(menu_items.go_to_game(video[Keys.GAME]))
         context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], name))
         context_menu.extend(menu_items.add_blacklist(b64encode(video[Keys.GAME].encode('utf-8', 'ignore')), video[Keys.GAME], list_type='game'))
         context_menu.extend(menu_items.set_default_quality('video', channel[Keys._ID], channel[Keys.NAME], video[Keys._ID]))
@@ -272,7 +275,8 @@ class JsonListItemConverter(object):
             context_menu.extend(menu_items.edit_follow(channel[Keys._ID], name))
             # context_menu.extend(menu_items.edit_block(channel[Keys._ID], name))
         context_menu.extend(menu_items.channel_videos(channel[Keys._ID], channel[Keys.NAME], name))
-        context_menu.extend(menu_items.go_to_game(channel[Keys.GAME]))
+        if channel[Keys.GAME]:
+            context_menu.extend(menu_items.go_to_game(channel[Keys.GAME]))
         context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], name))
         context_menu.extend(menu_items.add_blacklist(b64encode(channel[Keys.GAME].encode('utf-8', 'ignore')), channel[Keys.GAME], list_type='game'))
         context_menu.extend(menu_items.set_default_quality('stream', channel[Keys._ID], channel[Keys.NAME]))
