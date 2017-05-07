@@ -459,7 +459,7 @@ class BlacklistFilter(object):
                     identification = id_parent[key]
             if game_key and identification:
                 identification = identification if identification else ''
-            if identification:
+            if identification is not None:
                 if not is_blacklisted(identification, list_type=list_type):
                     filtered_results[result_key].append(result)
         return filtered_results
