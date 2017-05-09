@@ -497,18 +497,38 @@ def list_followed(content, offset=0, cursor='MA=='):
         raise NotFound(i18n('channels'))
     elif content == 'games':
         kodi.set_view('files', set_sort=False)
+        games = None
         all_items = list()
-        games = twitch.get_followed_games(username)
-        if (games[Keys.TOTAL] > 0) and (Keys.FOLLOWS in games):
-            filtered = \
-                blacklist_filter.by_type(games, Keys.FOLLOWS, game_key=Keys._ID, list_type='game')
-            for game in filtered[Keys.FOLLOWS]:
-                add_item = game if game not in all_items else None
-                if add_item:
-                    all_items.append(add_item)
+        requests = 0
+        while (per_page >= (len(all_items) + 1)) and (requests < MAX_REQUESTS):
+            requests += 1
+            games = twitch.get_followed_games(username, offset, REQUEST_LIMIT)
+            if (games[Keys.TOTAL] > 0) and (Keys.FOLLOWS in games):
+                filtered = \
+                    blacklist_filter.by_type(games, Keys.FOLLOWS, game_key=Keys._ID, list_type='game')
+                last = None
+                for game in filtered[Keys.FOLLOWS]:
+                    last = game
+                    if per_page >= (len(all_items) + 1):
+                        add_item = last if last not in all_items else None
+                        if add_item:
+                            all_items.append(add_item)
+                    else:
+                        break
+                offset = utils.get_offset(offset, last, games[Keys.FOLLOWS])
+                if (offset is None) or (games[Keys.TOTAL] <= offset) or (games[Keys.TOTAL] <= REQUEST_LIMIT):
+                    break
+            else:
+                break
+        has_items = False
         if len(all_items) > 0:
+            has_items = True
             for game in all_items:
                 kodi.create_item(converter.game_to_listitem(game))
+        if games[Keys.TOTAL] > (offset + 1):
+            has_items = True
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.FOLLOWED, 'content': content, 'offset': offset}))
+        if has_items:
             kodi.end_of_directory()
             return
         raise NotFound(i18n('games'))
