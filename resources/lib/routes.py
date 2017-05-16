@@ -857,9 +857,9 @@ def list_community_streams(community_id, offset=0):
     raise NotFound(i18n('streams'))
 
 
-@dispatcher.register(MODES.PLAY, kwargs=['name', 'channel_id', 'video_id', 'slug', 'ask', 'use_player'])
+@dispatcher.register(MODES.PLAY, kwargs=['name', 'channel_id', 'video_id', 'slug', 'ask', 'use_player', 'quality'])
 @error_handler
-def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_player=False):
+def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_player=False, quality=None):
     window = kodi.Window(10000)
 
     def _reset():
@@ -887,7 +887,7 @@ def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_pl
 
     try:
         _reset_live()
-        videos = item_dict = quality = None
+        videos = item_dict = None
         seek_time = 0
         if video_id:
             seek_id, _seek_time = _get_seek()
@@ -929,15 +929,17 @@ def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_pl
                 else:
                     videos = _videos
                 item_dict = converter.video_to_playitem(result)
-                quality = utils.get_default_quality('video', channel_id)
-                if quality:
-                    quality = quality[channel_id]['quality']
+                if not quality:
+                    quality = utils.get_default_quality('video', channel_id)
+                    if quality:
+                        quality = quality[channel_id]['quality']
             else:
                 raise SubRequired(channel_name)
         elif name and channel_id:
-            quality = utils.get_default_quality('stream', channel_id)
-            if quality:
-                quality = quality[channel_id]['quality']
+            if not quality:
+                quality = utils.get_default_quality('stream', channel_id)
+                if quality:
+                    quality = quality[channel_id]['quality']
             videos = twitch.get_live(name)
             result = twitch.get_channel_stream(channel_id)[Keys.STREAM]
             item_dict = converter.stream_to_playitem(result)
@@ -945,9 +947,10 @@ def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_pl
                 if result[Keys.CHANNEL][Keys.DISPLAY_NAME] else result[Keys.CHANNEL][Keys.NAME]
             _set_live(channel_id, name, channel_name)
         elif slug and channel_id:
-            quality = utils.get_default_quality('clip', channel_id)
-            if quality:
-                quality = quality[channel_id]['quality']
+            if not quality:
+                quality = utils.get_default_quality('clip', channel_id)
+                if quality:
+                    quality = quality[channel_id]['quality']
             videos = twitch.get_clip(slug)
             result = twitch.get_clip_by_slug(slug)
             item_dict = converter.clip_to_playitem(result)
