@@ -879,16 +879,17 @@ def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_pl
     def _set_playing():
         window.setProperty(kodi.get_id() + '-twitch_playing', str(True))
 
-    def _set_live(_id, _name, _display_name):
-        window.setProperty(kodi.get_id() + '-livestream', '%s,%s,%s' % (_id, _name, _display_name))
+    def _set_live(_id, _name, _display_name, _quality):
+        window.setProperty(kodi.get_id() + '-livestream', '%s,%s,%s,%s' % (_id, _name, _display_name, _quality))
 
     def _set_seek_time(value):
         window.setProperty(kodi.get_id() + '-seek_time', str(value))
 
     try:
         _reset_live()
-        videos = item_dict = None
+        videos = item_dict = channel_name = None
         seek_time = 0
+        is_live = False
         if video_id:
             seek_id, _seek_time = _get_seek()
             if seek_id == video_id:
@@ -945,7 +946,7 @@ def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_pl
             item_dict = converter.stream_to_playitem(result)
             channel_name = result[Keys.CHANNEL][Keys.DISPLAY_NAME] \
                 if result[Keys.CHANNEL][Keys.DISPLAY_NAME] else result[Keys.CHANNEL][Keys.NAME]
-            _set_live(channel_id, name, channel_name)
+            is_live = True
         elif slug and channel_id:
             if not quality:
                 quality = utils.get_default_quality('clip', channel_id)
@@ -961,6 +962,8 @@ def play(name=None, channel_id=None, video_id=None, slug=None, ask=False, use_pl
             if result:
                 play_url = result['url']
                 quality_label = result['name']
+                if is_live:
+                    _set_live(channel_id, name, channel_name, quality_label)
                 log_utils.log('Attempting playback using quality |%s| @ |%s|' % (quality_label, play_url), log_utils.LOGDEBUG)
                 item_dict['path'] = play_url
                 playback_item = kodi.create_item(item_dict, add=False)
