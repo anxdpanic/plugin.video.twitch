@@ -178,12 +178,12 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.add_blacklist(b64encode(clip[Keys.GAME].encode('utf-8', 'ignore')), clip[Keys.GAME], list_type='game'))
         context_menu.extend(menu_items.set_default_quality('clip', broadcaster[Keys.ID], broadcaster[Keys.NAME], clip_id=clip[Keys.SLUG]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'channel_id': broadcaster[Keys.ID], 'slug': clip[Keys.SLUG], 'ask': True, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'slug': clip[Keys.SLUG], 'ask': True, 'use_player': True}))
         info = self.get_plot_for_clip(clip)
         info.update({'duration': str(duration), 'year': year, 'date': date, 'premiered': date, 'mediatype': 'video'})
 
         return {'label': self.get_title_for_clip(clip),
-                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'channel_id': broadcaster[Keys.ID], 'slug': clip[Keys.SLUG]}),
+                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'slug': clip[Keys.SLUG]}),
                 'context_menu': context_menu,
                 'is_playable': True,
                 'info': info,
@@ -281,9 +281,9 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.add_blacklist(b64encode(channel[Keys.GAME].encode('utf-8', 'ignore')), channel[Keys.GAME], list_type='game'))
         context_menu.extend(menu_items.set_default_quality('stream', channel[Keys._ID], channel[Keys.NAME]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys._ID], 'ask': True, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'channel_id': channel[Keys._ID], 'ask': True, 'use_player': True}))
         return {'label': title,
-                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel[Keys.NAME], 'channel_id': channel[Keys._ID]}),
+                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'channel_id': channel[Keys._ID]}),
                 'context_menu': context_menu,
                 'is_playable': True,
                 'info': info,
