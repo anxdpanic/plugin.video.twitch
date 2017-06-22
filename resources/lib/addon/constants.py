@@ -153,6 +153,7 @@ class Keys:
     STATUS = 'status'
     STREAM = 'stream'
     STREAMS = 'streams'
+    STREAM_TYPE = 'stream_type'
     SWF_URL = 'swfUrl'
     TEAMS = 'teams'
     THUMBNAILS = 'thumbnails'
