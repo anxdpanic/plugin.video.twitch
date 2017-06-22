@@ -810,3 +810,7 @@ msgstr ""
 msgctxt "#30220"
 msgid "Failed to get url, try again shortly."
 msgstr ""
+
+msgctxt "#30221"
+msgid "Unknown"
+msgstr ""

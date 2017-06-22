@@ -56,6 +56,14 @@ class JsonListItemConverter(object):
 
     @staticmethod
     def game_to_listitem(game):
+        channel_count = i18n('unknown')
+        if Keys.CHANNELS in game:
+            channel_count = str(game[Keys.CHANNELS])
+        viewer_count = i18n('unknown')
+        if Keys.VIEWERS in game:
+            viewer_count = str(game[Keys.VIEWERS])
+        if Keys.GAME in game:
+            game = game[Keys.GAME]
         name = game[Keys.NAME].encode('utf-8')
         if not name:
             name = i18n('unknown_game')
@@ -66,11 +74,13 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.edit_follow_game(name))
         context_menu.extend(menu_items.add_blacklist(game[Keys._ID], name, list_type='game'))
+        plot = '{name}\r\n{channels}:{channel_count} {viewers}:{viewer_count}' \
+            .format(name=name, channels=i18n('channels'), channel_count=channel_count, viewers=i18n('viewers'), viewer_count=viewer_count)
         return {'label': name,
                 'path': kodi.get_plugin_url({'mode': MODES.GAMELISTS, 'game': name}),
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
                 'context_menu': context_menu,
-                'info': {u'plot': name, u'plotoutline': name, u'tagline': name}}
+                'info': {u'plot': plot, u'plotoutline': plot, u'tagline': plot}}
 
     def community_to_listitem(self, community):
         name = community[Keys.NAME].encode('utf-8')
@@ -266,6 +276,8 @@ class JsonListItemConverter(object):
         logo = channel.get(Keys.LOGO) if channel.get(Keys.LOGO) else Images.VIDEOTHUMB
         image = preview if preview else logo
         title = self.get_title_for_stream(stream)
+        if stream.get(Keys.STREAM_TYPE) == 'watch_party':
+            title = '[COLOR=magenta]{title}[/COLOR]'.format(title=title)
         info = self.get_plot_for_stream(stream)
         info.update({'mediatype': 'video'})
         context_menu = list()

@@ -74,7 +74,15 @@ def get_followed_streams(twitch_api):
         blacklist_filter.by_type(all_followed, Keys.STREAMS, parent_keys=[Keys.CHANNEL], id_key=Keys._ID, list_type='user')
     filtered = \
         blacklist_filter.by_type(filtered, Keys.STREAMS, game_key=Keys.GAME, list_type='game')
-    followed_tuples = [(stream[Keys.CHANNEL][Keys._ID], stream[Keys.CHANNEL][Keys.NAME], stream[Keys.CHANNEL][Keys.DISPLAY_NAME]) for stream in filtered[Keys.STREAMS]]
+    colorized = []
+    for stream in filtered[Keys.STREAMS]:
+        if stream.get(Keys.STREAM_TYPE) == 'watch_party':
+            if stream[Keys.CHANNEL].get(Keys.DISPLAY_NAME):
+                stream[Keys.CHANNEL][Keys.DISPLAY_NAME] = '[COLOR=magenta]{name}[/COLOR]'.format(name=stream[Keys.CHANNEL][Keys.DISPLAY_NAME])
+            if stream[Keys.CHANNEL].get(Keys.NAME):
+                stream[Keys.CHANNEL][Keys.NAME] = '[COLOR=magenta]{name}[/COLOR]'.format(name=stream[Keys.CHANNEL][Keys.NAME])
+        colorized.append(stream)
+    followed_tuples = [(stream[Keys.CHANNEL][Keys._ID], stream[Keys.CHANNEL][Keys.NAME], stream[Keys.CHANNEL][Keys.DISPLAY_NAME]) for stream in colorized]
     return followed_tuples
 
 
