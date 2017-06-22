@@ -304,14 +304,14 @@ def list_all_games(offset=0):
                 blacklist_filter.by_type(games, Keys.TOP, parent_keys=[Keys.GAME], game_key=Keys.NAME, list_type='game')
             last = None
             for game in filtered[Keys.TOP]:
-                last = game[Keys.GAME]
+                last = game
                 if per_page >= (len(all_items) + 1):
                     add_item = last if last not in all_items else None
                     if add_item:
                         all_items.append(add_item)
                 else:
                     break
-            offset = utils.get_offset(offset, last, games[Keys.TOP], key=Keys.GAME)
+            offset = utils.get_offset(offset, last[Keys.GAME], games[Keys.TOP], key=Keys.GAME)
             if (offset is None) or (games[Keys.TOTAL] <= offset) or (games[Keys.TOTAL] <= REQUEST_LIMIT):
                 break
         else:
