@@ -32,7 +32,7 @@ translations = kodi.Translations(STRINGS)
 i18n = translations.i18n
 
 if not xbmcvfs.exists(ADDON_DATA_DIR):
-    result = xbmcvfs.mkdir(ADDON_DATA_DIR)
+    mkdir_result = xbmcvfs.mkdir(ADDON_DATA_DIR)
 storage = json_store.JSONStore(ADDON_DATA_DIR + 'storage.json')
 
 
