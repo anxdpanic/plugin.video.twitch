@@ -24,7 +24,7 @@ from base64 import b64decode
 from common import kodi, json_store
 from strings import STRINGS
 from tccleaner import TextureCacheCleaner
-from constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, ADDON_DATA_DIR, REQUEST_LIMIT
+from constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, ADDON_DATA_DIR, REQUEST_LIMIT, COLORS
 from twitch.api.parameters import Boolean, Period, ClipPeriod, Direction, Language, SortBy, VideoSort
 import xbmcvfs
 
@@ -118,6 +118,12 @@ def get_offset(offset, item, items, key=None):
             return int(offset) + next(index for (index, _item) in enumerate(items) if item == _item[key])
     except:
         return None
+
+
+def get_vodcast_color():
+    color = int(kodi.get_setting('vodcast_highlight'))
+    color = COLORS.split('|')[color]
+    return color.decode('utf-8')
 
 
 def the_art(art=None):

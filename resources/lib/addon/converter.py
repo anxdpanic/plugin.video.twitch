@@ -19,7 +19,7 @@
 
 import menu_items
 from common import kodi
-from utils import the_art, TitleBuilder, i18n, get_oauth_token
+from utils import the_art, TitleBuilder, i18n, get_oauth_token, get_vodcast_color
 from constants import Keys, Images, MODES
 from base64 import b64encode
 
@@ -277,7 +277,8 @@ class JsonListItemConverter(object):
         image = preview if preview else logo
         title = self.get_title_for_stream(stream)
         if stream.get(Keys.STREAM_TYPE) == 'watch_party':
-            title = u'[COLOR=magenta]{title}[/COLOR]'.format(title=title)
+            color = get_vodcast_color()
+            title = u'[COLOR={color}]{title}[/COLOR]'.format(title=title, color=color)
         info = self.get_plot_for_stream(stream)
         info.update({'mediatype': 'video'})
         context_menu = list()
