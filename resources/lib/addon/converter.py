@@ -277,7 +277,7 @@ class JsonListItemConverter(object):
         image = preview if preview else logo
         title = self.get_title_for_stream(stream)
         if stream.get(Keys.STREAM_TYPE) == 'watch_party':
-            title = '[COLOR=magenta]{title}[/COLOR]'.format(title=title)
+            title = u'[COLOR=magenta]{title}[/COLOR]'.format(title=title)
         info = self.get_plot_for_stream(stream)
         info.update({'mediatype': 'video'})
         context_menu = list()

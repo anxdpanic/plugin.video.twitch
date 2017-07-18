@@ -78,9 +78,9 @@ def get_followed_streams(twitch_api):
     for stream in filtered[Keys.STREAMS]:
         if stream.get(Keys.STREAM_TYPE) == 'watch_party':
             if stream[Keys.CHANNEL].get(Keys.DISPLAY_NAME):
-                stream[Keys.CHANNEL][Keys.DISPLAY_NAME] = '[COLOR=magenta]{name}[/COLOR]'.format(name=stream[Keys.CHANNEL][Keys.DISPLAY_NAME])
+                stream[Keys.CHANNEL][Keys.DISPLAY_NAME] = u'[COLOR=magenta]{name}[/COLOR]'.format(name=stream[Keys.CHANNEL][Keys.DISPLAY_NAME])
             if stream[Keys.CHANNEL].get(Keys.NAME):
-                stream[Keys.CHANNEL][Keys.NAME] = '[COLOR=magenta]{name}[/COLOR]'.format(name=stream[Keys.CHANNEL][Keys.NAME])
+                stream[Keys.CHANNEL][Keys.NAME] = u'[COLOR=magenta]{name}[/COLOR]'.format(name=stream[Keys.CHANNEL][Keys.NAME])
         colorized.append(stream)
     followed_tuples = [(stream[Keys.CHANNEL][Keys._ID], stream[Keys.CHANNEL][Keys.NAME], stream[Keys.CHANNEL][Keys.DISPLAY_NAME]) for stream in colorized]
     return followed_tuples
