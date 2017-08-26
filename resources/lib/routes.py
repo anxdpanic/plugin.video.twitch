@@ -127,7 +127,7 @@ def main():
         kodi.create_item({'label': i18n('search'), 'path': {'mode': MODES.SEARCH}, 'info': {'plot': i18n('search')}})
     if show_menu('settings'):
         kodi.create_item({'label': i18n('settings'), 'path': {'mode': MODES.SETTINGS}, 'info': {'plot': i18n('settings')}})
-    kodi.end_of_directory()
+    kodi.end_of_directory(cache_to_disc=True)
 
 
 @dispatcher.register(MODES.BROWSE)
@@ -155,7 +155,7 @@ def browse():
                       'info': {'plot': '%s - %s' % (i18n('browse'), i18n('communities'))}})
     kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.GAMES},
                       'info': {'plot': '%s - %s' % (i18n('browse'), i18n('games'))}})
-    kodi.end_of_directory()
+    kodi.end_of_directory(cache_to_disc=True)
 
 
 @dispatcher.register(MODES.SEARCH)
@@ -172,7 +172,7 @@ def search():
                       'info': {'plot': '%s - %s' % (i18n('search'), i18n('games'))}})
     kodi.create_item({'label': i18n('video_id_url'), 'path': {'mode': MODES.NEWSEARCH, 'content': 'id_url'},
                       'info': {'plot': '%s - %s[CR]%s' % (i18n('search'), i18n('video_id_url'), i18n('search_id_url_description'))}})
-    kodi.end_of_directory()
+    kodi.end_of_directory(cache_to_disc=True)
 
 
 @dispatcher.register(MODES.NEWSEARCH, args=['content'])
@@ -266,7 +266,7 @@ def following():
     context_menu.extend(menu_items.change_sort_by('clips'))
     kodi.create_item({'label': i18n('clips'), 'path': {'mode': MODES.FOLLOWED, 'content': 'clips'}, 'context_menu': context_menu,
                       'info': {'plot': '%s - %s' % (i18n('following'), i18n('clips'))}})
-    kodi.end_of_directory()
+    kodi.end_of_directory(cache_to_disc=True)
 
 
 @dispatcher.register(MODES.FEATUREDSTREAMS)
