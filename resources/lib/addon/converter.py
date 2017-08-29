@@ -84,13 +84,15 @@ class JsonListItemConverter(object):
 
     def community_to_listitem(self, community):
         name = community[Keys.NAME].encode('utf-8')
+        display_name = community.get(Keys.DISPLAY_NAME)
+        display_name = display_name.encode('utf-8') if display_name else name
         _id = community[Keys._ID]
         image = community.get(Keys.AVATAR_IMAGE, Images.THUMB)
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.clear_previews())
-        context_menu.extend(menu_items.add_blacklist(_id, name, list_type='community'))
-        return {'label': name,
+        context_menu.extend(menu_items.add_blacklist(_id, display_name, list_type='community'))
+        return {'label': display_name,
                 'path': kodi.get_plugin_url({'mode': MODES.COMMUNITYSTREAMS, 'community_id': _id}),
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
                 'context_menu': context_menu,
@@ -543,7 +545,9 @@ class JsonListItemConverter(object):
             Keys.VIEWERS: str(community.get(Keys.VIEWERS)) if community.get(Keys.VIEWERS) else u'0',
             Keys.CHANNELS: str(community.get(Keys.CHANNELS)) if community.get(Keys.CHANNELS) else u'0'
         }
-        title = community.get(Keys.NAME) + u'\r\n'
+        display_name = community.get(Keys.DISPLAY_NAME)
+        display_name = display_name if display_name else community.get(Keys.NAME)
+        title = display_name + u'\r\n'
 
         plot_template = u'{title}{viewers}{channels}'
 
