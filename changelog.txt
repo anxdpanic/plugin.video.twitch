@@ -1,3 +1,6 @@
+2.0.2
+[fix/upd] use display names for communities
+
 2.0.1
 [fix] only open chat for live streams
 [fix] notify to retry if goo.gl url shortening fails for authentication
