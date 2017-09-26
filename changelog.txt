@@ -1,3 +1,5 @@
+[upd] string paths
+
 2.0.2
 [fix/upd] use display names for communities
 
