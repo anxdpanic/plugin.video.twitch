@@ -18,7 +18,7 @@
 """
 
 from common import kodi
-from twitch import scopes
+from twitch.oauth.v5 import scopes
 
 
 def __enum(**enums):
