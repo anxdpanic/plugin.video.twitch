@@ -1,4 +1,9 @@
-[upd] string paths
+2.1.0
+[chg] string paths
+[upd] required changes for script.module.python.twitch v2.0.0 refactor
+[add] inputstream.adaptive support for versions >= 2.0.10
+[add] Hebrew strings [Eng2Heb]
+
 
 2.0.2
 [fix/upd] use display names for communities
