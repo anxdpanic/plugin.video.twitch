@@ -864,6 +864,7 @@ def list_community_streams(community_id, offset=0):
 @error_handler
 def play(seek_time=0, channel_id=None, video_id=None, slug=None, ask=False, use_player=False, quality=None):
     window = kodi.Window(10000)
+    use_ia = utils.use_inputstream_adaptive()
 
     def _reset():
         window.clearProperty(kodi.get_id() + '-_seek')
@@ -965,13 +966,31 @@ def play(seek_time=0, channel_id=None, video_id=None, slug=None, ask=False, use_
             clip = False if slug is None else True
             result = converter.get_video_for_quality(videos, ask=ask, quality=quality, clip=clip)
             if result:
-                play_url = result['url']
                 quality_label = result['name']
+
+                request = None
+                play_url = None
+                if quality_label == 'Adaptive' and use_ia:
+                    if video_id:
+                        request = twitch.video_request(video_id)
+                    elif is_live:
+                        request = twitch.live_request(name)
+                    if request:
+                        play_url = request['url'] + utils.append_headers(request['headers'])
+
+                if not play_url:
+                    play_url = result['url']
+
                 if is_live:
                     _set_live(channel_id, name, channel_name, quality_label)
                 log_utils.log('Attempting playback using quality |%s| @ |%s|' % (quality_label, play_url), log_utils.LOGDEBUG)
                 item_dict['path'] = play_url
                 playback_item = kodi.create_item(item_dict, add=False)
+                if quality_label == 'Adaptive' and use_ia:
+                    playback_item.setContentLookup(False)
+                    playback_item.setMimeType('application/vnd.apple.mpegurl')
+                    playback_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
+                    playback_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
                 if (seek_time > 0) and (video_id):
                     _set_seek_time(seek_time)
                 _set_playing()
@@ -1081,6 +1100,9 @@ def edit_qualities(content_type, target_id=None, name=None, video_id=None, remov
         elif content_type == 'stream':
             videos = twitch.get_live(name)
         if videos:
+            use_ia = utils.use_inputstream_adaptive()
+            if use_ia and not any(v['name'] == 'Adaptive' for v in videos) and (content_type != 'clip'):
+                videos.append({'id': 'hls', 'name': 'Adaptive', 'bandwidth': -1, 'url': ''})
             result = converter.select_video_for_quality(videos)
             if result:
                 quality = result['name']
@@ -1195,6 +1217,15 @@ def install_ircchat():
         kodi.execute_builtin('RunPlugin(plugin://script.ircchat/)')
 
 
+@dispatcher.register(MODES.CONFIGUREIA)
+@error_handler
+def configure_ia():
+    use_ia = utils.use_inputstream_adaptive()
+    if use_ia:
+        if kodi.get_setting('video_support_ia_addon') == 'true':
+            kodi.Addon(id='inputstream.adaptive').openSettings()
+
+
 @dispatcher.register(MODES.TOKENURL)
 @error_handler
 def get_token_url():
@@ -1214,7 +1245,7 @@ def run(argv=None):
     if sys.argv:
         argv = sys.argv
     queries = kodi.parse_query(sys.argv[2])
-    log_utils.log('Version: |%s| Kodi Version: %s' % (kodi.get_version(), kodi.get_kodi_version()), log_utils.LOGDEBUG)
+    log_utils.log('Version: |%s| Application Version: %s' % (kodi.get_version(), kodi.get_kodi_version()), log_utils.LOGDEBUG)
     log_utils.log('Queries: |%s| Args: |%s|' % (queries, argv), log_utils.LOGDEBUG)
 
     # don't process params that don't match our url exactly

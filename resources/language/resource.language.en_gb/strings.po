@@ -818,3 +818,19 @@ msgstr ""
 msgctxt "#30222"
 msgid "VODCast highlight color"
 msgstr ""
+
+msgctxt "#30223"
+msgid "Use inputstream.adaptive"
+msgstr ""
+
+msgctxt "#30224"
+msgid "Configure inputstream.adaptive"
+msgstr ""
+
+msgctxt "#30225"
+msgid "inputstream.adaptive is enabled in the Twitch settings, however inputstream.adaptive appears to be disabled. Would you like to enable inputstream.adaptive now?"
+msgstr ""
+
+msgctxt "#30226"
+msgid "The installed inputstream.adaptive add-on does not meet the version requirement(%s), and has been disabled in the Twitch add-on settings."
+msgstr ""

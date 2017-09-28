@@ -335,6 +335,18 @@ class Twitch:
         results = self.usher.live(name)
         return self.error_check(results)
 
+    @api_error_handler
+    @cache.cache_method(cache_limit=cache.limit)
+    def live_request(self, name):
+        results = self.usher.live_request(name)
+        return self.error_check(results)
+
+    @api_error_handler
+    @cache.cache_method(cache_limit=cache.limit)
+    def video_request(self, video_id):
+        results = self.usher.video_request(video_id)
+        return self.error_check(results)
+
     def get_user_blocks(self):
         limit = 100
         offset = 0

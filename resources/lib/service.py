@@ -28,6 +28,25 @@ from addon.player import TwitchPlayer
 from addon import api, cache
 import xbmc
 
+adaptive_addon = False
+adaptive_builtin = False
+
+kodi_version = kodi.get_kodi_version()
+if (kodi_version.major >= 17) and (kodi_version.application == 'Kodi'):
+    if kodi.addon_enabled('inputstream.adaptive') is not None:
+        adaptive_addon = True
+    else:
+        adaptive_addon = False
+elif (kodi_version.major >= 16) and (kodi_version.minor >= 5) and (kodi_version.application == 'SPMC'):
+    adaptive_builtin = True
+else:
+    kodi.set_setting('video_quality_ia', 'false')
+
+kodi.set_setting('video_support_ia_builtin', str(adaptive_builtin).lower())
+kodi.set_setting('video_support_ia_addon', str(adaptive_addon).lower())
+log_utils.log('Startup: detected {0}, setting IA_SUPPORT_BUILTIN = {1}, IA_SUPPORT_ADDON = {2}'
+              .format(kodi_version, adaptive_builtin, adaptive_addon), log_utils.LOGDEBUG)
+
 try:
     cache.reset_cache()
 except:
