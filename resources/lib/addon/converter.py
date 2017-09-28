@@ -656,7 +656,7 @@ class JsonListItemConverter(object):
                 for video in videos:
                     if 'Adaptive' in video['name']:
                         return video
-            elif source:
+            if source:
                 for video in videos:
                     if 'chunked' in video['id']:
                         return video
