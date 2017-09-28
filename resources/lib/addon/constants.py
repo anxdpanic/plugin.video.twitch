@@ -60,7 +60,8 @@ MODES = __enum(
     CLIPSLIST='clips_list',
     GAMELISTS='game_lists',
     EDITSORTING='edit_sorting',
-    EDITLANGUAGES='edit_languages'
+    EDITLANGUAGES='edit_languages',
+    CONFIGUREIA='configure_ia'
 )
 
 LINE_LENGTH = 60

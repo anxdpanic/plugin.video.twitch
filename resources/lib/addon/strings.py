@@ -120,5 +120,7 @@ STRINGS = {
     'ok_to_resolve': 30217,
     'search_id_url_description': 30218,
     'authorize_url_fail': 30220,
-    'unknown': 30221
+    'unknown': 30221,
+    'adaptive_is_disabled': 30225,
+    'adaptive_version_check': 30226
 }
