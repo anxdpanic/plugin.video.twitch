@@ -1241,6 +1241,27 @@ def get_token_url():
     kodi.show_settings()
 
 
+@dispatcher.register(MODES.REVOKETOKEN)
+@error_handler
+def revoke_token():
+    token = utils.get_oauth_token()
+    if not token:
+        kodi.notify(msg=i18n('token_required'))
+        return
+    result = kodi.Dialog().yesno(heading=i18n('revoke_token'), line1=i18n('revoke_confirmation'))
+    if result:
+        response = twitch.client.revoke_token(token=token)
+
+        if 'error' in response:
+            if ('status' in response) and ('message' in response):
+                raise TwitchException(response)
+            raise TwitchException(response['error'])
+        else:
+            kodi.set_setting('oauth_token', '')
+            kodi.notify(msg=i18n('token_revoked'))
+            cache.reset_cache()
+
+
 def run(argv=None):
     if sys.argv:
         argv = sys.argv

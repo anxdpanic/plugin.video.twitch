@@ -3,9 +3,10 @@
     <!-- Login -->
     <category label="30127">
         <setting id="oauth_token" type="text" label="30099" default=""/>
-        <setting label="30135" id="show_token_url" type="action" action="RunPlugin(plugin://$ID/?mode=get_token_url)" option="close"/>
         <setting label="30132" type="lsep"/>
+        <setting label="30135" id="show_token_url" type="action" action="RunPlugin(plugin://$ID/?mode=get_token_url)" option="close"/>
         <setting label="30138" type="lsep"/>
+        <setting label="30227" id="revoke_token" type="action" action="RunPlugin(plugin://$ID/?mode=revoke_token)" option="close"/>
     </category>
     <!-- Main Menu -->
     <category label="30219">

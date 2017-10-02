@@ -61,7 +61,8 @@ MODES = __enum(
     GAMELISTS='game_lists',
     EDITSORTING='edit_sorting',
     EDITLANGUAGES='edit_languages',
-    CONFIGUREIA='configure_ia'
+    CONFIGUREIA='configure_ia',
+    REVOKETOKEN='revoke_token'
 )
 
 LINE_LENGTH = 60
