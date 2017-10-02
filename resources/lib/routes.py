@@ -23,7 +23,7 @@ from addon import utils, api, menu_items, cache
 from addon.common import kodi, log_utils
 from addon.common.url_dispatcher import URL_Dispatcher
 from addon.converter import JsonListItemConverter
-from addon.constants import MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, Keys, REQUEST_LIMIT, CURSOR_LIMIT, MAX_REQUESTS
+from addon.constants import MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, Keys, REQUEST_LIMIT, CURSOR_LIMIT, MAX_REQUESTS, ADAPTIVE_SOURCE_TEMPLATE
 from addon.googl_shorten import googl_url
 from addon.error_handling import error_handler
 from addon.twitch_exceptions import SubRequired, NotFound, PlaybackFailed, TwitchException
@@ -1102,7 +1102,7 @@ def edit_qualities(content_type, target_id=None, name=None, video_id=None, remov
         if videos:
             use_ia = utils.use_inputstream_adaptive()
             if use_ia and not any(v['name'] == 'Adaptive' for v in videos) and (content_type != 'clip'):
-                videos.append({'id': 'hls', 'name': 'Adaptive', 'bandwidth': -1, 'url': ''})
+                videos.append(ADAPTIVE_SOURCE_TEMPLATE)
             result = converter.select_video_for_quality(videos)
             if result:
                 quality = result['name']

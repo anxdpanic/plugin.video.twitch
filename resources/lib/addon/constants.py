@@ -75,6 +75,8 @@ COLORS = 'aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanch
 ICON = kodi.get_icon()
 FANART = kodi.get_fanart()
 
+ADAPTIVE_SOURCE_TEMPLATE = {'id': 'hls', 'name': 'Adaptive', 'bandwidth': -1, 'url': ''}
+
 CLIENT_ID = 'NjdlYnBmaHlvaWNhYjVrcjB5N3B6b2NzZm9oczd0eQ=='
 REDIRECT_URI = 'https://mrsprigster.github.io/Twitch-on-Kodi/token/'
 

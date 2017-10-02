@@ -20,7 +20,7 @@
 import menu_items
 from common import kodi
 from utils import the_art, TitleBuilder, i18n, get_oauth_token, get_vodcast_color, use_inputstream_adaptive
-from constants import Keys, Images, MODES
+from constants import Keys, Images, MODES, ADAPTIVE_SOURCE_TEMPLATE
 from base64 import b64encode
 
 
@@ -634,7 +634,7 @@ class JsonListItemConverter(object):
     def get_video_for_quality(self, videos, ask=True, quality=None, clip=False):
         use_ia = use_inputstream_adaptive()
         if use_ia and not any(v['name'] == 'Adaptive' for v in videos) and not clip:
-            videos.append({'id': 'hls', 'name': 'Adaptive', 'bandwidth': -1, 'url': ''})
+            videos.append(ADAPTIVE_SOURCE_TEMPLATE)
         if ask is True:
             return self.select_video_for_quality(videos)
         else:
