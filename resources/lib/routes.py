@@ -23,7 +23,7 @@ from addon import utils, api, menu_items, cache
 from addon.common import kodi, log_utils
 from addon.common.url_dispatcher import URL_Dispatcher
 from addon.converter import JsonListItemConverter
-from addon.constants import MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, Keys, REQUEST_LIMIT, CURSOR_LIMIT, MAX_REQUESTS
+from addon.constants import MODES, LINE_LENGTH, LIVE_PREVIEW_TEMPLATE, Keys, REQUEST_LIMIT, CURSOR_LIMIT, MAX_REQUESTS, ADAPTIVE_SOURCE_TEMPLATE
 from addon.googl_shorten import googl_url
 from addon.error_handling import error_handler
 from addon.twitch_exceptions import SubRequired, NotFound, PlaybackFailed, TwitchException
@@ -1102,7 +1102,7 @@ def edit_qualities(content_type, target_id=None, name=None, video_id=None, remov
         if videos:
             use_ia = utils.use_inputstream_adaptive()
             if use_ia and not any(v['name'] == 'Adaptive' for v in videos) and (content_type != 'clip'):
-                videos.append({'id': 'hls', 'name': 'Adaptive', 'bandwidth': -1, 'url': ''})
+                videos.append(ADAPTIVE_SOURCE_TEMPLATE)
             result = converter.select_video_for_quality(videos)
             if result:
                 quality = result['name']
@@ -1239,6 +1239,27 @@ def get_token_url():
     result = kodi.Dialog().ok(heading=i18n('authorize_heading'), line1=i18n('authorize_message'),
                               line2=' %s' % prompt_url)
     kodi.show_settings()
+
+
+@dispatcher.register(MODES.REVOKETOKEN)
+@error_handler
+def revoke_token():
+    token = utils.get_oauth_token()
+    if not token:
+        kodi.notify(msg=i18n('token_required'))
+        return
+    result = kodi.Dialog().yesno(heading=i18n('revoke_token'), line1=i18n('revoke_confirmation'))
+    if result:
+        response = twitch.client.revoke_token(token=token)
+
+        if 'error' in response:
+            if ('status' in response) and ('message' in response):
+                raise TwitchException(response)
+            raise TwitchException(response['error'])
+        else:
+            kodi.set_setting('oauth_token', '')
+            kodi.notify(msg=i18n('token_revoked'))
+            cache.reset_cache()
 
 
 def run(argv=None):

@@ -15,6 +15,7 @@
 [chg] string paths
 [fix] required changes for script.module.python.twitch v2.0.0 refactor
 [add] inputstream.adaptive support for inputstream.adaptive versions >= 2.0.10
+[add] Revoke token
 [add] Hebrew strings [Eng2Heb]
         </news>
         <assets>

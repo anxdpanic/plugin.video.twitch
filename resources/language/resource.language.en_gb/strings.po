@@ -834,3 +834,15 @@ msgstr ""
 msgctxt "#30226"
 msgid "The installed inputstream.adaptive add-on does not meet the version requirement(%s), and has been disabled in the Twitch add-on settings."
 msgstr ""
+
+msgctxt "#30227"
+msgid "Revoke Token"
+msgstr ""
+
+msgctxt "#30228"
+msgid "Are you sure you want to revoke your OAuth token?"
+msgstr ""
+
+msgctxt "#30229"
+msgid "OAuth token has been revoked."
+msgstr ""

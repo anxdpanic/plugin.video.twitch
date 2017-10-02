@@ -122,5 +122,8 @@ STRINGS = {
     'authorize_url_fail': 30220,
     'unknown': 30221,
     'adaptive_is_disabled': 30225,
-    'adaptive_version_check': 30226
+    'adaptive_version_check': 30226,
+    'revoke_token': 30227,
+    'revoke_confirmation': 30228,
+    'token_revoked': 30229
 }

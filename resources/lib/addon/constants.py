@@ -61,7 +61,8 @@ MODES = __enum(
     GAMELISTS='game_lists',
     EDITSORTING='edit_sorting',
     EDITLANGUAGES='edit_languages',
-    CONFIGUREIA='configure_ia'
+    CONFIGUREIA='configure_ia',
+    REVOKETOKEN='revoke_token'
 )
 
 LINE_LENGTH = 60
@@ -73,6 +74,8 @@ COLORS = 'aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanch
 
 ICON = kodi.get_icon()
 FANART = kodi.get_fanart()
+
+ADAPTIVE_SOURCE_TEMPLATE = {'id': 'hls', 'name': 'Adaptive', 'bandwidth': -1, 'url': ''}
 
 CLIENT_ID = 'NjdlYnBmaHlvaWNhYjVrcjB5N3B6b2NzZm9oczd0eQ=='
 REDIRECT_URI = 'https://mrsprigster.github.io/Twitch-on-Kodi/token/'
