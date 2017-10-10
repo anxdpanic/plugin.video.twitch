@@ -844,5 +844,9 @@ msgid "Are you sure you want to revoke your OAuth token?"
 msgstr ""
 
 msgctxt "#30229"
-msgid "OAuth token has been revoked."
+msgid "OAuth token has been revoked"
+msgstr ""
+
+msgctxt "#30230"
+msgid "OAuth token has been updated"
 msgstr ""
