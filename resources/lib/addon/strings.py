@@ -125,5 +125,6 @@ STRINGS = {
     'adaptive_version_check': 30226,
     'revoke_token': 30227,
     'revoke_confirmation': 30228,
-    'token_revoked': 30229
+    'token_revoked': 30229,
+    'token_updated': 30230
 }

@@ -1262,6 +1262,13 @@ def revoke_token():
             cache.reset_cache()
 
 
+@dispatcher.register(MODES.UPDATETOKEN, args=['oauth_token'])
+@error_handler
+def update_token(oauth_token):
+    kodi.set_setting('oauth_token', oauth_token)
+    kodi.notify(msg=i18n('token_updated'))
+
+
 def run(argv=None):
     if sys.argv:
         argv = sys.argv
