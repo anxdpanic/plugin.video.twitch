@@ -4,6 +4,8 @@
 [add] inputstream.adaptive support for versions >= 2.0.10
 [add] Revoke token
 [add] Update token route
+[add] notify at start and group notifications at start to live notification settings
+[add] logo and game to live notifications
 [add] Hebrew strings [Eng2Heb]
 
 2.0.2

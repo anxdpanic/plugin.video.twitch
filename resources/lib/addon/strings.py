@@ -126,5 +126,6 @@ STRINGS = {
     'revoke_token': 30227,
     'revoke_confirmation': 30228,
     'token_revoked': 30229,
-    'token_updated': 30230
+    'token_updated': 30230,
+    'started_streaming': 30231
 }
