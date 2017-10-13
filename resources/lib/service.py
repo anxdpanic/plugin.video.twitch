@@ -193,7 +193,9 @@ while not monitor.abortRequested():
                                     if monitor.waitForAbort(notification_sleep):
                                         abort = True
                                         break
-
+                        else:
+                            log_utils.log('Service: Now online |%s|' % current_live, log_utils.LOGDEBUG)
+                            set_online_followed(value=current_live)
     if monitor.waitForAbort(sleep_time) or abort:
         break
 
