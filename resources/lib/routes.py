@@ -1182,6 +1182,15 @@ def clear_list(list_type, list_name):
             kodi.notify(msg=i18n('cleared_list') % (list_type, list_name), sound=False)
 
 
+@dispatcher.register(MODES.REFRESH)
+@error_handler
+def refresh():
+    do_cache_reset = kodi.get_setting('refresh_cache') == 'true'
+    if do_cache_reset:
+        result = cache.reset_cache()
+    kodi.refresh_container()
+
+
 @dispatcher.register(MODES.SETTINGS, kwargs=['refresh'])
 @error_handler
 def settings(refresh=True):

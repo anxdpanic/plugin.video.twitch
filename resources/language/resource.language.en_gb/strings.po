@@ -862,3 +862,7 @@ msgstr ""
 msgctxt "#30233"
 msgid "Group notifications at start"
 msgstr ""
+
+msgctxt "#30234"
+msgid "Reset cache on Refresh"
+msgstr ""

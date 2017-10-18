@@ -115,6 +115,7 @@
     </category>
     <!-- Cache -->
     <category label="30120">
+        <setting label="30234" id="refresh_cache" type="bool" default="false"/>
         <setting label="30121" type="slider" id="cache_expire_time" default="3" range="0,60" option="int"/>
         <setting label="30122" id="reset_cache" type="action" action="RunPlugin(plugin://$ID/?mode=reset_cache)"/>
     </category>
