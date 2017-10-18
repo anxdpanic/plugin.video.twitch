@@ -63,7 +63,8 @@ MODES = __enum(
     EDITLANGUAGES='edit_languages',
     CONFIGUREIA='configure_ia',
     REVOKETOKEN='revoke_token',
-    UPDATETOKEN='update_token'
+    UPDATETOKEN='update_token',
+    REFRESH='refresh'
 )
 
 LINE_LENGTH = 60
