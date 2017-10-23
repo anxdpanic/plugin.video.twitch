@@ -17,30 +17,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-import copy
-import json
-import re
 from functools import wraps
 import utils
 from common import kodi, log_utils
 from twitch_exceptions import TwitchException, SubRequired, ResourceUnavailableException, NotFound, PlaybackFailed
 
 i18n = utils.i18n
-
-
-def __mask_client_id(client_id):
-    return client_id[:4] + ('*' * (len(client_id) - 8)) + client_id[(len(client_id) - 4):]
-
-
-def __mask_auth_header(auth_header):
-    token = re.search(r'(?:OAuth|Bearer)\s(?P<token>.+)', auth_header)
-    if token:
-        token = token.group('token')
-        masked_auth_header = re.sub(r'(OAuth|Bearer)\s.+', r'\1 ' + token[:4] + ('*' * (len(token) - 8)) + token[(len(token) - 4):], auth_header)
-    else:
-        masked_auth_header = '*' * 30
-
-    return masked_auth_header
 
 
 def error_handler(func):
@@ -80,22 +62,6 @@ def api_error_handler(func):
     def wrapper(*args, **kwargs):
         try:
             result = func(*args, **kwargs)
-            logging_result = copy.deepcopy(result)
-            try:
-                if 'headers' in logging_result:
-                    if 'Authorization' in logging_result['headers']:
-                        logging_result['headers']['Authorization'] = __mask_auth_header(logging_result['headers']['Authorization'])
-                    if 'Client-ID' in logging_result['headers']:
-                        logging_result['headers']['Client-ID'] = __mask_client_id(logging_result['headers']['Client-ID'])
-                if u'email' in logging_result:
-                    logging_result[u'email'] = 'addon@removed.org'
-                if u'token' in logging_result:
-                    if u'client_id' in logging_result[u'token']:
-                        logging_result[u'token'][u'client_id'] = __mask_client_id(logging_result[u'token'][u'client_id'])
-                logging_result = json.dumps(logging_result, indent=4)
-            except:
-                pass
-            log_utils.log(logging_result, log_utils.LOGDEBUG)
             return result
         except:
             raise
