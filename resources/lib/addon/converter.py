@@ -282,7 +282,7 @@ class JsonListItemConverter(object):
             color = get_vodcast_color()
             title = u'[COLOR={color}]{title}[/COLOR]'.format(title=title, color=color)
         info = self.get_plot_for_stream(stream)
-        info.update({'mediatype': 'video'})
+        info.update({'mediatype': 'video', 'playcount': 0})
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         name = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.NAME)
