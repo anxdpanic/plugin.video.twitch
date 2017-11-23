@@ -986,9 +986,13 @@ def play(seek_time=0, channel_id=None, video_id=None, slug=None, ask=False, use_
                 log_utils.log('Attempting playback using quality |%s| @ |%s|' % (quality_label, play_url), log_utils.LOGDEBUG)
                 item_dict['path'] = play_url
                 playback_item = kodi.create_item(item_dict, add=False)
-                if quality_label == 'Adaptive' and use_ia:
+                if not clip:
                     playback_item.setContentLookup(False)
-                    playback_item.setMimeType('application/vnd.apple.mpegurl')
+                    playback_item.setMimeType('application/x-mpegURL')
+                elif clip and play_url.endswith('mp4'):
+                    playback_item.setContentLookup(False)
+                    playback_item.setMimeType('video/mp4')
+                if quality_label == 'Adaptive' and use_ia:
                     playback_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
                     playback_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
                 if (seek_time > 0) and (video_id):
