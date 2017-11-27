@@ -4,6 +4,7 @@
 [fix] multiple reconnections to same stream
 [upd] don't show watched marks for streams
 [upd] leave api logging to script.module.python.twitch
+[add] channel_name to play route, can use channel_id or channel_name
 [add] inputstream.adaptive support for inputstream.adaptive versions >= 2.0.10
 [add] Revoke token
 [add] Update token route

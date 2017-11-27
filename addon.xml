@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
-<addon id='plugin.video.twitch' version='2.1.0~alpha6' name='Twitch' provider-name='A Talented Community'>
+<addon id='plugin.video.twitch' version='2.1.0~alpha7' name='Twitch' provider-name='A Talented Community'>
     <requires>
         <import addon='xbmc.python' version='2.20.0'/>
-        <import addon="script.module.python.twitch" version="2.0.0~alpha3"/>
+        <import addon="script.module.python.twitch" version="2.0.0~alpha4"/>
         <import addon="script.module.requests" version="2.9.1"/>
     </requires>
     <extension point='xbmc.python.pluginsource' library='resources/lib/routes.py'>
@@ -17,6 +17,7 @@
 [fix] multiple reconnections to same stream
 [upd] don't show watched marks for streams
 [upd] leave api logging to script.module.python.twitch
+[add] channel_name to play route, can use channel_id or channel_name
 [add] inputstream.adaptive support for inputstream.adaptive versions >= 2.0.10
 [add] Revoke token
 [add] Update token route

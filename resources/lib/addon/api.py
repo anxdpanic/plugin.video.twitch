@@ -112,6 +112,12 @@ class Twitch:
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
+    def get_user_ids(self, logins):
+        results = self.api.users.users(logins=logins)
+        return self.error_check(results)
+
+    @api_error_handler
+    @cache.cache_method(cache_limit=cache.limit)
     def get_featured_streams(self, offset, limit):
         results = self.api.streams.get_featured(offset=offset, limit=limit)
         return self.error_check(results)
