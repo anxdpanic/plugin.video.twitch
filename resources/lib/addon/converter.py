@@ -652,10 +652,7 @@ class JsonListItemConverter(object):
                         return video
             if ask:
                 return self.select_video_for_quality(videos)
-            elif use_ia:
-                for video in videos:
-                    if 'Adaptive' in video['name']:
-                        return video
+
             if source:
                 for video in videos:
                     if 'chunked' in video['id']:
