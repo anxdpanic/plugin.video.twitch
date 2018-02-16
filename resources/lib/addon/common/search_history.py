@@ -1,7 +1,7 @@
 """
     Original Source:
     https://github.com/jdf76/plugin.video.youtube/blob/master/resources/lib/youtube_plugin/kodion/utils/storage.py
-    @ commit: 3c8162337e4f02e80a3c0468aa41ad043eb8d8c2
+    @ commit: 5c32bc002d4a30350f8f44d7ca3970da9066b7ef
     Modified: 2018-02-16
 
     Copyright (C) bromix, plugin.video.youtube
