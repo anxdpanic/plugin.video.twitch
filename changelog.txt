@@ -1,4 +1,5 @@
-2.1.2
+2.2.0
+[add] Search history
 [fix] VodCast highlighting
 
 2.1.1
