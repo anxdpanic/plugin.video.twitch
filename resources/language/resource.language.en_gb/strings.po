@@ -866,3 +866,35 @@ msgstr ""
 msgctxt "#30234"
 msgid "Reset cache on Refresh"
 msgstr ""
+
+msgctxt "#30235"
+msgid "New search"
+msgstr ""
+
+msgctxt "#30236"
+msgid "Search history size"
+msgstr ""
+
+msgctxt "#30237"
+msgid "Clear search history?"
+msgstr ""
+
+msgctxt "#30238"
+msgid "Remove %s from search history?"
+msgstr ""
+
+msgctxt "#30239"
+msgid "Remove %s"
+msgstr ""
+
+msgctxt "#30240"
+msgid "Clear search history"
+msgstr ""
+
+msgctxt "#30241"
+msgid "Search history cleared"
+msgstr ""
+
+msgctxt "#30242"
+msgid "Removed %s from search history"
+msgstr ""
