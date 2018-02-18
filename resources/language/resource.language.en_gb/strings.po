@@ -898,3 +898,47 @@ msgstr ""
 msgctxt "#30242"
 msgid "Removed %s from search history"
 msgstr ""
+
+msgctxt "#30243"
+msgid "Maintenance"
+msgstr ""
+
+msgctxt "#30244"
+msgid "Search History"
+msgstr ""
+
+msgctxt "#30245"
+msgid "Delete streams search history"
+msgstr ""
+
+msgctxt "#30246"
+msgid "Delete channels search history"
+msgstr ""
+
+msgctxt "#30247"
+msgid "Delete games search history"
+msgstr ""
+
+msgctxt "#30248"
+msgid "Delete video id/url search history"
+msgstr ""
+
+msgctxt "#30249"
+msgid "Other"
+msgstr ""
+
+msgctxt "#30250"
+msgid "Delete storage.json"
+msgstr ""
+
+msgctxt "#30251"
+msgid "Are you sure you want to delete %s?"
+msgstr ""
+
+msgctxt "#30252"
+msgid "Deleting %s succeeded"
+msgstr ""
+
+msgctxt "#30253"
+msgid "Deleting %s failed"
+msgstr ""
