@@ -134,5 +134,8 @@ STRINGS = {
     'remove_': 30239,
     'clear_search_history': 30240,
     'search_history_cleared': 30241,
-    'removed_from_search_history': 30242
+    'removed_from_search_history': 30242,
+    'confirm_file_delete_': 30251,
+    'delete_succeeded_': 30252,
+    'delete_failed_': 30253
 }

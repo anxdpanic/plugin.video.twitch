@@ -66,6 +66,10 @@
         <setting label="30090" type="lsep"/>
         <setting label="30189" id="add_language" type="action" action="RunPlugin(plugin://$ID/?mode=edit_languages&amp;action=add)"/>
         <setting label="30190" id="remove_language" type="action" action="RunPlugin(plugin://$ID/?mode=edit_languages&amp;action=remove)"/>
+
+        <setting label="30120" type="lsep"/>
+        <setting label="30234" id="refresh_cache" type="bool" default="false"/>
+        <setting label="30121" type="slider" id="cache_expire_time" default="3" range="0,60" option="int"/>
     </category>
     <!-- Lists -->
     <category label="30167">
@@ -114,11 +118,17 @@
         <setting id="notify_refresh" type="bool" label="30087" default="true"
                  enable="eq(-6,true)" visible="eq(-6,true)"/>
     </category>
-    <!-- Cache -->
-    <category label="30120">
-        <setting label="30234" id="refresh_cache" type="bool" default="false"/>
-        <setting label="30121" type="slider" id="cache_expire_time" default="3" range="0,60" option="int"/>
+    <!-- Maintenance -->
+    <category label="30243">
+        <setting label="30120" type="lsep"/>
         <setting label="30122" id="reset_cache" type="action" action="RunPlugin(plugin://$ID/?mode=reset_cache)"/>
+        <setting label="30244" type="lsep"/>
+        <setting label="30245" id="delete_streams_search" type="action" action="RunPlugin(plugin://$ID/?mode=maintain&amp;sub_mode=delete&amp;file_type=streams_search)"/>
+        <setting label="30246" id="delete_channels_search" type="action" action="RunPlugin(plugin://$ID/?mode=maintain&amp;sub_mode=delete&amp;file_type=channels_search)"/>
+        <setting label="30247" id="delete_games_search" type="action" action="RunPlugin(plugin://$ID/?mode=maintain&amp;sub_mode=delete&amp;file_type=games_search)"/>
+        <setting label="30248" id="delete_idurl_search" type="action" action="RunPlugin(plugin://$ID/?mode=maintain&amp;sub_mode=delete&amp;file_type=id_url_search)"/>
+        <setting label="30249" type="lsep"/>
+        <setting label="30250" id="delete_storage_json" type="action" action="RunPlugin(plugin://$ID/?mode=maintain&amp;sub_mode=delete&amp;file_type=storage_json)"/>
     </category>
     <!-- Developer -->
     <category label="30118">

@@ -1,5 +1,6 @@
 2.2.0
 [add] Search history
+[add] Settings - Maintenance
 [fix] VodCast highlighting
 
 2.1.1

@@ -67,7 +67,8 @@ MODES = __enum(
     REFRESH='refresh',
     LISTSEARCH='list_search',
     CLEARSEARCHHISTORY='clear_search_history',
-    REMOVESEARCHHISTORY='remove_search_history'
+    REMOVESEARCHHISTORY='remove_search_history',
+    MAINTAIN='maintain'
 )
 
 LINE_LENGTH = 60
