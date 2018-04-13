@@ -78,6 +78,8 @@ class TwitchPlayer(xbmc.Player):
 
     def onPlayBackStopped(self):
         log_utils.log('Player: |onPlayBackStopped|', log_utils.LOGDEBUG)
+        if utils.irc_enabled():
+            xbmc.executebuiltin('Dialog.Close(all,true)')
         self.reset()
 
     def onPlayBackEnded(self):
