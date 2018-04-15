@@ -8,17 +8,16 @@
     <extension point='xbmc.python.pluginsource' library='resources/lib/routes.py'>
         <provides>video</provides>
     </extension>
-    <extension point="xbmc.service" library="resources/lib/service.py"/>
+    <extension point="xbmc.service" library="resources/lib/service.py" start="login"/>
     <extension point='xbmc.addon.metadata'>
         <platform>all</platform>
         <news>
+2.2.2
+[upd] close chat on playback stopped [ccope]
+[upd] service start parameter to login
+
 2.2.1
 [add] allow Adaptive as default quality
-
-2.2.0
-[add] Search history
-[add] Settings - Maintenance
-[fix] VodCast highlighting
         </news>
         <assets>
             <icon>icon.png</icon>
