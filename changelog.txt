@@ -1,4 +1,5 @@
 2.2.2
+[add] refresh item to streams search when there are no results
 [upd] close chat on playback stopped [ccope]
 [upd] service start parameter to login
 
