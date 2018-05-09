@@ -44,6 +44,5 @@
         <description lang='nb_no'>Se dine favorittstrømmere!</description>
         <summary lang='pl_pl'>Twitch video plugin</summary>
         <description lang='pl_pl'>Oglądaj ulubione programy TwitchTV!</description>
-        <size>193557</size>
     </extension>
 </addon>
