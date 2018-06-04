@@ -576,7 +576,10 @@ class TitleBuilder(object):
     @staticmethod
     def clean_title_value(value):
         if isinstance(value, basestring):
-            return unicode(value).replace('\r\n', ' ').strip()
+            value = value.replace(u'\r\n', u' ')
+            value = value.replace(u'\n', u' ')
+            value = value.strip()
+            return value
         else:
             return value
 
