@@ -1,6 +1,5 @@
 2.2.3
 [add] Thumbnail size, Settings - General
-[add] Backward compat. play routes with deprecated notice, fix for Kore/Yatse still using v1 routes
 [fix] encoding and replace in clean_title_value
 [fix] unplayable videos on some systems, set curl opt verifypeer=false on playback urls
 

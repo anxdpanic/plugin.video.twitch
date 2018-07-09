@@ -17,7 +17,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-import re
 import sys
 import traceback
 from addon import utils, api, menu_items, cache
@@ -1424,9 +1423,7 @@ def run(argv=None):
 
     # don't process params that don't match our url exactly
     plugin_url = 'plugin://%s/' % kodi.get_id()
-    path_arg = argv[0]
-
-    if not path_arg.startswith(plugin_url):
+    if argv[0] != plugin_url:
         return
     try:
         global twitch
@@ -1437,22 +1434,6 @@ def run(argv=None):
         return
 
     mode = queries.get('mode', None)
-
-    if re.match(r'^%splay(?:Live|Video)/[^/]+/$' % plugin_url, path_arg):
-        match = re.search(r'%splayLive/(?P<channel_name>[^/]+)/' % plugin_url, path_arg)
-        if match:
-            mode = MODES.PLAY
-            queries['channel_name'] = match.group('channel_name')
-            log_utils.log('Deprecated use of {plugin_url}playLive/:channel_name/, use {plugin_url}?mode={mode}&channel_name=:channel_name'
-                          .format(plugin_url=plugin_url, mode=mode), log_utils.LOGINFO)
-        else:
-            match = re.search(r'%splayVideo/(?P<video_id>[^/]+)/' % plugin_url, path_arg)
-            if match:
-                mode = MODES.PLAY
-                queries['video_id'] = match.group('video_id')
-                log_utils.log('Deprecated use of {plugin_url}playVideo/:video_id/, use {plugin_url}?mode={mode}&video_id=:video_id'
-                              .format(plugin_url=plugin_url, mode=mode), log_utils.LOGINFO)
-
     dispatcher.dispatch(mode, queries)
 
 
