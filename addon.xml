@@ -12,10 +12,8 @@
     <extension point='xbmc.addon.metadata'>
         <platform>all</platform>
         <news>
-2.2.3
-[add] Thumbnail size, Settings - General
-[fix] encoding and replace in clean_title_value
-[fix] unplayable videos on some systems, set curl opt verifypeer=false on playback urls
+2.2.4
+[fix] VOD's error 404
         </news>
         <assets>
             <icon>icon.png</icon>

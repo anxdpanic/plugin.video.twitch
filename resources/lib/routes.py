@@ -966,7 +966,10 @@ def play(seek_time=0, channel_id=None, video_id=None, slug=None, ask=False, use_
             video_id = result[Keys._ID]
             channel_id = result[Keys.CHANNEL][Keys._ID]
             channel_name = result[Keys.CHANNEL][Keys.DISPLAY_NAME] if result[Keys.CHANNEL][Keys.DISPLAY_NAME] else result[Keys.CHANNEL][Keys.NAME]
-            extra_info = twitch._get_video_by_id(video_id)
+            try:
+                extra_info = twitch._get_video_by_id(video_id)
+            except TwitchException:
+                extra_info = dict()
             if twitch.access_token:
                 try:
                     subscribed = twitch.check_subscribed(channel_id)
