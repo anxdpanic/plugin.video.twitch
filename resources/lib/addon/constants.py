@@ -157,6 +157,7 @@ class Keys:
     PROFILE_BANNER = 'profile_banner'
     PUBLISHED_AT = 'published_at'
     QUALITY = 'quality'
+    RESOLUTIONS = 'resolutions'
     RTMP = 'rtmp'
     RTMP_URL = 'rtmpUrl'
     SIG = 'sig'
