@@ -17,7 +17,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-import service
+from twitch_addon import service
 
 service.run()
-

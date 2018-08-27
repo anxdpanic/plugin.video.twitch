@@ -18,6 +18,6 @@
 """
 import sys
 
-import routes
+from twitch_addon import router
 
-routes.run(sys.argv)
+router.run(sys.argv)
