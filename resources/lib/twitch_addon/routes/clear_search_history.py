@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from ..addon import utils
 from ..addon.common import kodi
+from ..addon.constants import REFRESH_SCRIPT
 from ..addon.utils import i18n
 
 
@@ -12,4 +13,4 @@ def route(search_type, refresh=False):
             history.clear()
             kodi.notify(msg=i18n('search_history_cleared'), sound=False)
             if refresh:
-                kodi.refresh_container()
+                kodi.execute_builtin('RunScript(%s)' % REFRESH_SCRIPT)

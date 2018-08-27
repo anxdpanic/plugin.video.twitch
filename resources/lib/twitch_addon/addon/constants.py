@@ -83,6 +83,8 @@ FANART = kodi.get_fanart()
 
 ADAPTIVE_SOURCE_TEMPLATE = {'id': 'hls', 'name': 'Adaptive', 'bandwidth': -1, 'url': ''}
 
+REFRESH_SCRIPT = 'special://home/addons/plugin.video.twitch/resources/lib/twitch_addon/refresh.py'
+
 CLIENT_ID = 'NjdlYnBmaHlvaWNhYjVrcjB5N3B6b2NzZm9oczd0eQ=='
 REDIRECT_URI = 'https://mrsprigster.github.io/Twitch-on-Kodi/token/'
 

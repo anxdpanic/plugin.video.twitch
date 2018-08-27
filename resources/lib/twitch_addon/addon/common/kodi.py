@@ -31,7 +31,11 @@ import re
 import json
 import time
 
-addon = xbmcaddon.Addon()
+try:
+    addon = xbmcaddon.Addon()
+except RuntimeError:
+    addon = xbmcaddon.Addon('plugin.video.twitch')  # RunScript
+
 get_setting = addon.getSetting
 show_settings = addon.openSettings
 execute_builtin = xbmc.executebuiltin

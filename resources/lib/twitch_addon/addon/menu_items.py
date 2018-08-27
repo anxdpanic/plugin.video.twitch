@@ -19,7 +19,7 @@
 
 import utils
 from common import kodi
-from constants import MODES
+from constants import MODES, REFRESH_SCRIPT
 
 i18n = utils.i18n
 
@@ -63,7 +63,7 @@ def go_to_game(game):
 
 
 def refresh():
-    return run_plugin(i18n('refresh'), {'mode': MODES.REFRESH})
+    return [(i18n('refresh'), 'RunScript(%s)' % REFRESH_SCRIPT)]
 
 
 def edit_follow(channel_id, display_name):
