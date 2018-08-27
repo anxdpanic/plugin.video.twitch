@@ -1420,7 +1420,7 @@ def maintain(sub_mode, file_type):
 
 
 def run(argv=None):
-    if sys.argv:
+    if not argv and sys.argv:
         argv = sys.argv
     queries = kodi.parse_query(sys.argv[2])
     log_utils.log('Version: |%s| Application Version: %s' % (kodi.get_version(), kodi.get_kodi_version()), log_utils.LOGDEBUG)
@@ -1440,7 +1440,3 @@ def run(argv=None):
 
     mode = queries.get('mode', None)
     dispatcher.dispatch(mode, queries)
-
-
-if __name__ == '__main__':
-    sys.exit(run())

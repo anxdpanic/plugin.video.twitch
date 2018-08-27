@@ -1,1 +1,1 @@
-__all__ = ['addon']
+__all__ = ['addon', 'routes', 'service']
