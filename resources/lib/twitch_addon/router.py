@@ -17,7 +17,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-import sys
 import traceback
 from .addon import api
 from .addon.common import kodi, log_utils
@@ -304,10 +303,8 @@ def _maintain(sub_mode, file_type):
     maintain.route(sub_mode, file_type)
 
 
-def run(argv=None):
-    if not argv and sys.argv:
-        argv = sys.argv
-    queries = kodi.parse_query(sys.argv[2])
+def run(argv):
+    queries = kodi.parse_query(argv[2])
     log_utils.log('Version: |%s| Application Version: %s' % (kodi.get_version(), kodi.get_kodi_version()), log_utils.LOGDEBUG)
     log_utils.log('Queries: |%s| Args: |%s|' % (queries, argv), log_utils.LOGDEBUG)
 
