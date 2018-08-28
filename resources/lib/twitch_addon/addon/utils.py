@@ -20,14 +20,18 @@
 import re
 import time
 import urllib
-from datetime import datetime
+
 from base64 import b64decode
-from common import kodi, json_store
-from strings import STRINGS
-from tccleaner import TextureCacheCleaner
-from constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, ADDON_DATA_DIR, REQUEST_LIMIT, COLORS, Keys
-from search_history import StreamsSearchHistory, ChannelsSearchHistory, GamesSearchHistory, IdUrlSearchHistory
+from datetime import datetime
+
+from .common import kodi, json_store
+from .strings import STRINGS
+from .tccleaner import TextureCacheCleaner
+from .constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, ADDON_DATA_DIR, REQUEST_LIMIT, COLORS, Keys
+from .search_history import StreamsSearchHistory, ChannelsSearchHistory, GamesSearchHistory, IdUrlSearchHistory
+
 from twitch.api.parameters import Boolean, Period, ClipPeriod, Direction, Language, SortBy, VideoSort
+
 import xbmcvfs
 
 translations = kodi.Translations(STRINGS)

@@ -17,9 +17,9 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-import utils
-from common import kodi
-from constants import MODES, REFRESH_SCRIPT
+from . import utils
+from .common import kodi
+from .constants import MODES, REFRESH_SCRIPT
 
 i18n = utils.i18n
 

@@ -21,11 +21,13 @@ from ast import literal_eval
 from datetime import datetime
 from itertools import izip_longest
 from urllib2 import quote, unquote
-from addon.common import kodi, log_utils
-from addon.constants import Keys
-from addon.utils import BlacklistFilter, i18n, get_stamp_diff, get_vodcast_color
-from addon.player import TwitchPlayer
-from addon import api, cache
+
+from .addon.common import kodi, log_utils
+from .addon.constants import Keys
+from .addon.utils import BlacklistFilter, i18n, get_stamp_diff, get_vodcast_color
+from .addon.player import TwitchPlayer
+from .addon import api, cache
+
 import xbmc
 
 logos = dict()

@@ -18,13 +18,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import functools
-import log_utils
 import time
 import cPickle as pickle
 import hashlib
 import os
 import shutil
-import kodi
+
+from . import kodi, log_utils
 
 cache_path = kodi.translate_path('special://temp/%s/cache/' % kodi.get_id())
 try:

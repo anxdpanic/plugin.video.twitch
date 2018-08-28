@@ -19,16 +19,16 @@
 
 import json
 
-import utils
-import cache
-from common import kodi, log_utils
-from error_handling import api_error_handler
-from constants import Keys, SCOPES
+from . import cache, utils
+from .common import kodi, log_utils
+from .constants import Keys, SCOPES
+from .error_handling import api_error_handler
+from .twitch_exceptions import TwitchException
+
 from twitch import queries as twitch_queries
 from twitch import oauth
 from twitch.api import usher
 from twitch.api import v5 as twitch
-from twitch_exceptions import TwitchException
 from twitch.api.parameters import Boolean, Period, ClipPeriod, Direction, Language, SortBy, StreamType, VideoSort
 
 i18n = utils.i18n

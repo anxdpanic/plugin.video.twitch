@@ -17,11 +17,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-import menu_items
-from common import kodi
-from utils import the_art, TitleBuilder, i18n, get_oauth_token, get_vodcast_color, use_inputstream_adaptive, get_thumbnail_size
-from constants import Keys, Images, MODES, ADAPTIVE_SOURCE_TEMPLATE
 from base64 import b64encode
+
+from . import menu_items
+from .common import kodi
+from .constants import Keys, Images, MODES, ADAPTIVE_SOURCE_TEMPLATE
+from .utils import the_art, TitleBuilder, i18n, get_oauth_token, get_vodcast_color, use_inputstream_adaptive, get_thumbnail_size
 
 
 class PlaylistConverter(object):

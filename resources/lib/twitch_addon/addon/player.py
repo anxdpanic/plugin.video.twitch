@@ -18,11 +18,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
+from . import api, utils, cache
+from .common import kodi, log_utils
+from .constants import Keys, LINE_LENGTH
+from .converter import JsonListItemConverter
+
 import xbmc
-from common import kodi, log_utils
-import api, utils, cache
-from constants import Keys, LINE_LENGTH
-from converter import JsonListItemConverter
 
 ID = kodi.get_id()
 monitor = xbmc.Monitor()

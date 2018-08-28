@@ -18,12 +18,14 @@
 """
 
 import traceback
+
 from .addon import api
 from .addon.common import kodi, log_utils
 from .addon.common.url_dispatcher import URL_Dispatcher
 from .addon.constants import MODES
 from .addon.error_handling import error_handler
 from .addon.utils import i18n
+
 from twitch.api.parameters import StreamType, Platform
 
 dispatcher = URL_Dispatcher()

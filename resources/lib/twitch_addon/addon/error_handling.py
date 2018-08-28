@@ -18,9 +18,10 @@
 """
 
 from functools import wraps
-import utils
-from common import kodi, log_utils
-from twitch_exceptions import TwitchException, SubRequired, ResourceUnavailableException, NotFound, PlaybackFailed
+
+from . import utils
+from .common import kodi, log_utils
+from .twitch_exceptions import TwitchException, SubRequired, ResourceUnavailableException, NotFound, PlaybackFailed
 
 i18n = utils.i18n
 

@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
-from common import cache, kodi
+from .common import cache, kodi
 
 cache_function = cache.cache_function
 cache_method = cache.cache_method

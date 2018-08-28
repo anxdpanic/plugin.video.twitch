@@ -17,7 +17,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-from common import kodi
+from .common import kodi
+
 from twitch.oauth.v5 import scopes
 
 

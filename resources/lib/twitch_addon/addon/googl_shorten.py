@@ -17,10 +17,11 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-import requests
 import json
-from common import log_utils
+import requests
 from base64 import b64decode
+
+from .common import log_utils
 
 __key = 'QUl6YVN5RE1qUHVQTzExNDAxc19Ydl95TVNaa0hTUVZTRUwzV1R3'
 

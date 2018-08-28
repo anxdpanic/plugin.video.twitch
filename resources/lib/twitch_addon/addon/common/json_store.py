@@ -18,7 +18,9 @@
 """
 
 import json
-import log_utils
+
+from . import log_utils
+
 import xbmcvfs
 
 
