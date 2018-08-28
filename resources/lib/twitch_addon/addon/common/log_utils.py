@@ -17,6 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+from six import string_types, PY2
+
 import time
 
 from . import kodi
@@ -26,8 +28,8 @@ from xbmc import LOGDEBUG, LOGERROR, LOGFATAL, LOGINFO, LOGNONE, LOGNOTICE, LOGS
 
 def log(msg, level=LOGDEBUG):
     try:
-        if isinstance(msg, unicode):
-            msg = '%s (ENCODED)' % (msg.encode('utf-8'))
+        if isinstance(msg, string_types) and PY2:
+            msg = '%s (ENCODED)' % msg.encode('utf-8')
         kodi.__log('%s: %s' % (kodi.get_name(), msg), level)
     except Exception as e:
         try:

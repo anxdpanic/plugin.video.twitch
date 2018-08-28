@@ -17,10 +17,11 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
+from six.moves import zip_longest as izip_longest
+from six.moves.urllib.parse import quote, unquote
+
 from ast import literal_eval
 from datetime import datetime
-from itertools import izip_longest
-from urllib2 import quote, unquote
 
 from .addon.common import kodi, log_utils
 from .addon.constants import Keys
@@ -105,7 +106,11 @@ def run():
                                         display_name = followed_tuple[2] if followed_tuple[2] else followed_tuple[1]
                                         game = '' if not followed_tuple[3] else followed_tuple[3]
                                         icon = None if not logos.get(followed_tuple[0]) else logos.get(followed_tuple[0])
-                                        kodi.notify(display_name, i18n('started_streaming') % (display_name, game), duration=notification_duration, sound=make_audible, icon_path=icon)
+                                        kodi.notify(display_name,
+                                                    i18n('started_streaming') %
+                                                    (display_name, game),
+                                                    duration=notification_duration,
+                                                    sound=make_audible, icon_path=icon)
                                         if monitor.waitForAbort(notification_sleep):
                                             abort = True
                                             break

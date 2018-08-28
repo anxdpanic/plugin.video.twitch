@@ -460,14 +460,14 @@ class JsonListItemConverter(object):
     def get_plot_for_stream(self, stream, include_title=True):
         channel = stream[Keys.CHANNEL]
 
-        headings = {Keys.GAME: i18n('game').decode('utf-8'),
-                    Keys.VIEWERS: i18n('viewers').decode('utf-8'),
-                    Keys.BROADCASTER_LANGUAGE: i18n('language').decode('utf-8'),
-                    Keys.MATURE: i18n('mature').decode('utf-8'),
-                    Keys.PARTNER: i18n('partner').decode('utf-8'),
-                    Keys.DELAY: i18n('delay').decode('utf-8')}
+        headings = {Keys.GAME: i18n('game'),
+                    Keys.VIEWERS: i18n('viewers'),
+                    Keys.BROADCASTER_LANGUAGE: i18n('language'),
+                    Keys.MATURE: i18n('mature'),
+                    Keys.PARTNER: i18n('partner'),
+                    Keys.DELAY: i18n('delay')}
         info = {
-            Keys.GAME: stream.get(Keys.GAME) if stream.get(Keys.GAME) else i18n('unknown_game').decode('utf-8'),
+            Keys.GAME: stream.get(Keys.GAME) if stream.get(Keys.GAME) else i18n('unknown_game'),
             Keys.VIEWERS: str(stream.get(Keys.VIEWERS)) if stream.get(Keys.VIEWERS) else u'0',
             Keys.BROADCASTER_LANGUAGE: channel.get(Keys.BROADCASTER_LANGUAGE)
             if channel.get(Keys.BROADCASTER_LANGUAGE) else None,
@@ -491,12 +491,12 @@ class JsonListItemConverter(object):
         return {u'plot': plot, u'plotoutline': plot, u'tagline': _title.rstrip('\r\n')}
 
     def get_plot_for_channel(self, channel):
-        headings = {Keys.VIEWS: i18n('views').decode('utf-8'),
-                    Keys.BROADCASTER_LANGUAGE: i18n('language').decode('utf-8'),
-                    Keys.MATURE: i18n('mature').decode('utf-8'),
-                    Keys.PARTNER: i18n('partner').decode('utf-8'),
-                    Keys.DELAY: i18n('delay').decode('utf-8'),
-                    Keys.FOLLOWERS: i18n('followers').decode('utf-8')}
+        headings = {Keys.VIEWS: i18n('views'),
+                    Keys.BROADCASTER_LANGUAGE: i18n('language'),
+                    Keys.MATURE: i18n('mature'),
+                    Keys.PARTNER: i18n('partner'),
+                    Keys.DELAY: i18n('delay'),
+                    Keys.FOLLOWERS: i18n('followers')}
         info = {
             Keys.VIEWS: str(channel.get(Keys.VIEWS)) if channel.get(Keys.VIEWS) else u'0',
             Keys.BROADCASTER_LANGUAGE: channel.get(Keys.BROADCASTER_LANGUAGE)
@@ -523,8 +523,8 @@ class JsonListItemConverter(object):
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
 
     def get_plot_for_community(self, community):
-        headings = {Keys.VIEWERS: i18n('viewers').decode('utf-8'),
-                    Keys.CHANNELS: i18n('channels').decode('utf-8')}
+        headings = {Keys.VIEWERS: i18n('viewers'),
+                    Keys.CHANNELS: i18n('channels')}
         info = {
             Keys.VIEWERS: str(community.get(Keys.VIEWERS)) if community.get(Keys.VIEWERS) else u'0',
             Keys.CHANNELS: str(community.get(Keys.CHANNELS)) if community.get(Keys.CHANNELS) else u'0'
@@ -541,9 +541,9 @@ class JsonListItemConverter(object):
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
 
     def get_plot_for_collection(self, collection):
-        headings = {Keys.VIEWS: i18n('views').decode('utf-8'),
-                    Keys.ITEMS_COUNT: i18n('items').decode('utf-8'),
-                    Keys.TOTAL_DURATION: i18n('duration').decode('utf-8')}
+        headings = {Keys.VIEWS: i18n('views'),
+                    Keys.ITEMS_COUNT: i18n('items'),
+                    Keys.TOTAL_DURATION: i18n('duration')}
         minutes, seconds = divmod(collection.get(Keys.TOTAL_DURATION) if collection.get(Keys.TOTAL_DURATION) else 0, 60)
         hours, minutes = divmod(minutes, 60)
         total_duration = '%dh%02dm%02ds' % (hours, minutes, seconds)
@@ -563,16 +563,16 @@ class JsonListItemConverter(object):
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
 
     def get_plot_for_clip(self, clip, include_title=True):
-        headings = {Keys.VIEWS: i18n('views').decode('utf-8'),
-                    Keys.CURATOR: i18n('curated').decode('utf-8'),
-                    Keys.GAME: i18n('game').decode('utf-8'),
-                    Keys.LANGUAGE: i18n('language').decode('utf-8')}
+        headings = {Keys.VIEWS: i18n('views'),
+                    Keys.CURATOR: i18n('curated'),
+                    Keys.GAME: i18n('game'),
+                    Keys.LANGUAGE: i18n('language')}
         curator = clip[Keys.CURATOR].get(Keys.DISPLAY_NAME) if clip[Keys.CURATOR].get(Keys.DISPLAY_NAME) else clip[Keys.CURATOR].get(Keys.NAME)
         date = '%s %s\r\n' % (clip.get(Keys.CREATED_AT)[:10], clip.get(Keys.CREATED_AT)[11:19]) if clip.get(Keys.CREATED_AT) else ''
         info = {
             Keys.VIEWS: str(clip.get(Keys.VIEWS)) if clip.get(Keys.VIEWS) else u'0',
             Keys.LANGUAGE: clip.get(Keys.LANGUAGE) if clip.get(Keys.LANGUAGE) else None,
-            Keys.GAME: clip.get(Keys.GAME) if clip.get(Keys.GAME) else i18n('unknown_game').decode('utf-8'),
+            Keys.GAME: clip.get(Keys.GAME) if clip.get(Keys.GAME) else i18n('unknown_game'),
             Keys.CURATOR: curator
         }
 
@@ -591,13 +591,13 @@ class JsonListItemConverter(object):
         return {u'plot': plot, u'plotoutline': plot, u'tagline': _title.rstrip('\r\n')}
 
     def get_plot_for_video(self, video, include_title=True):
-        headings = {Keys.VIEWS: i18n('views').decode('utf-8'),
-                    Keys.GAME: i18n('game').decode('utf-8'),
-                    Keys.LANGUAGE: i18n('language').decode('utf-8')}
+        headings = {Keys.VIEWS: i18n('views'),
+                    Keys.GAME: i18n('game'),
+                    Keys.LANGUAGE: i18n('language')}
         info = {
             Keys.VIEWS: str(video.get(Keys.VIEWS)) if video.get(Keys.VIEWS) else u'0',
             Keys.LANGUAGE: video.get(Keys.LANGUAGE) if video.get(Keys.LANGUAGE) else None,
-            Keys.GAME: video.get(Keys.GAME) if video.get(Keys.GAME) else i18n('unknown_game').decode('utf-8'),
+            Keys.GAME: video.get(Keys.GAME) if video.get(Keys.GAME) else i18n('unknown_game'),
         }
         plot_template = u'{description}{date}{game}{views}{language}'
 

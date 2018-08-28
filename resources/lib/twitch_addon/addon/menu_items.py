@@ -54,12 +54,13 @@ def clear_previews():
 
 
 def channel_videos(channel_id, channel_name, display_name):
-    return update_container(i18n('go_to') % '[COLOR white][B]%s[/B][/COLOR]' % display_name,
+    return update_container(i18n('go_to') % ''.join(['[COLOR=white][B]', display_name, '[/B][/COLOR]']),
                             {'mode': MODES.CHANNELVIDEOS, 'channel_id': channel_id, 'channel_name': channel_name, 'display_name': display_name})
 
 
 def go_to_game(game):
-    return update_container(i18n('go_to') % '[COLOR white][B]%s[/B][/COLOR]' % game, {'mode': MODES.GAMELISTS, 'game': game})
+    return update_container(i18n('go_to') % ''.join(['[COLOR=white][B]', game, '[/B][/COLOR]']),
+                            {'mode': MODES.GAMELISTS, 'game': game})
 
 
 def refresh():
@@ -75,7 +76,7 @@ def edit_block(target_id, display_name):
 
 
 def add_blacklist(target_id, display_name, list_type='user'):
-    return update_container(i18n('add_blacklist') % '[COLOR white][B]%s[/B][/COLOR]' % display_name,
+    return update_container(i18n('add_blacklist') % ''.join(['[COLOR=white][B]', display_name, '[/B][/COLOR]']),
                             {'mode': MODES.EDITBLACKLIST, 'target_id': target_id, 'name': display_name, 'list_type': list_type})
 
 

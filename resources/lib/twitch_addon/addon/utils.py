@@ -17,6 +17,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
+from six import iteritems, string_types
+
 import re
 import time
 import urllib
@@ -103,9 +105,9 @@ def get_redirect_uri():
         settings_id = stripped_id
         kodi.set_setting('oauth_redirecturi', settings_id)
     if settings_id:
-        return settings_id.decode('utf-8')
+        return kodi.decode_utf8(settings_id)
     else:
-        return REDIRECT_URI.decode('utf-8')
+        return kodi.decode_utf8(REDIRECT_URI)
 
 
 def get_client_id(default=False):
@@ -115,9 +117,9 @@ def get_client_id(default=False):
         settings_id = stripped_id
         kodi.set_setting('oauth_clientid', settings_id)
     if settings_id and not default:
-        return settings_id.decode('utf-8')
+        return kodi.decode_utf8(settings_id)
     else:
-        return b64decode(CLIENT_ID).decode('utf-8')
+        return kodi.decode_utf8(b64decode(CLIENT_ID))
 
 
 def clear_client_id():
@@ -146,7 +148,7 @@ def get_oauth_token(token_only=True, required=False):
                 if idx >= 0:
                     oauth_token = oauth_token[idx + 1:]
                 oauth_token = 'oauth:{0}'.format(oauth_token)
-    return oauth_token.decode('utf-8')
+    return kodi.decode_utf8(oauth_token)
 
 
 def get_search_history_size():
@@ -199,7 +201,7 @@ def get_thumbnail_size():
 def get_vodcast_color():
     color = int(kodi.get_setting('vodcast_highlight'))
     color = COLORS.split('|')[color]
-    return color.decode('utf-8')
+    return kodi.decode_utf8(color)
 
 
 def the_art(art=None):
@@ -565,7 +567,7 @@ class TitleBuilder(object):
         title_setting = int(kodi.get_setting('title_display'))
         template = self.get_title_template(title_setting)
 
-        for key, value in title_values.iteritems():
+        for key, value in iteritems(title_values):
             title_values[key] = self.clean_title_value(value)
         title = template.format(**title_values)
 
@@ -584,7 +586,7 @@ class TitleBuilder(object):
 
     @staticmethod
     def clean_title_value(value):
-        if isinstance(value, basestring):
+        if isinstance(value, string_types):
             value = value.replace(u'\r\n', u' ')
             value = value.replace(u'\n', u' ')
             value = value.strip()

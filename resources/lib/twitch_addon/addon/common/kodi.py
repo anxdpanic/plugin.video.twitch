@@ -17,14 +17,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-from xbmc import PLAYLIST_VIDEO, PLAYLIST_MUSIC
+
+from six import string_types, with_metaclass, PY3
+from six.moves.urllib.parse import urlparse, urlencode, parse_qs
+
+from xbmc import PLAYLIST_VIDEO, PLAYLIST_MUSIC  # NOQA
+
 import xbmcaddon
 import xbmcplugin
 import xbmcgui
 import xbmc
 import xbmcvfs
-import urllib
-import urlparse
+
 import sys
 import os
 import re
@@ -50,27 +54,34 @@ Player = xbmc.Player
 Window = xbmcgui.Window
 
 
+def decode_utf8(string):
+    try:
+        return string.decode('utf-8')
+    except AttributeError:
+        return string
+
+
 def execute_jsonrpc(command):
-    if not isinstance(command, basestring):
+    if not isinstance(command, string_types):
         command = json.dumps(command)
     response = xbmc.executeJSONRPC(command)
     return json.loads(response)
 
 
 def get_path():
-    return addon.getAddonInfo('path').decode('utf-8')
+    return decode_utf8(addon.getAddonInfo('path'))
 
 
 def get_profile():
-    return addon.getAddonInfo('profile').decode('utf-8')
+    return decode_utf8(addon.getAddonInfo('profile'))
 
 
 def translate_path(path):
-    return xbmc.translatePath(path).decode('utf-8')
+    return decode_utf8(xbmc.translatePath(path))
 
 
 def set_setting(id, value):
-    if not isinstance(value, basestring): value = str(value)
+    if not isinstance(value, string_types): value = str(value)
     addon.setSetting(id, value)
 
 
@@ -93,7 +104,7 @@ def get_name():
 
 
 def get_description():
-    return addon.getAddonInfo('description').decode('utf-8')
+    return decode_utf8(addon.getAddonInfo('description'))
 
 
 def has_addon(addon_id):
@@ -149,13 +160,12 @@ def get_kodi_version():
         def __str__(self):
             return '|%s| |%s| -> |%s|%s|%s|%s|%s|' % (self.application, self.version, self.major, self.minor, self.tag, self.tag_version, self.revision)
 
-    class KodiVersion(object):
-        __metaclass__ = MetaClass
+    class KodiVersion(with_metaclass(MetaClass, object)):
         _json_query = execute_jsonrpc({"jsonrpc": "2.0", "method": "Application.GetProperties", "params": {"properties": ["name"]}, "id": 1})
         application = 'Unknown'
         if ('result' in _json_query) and ('name' in _json_query['result']):
-            application = _json_query['result']['name'].decode('utf-8')
-        version = xbmc.getInfoLabel('System.BuildVersion').decode('utf-8')
+            application = decode_utf8(_json_query['result']['name'])
+        version = decode_utf8(xbmc.getInfoLabel('System.BuildVersion'))
         match = re.search('([0-9]+)\.([0-9]+)', version)
         if match: major, minor = match.groups()
         match = re.search('-([a-zA-Z]+)([0-9]*)', version)
@@ -172,11 +182,11 @@ def get_kodi_version():
         except:
             minor = 0
         try:
-            revision = revision.decode('utf-8')
+            revision = decode_utf8(revision)
         except:
             revision = u''
         try:
-            tag = tag.decode('utf-8')
+            tag = decode_utf8(tag)
         except:
             tag = u''
         try:
@@ -189,12 +199,12 @@ def get_kodi_version():
 
 def get_plugin_url(queries):
     try:
-        query = urllib.urlencode(queries)
+        query = urlencode(queries)
     except UnicodeEncodeError:
         for k in queries:
             if isinstance(queries[k], unicode):
                 queries[k] = queries[k].encode('utf-8')
-        query = urllib.urlencode(queries)
+        query = urlencode(queries)
 
     return sys.argv[0] + '?' + query
 
@@ -213,7 +223,7 @@ def set_content(content):
 
 def create_item(item_dict, add=True):
     path = item_dict.get('path', '')
-    path = path if isinstance(path, basestring) else get_plugin_url(path)
+    path = path if isinstance(path, string_types) else get_plugin_url(path)
     list_item = ListItem(label=item_dict.get('label', ''), label2=item_dict.get('label2', ''), path=path)
 
     icon = get_icon()
@@ -248,14 +258,14 @@ def add_item(item_dict, list_item):
 
     list_item.setProperty('isPlayable', str(is_playable).lower())
 
-    url = path if isinstance(path, basestring) else get_plugin_url(path)
+    url = path if isinstance(path, string_types) else get_plugin_url(path)
     xbmcplugin.addDirectoryItem(int(sys.argv[1]), url, list_item, isFolder=is_folder, totalItems=item_dict.get('total_items', 0))
 
 
 def parse_query(query):
     q = {'mode': 'main'}
     if query.startswith('?'): query = query[1:]
-    queries = urlparse.parse_qs(query)
+    queries = parse_qs(query)
     for key in queries:
         if len(queries[key]) == 1:
             q[key] = queries[key][0]
@@ -353,7 +363,10 @@ class Translations(object):
 
     def i18n(self, string_id):
         try:
-            return addon.getLocalizedString(self.strings[string_id]).encode('utf-8', 'ignore')
+            if PY3:
+                return addon.getLocalizedString(self.strings[string_id])
+            else:
+                return addon.getLocalizedString(self.strings[string_id]).encode('utf-8', 'ignore').decode('utf-8')
         except Exception as e:
             xbmc.log('%s: Failed String Lookup: %s (%s)' % (get_name(), string_id, e), xbmc.LOGWARNING)
             return string_id

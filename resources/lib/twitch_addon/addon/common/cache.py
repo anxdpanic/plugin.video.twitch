@@ -17,9 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+
+from six.moves import cPickle as pickle
+
 import functools
 import time
-import cPickle as pickle
 import hashlib
 import os
 import shutil
@@ -64,7 +66,7 @@ def _get_func(name, args=None, kwargs=None, cache_limit=1):
     if os.path.exists(full_path):
         mtime = os.path.getmtime(full_path)
         if mtime >= max_age:
-            with open(full_path, 'r') as f:
+            with open(full_path, 'rb') as f:
                 pickled_result = f.read()
             # log_utils.log('Returning cached result: |%s|%s|%s| - modtime: %s max_age: %s age: %ss' % (name, args, kwargs, mtime, max_age, now - mtime), log_utils.LOGDEBUG)
             return True, pickle.loads(pickled_result)
@@ -78,14 +80,14 @@ def _save_func(name, args=None, kwargs=None, result=None):
         if kwargs is None: kwargs = {}
         pickled_result = pickle.dumps(result)
         full_path = os.path.join(cache_path, _get_filename(name, args, kwargs))
-        with open(full_path, 'w') as f:
+        with open(full_path, 'wb') as f:
             f.write(pickled_result)
     except Exception as e:
         log_utils.log('Failure during cache write: %s' % (e), log_utils.LOGWARNING)
 
 
 def _get_filename(name, args, kwargs):
-    arg_hash = hashlib.md5(name).hexdigest() + hashlib.md5(str(args)).hexdigest() + hashlib.md5(str(kwargs)).hexdigest()
+    arg_hash = hashlib.md5(name.encode('utf-8')).hexdigest() + hashlib.md5(str(args).encode('utf-8')).hexdigest() + hashlib.md5(str(kwargs).encode('utf-8')).hexdigest()
     return arg_hash
 
 
