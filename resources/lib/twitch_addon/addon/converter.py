@@ -64,7 +64,7 @@ class JsonListItemConverter(object):
             viewer_count = str(game[Keys.VIEWERS])
         if Keys.GAME in game:
             game = game[Keys.GAME]
-        name = game[Keys.NAME].encode('utf-8')
+        name = game[Keys.NAME]
         if not name:
             name = i18n('unknown_game')
         image = self.get_thumbnail(game.get(Keys.BOX, game.get(Keys.LOGO)), Images.BOXART)
@@ -81,9 +81,9 @@ class JsonListItemConverter(object):
                 'info': {u'plot': plot, u'plotoutline': plot, u'tagline': plot}}
 
     def community_to_listitem(self, community):
-        name = community[Keys.NAME].encode('utf-8')
+        name = community[Keys.NAME]
         display_name = community.get(Keys.DISPLAY_NAME)
-        display_name = display_name.encode('utf-8') if display_name else name
+        display_name = display_name if display_name else name
         _id = community[Keys._ID]
         image = community.get(Keys.AVATAR_IMAGE, Images.THUMB)
         context_menu = list()
@@ -97,7 +97,7 @@ class JsonListItemConverter(object):
                 'info': self.get_plot_for_community(community)}
 
     def collection_to_listitem(self, collection):
-        title = collection[Keys.TITLE].encode('utf-8')
+        title = collection[Keys.TITLE]
         _id = collection[Keys._ID]
         image = self.get_thumbnail(collection[Keys.THUMBNAILS])
         owner = collection[Keys.OWNER]
