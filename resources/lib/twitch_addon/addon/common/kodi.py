@@ -366,7 +366,7 @@ class Translations(object):
             if PY3:
                 return addon.getLocalizedString(self.strings[string_id])
             else:
-                return addon.getLocalizedString(self.strings[string_id]).encode('utf-8', 'ignore').decode('utf-8')
+                return addon.getLocalizedString(self.strings[string_id]).encode('utf-8', 'ignore')
         except Exception as e:
             xbmc.log('%s: Failed String Lookup: %s (%s)' % (get_name(), string_id, e), xbmc.LOGWARNING)
             return string_id
