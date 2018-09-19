@@ -447,8 +447,8 @@ class JsonListItemConverter(object):
         item_template = u'{head}:\u2008{info}  '
         value = ''
         if info.get(key) is not None:
-            val_heading = kodi.decode_utf8(headings.get(key))
-            val_info = kodi.decode_utf8(info.get(key))
+            val_heading = kodi.decode_utf8(headings.get(key).encode('utf-8', 'ignore'))
+            val_info = kodi.decode_utf8(info.get(key).encode('utf-8', 'ignore'))
             value = item_template.format(head=val_heading, info=val_info)
         return value
 
