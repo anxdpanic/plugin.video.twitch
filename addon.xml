@@ -15,6 +15,7 @@
         <news>
 2.3.3
 [fix] Description template UnicodeDecodeError
+[chg] Use unicode punctuation space in description template
         </news>
         <assets>
             <icon>icon.png</icon>

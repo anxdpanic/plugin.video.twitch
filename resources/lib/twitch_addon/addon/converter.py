@@ -443,7 +443,8 @@ class JsonListItemConverter(object):
 
     @staticmethod
     def _format_key(key, headings, info):
-        item_template = u'{head}:{info}  '  # no whitespace around {head} and {info} for word wrapping in Kodi
+        #  use unicode punctuation space -\u2008- for readability and to keep item from line wrapping
+        item_template = u'{head}:\u2008{info}  '
         value = ''
         if info.get(key) is not None:
             val_heading = kodi.decode_utf8(headings.get(key))
