@@ -446,14 +446,8 @@ class JsonListItemConverter(object):
         item_template = u'{head}:{info}  '  # no whitespace around {head} and {info} for word wrapping in Kodi
         value = ''
         if info.get(key) is not None:
-            try:
-                val_heading = headings.get(key)
-            except:
-                val_heading = headings.get(key)
-            try:
-                val_info = info.get(key)
-            except:
-                val_info = info.get(key)
+            val_heading = kodi.decode_utf8(headings.get(key))
+            val_info = kodi.decode_utf8(info.get(key))
             value = item_template.format(head=val_heading, info=val_info)
         return value
 

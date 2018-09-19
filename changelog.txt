@@ -1,3 +1,6 @@
+2.3.3
+[fix] Description template UnicodeDecodeError
+
 2.3.2
 [fix] py3 encoding issues
 
