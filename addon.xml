@@ -13,6 +13,9 @@
     <extension point='xbmc.addon.metadata'>
         <platform>all</platform>
         <news>
+2.3.4
+[fix] Game titles UnicodeEncodeError
+
 2.3.3
 [fix] Description template UnicodeDecodeError
 [chg] Use unicode punctuation space in description template
