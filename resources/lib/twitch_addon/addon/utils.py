@@ -18,10 +18,10 @@
 """
 
 from six import iteritems, string_types
+from six.moves.urllib.parse import quote_plus
 
 import re
 import time
-import urllib
 
 from base64 import b64decode
 from datetime import datetime
@@ -95,7 +95,7 @@ def use_inputstream_adaptive():
 
 
 def append_headers(headers):
-    return '|%s' % '&'.join(['%s=%s' % (key, urllib.quote_plus(headers[key])) for key in headers])
+    return '|%s' % '&'.join(['%s=%s' % (key, quote_plus(headers[key])) for key in headers])
 
 
 def get_redirect_uri():
