@@ -587,6 +587,10 @@ class TitleBuilder(object):
     @staticmethod
     def clean_title_value(value):
         if isinstance(value, string_types):
+            try:
+                value = value.decode('utf-8', 'ignore')
+            except (UnicodeEncodeError, AttributeError) as e:
+                pass
             value = value.replace(u'\r\n', u' ')
             value = value.replace(u'\n', u' ')
             value = value.strip()
