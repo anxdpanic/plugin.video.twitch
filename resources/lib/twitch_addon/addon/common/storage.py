@@ -28,10 +28,7 @@ import os
 import sqlite3
 import time
 
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
+from six.moves import cPickle as pickle
 
 import kodi
 
