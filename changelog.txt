@@ -1,3 +1,6 @@
+2.3.5
+[fix] utf-8 file paths
+
 2.3.4
 [fix] clean_title_value UnicodeDecodeError
 [fix] Game titles UnicodeEncodeError
