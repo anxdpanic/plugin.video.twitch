@@ -1,3 +1,6 @@
+2.3.6
+[fix] change import from absolute to relative
+
 2.3.5
 [fix] utf-8 file paths
 [fix] perpetual busy dialogs in Kodi 18

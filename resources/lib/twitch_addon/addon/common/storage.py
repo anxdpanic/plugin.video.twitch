@@ -30,7 +30,7 @@ import time
 
 from six.moves import cPickle as pickle
 
-import kodi
+from . import kodi
 
 
 class Storage(object):
