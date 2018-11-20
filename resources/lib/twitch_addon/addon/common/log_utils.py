@@ -1,6 +1,8 @@
 """
     tknorris shared module
+
     Copyright (C) 2016 tknorris
+    Copyright (C) 2016-2018 Twitch-on-Kodi
 
     Modified by Twitch-on-Kodi/plugin.video.twitch Dec. 12, 2016
 
