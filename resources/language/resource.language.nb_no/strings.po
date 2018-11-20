@@ -929,3 +929,7 @@ msgstr ""
 msgctxt "#30258"
 msgid "Small"
 msgstr ""
+
+msgctxt "#30259"
+msgid "Live preview refresh interval (minutes)"
+msgstr ""
