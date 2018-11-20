@@ -16,6 +16,7 @@
 2.3.6
 [fix] change import from absolute to relative
 [upd] re-write of search history
+[upd] use SPDX license identifiers
 
 2.3.5
 [fix] utf-8 file paths
@@ -27,7 +28,7 @@
         </assets>
         <language></language>
         <source>https://github.com/MrSprigster/Twitch-on-Kodi</source>
-        <license>GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007</license>
+        <license>GPL-3.0-only</license>
         <forum>http://forum.kodi.tv/showthread.php?tid=134538</forum>
         <summary lang='en_GB'>Twitch video plugin</summary>
         <description lang='en_GB'>Watch your favorite gaming streams!</description>

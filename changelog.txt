@@ -1,6 +1,7 @@
 2.3.6
 [fix] change import from absolute to relative
 [upd] re-write of search history
+[upd] use SPDX license identifiers
 
 2.3.5
 [fix] utf-8 file paths
