@@ -248,13 +248,6 @@ def _reset_cache():
     reset_cache.route()
 
 
-@dispatcher.register(MODES.CLEARLIVEPREVIEWS, kwargs=['notify'])
-@error_handler
-def _clear_live_previews(notify=True):
-    from .routes import clear_live_previews
-    clear_live_previews.route(notify)
-
-
 @dispatcher.register(MODES.INSTALLIRCCHAT)
 @error_handler
 def _install_ircchat():

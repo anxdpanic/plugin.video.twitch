@@ -39,12 +39,6 @@ def remove_search_history(search_type, query, do_refresh=True):
     return run_plugin(i18n('remove_') % query_label, params)
 
 
-def clear_previews():
-    if kodi.get_setting('live_previews_enable') == 'true':
-        return run_plugin(i18n('clear_live_preview'), {'mode': MODES.CLEARLIVEPREVIEWS, 'notify': utils.notify_refresh()})
-    return []
-
-
 def channel_videos(channel_id, channel_name, display_name):
     return update_container(i18n('go_to') % ''.join(['[COLOR=white][B]', display_name, '[/B][/COLOR]']),
                             {'mode': MODES.CHANNELVIDEOS, 'channel_id': channel_id, 'channel_name': channel_name, 'display_name': display_name})

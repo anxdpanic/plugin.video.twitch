@@ -20,7 +20,6 @@ from datetime import datetime
 
 from .common import kodi, json_store
 from .strings import STRINGS
-from .tccleaner import TextureCacheCleaner
 from .constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, ADDON_DATA_DIR, REQUEST_LIMIT, COLORS, Keys
 from .search_history import StreamsSearchHistory, ChannelsSearchHistory, GamesSearchHistory, IdUrlSearchHistory
 
@@ -240,13 +239,20 @@ def notify_refresh():
 
 
 def refresh_previews():
-    if kodi.get_setting('live_previews_enable') != 'true':
-        return
-    if kodi.get_setting('refresh_previews') == 'true':
-        refresh_interval = int(kodi.get_setting('refresh_interval')) * 60
+    refresh_interval = int(kodi.get_setting('refresh_interval')) * 60
+    if refresh_interval > 0:
+        if not get_refresh_stamp():
+            set_refresh_stamp()
+            return
         if get_refresh_diff() >= refresh_interval:
             set_refresh_stamp()
-            TextureCacheCleaner().remove_like(LIVE_PREVIEW_TEMPLATE, notify_refresh())
+    else:
+        clear_refresh_stamp()
+
+
+def clear_refresh_stamp():
+    window = kodi.Window(10000)
+    window.clearProperty(key='%s-lpr_stamp' % kodi.get_id())
 
 
 def set_refresh_stamp():

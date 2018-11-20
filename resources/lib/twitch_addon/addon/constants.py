@@ -35,7 +35,6 @@ MODES = __enum(
     CHANNELVIDEOLIST='channel_video_list',
     GAMESTREAMS='game_streams',
     RESETCACHE='reset_cache',
-    CLEARLIVEPREVIEWS='clear_live_previews',
     INSTALLIRCCHAT='install_ircchat',
     PLAY='play',
     TOKENURL='get_token_url',

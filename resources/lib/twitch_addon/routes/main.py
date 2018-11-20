@@ -23,13 +23,11 @@ def route(api):
 
     if show_menu('featured'):
         context_menu = list()
-        context_menu.extend(menu_items.clear_previews())
         kodi.create_item({'label': i18n('featured_streams'), 'path': {'mode': MODES.FEATUREDSTREAMS}, 'context_menu': context_menu,
                           'info': {'plot': i18n('featured_streams')}})
     if has_token:
         if show_menu('live', 'following'):
             context_menu = list()
-            context_menu.extend(menu_items.clear_previews())
             kodi.create_item(
                 {'label': '%s %s' % (i18n('following'), i18n('live_channels')), 'path': {'mode': MODES.FOLLOWED, 'content': StreamType.LIVE}, 'context_menu': context_menu,
                  'info': {'plot': '%s - %s' % (i18n('following'), i18n('live_channels'))}})
@@ -54,7 +52,6 @@ def route(api):
             kodi.create_item({'label': i18n('following'), 'path': {'mode': MODES.FOLLOWING}, 'info': {'plot': i18n('following')}})
     if show_menu('live', 'browse'):
         context_menu = list()
-        context_menu.extend(menu_items.clear_previews())
         kodi.create_item({'label': '%s %s' % (i18n('browse'), i18n('live_channels')), 'path': {'mode': MODES.STREAMLIST, 'stream_type': StreamType.LIVE},
                           'context_menu': context_menu, 'info': {'plot': '%s - %s' % (i18n('browse'), i18n('live_channels'))}})
     if show_menu('playlists', 'browse'):
@@ -62,12 +59,10 @@ def route(api):
                           'info': {'plot': '%s - %s' % (i18n('browse'), i18n('playlists'))}})
     if show_menu('xbox_one', 'browse'):
         context_menu = list()
-        context_menu.extend(menu_items.clear_previews())
         kodi.create_item({'label': '%s %s' % (i18n('browse'), i18n('xbox_one')), 'path': {'mode': MODES.STREAMLIST, 'platform': Platform.XBOX_ONE},
                           'context_menu': context_menu, 'info': {'plot': '%s - %s' % (i18n('browse'), i18n('xbox_one'))}})
     if show_menu('ps4', 'browse'):
         context_menu = list()
-        context_menu.extend(menu_items.clear_previews())
         kodi.create_item({'label': '%s %s' % (i18n('browse'), i18n('ps4')), 'path': {'mode': MODES.STREAMLIST, 'platform': Platform.PS4}, 'context_menu': context_menu,
                           'info': {'plot': '%s - %s' % (i18n('browse'), i18n('ps4'))}})
     if show_menu('videos', 'browse'):
@@ -89,7 +84,6 @@ def route(api):
         kodi.create_item({'label': i18n('browse'), 'path': {'mode': MODES.BROWSE}, 'info': {'plot': i18n('browse')}})
     if show_menu('streams', 'search'):
         context_menu = list()
-        context_menu.extend(menu_items.clear_previews())
         kodi.create_item({'label': '%s %s' % (i18n('search'), i18n('streams')), 'path': {'mode': MODES.NEWSEARCH, 'content': 'streams'}, 'context_menu': context_menu,
                           'info': {'plot': '%s - %s' % (i18n('search'), i18n('streams'))}})
     if show_menu('channels', 'search'):

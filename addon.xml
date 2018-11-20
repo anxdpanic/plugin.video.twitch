@@ -15,6 +15,7 @@
         <news>
 2.3.6
 [fix] change import from absolute to relative
+[chg] refresh live previews by adding timestamp to urls
 [upd] re-write of search history
 [upd] use SPDX license identifiers
 

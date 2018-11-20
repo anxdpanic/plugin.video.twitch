@@ -13,10 +13,12 @@ from six import PY2
 
 from base64 import b64encode
 
+from six.moves.urllib_parse import quote
+
 from . import menu_items
 from .common import kodi
 from .constants import Keys, Images, MODES, ADAPTIVE_SOURCE_TEMPLATE
-from .utils import the_art, TitleBuilder, i18n, get_oauth_token, get_vodcast_color, use_inputstream_adaptive, get_thumbnail_size
+from .utils import the_art, TitleBuilder, i18n, get_oauth_token, get_vodcast_color, use_inputstream_adaptive, get_thumbnail_size, get_refresh_stamp
 
 
 class PlaylistConverter(object):
@@ -85,7 +87,6 @@ class JsonListItemConverter(object):
         image = community.get(Keys.AVATAR_IMAGE, Images.THUMB)
         context_menu = list()
         context_menu.extend(menu_items.refresh())
-        context_menu.extend(menu_items.clear_previews())
         context_menu.extend(menu_items.add_blacklist(_id, display_name, list_type='community'))
         return {'label': display_name,
                 'path': kodi.get_plugin_url({'mode': MODES.COMMUNITYSTREAMS, 'community_id': _id}),
@@ -118,7 +119,6 @@ class JsonListItemConverter(object):
         image = team.get(Keys.LOGO) if team.get(Keys.LOGO) else Images.ICON
         context_menu = list()
         context_menu.extend(menu_items.refresh())
-        context_menu.extend(menu_items.clear_previews())
         return {'label': name,
                 'path': kodi.get_plugin_url({'mode': MODES.TEAMSTREAMS, 'team': name}),
                 'art': the_art({'fanart': background, 'poster': image, 'thumb': image, 'icon': image}),
@@ -149,7 +149,6 @@ class JsonListItemConverter(object):
             video_banner = channel.get(Keys.PROFILE_BANNER) if channel.get(Keys.PROFILE_BANNER) else Images.FANART
         context_menu = list()
         context_menu.extend(menu_items.refresh())
-        context_menu.extend(menu_items.clear_previews())
         name = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.NAME)
         if self.has_token:
             context_menu.extend(menu_items.edit_follow(channel[Keys._ID], name))
@@ -263,7 +262,9 @@ class JsonListItemConverter(object):
             video_banner = channel.get(Keys.VIDEO_BANNER) if channel.get(Keys.VIDEO_BANNER) else Images.FANART
         preview = self.get_thumbnail(stream.get(Keys.PREVIEW), Images.VIDEOTHUMB)
         logo = channel.get(Keys.LOGO) if channel.get(Keys.LOGO) else Images.VIDEOTHUMB
-        image = preview if preview != Images.VIDEOTHUMB else logo
+        if preview and get_refresh_stamp():
+            preview = '?timestamp='.join([preview, quote(get_refresh_stamp())])
+        image =  preview if preview != Images.VIDEOTHUMB else logo
         title = self.get_title_for_stream(stream)
         if stream.get(Keys.STREAM_TYPE) != 'live':
             color = get_vodcast_color()

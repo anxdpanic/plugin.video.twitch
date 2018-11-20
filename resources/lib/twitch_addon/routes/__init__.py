@@ -10,7 +10,7 @@
 """
 
 __all__ = ['browse', 'channel_video_categories', 'channel_videos', 'clear_list',
-           'clear_live_previews', 'clear_search_history', 'clips', 'collection_videos',
+           'clear_search_history', 'clips', 'collection_videos',
            'collections', 'communities', 'community_streams', 'configure_inputstream_adaptive',
            'edit_blacklist', 'edit_languages', 'edit_qualities', 'edit_sorting',
            'edit_user_follows', 'featured_streams', 'followed', 'following',
