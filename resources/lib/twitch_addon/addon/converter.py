@@ -624,20 +624,28 @@ class JsonListItemConverter(object):
                 bandwidth_value = int(kodi.get_setting('bandwidth'))
             except:
                 bandwidth_value = None
+
             if quality or len(videos) == 1:
                 for video in videos:
                     if (quality and (quality.lower() in video['name'].lower())) or len(videos) == 1:
                         return video
+
             if ask:
                 return self.select_video_for_quality(videos)
+
+            if clip and (bandwidth or adaptive or source):
+                for video in videos:
+                    if 'source' in video['id'].lower():
+                        return video
 
             if adaptive:
                 for video in videos:
                     if 'hls' in video['id']:
                         return video
-            elif source:
+
+            elif source and not clip:
                 limit_framerate = kodi.get_setting('framerate_limit') == 'true'
-                if limit_framerate and not clip:
+                if limit_framerate:
                     fps_videos = [video for video in videos if video.get('fps') and video['fps'] < 31.0]  # use < 31, 30 fps may be > 30 ie. 30.211
                     if fps_videos:
                         return fps_videos[0]
@@ -645,8 +653,7 @@ class JsonListItemConverter(object):
                 for video in videos:
                     if 'chunked' in video['id']:
                         return video
-                    elif 'Source' in video['id']:
-                        return video
+
             elif bandwidth and bandwidth_value and not clip:
                 bandwidths = []
                 for video in videos:
