@@ -639,6 +639,8 @@ class JsonListItemConverter(object):
                 for video in videos:
                     if 'chunked' in video['id']:
                         return video
+                    elif 'Source' in video['id']:
+                        return video
             elif bandwidth and bandwidth_value and not clip:
                 bandwidths = []
                 for video in videos:
