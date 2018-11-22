@@ -636,6 +636,12 @@ class JsonListItemConverter(object):
                     if 'hls' in video['id']:
                         return video
             elif source:
+                limit_framerate = kodi.get_setting('framerate_limit') == 'true'
+                if limit_framerate and not clip:
+                    fps_videos = [video for video in videos if video.get('fps') and video['fps'] < 31.0]  # use < 31, 30 fps may be > 30 ie. 30.211
+                    if fps_videos:
+                        return fps_videos[0]
+
                 for video in videos:
                     if 'chunked' in video['id']:
                         return video
