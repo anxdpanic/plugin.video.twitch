@@ -929,3 +929,7 @@ msgstr ""
 msgctxt "#30259"
 msgid "Live preview refresh interval (minutes)"
 msgstr ""
+
+msgctxt "#30260"
+msgid "Limit to 30 fps"
+msgstr ""
