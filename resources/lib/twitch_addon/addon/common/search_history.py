@@ -140,7 +140,7 @@ class SearchHistory:
 
         if table_exists:
             results = []
-            query = 'SELECT value FROM %s ORDER BY time DESC' % table_to_upgrade
+            query = 'SELECT value FROM %s ORDER BY time ASC' % table_to_upgrade
 
             self.open()
             ret_vals = self.execute(query)
