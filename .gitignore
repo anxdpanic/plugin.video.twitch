@@ -1,8 +1,11 @@
-/.settings
-/.project
-/.pydevproject
-*.pyc
-*.pyo
-/.idea
+__pycache__/
+.settings/
+.project/
+.pydevproject/
+.idea/
+
+*.py[cod]
+*.log
 
 /resources/language/append_to_languages.py
+/resources/language/new_strings.txt
