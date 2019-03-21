@@ -281,7 +281,7 @@ class Twitch:
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def _get_video_token(self, video_id):
-        results = self.usher.vod_token(video_id=video_id)
+        results = self.usher.vod_token(video_id=video_id, platform='ps4')
         if 'token' in results:
             results = json.loads(results['token'])
         return self.error_check(results)
@@ -323,7 +323,7 @@ class Twitch:
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_vod(self, video_id):
-        results = self.usher.video(video_id)
+        results = self.usher.video(video_id, platform='ps4')
         return self.error_check(results)
 
     @api_error_handler
@@ -334,19 +334,19 @@ class Twitch:
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_live(self, name):
-        results = self.usher.live(name)
+        results = self.usher.live(name, platform='ps4')
         return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def live_request(self, name):
-        results = self.usher.live_request(name)
+        results = self.usher.live_request(name, platform='ps4')
         return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def video_request(self, video_id):
-        results = self.usher.video_request(video_id)
+        results = self.usher.video_request(video_id, platform='ps4')
         return self.error_check(results)
 
     def get_user_blocks(self):
