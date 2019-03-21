@@ -85,6 +85,19 @@ def use_inputstream_adaptive():
         return False
 
 
+def inputstream_adpative_supports(feature):
+    try:
+        ia_version = kodi.Addon('inputstream.adaptive').getAddonInfo('version')
+    except RuntimeError:
+        ia_version = '0.0.0'
+
+    if feature == 'EXT-X-DISCONTINUITY':
+        if loose_version(ia_version) >= loose_version('999.999.999'):  # TODO: update version when resolved in I.A
+            return True
+
+    return False
+
+
 def append_headers(headers):
     return '|%s' % '&'.join(['%s=%s' % (key, quote_plus(headers[key])) for key in headers])
 
