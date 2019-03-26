@@ -15,6 +15,7 @@
         <news>
 2.4.3
 [fix] ads causing playback issues with InputStream Adaptive
+[upd] move Live Notifications to it's own thread
         </news>
         <assets>
             <icon>icon.png</icon>
