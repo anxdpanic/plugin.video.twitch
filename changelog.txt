@@ -1,5 +1,6 @@
 2.4.3
 [fix] ads causing playback issues with InputStream Adaptive
+[upd] move Live Notifications to it's own thread
 
 2.4.2
 [fix] fixed issue with Live Notifications if no followed channels are live
