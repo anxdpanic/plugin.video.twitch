@@ -224,10 +224,7 @@ def check_adaptive():
 
     kodi_version = kodi.get_kodi_version()
     if (kodi_version.major >= 17) and (kodi_version.application == 'Kodi'):
-        if kodi.addon_enabled('inputstream.adaptive') is not None:
-            adaptive_addon = True
-        else:
-            adaptive_addon = False
+        adaptive_addon = kodi.addon_enabled('inputstream.adaptive') is not None
     elif (kodi_version.major >= 16) and (kodi_version.minor >= 5) and (kodi_version.application == 'SPMC'):
         adaptive_builtin = True
     else:
