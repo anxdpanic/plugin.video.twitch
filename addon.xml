@@ -13,13 +13,7 @@
     <extension point='xbmc.addon.metadata'>
         <platform>all</platform>
         <news>
-2.4.4
-[fix] unable to clean up class left in memory; N9XBMCAddon7xbmcgui6WindowE |contrib: lekma|
-
-2.4.3
-[fix] ads causing playback issues with InputStream Adaptive
-[fix] migrate url shortener from Google URL Shortener to Google Firebase Dynamic Links
-[upd] move Live Notifications to it's own thread
+[rem] Remove deprecated api Communities and related content
         </news>
         <assets>
             <icon>icon.png</icon>
