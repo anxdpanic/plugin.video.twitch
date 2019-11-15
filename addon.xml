@@ -13,7 +13,8 @@
     <extension point='xbmc.addon.metadata'>
         <platform>all</platform>
         <news>
-[rem] Remove deprecated api Communities and related content
+[fix] oauth short link generation w/ python 3
+[rem] Remove deprecated scope chat_login
         </news>
         <assets>
             <icon>icon.png</icon>
