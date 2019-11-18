@@ -1,3 +1,9 @@
+2.4.6
+[add] Settings - Login - Private API Credentials
+[fix] basic playback, set default Private API Credentials - Client ID
+[fix] oauth short link generation w/ python 3
+[rem] Remove deprecated scope chat_login
+
 2.4.5
 [rem] Remove deprecated api Communities and related content
 

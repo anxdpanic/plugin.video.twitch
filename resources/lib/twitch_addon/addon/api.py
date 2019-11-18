@@ -311,7 +311,7 @@ class Twitch:
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_vod(self, video_id):
-        results = self.usher.video(video_id)
+        results = self.usher.video(video_id, headers=self.get_private_credential_headers())
         return self.error_check(results)
 
     @api_error_handler
@@ -322,25 +322,25 @@ class Twitch:
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_live(self, name):
-        results = self.usher.live(name)
+        results = self.usher.live(name, headers=self.get_private_credential_headers())
         return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def live_request(self, name):
         if not utils.inputstream_adpative_supports('EXT-X-DISCONTINUITY'):
-            results = self.usher.live_request(name, platform='ps4')
+            results = self.usher.live_request(name, platform='ps4', headers=self.get_private_credential_headers())
         else:
-            results = self.usher.live_request(name)
+            results = self.usher.live_request(name, headers=self.get_private_credential_headers())
         return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def video_request(self, video_id):
         if not utils.inputstream_adpative_supports('EXT-X-DISCONTINUITY'):
-            results = self.usher.video_request(video_id, platform='ps4')
+            results = self.usher.video_request(video_id, platform='ps4', headers=self.get_private_credential_headers())
         else:
-            results = self.usher.video_request(video_id)
+            results = self.usher.video_request(video_id, headers=self.get_private_credential_headers())
         return self.error_check(results)
 
     def get_user_blocks(self):
@@ -374,3 +374,16 @@ class Twitch:
             raise TwitchException(results)
         else:
             return True
+
+    @staticmethod
+    def get_private_credential_headers():
+        headers = {}
+        private_client_id = utils.get_private_client_id()
+        private_oauth_token = utils.get_private_oauth_token()
+        if private_client_id:
+            headers['Client-ID'] = private_client_id
+            headers['Authorization'] = ''
+        if private_oauth_token:
+            headers['Authorization'] = 'OAuth {token}'.format(token=private_oauth_token)
+            headers['Client-ID'] = ''
+        return headers
