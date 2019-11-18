@@ -221,19 +221,19 @@ class Twitch:
     @api_error_handler
     def check_follow_game(self, game):
         username = self.get_username()
-        results = self.api.games._check_follows(username=username, name=game)
+        results = self.api.games._check_follows(username=username, name=game, headers=self.get_private_credential_headers())
         return self.return_boolean(results)
 
     @api_error_handler
     def follow_game(self, game):
         username = self.get_username()
-        results = self.api.games._follow(username=username, name=game)
+        results = self.api.games._follow(username=username, name=game, headers=self.get_private_credential_headers())
         return self.error_check(results)
 
     @api_error_handler
     def unfollow_game(self, game):
         username = self.get_username()
-        results = self.api.games._unfollow(username=username, name=game)
+        results = self.api.games._unfollow(username=username, name=game, headers=self.get_private_credential_headers())
         return self.error_check(results)
 
     @api_error_handler
@@ -299,7 +299,7 @@ class Twitch:
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_followed_games(self, name, offset, limit):
-        results = self.api.games._get_followed(username=name, limit=limit, offset=offset)
+        results = self.api.games._get_followed(username=name, limit=limit, offset=offset, headers=self.get_private_credential_headers())
         return self.error_check(results)
 
     @api_error_handler

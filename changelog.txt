@@ -1,3 +1,6 @@
+2.4.7
+[fix] remaining private api calls ie. following games, toggle following games
+
 2.4.6
 [add] Settings - Login - Private API Credentials
 [fix] basic playback, set default Private API Credentials - Client ID

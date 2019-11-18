@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
-<addon id='plugin.video.twitch' version='2.4.6' name='Twitch' provider-name='A Talented Community'>
+<addon id='plugin.video.twitch' version='2.4.7' name='Twitch' provider-name='A Talented Community'>
     <requires>
         <import addon='xbmc.python' version='2.20.0'/>
         <import addon='script.module.six' version='1.11.0'/>
-        <import addon='script.module.python.twitch' version='2.0.9'/>
+        <import addon='script.module.python.twitch' version='2.0.10'/>
         <import addon='script.module.requests' version='2.9.1'/>
     </requires>
     <extension point='xbmc.python.pluginsource' library='resources/lib/addon_runner.py'>
@@ -13,10 +13,7 @@
     <extension point='xbmc.addon.metadata'>
         <platform>all</platform>
         <news>
-[add] Settings - Login - Private API Credentials
-[fix] basic playback, set default Private API Credentials - Client ID
-[fix] oauth short link generation w/ python 3
-[rem] Remove deprecated scope chat_login
+[fix] remaining private api calls ie. following games, toggle following games
         </news>
         <assets>
             <icon>icon.png</icon>
