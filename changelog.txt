@@ -1,3 +1,6 @@
+2.4.8
+[fix] sort by viewers for followed live channels, restoring previous behavior
+
 2.4.7
 [fix] remaining private api calls ie. following games, toggle following games
 
