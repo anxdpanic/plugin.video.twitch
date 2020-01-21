@@ -36,4 +36,4 @@ def route():
                       'info': {'plot': '%s - %s' % (i18n('browse'), i18n('clips'))}})
     kodi.create_item({'label': i18n('games'), 'path': {'mode': MODES.GAMES},
                       'info': {'plot': '%s - %s' % (i18n('browse'), i18n('games'))}})
-    kodi.end_of_directory(cache_to_disc=True)
+    kodi.end_of_directory(cache_to_disc=False)
