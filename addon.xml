@@ -15,6 +15,7 @@
         <news>
 [fix] sort by viewers for followed live channels, restoring previous behavior
 [fix] menu settings not taking effect
+[rem] remove Playlists
         </news>
         <assets>
             <icon>icon.png</icon>

@@ -31,9 +31,6 @@ def route(api):
             kodi.create_item(
                 {'label': '%s %s' % (i18n('following'), i18n('live_channels')), 'path': {'mode': MODES.FOLLOWED, 'content': StreamType.LIVE}, 'context_menu': context_menu,
                  'info': {'plot': '%s - %s' % (i18n('following'), i18n('live_channels'))}})
-        if show_menu('playlists', 'following'):
-            kodi.create_item({'label': '%s %s' % (i18n('following'), i18n('playlists')), 'path': {'mode': MODES.FOLLOWED, 'content': StreamType.PLAYLIST},
-                              'info': {'plot': '%s - %s' % (i18n('following'), i18n('playlists'))}})
         if show_menu('channels', 'following'):
             context_menu = list()
             context_menu.extend(menu_items.change_sort_by('followed_channels'))
@@ -54,9 +51,6 @@ def route(api):
         context_menu = list()
         kodi.create_item({'label': '%s %s' % (i18n('browse'), i18n('live_channels')), 'path': {'mode': MODES.STREAMLIST, 'stream_type': StreamType.LIVE},
                           'context_menu': context_menu, 'info': {'plot': '%s - %s' % (i18n('browse'), i18n('live_channels'))}})
-    if show_menu('playlists', 'browse'):
-        kodi.create_item({'label': '%s %s' % (i18n('browse'), i18n('playlists')), 'path': {'mode': MODES.STREAMLIST, 'stream_type': StreamType.PLAYLIST},
-                          'info': {'plot': '%s - %s' % (i18n('browse'), i18n('playlists'))}})
     if show_menu('xbox_one', 'browse'):
         context_menu = list()
         kodi.create_item({'label': '%s %s' % (i18n('browse'), i18n('xbox_one')), 'path': {'mode': MODES.STREAMLIST, 'platform': Platform.XBOX_ONE},
