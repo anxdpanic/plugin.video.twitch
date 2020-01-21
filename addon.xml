@@ -13,7 +13,9 @@
     <extension point='xbmc.addon.metadata'>
         <platform>all</platform>
         <news>
-[fix] remaining private api calls ie. following games, toggle following games
+[fix] sort by viewers for followed live channels, restoring previous behavior
+[fix] menu settings not taking effect
+[rem] remove Playlists
         </news>
         <assets>
             <icon>icon.png</icon>
