@@ -16,6 +16,7 @@
 [fix] resolve indefinite busy dialog on failed playback
 [fix] sort by viewers for followed live channels, restoring previous behavior
 [fix] menu settings not taking effect
+[fix] handle no stream available error
 [rem] remove Playlists
         </news>
         <assets>
