@@ -24,14 +24,25 @@ def route(api, stream_type=StreamType.LIVE, offset=0, platform=Platform.ALL):
     utils.refresh_previews()
     kodi.set_view('videos', set_sort=True)
     per_page = utils.get_items_per_page()
-    streams = None
+
     all_items = list()
     requests = 0
+    total = None
+
     while (per_page >= (len(all_items) + 1)) and (requests < MAX_REQUESTS):
         requests += 1
         languages = ','.join(utils.get_languages())
         streams = api.get_all_streams(stream_type=stream_type, platform=platform, offset=offset, limit=REQUEST_LIMIT, language=languages)
-        if (streams[Keys.TOTAL] > 0) and (Keys.STREAMS in streams):
+
+        if total is None:
+            if Keys.TOTAL in streams:
+                total = streams[Keys.TOTAL]
+            elif Keys.STREAMS in streams:
+                total = len(streams[Keys.STREAMS])
+            else:
+                break
+
+        if (total > 0) and (Keys.STREAMS in streams):
             filtered = \
                 blacklist_filter.by_type(streams, Keys.STREAMS, parent_keys=[Keys.CHANNEL], id_key=Keys._ID, list_type='user')
             filtered = \
@@ -46,7 +57,7 @@ def route(api, stream_type=StreamType.LIVE, offset=0, platform=Platform.ALL):
                 else:
                     break
             offset = utils.get_offset(offset, last, streams[Keys.STREAMS])
-            if (offset is None) or (streams[Keys.TOTAL] <= offset) or (streams[Keys.TOTAL] <= REQUEST_LIMIT):
+            if (offset is None) or (total <= offset) or (total <= REQUEST_LIMIT):
                 break
         else:
             break
@@ -55,7 +66,7 @@ def route(api, stream_type=StreamType.LIVE, offset=0, platform=Platform.ALL):
         has_items = True
         for stream in all_items:
             kodi.create_item(converter.stream_to_listitem(stream))
-    if streams[Keys.TOTAL] > (offset + 1):
+    if total > (offset + 1):
         has_items = True
         kodi.create_item(utils.link_to_next_page({'mode': MODES.STREAMLIST, 'stream_type': stream_type, 'platform': platform, 'offset': offset}))
     if has_items:
