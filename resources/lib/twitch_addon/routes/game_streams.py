@@ -25,22 +25,13 @@ def route(api, game, offset=0):
 
     all_items = list()
     requests = 0
-    total = None
+    total = 1000
 
-    while (per_page >= (len(all_items) + 1)) and (requests < MAX_REQUESTS):
+    while (per_page >= (len(all_items) + 1)) and (requests < MAX_REQUESTS) and (int(offset) <= 900):
         requests += 1
         languages = ','.join(utils.get_languages())
         streams = api.get_game_streams(game=game, offset=offset, limit=REQUEST_LIMIT, language=languages)
 
-        if total is None:
-            if Keys.TOTAL in streams:
-                total = streams[Keys.TOTAL]
-            elif Keys.STREAMS in streams:
-                total = len(streams[Keys.STREAMS])
-            else:
-                break
-
-        print('1' * 1000, total)
         if (total > 0) and (Keys.STREAMS in streams):
             filtered = \
                 blacklist_filter.by_type(streams, Keys.STREAMS, parent_keys=[Keys.CHANNEL], id_key=Keys._ID, list_type='user')
@@ -64,7 +55,7 @@ def route(api, game, offset=0):
         has_items = True
         for stream in all_items:
             kodi.create_item(converter.stream_to_listitem(stream))
-    if total > (offset + 1):
+    if (total - 100) > (int(offset) + 1) and (len(all_items) == per_page):
         has_items = True
         kodi.create_item(utils.link_to_next_page({'mode': MODES.GAMESTREAMS, 'game': game, 'offset': offset}))
     if has_items:

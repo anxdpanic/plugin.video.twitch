@@ -31,19 +31,12 @@ def route(api, content, offset=0, cursor='MA=='):
 
         all_items = list()
         requests = 0
-        total = None
+        total = 1000
 
-        while (per_page >= (len(all_items) + 1)) and (requests < MAX_REQUESTS):
+        while ((per_page >= (len(all_items) + 1)) and
+               (requests < MAX_REQUESTS) and (int(offset) <= 900)):
             requests += 1
             streams = api.get_followed_streams(stream_type=content, offset=offset, limit=REQUEST_LIMIT)
-
-            if total is None:
-                if Keys.TOTAL in streams:
-                    total = streams[Keys.TOTAL]
-                elif Keys.STREAMS in streams:
-                    total = len(streams[Keys.STREAMS])
-                else:
-                    break
 
             if (total > 0) and (Keys.STREAMS in streams):
                 filtered = \
@@ -69,7 +62,8 @@ def route(api, content, offset=0, cursor='MA=='):
             has_items = True
             for stream in all_items:
                 kodi.create_item(converter.stream_to_listitem(stream))
-        if total > (offset + 1):
+
+        if (total - 100) > (int(offset) + 1) and (len(all_items) == per_page):
             has_items = True
             kodi.create_item(utils.link_to_next_page({'mode': MODES.FOLLOWED, 'content': content, 'offset': offset}))
         if has_items:
