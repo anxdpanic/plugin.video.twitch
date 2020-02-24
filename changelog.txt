@@ -1,5 +1,5 @@
 2.4.9
-[bandaid] fix listing live streams
+[fix] fix listing live streams
 
 2.4.8
 [fix] resolve indefinite busy dialog on failed playback
