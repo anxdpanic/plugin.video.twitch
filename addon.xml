@@ -13,7 +13,7 @@
     <extension point='xbmc.addon.metadata'>
         <platform>all</platform>
         <news>
-[fix] fix listing live streams
+[fix] fix live notifications
         </news>
         <assets>
             <icon>icon.png</icon>
