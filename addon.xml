@@ -14,6 +14,7 @@
         <platform>all</platform>
         <news>
 [fix] fix live notifications
+[fix] fix clips
         </news>
         <assets>
             <icon>icon.png</icon>
