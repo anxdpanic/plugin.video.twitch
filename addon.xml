@@ -17,7 +17,7 @@
         </news>
         <assets>
             <icon>icon.png</icon>
-            <fanart>fanart.png</fanart>
+            <fanart>fanart.jpg</fanart>
         </assets>
         <source>https://github.com/MrSprigster/Twitch-on-Kodi</source>
         <license>GPL-3.0-only</license>
