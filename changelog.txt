@@ -1,5 +1,6 @@
 2.4.10
 [fix] fix live notifications
+[fix] fix clips
 
 2.4.9
 [fix] fix listing live streams
