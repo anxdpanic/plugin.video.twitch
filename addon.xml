@@ -13,9 +13,7 @@
     <extension point="xbmc.addon.metadata">
         <platform>all</platform>
         <news>
-[fix] fix live notifications
-[fix] fix clips
-[fix] double entries in followed live streams
+[fix] language setting
         </news>
         <assets>
             <icon>icon.png</icon>
