@@ -925,3 +925,7 @@ msgstr ""
 msgctxt "#30261"
 msgid "Private API Credentials"
 msgstr ""
+
+msgctxt "#30262"
+msgid "Change languages"
+msgstr ""
