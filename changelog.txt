@@ -1,7 +1,8 @@
-2.4.11
+2.5.0
 [fix] language setting
 [fix] show vodcasts in Following Live Channels
 [fix] logging in Kodi 19
+[upd] frame rate limiting to allow for 60 fps limit
 [lang] fr_FR |contrib: alan7000|
 
 2.4.10

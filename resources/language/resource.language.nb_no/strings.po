@@ -933,3 +933,7 @@ msgstr ""
 msgctxt "#30262"
 msgid "Change languages"
 msgstr ""
+
+msgctxt "#30263"
+msgid "Frame rate limit"
+msgstr ""

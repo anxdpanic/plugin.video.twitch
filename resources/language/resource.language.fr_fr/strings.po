@@ -931,3 +931,7 @@ msgstr "Références de l'API privée"
 msgctxt "#30262"
 msgid "Change languages"
 msgstr "Changer de langue"
+
+msgctxt "#30263"
+msgid "Frame rate limit"
+msgstr ""
