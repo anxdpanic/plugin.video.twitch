@@ -26,6 +26,7 @@ def route(api, content, offset=0, cursor='MA=='):
     per_page = utils.get_items_per_page()
     if content == StreamType.LIVE or content == StreamType.PLAYLIST:
         if content == StreamType.LIVE:
+            content = StreamType.ALL
             utils.refresh_previews()
         kodi.set_view('videos', set_sort=True)
 

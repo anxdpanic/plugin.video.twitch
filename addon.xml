@@ -14,6 +14,9 @@
         <platform>all</platform>
         <news>
 [fix] language setting
+[fix] show vodcasts in Following Live Channels
+[fix] logging in Kodi 19
+[lang] fr_FR |contrib: alan7000|
         </news>
         <assets>
             <icon>icon.png</icon>

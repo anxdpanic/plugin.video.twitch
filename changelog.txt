@@ -1,5 +1,8 @@
 2.4.11
 [fix] language setting
+[fix] show vodcasts in Following Live Channels
+[fix] logging in Kodi 19
+[lang] fr_FR |contrib: alan7000|
 
 2.4.10
 [fix] fix live notifications
