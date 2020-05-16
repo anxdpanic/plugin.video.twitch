@@ -40,13 +40,16 @@ def remove_search_history(search_type, query, do_refresh=True):
 
 
 def channel_videos(channel_id, channel_name, display_name):
-    return update_container(i18n('go_to') % ''.join(['[COLOR=white][B]', display_name, '[/B][/COLOR]']),
+    title_desc = '%s%s%s' % ('[COLOR=white][B]', display_name, '[/B][/COLOR]')
+    return update_container(i18n('go_to') % title_desc,
                             {'mode': MODES.CHANNELVIDEOS, 'channel_id': channel_id, 'channel_name': channel_name, 'display_name': display_name})
 
 
 def go_to_game(game):
-    return update_container(i18n('go_to') % ''.join(['[COLOR=white][B]', game, '[/B][/COLOR]']),
-                            {'mode': MODES.GAMELISTS, 'game': game})
+    game_name = '%s' % (game.encode('utf-8', 'ignore'))
+    title_desc = '%s%s%s' % ('[COLOR=white][B]', game_name, '[/B][/COLOR]')
+    return update_container(i18n('go_to') % title_desc,
+                            {'mode': MODES.GAMELISTS, 'game': game_name})
 
 
 def refresh():
