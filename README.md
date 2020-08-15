@@ -1,7 +1,7 @@
 Twitch on Kodi
 ==================
 
-![Build Status](https://img.shields.io/travis/MrSprigster/Twitch-on-Kodi/master.svg)
+![Build Status](https://img.shields.io/travis/anxdpanic/Twitch-on-Kodi/master.svg)
 ![License](https://img.shields.io/badge/license-GPL--3.0--only-success.svg)
 ![Kodi Version](https://img.shields.io/badge/kodi-isengard%2B-success.svg)
 ![Contributors](https://img.shields.io/github/contributors/MrSprigster/Twitch-on-Kodi.svg)
@@ -13,7 +13,7 @@ LOGIN
 
 1. Go to __Settings - Login - Get OAuth token__ and visit the url you are prompted with  
    _The prompted url is case-sensitive, if your skin's text is all UPPERCASE you will need to switch to Estuary/Confluence to see the proper url_
-2. Login/Sign-up and Authorize Twitch on Kodi
+2. Login/Sign-up and Authorize TTV on Kodi
 3. Input your new OAuth token in __Settings - Login__
 
 FAQ
