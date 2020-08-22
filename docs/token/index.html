@@ -7,6 +7,7 @@
         <title>Twitch on Kodi</title>
         <meta name="description" content="">
         <meta name="author" content="A Talented Community">
+        <link rel="stylesheet" href="https://unpkg.com/balloon-css/balloon.min.css">
         <style>
             @font-face {
                 font-family: JetBrains-Mono;
@@ -16,6 +17,7 @@
             html *
             {
                 font-family: JetBrains-Mono, Courier, Helvetica !important;
+                cursor: default;
             }
             body {
                 font-size: 16px;
@@ -56,6 +58,13 @@
                 font-size: 16px;
                 text-align: center;
                 margin-left: 41px;
+                cursor: copy;
+            }
+            .scope:hover {
+                cursor: help;
+            }
+            #response-additional {
+                padding-right: 30px;
             }
             th:first-of-type {
                 border-top-left-radius: 5px;
@@ -98,6 +107,27 @@
             </div>
         </div>
         <script>
+            var scope_descriptions = {
+                "channel_check_subscription": "Read whether a user is subscribed to your channel.",
+                "channel_commercial": "Trigger commercials on channel.",
+                "channel_editor": "Write channel metadata (game, status, etc).",
+                "channel_feed_edit": "Add posts and reactions to a channel feed.",
+                "channel_feed_read": "View a channel feed.",
+                "channel_read": "Read nonpublic channel information, including email address and stream key.",
+                "channel_stream": "Reset a channel’s stream key.",
+                "channel_subscriptions": "Read all subscribers to your channel.",
+                "chat_login": "(Deprecated — cannot be requested by new clients.) Log into chat and send messages.",
+                "collections_edit": "Manage a user’s collections (of videos).",
+                "communities_edit": "Manage a user’s communities.",
+                "communities_moderate": "Manage community moderators.",
+                "openid": "Use OpenID Connect authentication.",
+                "user_blocks_edit": "Turn on/off ignoring a user. Ignoring users means you cannot see them type, receive messages from them, etc.",
+                "user_blocks_read": "Read a user’s list of ignored users.",
+                "user_follows_edit": "Manage a user’s followed channels.",
+                "user_read": "Read nonpublic user information, like email address.",
+                "user_subscriptions": "Read a user’s subscriptions.",
+                "viewing_activity_read": "Turn on Viewer Heartbeat Service ability to record user data."
+            };
             function get_pairs(pairString) {
                 var fragment = {};
                 var fragments = pairString.split('&');
@@ -125,7 +155,7 @@
                     temp_scopes = temp_scopes.split("+");
                     response_scopes = "<div class=\"title-head\" id=\"response-scopes-title\">Authorized Scopes</div><ul>";
                     for (i = 0; i < temp_scopes.length; i++) {
-                        response_scopes += "<li>" + temp_scopes[i] + "</li>";
+                        response_scopes += "<li class=\"scope\" data-balloon-length=\"fit\" aria-label=\"" + scope_descriptions[temp_scopes[i]] + "\" data-balloon-pos=\"down-left\">" + temp_scopes[i] + "</li>";
                     }
                     response_scopes += "</ul>";
                 }
