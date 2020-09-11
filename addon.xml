@@ -13,7 +13,7 @@
     <extension point="xbmc.addon.metadata">
         <platform>all</platform>
         <news>
-[rem] remove usage of xbmc.LOGSEVERE, it's being removed in Kodi 19
+[upd] use xbmcvfs.translatePath if available, clean up for Kodi 19
         </news>
         <assets>
             <icon>icon.png</icon>
