@@ -1,4 +1,4 @@
-Twitch on Kodi
+Amazing Twitch on Kodi
 ==================
 
 ![Build Status](https://img.shields.io/travis/anxdpanic/Twitch-on-Kodi/master.svg)
