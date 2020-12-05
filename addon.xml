@@ -3,7 +3,7 @@
     <requires>
         <import addon="xbmc.python" version="2.20.0"/>
         <import addon="script.module.six" version="1.11.0"/>
-        <import addon="script.module.python.twitch" version="2.0.14"/>
+        <import addon="script.module.python.twitch" version="2.0.16~beta1"/>
         <import addon="script.module.requests" version="2.9.1"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="resources/lib/addon_runner.py">
@@ -13,6 +13,7 @@
     <extension point="xbmc.addon.metadata">
         <platform>all</platform>
         <news>
+[fix] followed games for users with private oauth tokens
 [upd] use xbmcvfs.translatePath if available, clean up for Kodi 19
         </news>
         <assets>
