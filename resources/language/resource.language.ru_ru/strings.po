@@ -252,7 +252,7 @@ msgstr "Предпросмотр трансляций"
 
 msgctxt "#30083"
 msgid "Live Preview Settings"
-msgstr "Настройка предпросмртра трансляций"
+msgstr "Настройки предпросмртра трансляций"
 
 msgctxt "#30084"
 msgid "Clear live preview cache"
@@ -264,7 +264,7 @@ msgstr "***** ВНИМАНИЕ *****"
 
 msgctxt "#30086"
 msgid "These settings may allow this add-on to delete database entries and images[CR]for cached live previews."
-msgstr "Эти настройки могут позволить дополнению удалять записи базы данных и картинки[CR]для предварительного просмотра"
+msgstr "Эти настройки позволят дополнению удалять записи с базы данных и картинки[CR]для предварительного просмотра"
 
 msgctxt "#30087"
 msgid "Notifications"
@@ -440,7 +440,7 @@ msgstr "Перейти в %s"
 
 msgctxt "#30131"
 msgid "No results returned"
-msgstr "Ничего не вернулось"
+msgstr "Ничего не получено"
 
 msgctxt "#30132"
 msgid "OAuth token is required for access to authorized user functions."
@@ -464,7 +464,7 @@ msgstr "Всегда спращивать"
 
 msgctxt "#30138"
 msgid "*** Do NOT share your OAuth token. ***"
-msgstr "*** НИКОМУ не отправляйте cвой OAuth токен. ***"
+msgstr "*** НИКОМУ НЕ отправляйте cвой OAuth токен. ***"
 
 msgctxt "#30139"
 msgid "Toggle follow"
