@@ -368,7 +368,7 @@ msgstr "144p30"
 
 msgctxt "#30112"
 msgid "Quality may result in best match"
-msgstr "Качество будет стремиться к лучшему совпадению"
+msgstr "Будет выбрано наиболее подходящее качество"
 
 msgctxt "#30113"
 msgid "Uploads"
