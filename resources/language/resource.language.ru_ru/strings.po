@@ -744,7 +744,7 @@ msgstr "Попытка #%d"
 
 msgctxt "#30210"
 msgid "Attempt reconnection to live streams"
-msgstr "Попытка переподключиться к трансляции"
+msgstr "Пытаться переподключаться к трансляциям"
 
 msgctxt "#30211"
 msgid "Enabled"
