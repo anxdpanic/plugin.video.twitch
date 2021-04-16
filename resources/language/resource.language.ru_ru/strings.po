@@ -82,7 +82,7 @@ msgstr ""
 
 msgctxt "#30023"
 msgid "User Token Error"
-msgstr "Ощибка пользовательского токена"
+msgstr "Ошибка пользовательского токена"
 
 msgctxt "#30024"
 msgid "Changed video settings"
@@ -90,7 +90,7 @@ msgstr "Изменены настройки видео"
 
 msgctxt "#30025"
 msgid "Selected video settings are not available"
-msgstr "Выбраные настройки видео не доступны"
+msgstr "Выбранные настройки видео не доступны"
 
 msgctxt "#30026"
 msgid "TwitchApi error"
