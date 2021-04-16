@@ -126,7 +126,7 @@ msgstr "Стример - Название трансляции"
 
 msgctxt "#30047"
 msgid "Viewers - Streamer - Stream Title"
-msgstr "Зритери - Стример - Название трансляции"
+msgstr "Зрители - Стример - Название трансляции"
 
 msgctxt "#30048"
 msgid "Stream Title"
@@ -252,11 +252,11 @@ msgstr "Предпросмотр трансляций"
 
 msgctxt "#30083"
 msgid "Live Preview Settings"
-msgstr "Настройки предпросмртра трансляций"
+msgstr "Настройки предпросмотра трансляций"
 
 msgctxt "#30084"
 msgid "Clear live preview cache"
-msgstr "Оистить кеш предпросмотра"
+msgstr "Очистить кеш предпросмотра"
 
 msgctxt "#30085"
 msgid "***** WARNING *****"
@@ -276,7 +276,7 @@ msgstr "Игра"
 
 msgctxt "#30089"
 msgid "Viewers"
-msgstr "Зритерей"
+msgstr "Зрителей"
 
 msgctxt "#30090"
 msgid "Language"
@@ -288,7 +288,7 @@ msgstr "Для взрослых"
 
 msgctxt "#30092"
 msgid "Partner"
-msgstr "Партнёр"
+msgstr "Партнер"
 
 msgctxt "#30093"
 msgid "Delay"
@@ -376,7 +376,7 @@ msgstr "Загрузки"
 
 msgctxt "#30114"
 msgid "Confirm"
-msgstr "Потвердить"
+msgstr "Подтвердить"
 
 msgctxt "#30115"
 msgid "Function cache has been reset"
@@ -408,7 +408,7 @@ msgstr "Сбросить функциональный кеш"
 
 msgctxt "#30123"
 msgid "Items per page"
-msgstr "Колличество элементов на страницу"
+msgstr "Количество элементов на страницу"
 
 msgctxt "#30124"
 msgid "Video Id/Url"
@@ -444,7 +444,7 @@ msgstr "Ничего не получено"
 
 msgctxt "#30132"
 msgid "OAuth token is required for access to authorized user functions."
-msgstr "Требуеться OAuth токен для доступа к функциям пользователя"
+msgstr "Требуется OAuth токен для доступа к функциям пользователя"
 
 msgctxt "#30133"
 msgid "Authorize"
@@ -460,11 +460,11 @@ msgstr "Получить OAuth токен"
 
 msgctxt "#30136"
 msgid "Always ask"
-msgstr "Всегда спращивать"
+msgstr "Всегда спрашивать"
 
 msgctxt "#30138"
 msgid "*** Do NOT share your OAuth token. ***"
-msgstr "*** НИКОМУ НЕ отправляйте cвой OAuth токен. ***"
+msgstr "*** НИКОМУ НЕ отправляйте свой OAuth токен. ***"
 
 msgctxt "#30139"
 msgid "Toggle follow"
@@ -544,11 +544,11 @@ msgstr "Удалить все игры"
 
 msgctxt "#30158"
 msgid "Remove %s from blacklist"
-msgstr "Удалить %s из черного списка"
+msgstr "Удалить %s из чёрного списка"
 
 msgctxt "#30159"
 msgid "Removed %s from blacklist"
-msgstr "%s удалён из черного списка"
+msgstr "%s удалён из чёрного списка"
 
 msgctxt "#30160"
 msgid "Cleared %s %s"
@@ -572,11 +572,11 @@ msgstr "Качество '%s' установлено как '%s' для %s"
 
 msgctxt "#30165"
 msgid "Removed default '%s' quality for %s"
-msgstr "Удалено качество '%s' для %s"
+msgstr "Удалено установленное качество '%s' для %s"
 
 msgctxt "#30166"
 msgid "Remove %s quality"
-msgstr "Сбросить качество для %s"
+msgstr "Сбросить установленное качество для %s"
 
 msgctxt "#30167"
 msgid "Default Qualities"
@@ -584,7 +584,7 @@ msgstr "Установленные качества"
 
 msgctxt "#30168"
 msgid "Clear default quality"
-msgstr "Сбросить качество"
+msgstr "Сбросить установленное качество"
 
 msgctxt "#30169"
 msgid "Choose Quality"
@@ -628,7 +628,7 @@ msgstr "Отсутствуют необходимые области: %s"
 
 msgctxt "#30179"
 msgid "Client id mismatch"
-msgstr "Несоотвествие ID клиента"
+msgstr "Несоответствие ID клиента"
 
 msgctxt "#30180"
 msgid "Go to '%s' - '%s' - '%s' to generate a new token"
@@ -692,11 +692,11 @@ msgstr "Сбросить качество для всех клипов"
 
 msgctxt "#30197"
 msgid "Requires confirmation"
-msgstr "Требуеться подтверждение"
+msgstr "Требуется подтверждение"
 
 msgctxt "#30198"
 msgid "Requires subscription to %s"
-msgstr "Требуеться подписка на канал %s"
+msgstr "Требуется подписка на канал %s"
 
 msgctxt "#30199"
 msgid "Connection failed"
@@ -728,7 +728,7 @@ msgstr "Со звуком"
 
 msgctxt "#30206"
 msgid "Playback failed"
-msgstr "Воспризведение не удалось"
+msgstr "Воспроизведение не удалось"
 
 msgctxt "#30207"
 msgid "Retrying in %d seconds"
@@ -744,7 +744,7 @@ msgstr "Попытка #%d"
 
 msgctxt "#30210"
 msgid "Attempt reconnection to live streams"
-msgstr "Попыться переподключиться к трансляции"
+msgstr "Попытка переподключиться к трансляции"
 
 msgctxt "#30211"
 msgid "Enabled"
@@ -776,7 +776,7 @@ msgstr "Нажмите OK для решения"
 
 msgctxt "#30218"
 msgid "Supported video ids: a123435, c123435, v123435, videos123435[CR]Example urls:[CR]https://twitch.tv/gamesdonequick...[CR].../v/113336135[CR].../v/113336135?t=1h52m35s"
-msgstr "Подерживаются видео id a123435, c123435, v123435, videos123435[CR]Примеры ссылок:[CR]https://twitch.tv/gamesdonequick...[CR].../v/113336135[CR].../v/113336135?t=1h52m35s"
+msgstr "Поддерживаются видео id a123435, c123435, v123435, videos123435[CR]Примеры ссылок:[CR]https://twitch.tv/gamesdonequick...[CR].../v/113336135[CR].../v/113336135?t=1h52m35s"
 
 msgctxt "#30219"
 msgid "Main Menu"
@@ -804,11 +804,11 @@ msgstr "Настроить inputstream.adaptive"
 
 msgctxt "#30225"
 msgid "inputstream.adaptive is enabled in the Twitch settings, however inputstream.adaptive appears to be disabled. Would you like to enable inputstream.adaptive now?"
-msgstr "inputstream.adaptive включен в настроках Twitch, но inputstream.adaptive сейчас выключен. Хотите включить inputstream.adaptive сейчас?"
+msgstr "inputstream.adaptive включен в настройках Twitch, но inputstream.adaptive сейчас выключен. Хотите включить inputstream.adaptive сейчас?"
 
 msgctxt "#30226"
 msgid "The installed inputstream.adaptive add-on does not meet the version requirement(%s), and has been disabled in the Twitch add-on settings."
-msgstr "Установленное дополнение inputstream.adaptive не соотвествует требуемой версии (%s) и будет выключено в настройках Twitch"
+msgstr "Установленное дополнение inputstream.adaptive не соответствует требуемой версии (%s) и будет выключено в настройках Twitch"
 
 msgctxt "#30227"
 msgid "Revoke Token"
@@ -816,7 +816,7 @@ msgstr "Отозвать токен"
 
 msgctxt "#30228"
 msgid "Are you sure you want to revoke your OAuth token?"
-msgstr "Вы уверены, что хотите отзвать ваш OAuth токен?"
+msgstr "Вы уверены, что хотите отозвать ваш OAuth токен?"
 
 msgctxt "#30229"
 msgid "OAuth token has been revoked"
@@ -836,7 +836,7 @@ msgstr "Уведомлять при запуске"
 
 msgctxt "#30233"
 msgid "Group notifications at start"
-msgstr "Груповые уведомления при запуске"
+msgstr "Групповые уведомления при запуске"
 
 msgctxt "#30234"
 msgid "Reset cache on Refresh"
