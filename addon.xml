@@ -13,8 +13,7 @@
     <extension point="xbmc.addon.metadata">
         <platform>all</platform>
         <news>
-[fix] followed games for users with private oauth tokens
-[upd] use xbmcvfs.translatePath if available, clean up for Kodi 19
+[fix] dialogs
         </news>
         <assets>
             <icon>icon.png</icon>
