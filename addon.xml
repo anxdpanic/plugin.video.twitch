@@ -38,6 +38,8 @@
         <description lang="nb_NO">Se dine favorittstrømmere!</description>
         <summary lang="pl_PL">Twitch video plugin</summary>
         <description lang="pl_PL">Oglądaj ulubione programy TwitchTV!</description>
+        <summary lang="ru_RU">Видео плагин Twitch </summary>
+        <description lang="ru_RU">Смотрите любимые игровые трансляции!</description>
         <reuselanguageinvoker>true</reuselanguageinvoker>
     </extension>
 </addon>
