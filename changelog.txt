@@ -1,5 +1,6 @@
 2.5.5
 [fix] dialogs
+[lang] added Russian translation - DimmKG
 
 2.5.4
 [fix] followed games for users with private oauth tokens
