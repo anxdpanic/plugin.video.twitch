@@ -459,11 +459,17 @@ class JsonListItemConverter(object):
     @staticmethod
     def _format_key(key, headings, info):
         #  use unicode punctuation space -\u2008- for readability and to keep item from line wrapping
+        import web_pdb
         item_template = u'{head}:\u2008{info}  '
         value = ''
         if info.get(key) is not None:
+            
+            info_key = info.get(key)
+            if PY2 and isinstance(info_key, unicode):
+                info_key = info_key.encode('utf-8', 'ignore')
+         
             val_heading = kodi.decode_utf8(headings.get(key))
-            val_info = kodi.decode_utf8(info.get(key).encode('utf-8', 'ignore'))
+            val_info = kodi.decode_utf8(info_key)
             value = item_template.format(head=val_heading, info=val_info)
         return value
 
