@@ -118,7 +118,7 @@ msgstr "Качество видео"
 
 msgctxt "#30045"
 msgid "Display titles"
-msgstr "Стиль загаловка"
+msgstr "Стиль заголовка"
 
 msgctxt "#30046"
 msgid "Streamer - Stream Title"
@@ -236,7 +236,7 @@ msgstr "Прошедшие трансляции"
 
 msgctxt "#30079"
 msgid "Video Highlights"
-msgstr "Лучшие моменты"
+msgstr "Яркие моменты"
 
 msgctxt "#30080"
 msgid "Could not find any playable urls"
@@ -588,7 +588,7 @@ msgstr "Сбросить установленное качество"
 
 msgctxt "#30169"
 msgid "Choose Quality"
-msgstr "Выбрать качество"
+msgstr "Выберите качество"
 
 msgctxt "#30170"
 msgid "Playlists"
@@ -944,7 +944,7 @@ msgstr "Интервал обновления картинок предпрос�
 
 msgctxt "#30260"
 msgid "Limit to 30 fps"
-msgstr "Лимит в 30 кадров"
+msgstr "Лимит в 30 FPS"
 
 msgctxt "#30261"
 msgid "Private API Credentials"
@@ -956,7 +956,7 @@ msgstr "Изменить языки"
 
 msgctxt "#30263"
 msgid "Frame rate limit"
-msgstr "Лимит fps"
+msgstr "Лимит FPS"
 
 msgctxt "#30264"
 msgid "Follow"
