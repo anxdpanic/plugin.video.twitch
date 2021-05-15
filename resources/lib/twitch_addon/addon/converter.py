@@ -459,7 +459,6 @@ class JsonListItemConverter(object):
     @staticmethod
     def _format_key(key, headings, info):
         #  use unicode punctuation space -\u2008- for readability and to keep item from line wrapping
-        import web_pdb
         item_template = u'{head}:\u2008{info}  '
         value = ''
         if info.get(key) is not None:
