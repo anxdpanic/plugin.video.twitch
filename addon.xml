@@ -13,7 +13,8 @@
     <extension point="xbmc.addon.metadata">
         <platform>all</platform>
         <news>
-[fix] Python 2 encoding issues
+[fix] Python 2 encoding issues - DimmKG
+[lang] update Russian translation - DimmKG
         </news>
         <assets>
             <icon>icon.png</icon>
