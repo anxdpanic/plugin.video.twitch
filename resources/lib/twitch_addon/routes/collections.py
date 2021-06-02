@@ -12,7 +12,7 @@ from ..addon import utils
 from ..addon.common import kodi
 from ..addon.constants import Keys, LINE_LENGTH, MODES, CURSOR_LIMIT, MAX_REQUESTS
 from ..addon.converter import JsonListItemConverter
-from ..addon.twitch_exceptions import NotFound, TwitchException
+from ..addon.twitch_exceptions import NotFound
 from ..addon.utils import i18n
 
 
@@ -24,11 +24,7 @@ def route(api, channel_id, cursor='MA=='):
     requests = 0
     while (CURSOR_LIMIT >= (len(all_items) + 1)) and cursor and (requests < MAX_REQUESTS):
         requests += 1
-        try:
-            collections = api.get_collections(channel_id, cursor, limit=CURSOR_LIMIT)
-        except TwitchException:
-            kodi.end_of_directory(succeeded=False)
-            raise
+        collections = api.get_collections(channel_id, cursor, limit=CURSOR_LIMIT)
         cursor = collections[Keys.CURSOR]
         if (Keys.COLLECTIONS in collections) and (len(collections[Keys.COLLECTIONS]) > 0):
             filtered = \
@@ -48,6 +44,7 @@ def route(api, channel_id, cursor='MA=='):
     if cursor:
         has_items = True
         kodi.create_item(utils.link_to_next_page({'mode': MODES.COLLECTIONS, 'channel_id': channel_id, 'cursor': cursor}))
-    kodi.end_of_directory(succeeded=has_items)
-    if not has_items:
-        raise NotFound(i18n('collections'))
+    if has_items:
+        kodi.end_of_directory()
+        return
+    raise NotFound(i18n('collections'))
