@@ -12,7 +12,7 @@ from ..addon import utils
 from ..addon.common import kodi
 from ..addon.constants import Keys, LINE_LENGTH, MODES, MAX_REQUESTS, REQUEST_LIMIT
 from ..addon.converter import JsonListItemConverter
-from ..addon.twitch_exceptions import NotFound
+from ..addon.twitch_exceptions import NotFound, TwitchException
 from ..addon.utils import i18n
 
 
@@ -27,17 +27,21 @@ def route(api, broadcast_type, channel_id=None, game=None, offset=0):
     requests = 0
     while (per_page >= (len(all_items) + 1)) and (requests < MAX_REQUESTS):
         requests += 1
-        if game is not None:
-            period = utils.get_sort('top_videos', 'period')
-            videos = api.get_top_videos(offset, limit=REQUEST_LIMIT, game=game, broadcast_type=broadcast_type, period=period)
-        else:
-            if channel_id == 'all':
+        try:
+            if game is not None:
                 period = utils.get_sort('top_videos', 'period')
-                videos = api.get_top_videos(offset, limit=REQUEST_LIMIT, broadcast_type=broadcast_type, period=period)
+                videos = api.get_top_videos(offset, limit=REQUEST_LIMIT, game=game, broadcast_type=broadcast_type, period=period)
             else:
-                sort_by = utils.get_sort('channel_videos', 'by')
-                language = utils.get_language()
-                videos = api.get_channel_videos(channel_id, offset, limit=REQUEST_LIMIT, broadcast_type=broadcast_type, sort_by=sort_by, language=language)
+                if channel_id == 'all':
+                    period = utils.get_sort('top_videos', 'period')
+                    videos = api.get_top_videos(offset, limit=REQUEST_LIMIT, broadcast_type=broadcast_type, period=period)
+                else:
+                    sort_by = utils.get_sort('channel_videos', 'by')
+                    language = utils.get_language()
+                    videos = api.get_channel_videos(channel_id, offset, limit=REQUEST_LIMIT, broadcast_type=broadcast_type, sort_by=sort_by, language=language)
+        except TwitchException:
+            kodi.end_of_directory(succeeded=False)
+            raise
         if Keys.VODS in videos or ((videos[Keys.TOTAL] > 0) and (Keys.VIDEOS in videos)):
             key = Keys.VODS if Keys.VODS in videos else Keys.VIDEOS
             filtered = \
@@ -66,7 +70,7 @@ def route(api, broadcast_type, channel_id=None, game=None, offset=0):
     if Keys.VODS in videos or videos[Keys.TOTAL] > (offset + 1):
         has_items = True
         kodi.create_item(utils.link_to_next_page({'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': broadcast_type, 'offset': offset}))
-    if has_items:
-        kodi.end_of_directory()
-        return
-    raise NotFound(i18n('videos'))
+    kodi.end_of_directory(succeeded=has_items)
+    if not has_items:
+        raise NotFound(i18n('videos'))
+    

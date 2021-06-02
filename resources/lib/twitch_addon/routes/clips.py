@@ -12,7 +12,7 @@ from ..addon import utils
 from ..addon.common import kodi
 from ..addon.constants import Keys, LINE_LENGTH, MODES, CURSOR_LIMIT, MAX_REQUESTS
 from ..addon.converter import JsonListItemConverter
-from ..addon.twitch_exceptions import NotFound
+from ..addon.twitch_exceptions import NotFound, TwitchException
 from ..addon.utils import i18n
 
 
@@ -26,7 +26,11 @@ def route(api, cursor='MA==', channel_name=None, game=None):
     language = utils.get_language()
     while (CURSOR_LIMIT >= (len(all_items) + 1)) and cursor and (requests < MAX_REQUESTS):
         requests += 1
-        clips = api.get_top_clips(cursor, limit=CURSOR_LIMIT, channel=channel_name, game=game, period=sorting['period'], trending=sorting['by'], language=language)
+        try:
+            clips = api.get_top_clips(cursor, limit=CURSOR_LIMIT, channel=channel_name, game=game, period=sorting['period'], trending=sorting['by'], language=language)
+        except TwitchException:
+            kodi.end_of_directory(succeeded=False)
+            raise
         cursor = clips[Keys.CURSOR]
         if Keys.CLIPS in clips and len(clips[Keys.CLIPS]) > 0:
             filtered = \
@@ -50,7 +54,6 @@ def route(api, cursor='MA==', channel_name=None, game=None):
         if channel_name:
             item_dict['channel_name'] = channel_name
         kodi.create_item(utils.link_to_next_page(item_dict))
-    if has_items:
-        kodi.end_of_directory()
-        return
-    raise NotFound(i18n('clips'))
+    kodi.end_of_directory(succeeded=has_items)
+    if not has_items:
+        raise NotFound(i18n('clips'))

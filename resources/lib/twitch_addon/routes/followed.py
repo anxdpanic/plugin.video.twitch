@@ -12,7 +12,7 @@ from ..addon import utils
 from ..addon.common import kodi
 from ..addon.constants import Keys, LINE_LENGTH, MODES, MAX_REQUESTS, REQUEST_LIMIT, CURSOR_LIMIT
 from ..addon.converter import JsonListItemConverter
-from ..addon.twitch_exceptions import NotFound
+from ..addon.twitch_exceptions import NotFound, TwitchException
 from ..addon.utils import i18n
 
 from twitch.api.parameters import StreamType
@@ -38,8 +38,11 @@ def route(api, content, offset=0, cursor='MA=='):
         while ((per_page >= (len(all_items) + 1)) and
                (requests < MAX_REQUESTS) and (int(offset) <= 900)):
             requests += 1
-            streams = api.get_followed_streams(stream_type=content, offset=offset, limit=REQUEST_LIMIT)
-
+            try:
+                streams = api.get_followed_streams(stream_type=content, offset=offset, limit=REQUEST_LIMIT)
+            except TwitchException:
+                kodi.end_of_directory(succeeded=False)
+                raise
             if len(streams.get(Keys.STREAMS, [])) < per_page:
                 last_page = True
 
@@ -81,6 +84,7 @@ def route(api, content, offset=0, cursor='MA=='):
         if has_items:
             kodi.end_of_directory()
             return
+        kodi.end_of_directory(succeeded=False)
         if content == StreamType.LIVE:
             raise NotFound(i18n('streams'))
         else:
@@ -93,7 +97,11 @@ def route(api, content, offset=0, cursor='MA=='):
         requests = 0
         while (per_page >= (len(all_items) + 1)) and (requests < MAX_REQUESTS):
             requests += 1
-            channels = api.get_followed_channels(user_id=user_id, offset=offset, limit=REQUEST_LIMIT, direction=sorting['direction'], sort_by=sorting['by'])
+            try:
+                channels = api.get_followed_channels(user_id=user_id, offset=offset, limit=REQUEST_LIMIT, direction=sorting['direction'], sort_by=sorting['by'])
+            except TwitchException:
+                kodi.end_of_directory(succeeded=False)
+                raise
             if (channels[Keys.TOTAL] > 0) and (Keys.FOLLOWS in channels):
                 filtered = \
                     blacklist_filter.by_type(channels, Keys.FOLLOWS, parent_keys=[Keys.CHANNEL], id_key=Keys._ID, list_type='user')
@@ -120,10 +128,10 @@ def route(api, content, offset=0, cursor='MA=='):
         if channels[Keys.TOTAL] > (offset + 1):
             has_items = True
             kodi.create_item(utils.link_to_next_page({'mode': MODES.FOLLOWED, 'content': content, 'offset': offset}))
-        if has_items:
-            kodi.end_of_directory()
-            return
-        raise NotFound(i18n('channels'))
+        kodi.end_of_directory(succeeded=has_items)
+        if not has_items:
+            raise NotFound(i18n('channels'))
+        
     elif content == 'games':
         kodi.set_view('files', set_sort=False)
         response = api.get_followed_games(REQUEST_LIMIT)
@@ -138,11 +146,9 @@ def route(api, content, offset=0, cursor='MA=='):
             has_items = True
             for game in games:
                 kodi.create_item(converter.followed_game_to_listitem(game))
-
-        if has_items:
-            kodi.end_of_directory()
-            return
-        raise NotFound(i18n('games'))
+        kodi.end_of_directory(succeeded=has_items)
+        if not has_items:
+            raise NotFound(i18n('games'))
     elif content == 'clips':
         kodi.set_view('videos', set_sort=True)
         sort_by = utils.get_sort('clips', 'by')
@@ -151,7 +157,11 @@ def route(api, content, offset=0, cursor='MA=='):
         language = utils.get_language()
         while (CURSOR_LIMIT >= (len(all_items) + 1)) and cursor and (requests < MAX_REQUESTS):
             requests += 1
-            clips = api.get_followed_clips(cursor=cursor, limit=CURSOR_LIMIT, trending=sort_by, language=language)
+            try:
+                clips = api.get_followed_clips(cursor=cursor, limit=CURSOR_LIMIT, trending=sort_by, language=language)
+            except TwitchException:
+                kodi.end_of_directory(succeeded=False)
+                raise
             cursor = clips[Keys.CURSOR]
             if Keys.CLIPS in clips and len(clips[Keys.CLIPS]) > 0:
                 filtered = \
@@ -172,7 +182,6 @@ def route(api, content, offset=0, cursor='MA=='):
         if cursor:
             has_items = True
             kodi.create_item(utils.link_to_next_page({'mode': MODES.FOLLOWED, 'content': content, 'cursor': cursor}))
-        if has_items:
-            kodi.end_of_directory()
-            return
-        raise NotFound(i18n('clips'))
+        kodi.end_of_directory(succeeded=has_items)
+        if not has_items:
+            raise NotFound(i18n('clips'))

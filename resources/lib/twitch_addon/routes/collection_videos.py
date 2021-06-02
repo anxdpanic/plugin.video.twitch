@@ -12,7 +12,7 @@ from ..addon import utils
 from ..addon.common import kodi
 from ..addon.constants import Keys, LINE_LENGTH
 from ..addon.converter import JsonListItemConverter
-from ..addon.twitch_exceptions import NotFound
+from ..addon.twitch_exceptions import NotFound, TwitchException
 from ..addon.utils import i18n
 
 
@@ -20,7 +20,11 @@ def route(api, collection_id):
     blacklist_filter = utils.BlacklistFilter()
     converter = JsonListItemConverter(LINE_LENGTH)
     kodi.set_view('videos', set_sort=True)
-    videos = api.get_collection_videos(collection_id)
+    try:
+        videos = api.get_collection_videos(collection_id)
+    except TwitchException:
+        kodi.end_of_directory(succeeded=False)
+        raise
     all_items = list()
     if (Keys.ITEMS in videos) and (len(videos[Keys.ITEMS]) > 0):
         filtered = \
@@ -36,4 +40,5 @@ def route(api, collection_id):
                 kodi.create_item(converter.collection_video_to_listitem(video))
             kodi.end_of_directory()
             return
+    kodi.end_of_directory(succeeded=False)
     raise NotFound(i18n('videos'))
