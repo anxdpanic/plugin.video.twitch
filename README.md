@@ -1,7 +1,7 @@
 Twitch on Kodi
 ==================
 
-![Build Status](https://img.shields.io/travis/com/anxdpanic/Twitch-on-Kodi/master.svg)
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fanxdpanic%2Fplugin.video.twitch%2Fbadge&style=flat)](https://actions-badge.atrox.dev/anxdpanic/plugin.video.twitch/goto)
 ![License](https://img.shields.io/badge/license-GPL--3.0--only-success.svg)
 ![Kodi Version](https://img.shields.io/badge/kodi-isengard%2B-success.svg)
 ![Contributors](https://img.shields.io/github/contributors/anxdpanic/Twitch-on-Kodi.svg)
