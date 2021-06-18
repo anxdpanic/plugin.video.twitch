@@ -9,7 +9,7 @@ on:
 
 jobs:
   addon-validations:
-    if: github.repository == 'anxdpanic/plug.video.twitch'
+    if: github.repository == 'anxdpanic/plugin.video.twitch'
 
     runs-on: ubuntu-latest
     name: Add-on Validations
