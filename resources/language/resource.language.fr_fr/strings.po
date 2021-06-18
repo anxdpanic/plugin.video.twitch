@@ -13,6 +13,14 @@ msgstr ""
 "Last-Translator: \n"
 "X-Generator: Poedit 2.0.6\n"
 
+msgctxt "Addon Summary"
+msgid "Twitch video plugin"
+msgstr "Twitch video plugin"
+
+msgctxt "Addon Description"
+msgid "Watch your favorite gaming streams!"
+msgstr "Regardez les streams de vos jeux favoris !"
+
 msgctxt "#30001"
 msgid "Games"
 msgstr "Jeux"

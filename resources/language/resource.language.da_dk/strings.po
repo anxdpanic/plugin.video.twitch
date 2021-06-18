@@ -14,6 +14,14 @@ msgstr ""
 "Language: da_DK\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
+msgctxt "Addon Summary"
+msgid "Twitch video plugin"
+msgstr "Twitch video plugin"
+
+msgctxt "Addon Description"
+msgid "Watch your favorite gaming streams!"
+msgstr "Se dine favorit gaming streams!"
+
 msgctxt "#30001"
 msgid "Games"
 msgstr "Spil"
