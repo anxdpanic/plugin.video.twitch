@@ -15,7 +15,7 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "Twitch video plugin"
-msgstr "Видео плагин Twitch"
+msgstr "Видео плагин Twitch "
 
 msgctxt "Addon Description"
 msgid "Watch your favorite gaming streams!"
