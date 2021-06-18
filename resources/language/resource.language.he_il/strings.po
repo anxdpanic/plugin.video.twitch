@@ -11,6 +11,14 @@ msgstr ""
 "Language: he_IL\n"
 "X-Generator: Poedit 2.0.4\n"
 
+msgctxt "Addon Summary"
+msgid "Twitch video plugin"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Watch your favorite gaming streams!"
+msgstr ""
+
 # Next available: 30041-30044, 30063, 30113
 # main menu
 msgctxt "#30001"
