@@ -19,7 +19,7 @@
             <icon>icon.png</icon>
             <fanart>fanart.jpg</fanart>
         </assets>
-        <source>https://github.com/anxdpanic/Twitch-on-Kodi</source>
+        <source>https://github.com/anxdpanic/plugin.video.twitch</source>
         <license>GPL-3.0-only</license>
         <forum>https://twitchaddon.panicked.xyz/forum</forum>
         <reuselanguageinvoker>true</reuselanguageinvoker>
