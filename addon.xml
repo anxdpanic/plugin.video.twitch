@@ -3,8 +3,8 @@
     <requires>
         <import addon="xbmc.python" version="2.20.0"/>
         <import addon="script.module.six" version="1.11.0"/>
-        <import addon="script.module.python.twitch" version="2.0.16"/>
         <import addon="script.module.requests" version="2.9.1"/>
+        <import addon="script.module.python.twitch" version="2.0.16"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="resources/lib/addon_runner.py">
         <provides>video</provides>
@@ -15,10 +15,10 @@
             <icon>icon.png</icon>
             <fanart>fanart.jpg</fanart>
         </assets>
-        <platform>all</platform>
         <news>
 [fix] Playback of re-runs - apo86
         </news>
+        <platform>all</platform>
         <source>https://github.com/anxdpanic/plugin.video.twitch</source>
         <license>GPL-3.0-only</license>
         <forum>https://twitchaddon.panicked.xyz/forum</forum>
