@@ -11,14 +11,14 @@
     </extension>
     <extension point="xbmc.service" library="resources/lib/service_runner.py" start="login"/>
     <extension point="xbmc.addon.metadata">
-        <platform>all</platform>
-        <news>
-[fix] Signal end_of_directory when an exception appears - DimmKG
-        </news>
         <assets>
             <icon>icon.png</icon>
             <fanart>fanart.jpg</fanart>
         </assets>
+        <platform>all</platform>
+        <news>
+[fix] Playback of re-runs - apo86
+        </news>
         <source>https://github.com/anxdpanic/plugin.video.twitch</source>
         <license>GPL-3.0-only</license>
         <forum>https://twitchaddon.panicked.xyz/forum</forum>
