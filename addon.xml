@@ -17,6 +17,7 @@
         </assets>
         <news>
 [fix] Playback of re-runs - apo86
+[fix] New OAuth token generation
         </news>
         <platform>all</platform>
         <source>https://github.com/anxdpanic/plugin.video.twitch</source>
