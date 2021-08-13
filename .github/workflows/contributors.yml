@@ -1,8 +1,6 @@
+name: Update CONTRIBUTORS.md
 on:
     push:
-        branches:
-            - master
-    pull_request:
         branches:
             - master
 
@@ -15,6 +13,6 @@ jobs:
               uses: akhilmhdh/contributors-readme-action@master
               with:
                   readme_path: "CONTRIBUTORS.md"
-                  user_username: true
+                  use_username: true
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
