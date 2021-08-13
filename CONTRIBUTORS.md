@@ -8,7 +8,7 @@
         <a href="https://github.com/MrSprigster">
             <img src="https://avatars.githubusercontent.com/u/6219686?v=4" width="100;" alt="MrSprigster"/>
             <br />
-            <sub><b>Mr Sprigster</b></sub>
+            <sub><b>MrSprigster</b></sub>
         </a>
     </td>
     <td align="center">
@@ -37,14 +37,14 @@
         <a href="https://github.com/MrSprigster">
             <img src="https://avatars.githubusercontent.com/u/6219686?v=4" width="100;" alt="MrSprigster"/>
             <br />
-            <sub><b>Mr Sprigster</b></sub>
+            <sub><b>MrSprigster</b></sub>
         </a>
     </td>
     <td align="center">
         <a href="https://github.com/ccaspers">
             <img src="https://avatars.githubusercontent.com/u/2117023?v=4" width="100;" alt="ccaspers"/>
             <br />
-            <sub><b>Christian Caspers</b></sub>
+            <sub><b>ccaspers</b></sub>
         </a>
     </td>
     <td align="center">
@@ -65,7 +65,7 @@
         <a href="https://github.com/ingwinlu">
             <img src="https://avatars.githubusercontent.com/u/4435962?v=4" width="100;" alt="ingwinlu"/>
             <br />
-            <sub><b>Winlu</b></sub>
+            <sub><b>ingwinlu</b></sub>
         </a>
     </td></tr>
 <tr>
@@ -73,14 +73,14 @@
         <a href="https://github.com/weblate">
             <img src="https://avatars.githubusercontent.com/u/1607653?v=4" width="100;" alt="weblate"/>
             <br />
-            <sub><b>Weblate (bot)</b></sub>
+            <sub><b>weblate</b></sub>
         </a>
     </td>
     <td align="center">
         <a href="https://github.com/torstehu">
             <img src="https://avatars.githubusercontent.com/u/871220?v=4" width="100;" alt="torstehu"/>
             <br />
-            <sub><b>Torstein Husebø</b></sub>
+            <sub><b>torstehu</b></sub>
         </a>
     </td>
     <td align="center">
@@ -108,7 +108,7 @@
         <a href="https://github.com/CDehning">
             <img src="https://avatars.githubusercontent.com/u/4777216?v=4" width="100;" alt="CDehning"/>
             <br />
-            <sub><b>Christian Dehning</b></sub>
+            <sub><b>CDehning</b></sub>
         </a>
     </td></tr>
 <tr>
@@ -116,7 +116,7 @@
         <a href="https://github.com/ebod">
             <img src="https://avatars.githubusercontent.com/u/3525368?v=4" width="100;" alt="ebod"/>
             <br />
-            <sub><b>Jörg Blank</b></sub>
+            <sub><b>ebod</b></sub>
         </a>
     </td>
     <td align="center">
@@ -130,21 +130,21 @@
         <a href="https://github.com/stevensmedia">
             <img src="https://avatars.githubusercontent.com/u/4483829?v=4" width="100;" alt="stevensmedia"/>
             <br />
-            <sub><b>Neil Stevens</b></sub>
+            <sub><b>stevensmedia</b></sub>
         </a>
     </td>
     <td align="center">
         <a href="https://github.com/stevenroose">
             <img src="https://avatars.githubusercontent.com/u/853468?v=4" width="100;" alt="stevenroose"/>
             <br />
-            <sub><b>Steven Roose</b></sub>
+            <sub><b>stevenroose</b></sub>
         </a>
     </td>
     <td align="center">
         <a href="https://github.com/stuross">
             <img src="https://avatars.githubusercontent.com/u/178643?v=4" width="100;" alt="stuross"/>
             <br />
-            <sub><b>Stuart Ross</b></sub>
+            <sub><b>stuross</b></sub>
         </a>
     </td>
     <td align="center">
@@ -173,14 +173,14 @@
         <a href="https://github.com/disrupted">
             <img src="https://avatars.githubusercontent.com/u/4771462?v=4" width="100;" alt="disrupted"/>
             <br />
-            <sub><b>Salomon Popp</b></sub>
+            <sub><b>disrupted</b></sub>
         </a>
     </td>
     <td align="center">
         <a href="https://github.com/svms1">
             <img src="https://avatars.githubusercontent.com/u/6218137?v=4" width="100;" alt="svms1"/>
             <br />
-            <sub><b>Rebecca Klauser</b></sub>
+            <sub><b>svms1</b></sub>
         </a>
     </td>
     <td align="center">
@@ -194,7 +194,7 @@
         <a href="https://github.com/spiffomatic64">
             <img src="https://avatars.githubusercontent.com/u/6806506?v=4" width="100;" alt="spiffomatic64"/>
             <br />
-            <sub><b>Spiffomatic64</b></sub>
+            <sub><b>spiffomatic64</b></sub>
         </a>
     </td></tr>
 <tr>
@@ -209,35 +209,35 @@
         <a href="https://github.com/ccope">
             <img src="https://avatars.githubusercontent.com/u/412019?v=4" width="100;" alt="ccope"/>
             <br />
-            <sub><b>Cam Cope</b></sub>
+            <sub><b>ccope</b></sub>
         </a>
     </td>
     <td align="center">
         <a href="https://github.com/dadobt">
             <img src="https://avatars.githubusercontent.com/u/5913204?v=4" width="100;" alt="dadobt"/>
             <br />
-            <sub><b>Danail Vilos</b></sub>
+            <sub><b>dadobt</b></sub>
         </a>
     </td>
     <td align="center">
         <a href="https://github.com/Eng2Heb">
             <img src="https://avatars.githubusercontent.com/u/31464752?v=4" width="100;" alt="Eng2Heb"/>
             <br />
-            <sub><b>A. Dambledore</b></sub>
+            <sub><b>Eng2Heb</b></sub>
         </a>
     </td>
     <td align="center">
         <a href="https://github.com/alan7000">
             <img src="https://avatars.githubusercontent.com/u/7330585?v=4" width="100;" alt="alan7000"/>
             <br />
-            <sub><b>Flambard Alan</b></sub>
+            <sub><b>alan7000</b></sub>
         </a>
     </td>
     <td align="center">
         <a href="https://github.com/Giacom">
             <img src="https://avatars.githubusercontent.com/u/1524810?v=4" width="100;" alt="Giacom"/>
             <br />
-            <sub><b>Alex</b></sub>
+            <sub><b>Giacom</b></sub>
         </a>
     </td></tr>
 </table>
@@ -267,7 +267,7 @@
         <a href="https://github.com/ingwinlu">
             <img src="https://avatars.githubusercontent.com/u/4435962?v=4" width="100;" alt="ingwinlu"/>
             <br />
-            <sub><b>Winlu</b></sub>
+            <sub><b>ingwinlu</b></sub>
         </a>
     </td></tr>
 </table>
