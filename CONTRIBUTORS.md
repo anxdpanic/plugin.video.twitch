@@ -105,13 +105,20 @@
         </a>
     </td>
     <td align="center">
+        <a href="https://github.com/apo86">
+            <img src="https://avatars.githubusercontent.com/u/57818762?v=4" width="100;" alt="apo86"/>
+            <br />
+            <sub><b>apo86</b></sub>
+        </a>
+    </td></tr>
+<tr>
+    <td align="center">
         <a href="https://github.com/CDehning">
             <img src="https://avatars.githubusercontent.com/u/4777216?v=4" width="100;" alt="CDehning"/>
             <br />
             <sub><b>CDehning</b></sub>
         </a>
-    </td></tr>
-<tr>
+    </td>
     <td align="center">
         <a href="https://github.com/ebod">
             <img src="https://avatars.githubusercontent.com/u/3525368?v=4" width="100;" alt="ebod"/>
@@ -146,20 +153,13 @@
             <br />
             <sub><b>stuross</b></sub>
         </a>
-    </td>
+    </td></tr>
+<tr>
     <td align="center">
         <a href="https://github.com/Oyuret">
             <img src="https://avatars.githubusercontent.com/u/1458128?v=4" width="100;" alt="Oyuret"/>
             <br />
             <sub><b>Oyuret</b></sub>
-        </a>
-    </td></tr>
-<tr>
-    <td align="center">
-        <a href="https://github.com/apo86">
-            <img src="https://avatars.githubusercontent.com/u/57818762?v=4" width="100;" alt="apo86"/>
-            <br />
-            <sub><b>apo86</b></sub>
         </a>
     </td>
     <td align="center">
