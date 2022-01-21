@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.twitch" version="2.5.11" name="Twitch" provider-name="anxdpanic, A Talented Community">
+<addon id="plugin.video.twitch" version="2.5.12" name="Twitch" provider-name="anxdpanic, A Talented Community">
     <requires>
         <import addon="xbmc.python" version="2.20.0"/>
         <import addon="script.module.six" version="1.11.0"/>
@@ -16,7 +16,7 @@
             <fanart>fanart.jpg</fanart>
         </assets>
         <news>
-[fix] fix follow/unfollow channels - apo86
+[add] new menu icons - Goldenfreddy0703
 [lang] updated translations from Weblate
         </news>
         <platform>all</platform>
