@@ -11,7 +11,7 @@
 
 from .common import kodi
 
-from twitch.oauth.v5 import scopes
+from twitch.oauth.helix import scopes
 
 
 def __enum(**enums):
@@ -186,4 +186,5 @@ class Scripts:
     REFRESH = 'special://home/addons/plugin.video.twitch/resources/lib/twitch_addon/refresh.py'
 
 
-SCOPES = [scopes.user_read, scopes.user_follows_edit, scopes.user_subscriptions]
+SCOPES = [scopes.user_read_follows, scopes.user_read_subscriptions,
+          scopes.chat_read, scopes.chat_edit]
