@@ -51,73 +51,62 @@ class Twitch:
     def valid_token(self, client_id, token, scopes):  # client_id, token used for unique caching only
         token_check = self.root()
         while True:
-            if not token_check['token']['valid']:
-                result = kodi.Dialog().ok(
-                    i18n('oauth_token'),
-                    '[CR]'.join([
-                        i18n('invalid_token'),
-                        i18n('get_new_oauth_token') % (i18n('settings'), i18n('login'), i18n('get_oauth_token'))
-                    ])
-                )
-                log_utils.log('Error: Current OAuth token is invalid.', log_utils.LOGERROR)
-                return False
-            else:
-                if token_check['token']['client_id'] in (self.client_id, utils.get_client_id(default=True, old=True)):
-                    if token_check['token']['authorization']:
-                        token_scopes = token_check['token']['authorization']['scopes']
-                        missing_scopes = [value for value in scopes if value not in token_scopes]
-                        if len(missing_scopes) > 0:
-                            result = kodi.Dialog().ok(
-                                i18n('oauth_token'),
-                                '[CR]'.join([
-                                    i18n('missing_scopes') % missing_scopes,
-                                    i18n('get_new_oauth_token') %
-                                    (i18n('settings'), i18n('login'), i18n('get_oauth_token'))
-                                ])
-                            )
-                            log_utils.log('Error: Current OAuth token is missing required scopes |%s|' % missing_scopes, log_utils.LOGERROR)
-                            return False
-                        else:
-                            return True
-                    else:
-                        return False
-                else:
-                    matches_default = token_check['token']['client_id'] == utils.get_client_id(default=True)
-                    matches_old = token_check['token']['client_id'] == utils.get_client_id(default=True, old=True)
-                    message = 'Token created using %s Client-ID |%s|' % ('default' if matches_default else 'old' if matches_old else 'none', str(matches_default))
-                    log_utils.log('Error: OAuth Client-ID mismatch: %s' % message, log_utils.LOGERROR)
-                    if matches_default:
-                        result = kodi.Dialog().ok(
-                            i18n('oauth_token'),
-                            '[CR]'.join([i18n('client_id_mismatch'), i18n('ok_to_resolve')])
-                        )
-                        utils.clear_client_id()
-                        self.client_id = utils.get_client_id(default=True)
-                        self.queries.CLIENT_ID = self.client_id
-                        self.client = oauth.clients.MobileClient(self.client_id, self.client_secret)
-                    elif matches_old:
-                        result = kodi.Dialog().ok(
-                            i18n('oauth_token'),
-                            '[CR]'.join([i18n('client_id_mismatch'), i18n('ok_to_resolve')])
-                        )
-                        utils.clear_client_id()
-                        self.client_id = utils.get_client_id(default=True, old=True)
-                        self.queries.CLIENT_ID = self.client_id
-                        self.client = oauth.clients.MobileClient(self.client_id, self.client_secret)
-                    else:
+            if token_check['client_id'] in (self.client_id, utils.get_client_id(default=True, old=True)):
+                if token_check['scopes']:
+                    token_scopes = token_check['scopes']
+                    missing_scopes = [value for value in scopes if value not in token_scopes]
+                    if len(missing_scopes) > 0:
                         result = kodi.Dialog().ok(
                             i18n('oauth_token'),
                             '[CR]'.join([
-                                i18n('client_id_mismatch'),
+                                i18n('missing_scopes') % missing_scopes,
                                 i18n('get_new_oauth_token') %
                                 (i18n('settings'), i18n('login'), i18n('get_oauth_token'))
                             ])
                         )
+                        log_utils.log('Error: Current OAuth token is missing required scopes |%s|' % missing_scopes, log_utils.LOGERROR)
                         return False
+                    else:
+                        return True
+                else:
+                    return False
+            else:
+                matches_default = token_check['client_id'] == utils.get_client_id(default=True)
+                matches_old = token_check['client_id'] == utils.get_client_id(default=True, old=True)
+                message = 'Token created using %s Client-ID |%s|' % ('default' if matches_default else 'old' if matches_old else 'none', str(matches_default))
+                log_utils.log('Error: OAuth Client-ID mismatch: %s' % message, log_utils.LOGERROR)
+                if matches_default:
+                    result = kodi.Dialog().ok(
+                        i18n('oauth_token'),
+                        '[CR]'.join([i18n('client_id_mismatch'), i18n('ok_to_resolve')])
+                    )
+                    utils.clear_client_id()
+                    self.client_id = utils.get_client_id(default=True)
+                    self.queries.CLIENT_ID = self.client_id
+                    self.client = oauth.clients.MobileClient(self.client_id, self.client_secret)
+                elif matches_old:
+                    result = kodi.Dialog().ok(
+                        i18n('oauth_token'),
+                        '[CR]'.join([i18n('client_id_mismatch'), i18n('ok_to_resolve')])
+                    )
+                    utils.clear_client_id()
+                    self.client_id = utils.get_client_id(default=True, old=True)
+                    self.queries.CLIENT_ID = self.client_id
+                    self.client = oauth.clients.MobileClient(self.client_id, self.client_secret)
+                else:
+                    result = kodi.Dialog().ok(
+                        i18n('oauth_token'),
+                        '[CR]'.join([
+                            i18n('client_id_mismatch'),
+                            i18n('get_new_oauth_token') %
+                            (i18n('settings'), i18n('login'), i18n('get_oauth_token'))
+                        ])
+                    )
+                    return False
 
     @api_error_handler
     def root(self):
-        results = self.api.root()
+        results = oauth.validation.validate()
         return self.error_check(results)
 
     @api_error_handler
