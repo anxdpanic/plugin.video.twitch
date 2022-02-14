@@ -175,10 +175,12 @@
                 response = fragment["access_token"];
                 if (typeof fragment["scope"] != "undefined") {
                     var temp_scopes = fragment["scope"];
+                    var temp_scope = "";
                     temp_scopes = temp_scopes.split("+");
                     response_scopes = "<div class=\"title-head\" id=\"response-scopes-title\">Authorized Scopes</div><ul>";
                     for (i = 0; i < temp_scopes.length; i++) {
-                        response_scopes += "<li class=\"scope\" data-balloon-length=\"fit\" aria-label=\"" + scope_descriptions[temp_scopes[i]] + "\" data-balloon-pos=\"down-left\">" + temp_scopes[i] + "</li>";
+                        temp_scope = decodeURIComponent(temp_scopes[i]);
+                        response_scopes += "<li class=\"scope\" data-balloon-length=\"fit\" aria-label=\"" + scope_descriptions[temp_scope] + "\" data-balloon-pos=\"down-left\">" + temp_scope + "</li>";
                     }
                     response_scopes += "</ul>";
                 }
