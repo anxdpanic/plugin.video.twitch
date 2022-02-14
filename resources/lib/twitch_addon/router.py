@@ -76,8 +76,8 @@ def _following():
 @dispatcher.register(MODES.FEATUREDSTREAMS)
 @error_handler(route_type=1)
 def _list_featured_streams():
-    from .routes import featured_streams
-    featured_streams.route(twitch_api)
+    from .routes import popular_streams
+    popular_streams.route(twitch_api)
 
 
 @dispatcher.register(MODES.GAMES, kwargs=['offset'])

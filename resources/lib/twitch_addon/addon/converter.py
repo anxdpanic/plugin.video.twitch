@@ -271,39 +271,34 @@ class JsonListItemConverter(object):
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image})}
 
     def stream_to_listitem(self, stream):
-        channel = stream[Keys.CHANNEL]
-        video_banner = channel.get(Keys.PROFILE_BANNER)
-        if not video_banner:
-            video_banner = channel.get(Keys.VIDEO_BANNER) if channel.get(Keys.VIDEO_BANNER) else Images.FANART
-        preview = self.get_thumbnail(stream.get(Keys.PREVIEW), Images.VIDEOTHUMB)
-        logo = channel.get(Keys.LOGO) if channel.get(Keys.LOGO) else Images.VIDEOTHUMB
+        video_banner = Images.FANART
+        preview = self.get_thumbnail(stream.get(Keys.THUMBNAIL_URL), Images.VIDEOTHUMB)
+        logo = Images.VIDEOTHUMB
         if preview and get_refresh_stamp():
             preview = '?timestamp='.join([preview, quote(get_refresh_stamp())])
         image =  preview if preview != Images.VIDEOTHUMB else logo
         title = self.get_title_for_stream(stream)
-        if stream.get(Keys.STREAM_TYPE) != 'live':
+        if stream.get(Keys.TYPE) != 'live':
             color = get_vodcast_color()
             title = u'[COLOR={color}]{title}[/COLOR]'.format(title=title, color=color)
         info = self.get_plot_for_stream(stream)
         info.update({'mediatype': 'video', 'playcount': 0})
         context_menu = list()
         context_menu.extend(menu_items.refresh())
-        display_name = to_string(channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.NAME))
-        channel_name = to_string(channel[Keys.NAME])
-        game_name = to_string(channel[Keys.GAME])
+        display_name = to_string(stream.get(Keys.USER_NAME) if stream.get(Keys.USER_NAME) else stream.get(Keys.USER_LOGIN))
+        channel_name = to_string(stream[Keys.USER_NAME])
+        game_name = to_string(stream[Keys.GAME_NAME])
         if self.has_token:
-            context_menu.extend(menu_items.edit_follow(channel[Keys._ID], display_name))
+            context_menu.extend(menu_items.edit_follow(stream[Keys.USER_ID], display_name))
             # context_menu.extend(menu_items.edit_block(channel[Keys._ID], name))
-        context_menu.extend(menu_items.channel_videos(channel[Keys._ID], channel_name, display_name))
-        if channel[Keys.GAME]:
+        context_menu.extend(menu_items.channel_videos(stream[Keys.USER_ID], channel_name, display_name))
+        if stream[Keys.GAME_NAME]:
             context_menu.extend(menu_items.go_to_game(game_name))
-        context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], display_name))
-        context_menu.extend(menu_items.add_blacklist(b64encode(channel[Keys.GAME].encode('utf-8', 'ignore')), channel[Keys.GAME], list_type='game'))
-        context_menu.extend(menu_items.set_default_quality('stream', channel[Keys._ID], channel[Keys.NAME]))
+        context_menu.extend(menu_items.set_default_quality('stream', stream[Keys.USER_ID], stream.get(Keys.USER_LOGIN)))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'channel_id': channel[Keys._ID], 'ask': True, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'channel_id': stream[Keys.USER_ID], 'ask': True, 'use_player': True}))
         return {'label': title,
-                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'channel_id': channel[Keys._ID]}),
+                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'channel_id': stream[Keys.USER_ID]}),
                 'context_menu': context_menu,
                 'is_playable': True,
                 'info': info,
@@ -344,10 +339,7 @@ class JsonListItemConverter(object):
 
     def stream_to_playitem(self, stream):
         # path is returned '' and must be set after
-        channel = stream[Keys.CHANNEL]
-        preview = self.get_thumbnail(stream.get(Keys.PREVIEW), Images.VIDEOTHUMB)
-        logo = channel.get(Keys.LOGO) if channel.get(Keys.LOGO) else Images.VIDEOTHUMB
-        image = preview if preview != Images.VIDEOTHUMB else logo
+        image = self.get_thumbnail(stream.get(Keys.PREVIEW), Images.VIDEOTHUMB)
         title = self.get_title_for_stream(stream)
         info = self.get_plot_for_stream(stream, include_title=False)
         info.update({'mediatype': 'video'})
@@ -400,18 +392,13 @@ class JsonListItemConverter(object):
 
     @staticmethod
     def extract_stream_title_values(stream):
-        channel = stream[Keys.CHANNEL]
-
-        if Keys.VIEWERS in channel:
-            viewers = channel.get(Keys.VIEWERS)
-        else:
-            viewers = stream.get(Keys.VIEWERS)
+        viewers = stream.get(Keys.VIEWER_COUNT)
         viewers = viewers if (viewers or isinstance(viewers, int)) else i18n('unknown_viewer_count')
 
-        streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.NAME)
-        title = channel.get(Keys.STATUS) if channel.get(Keys.STATUS) else i18n('untitled_stream')
-        game = channel.get(Keys.GAME) if channel.get(Keys.GAME) else i18n('unknown_game')
-        broadcaster_language = channel.get(Keys.BROADCASTER_LANGUAGE) if channel.get(Keys.BROADCASTER_LANGUAGE) else i18n('unknown_language')
+        streamer = stream.get(Keys.USER_NAME) if stream.get(Keys.USER_NAME) else stream.get(Keys.USER_LOGIN)
+        title = stream.get(Keys.TITLE) if stream.get(Keys.TITLE) else i18n('untitled_stream')
+        game = stream.get(Keys.GAME_NAME) if stream.get(Keys.GAME_NAME) else i18n('unknown_game')
+        broadcaster_language = stream.get(Keys.LANGUAGE) if stream.get(Keys.LANGUAGE) else i18n('unknown_language')
 
         return {'streamer': streamer,
                 'title': title,
@@ -473,35 +460,27 @@ class JsonListItemConverter(object):
         return value
 
     def get_plot_for_stream(self, stream, include_title=True):
-        channel = stream[Keys.CHANNEL]
-
         headings = {Keys.GAME: i18n('game'),
                     Keys.VIEWERS: i18n('viewers'),
                     Keys.BROADCASTER_LANGUAGE: i18n('language'),
-                    Keys.MATURE: i18n('mature'),
-                    Keys.PARTNER: i18n('partner'),
-                    Keys.DELAY: i18n('delay')}
+                    Keys.MATURE: i18n('mature')}
         info = {
-            Keys.GAME: stream.get(Keys.GAME) if stream.get(Keys.GAME) else i18n('unknown_game'),
-            Keys.VIEWERS: str(stream.get(Keys.VIEWERS)) if stream.get(Keys.VIEWERS) else u'0',
-            Keys.BROADCASTER_LANGUAGE: channel.get(Keys.BROADCASTER_LANGUAGE)
-            if channel.get(Keys.BROADCASTER_LANGUAGE) else None,
-            Keys.MATURE: str(channel.get(Keys.MATURE)) if channel.get(Keys.MATURE) else u'False',
-            Keys.PARTNER: str(channel.get(Keys.PARTNER)) if channel.get(Keys.PARTNER) else u'False',
-            Keys.DELAY: str(stream.get(Keys.DELAY)) if stream.get(Keys.DELAY) else u'0'
+            Keys.GAME: stream.get(Keys.GAME_NAME) if stream.get(Keys.GAME_NAME) else i18n('unknown_game'),
+            Keys.VIEWERS: str(stream.get(Keys.VIEWER_COUNT)) if stream.get(Keys.VIEWER_COUNT) else u'0',
+            Keys.BROADCASTER_LANGUAGE: stream.get(Keys.LANGUAGE)
+            if stream.get(Keys.LANGUAGE) else None,
+            Keys.MATURE: str(stream.get(Keys.IS_MATURE)) if stream.get(Keys.IS_MATURE) else u'False',
         }
-        _title = channel.get(Keys.STATUS) + u'\r\n' if channel.get(Keys.STATUS) else u''
+        _title = stream.get(Keys.TITLE) + u'\r\n' if stream.get(Keys.TITLE) else u''
         title = _title
         if not include_title:
             title = ''
-        plot_template = u'{title}{game}{viewers}{broadcaster_language}{mature}{partner}{delay}'
+        plot_template = u'{title}{game}{viewers}{broadcaster_language}{mature}'
 
         plot = plot_template.format(title=title, game=self._format_key(Keys.GAME, headings, info),
                                     viewers=self._format_key(Keys.VIEWERS, headings, info),
-                                    delay=self._format_key(Keys.DELAY, headings, info),
                                     broadcaster_language=self._format_key(Keys.BROADCASTER_LANGUAGE, headings, info),
-                                    mature=self._format_key(Keys.MATURE, headings, info),
-                                    partner=self._format_key(Keys.PARTNER, headings, info))
+                                    mature=self._format_key(Keys.MATURE, headings, info))
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': _title.rstrip('\r\n')}
 

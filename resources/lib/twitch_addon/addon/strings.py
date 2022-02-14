@@ -14,7 +14,7 @@ STRINGS = {
     'following': 30002,
     'search': 30003,
     'settings': 30004,
-    'featured_streams': 30005,
+    'popular_streams': 30005,
     'teams': 30006,
     'channels': 30008,
     'live_channels': 30009,

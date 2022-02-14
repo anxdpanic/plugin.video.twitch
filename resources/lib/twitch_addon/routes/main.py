@@ -23,8 +23,8 @@ def route(api):
 
     if show_menu('featured'):
         context_menu = list()
-        kodi.create_item({'label': i18n('featured_streams'), 'path': {'mode': MODES.FEATUREDSTREAMS}, 'context_menu': context_menu,
-                          'info': {'plot': i18n('featured_streams')}, 'thumbfile': 'Featured_Streams.png'})
+        kodi.create_item({'label': i18n('popular_streams'), 'path': {'mode': MODES.FEATUREDSTREAMS}, 'context_menu': context_menu,
+                          'info': {'plot': i18n('popular_streams')}, 'thumbfile': 'Featured_Streams.png'})
     if has_token:
         if show_menu('live', 'following'):
             context_menu = list()

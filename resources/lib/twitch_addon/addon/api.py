@@ -129,6 +129,12 @@ class Twitch:
     @cache.cache_method(cache_limit=cache.limit)
     def get_all_streams(self, game_id=None, user_id=None, user_login=None, language=Language.ALL, after='MA==',
                         before='MA==', first=20):
+        if game_id is None:
+            game_id = []
+        if user_login is None:
+            user_login = []
+        if user_id is None:
+            user_id = []
         results = self.api.streams.get_streams(game_id=game_id, user_id=user_id, user_login=user_login,
                                                language=language, after=after, before=before, first=first)
         return self.error_check(results)
@@ -241,7 +247,7 @@ class Twitch:
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_channel_stream(self, channel_id):
-        results = self.api.streams.get_streams(user_id=channel_id, stream_type=StreamType.ALL)
+        results = self.api.streams.get_streams(user_id=channel_id)
         return self.error_check(results)
 
     @api_error_handler
@@ -313,6 +319,9 @@ class Twitch:
 
         if 'error' in results:
             raise TwitchException(results)
+
+        if 'response' in results:
+            return results['response']
 
         return results
 
