@@ -96,7 +96,7 @@ class Twitch:
 
     @api_error_handler
     def root(self):
-        results = oauth.validation.validate()
+        results = oauth.validation.validate(self.access_token)
         return self.error_check(results)
 
     @api_error_handler
