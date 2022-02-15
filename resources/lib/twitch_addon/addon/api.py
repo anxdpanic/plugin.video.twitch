@@ -288,10 +288,6 @@ class Twitch:
     def get_followed_streams(self, user_id, after='MA==', first=20):
         results = self.api.streams.get_followed(user_id=user_id, after=after, first=first)
         results = self.error_check(results)
-        if isinstance(results.get('streams'), list):
-            results['streams'] = sorted(results['streams'],
-                                        key=lambda x: int(x.get('viewers', 0)),
-                                        reverse=True)
         return results
 
     @api_error_handler
