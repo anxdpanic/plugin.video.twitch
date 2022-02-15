@@ -48,9 +48,9 @@ def channel_videos(channel_id, channel_name, display_name):
                             {'mode': MODES.CHANNELVIDEOS, 'channel_id': channel_id, 'channel_name': channel_name, 'display_name': display_name})
 
 
-def go_to_game(game):
+def go_to_game(game, game_id):
     return update_container(i18n('go_to') % ''.join(['[COLOR=white][B]', game, '[/B][/COLOR]']),
-                            {'mode': MODES.GAMELISTS, 'game': game})
+                            {'mode': MODES.GAMELISTS, 'game_name': game, 'game_id': game_id})
 
 
 def refresh():

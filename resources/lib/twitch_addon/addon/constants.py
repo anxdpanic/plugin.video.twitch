@@ -127,6 +127,7 @@ class Keys:
     FOLLOWERS = 'followers'
     FOLLOWS = 'follows'
     GAME = 'game'
+    GAME_ID = 'game_id'
     GAME_NAME = 'game_name'
     GAMES = 'games'
     ID = 'id'
