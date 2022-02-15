@@ -31,7 +31,7 @@ def route(api, content, after='MA=='):
 
         all_items = list()
 
-        streams = api.get_followed_streams(user_id=user_id, first=per_page)
+        streams = api.get_followed_streams(user_id=user_id, first=per_page, after=after)
 
         if Keys.DATA in streams:
             for stream in streams[Keys.DATA]:
