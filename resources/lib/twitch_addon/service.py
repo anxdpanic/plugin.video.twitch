@@ -19,7 +19,7 @@ import threading
 
 from .addon.common import kodi, log_utils
 from .addon.constants import Keys
-from .addon.utils import i18n, get_stamp_diff, get_vodcast_color, to_string
+from .addon.utils import i18n, get_stamp_diff, get_vodcast_color
 from .addon.player import TwitchPlayer
 from .addon import api, cache
 
