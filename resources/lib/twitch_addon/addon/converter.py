@@ -92,54 +92,6 @@ class JsonListItemConverter(object):
                 'context_menu': context_menu,
                 'info': {u'plot': plot, u'plotoutline': plot, u'tagline': plot}}
 
-    def collection_to_listitem(self, collection):
-        title = collection[Keys.TITLE]
-        _id = collection[Keys._ID]
-        image = self.get_thumbnail(collection[Keys.THUMBNAILS])
-        owner = collection[Keys.OWNER]
-        context_menu = list()
-        context_menu.extend(menu_items.refresh())
-        name = owner.get(Keys.DISPLAY_NAME) if owner.get(Keys.DISPLAY_NAME) else owner.get(Keys.NAME)
-        if self.has_token:
-            context_menu.extend(menu_items.edit_follow(owner[Keys._ID], name))
-            # context_menu.extend(menu_items.edit_block(owner[Keys._ID], name))
-        context_menu.extend(menu_items.add_blacklist(owner[Keys._ID], name))
-        return {'label': title,
-                'path': kodi.get_plugin_url({'mode': MODES.COLLECTIONVIDEOLIST, 'collection_id': _id}),
-                'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
-                'context_menu': context_menu,
-                'info': self.get_plot_for_collection(collection)}
-
-    @staticmethod
-    def team_to_listitem(team):
-        name = team[Keys.NAME]
-        background = team.get(Keys.BACKGROUND) if team.get(Keys.BACKGROUND) else Images.FANART
-        image = team.get(Keys.LOGO) if team.get(Keys.LOGO) else Images.ICON
-        context_menu = list()
-        context_menu.extend(menu_items.refresh())
-        return {'label': name,
-                'path': kodi.get_plugin_url({'mode': MODES.TEAMSTREAMS, 'team': name}),
-                'art': the_art({'fanart': background, 'poster': image, 'thumb': image, 'icon': image}),
-                'context_menu': context_menu}
-
-    def team_channel_to_listitem(self, team_channel):
-        images = team_channel.get(Keys.IMAGE)
-        image = Images.ICON
-        if images:
-            image = images.get(Keys.SIZE600) if images.get(Keys.SIZE600) else Images.ICON
-        channel_name = team_channel[Keys.NAME]
-        title_values = self.extract_channel_title_values(team_channel)
-        title = self.title_builder.format_title(title_values)
-        context_menu = list()
-        context_menu.extend(menu_items.refresh())
-        context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'name': channel_name, 'ask': True, 'use_player': True}))
-        return {'label': title,
-                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'name': channel_name}),
-                'context_menu': context_menu,
-                'is_playable': True,
-                'art': the_art({'poster': image, 'thumb': image, 'icon': image})}
-
     def channel_to_listitem(self, channel):
         image = channel.get(Keys.PROFILE_IMAGE_URL) if channel.get(Keys.PROFILE_IMAGE_URL) else Images.ICON
         video_banner = channel.get(Keys.OFFLINE_IMAGE_URL) if channel.get(Keys.OFFLINE_IMAGE_URL) else Images.FANART
@@ -178,39 +130,6 @@ class JsonListItemConverter(object):
 
         return {'label': self.get_title_for_clip(clip),
                 'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'slug': clip[Keys.ID]}),
-                'context_menu': context_menu,
-                'is_playable': True,
-                'info': info,
-                'content_type': 'video',
-                'art': the_art({'poster': image, 'thumb': image, 'icon': image})}
-
-    def collection_video_to_listitem(self, video):
-        duration = video.get(Keys.DURATION)
-        date = video.get(Keys.PUBLISHED_AT)[:10] if video.get(Keys.PUBLISHED_AT) else ''
-        year = video.get(Keys.PUBLISHED_AT)[:4] if video.get(Keys.PUBLISHED_AT) else ''
-
-        image = self.get_thumbnail(video.get(Keys.THUMBNAILS), Images.VIDEOTHUMB)
-        owner = video[Keys.OWNER]
-        context_menu = list()
-        context_menu.extend(menu_items.refresh())
-        display_name = to_string(owner.get(Keys.DISPLAY_NAME) if owner.get(Keys.DISPLAY_NAME) else owner.get(Keys.NAME))
-        channel_name = to_string(owner[Keys.NAME])
-        game_name = to_string(video[Keys.GAME])
-        if self.has_token:
-            context_menu.extend(menu_items.edit_follow(owner[Keys._ID], display_name))
-            # context_menu.extend(menu_items.edit_block(owner[Keys._ID], name))
-        context_menu.extend(menu_items.channel_videos(owner[Keys._ID], channel_name, display_name))
-        if video[Keys.GAME]:
-            context_menu.extend(menu_items.go_to_game(game_name))
-        context_menu.extend(menu_items.add_blacklist(owner[Keys._ID], display_name))
-        context_menu.extend(menu_items.add_blacklist(b64encode(video[Keys.GAME].encode('utf-8', 'ignore')), video[Keys.GAME], list_type='game'))
-        context_menu.extend(menu_items.set_default_quality('video', owner[Keys._ID], owner[Keys.NAME], video[Keys.ITEM_ID]))
-        context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'video_id': video[Keys.ITEM_ID], 'ask': True, 'use_player': True}))
-        info = self.get_plot_for_video(video)
-        info.update({'duration': str(duration), 'year': year, 'date': date, 'premiered': date, 'mediatype': 'video'})
-        return {'label': video[Keys.TITLE],
-                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video[Keys.ITEM_ID]}),
                 'context_menu': context_menu,
                 'is_playable': True,
                 'info': info,
@@ -565,28 +484,6 @@ class JsonListItemConverter(object):
                                     views=self._format_key(Keys.VIEWS, headings, info),
                                     broadcaster_type=broadcaster_type + '\r\n',
                                     date=date)
-
-        return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
-
-    def get_plot_for_collection(self, collection):
-        headings = {Keys.VIEWS: i18n('views'),
-                    Keys.ITEMS_COUNT: i18n('items'),
-                    Keys.TOTAL_DURATION: i18n('duration')}
-        minutes, seconds = divmod(collection.get(Keys.TOTAL_DURATION) if collection.get(Keys.TOTAL_DURATION) else 0, 60)
-        hours, minutes = divmod(minutes, 60)
-        total_duration = '%dh%02dm%02ds' % (hours, minutes, seconds)
-        info = {
-            Keys.VIEWS: str(collection.get(Keys.VIEWS)) if collection.get(Keys.VIEWS) else u'0',
-            Keys.ITEMS_COUNT: str(collection.get(Keys.ITEMS_COUNT)) if collection.get(Keys.ITEMS_COUNT) else u'0',
-            Keys.TOTAL_DURATION: total_duration
-        }
-        title = collection.get(Keys.TITLE) + u'\r\n'
-
-        plot_template = u'{title}{views}{items_count}{total_duration}'
-
-        plot = plot_template.format(title=title, total_duration=self._format_key(Keys.TOTAL_DURATION, headings, info),
-                                    views=self._format_key(Keys.VIEWS, headings, info),
-                                    items_count=self._format_key(Keys.ITEMS_COUNT, headings, info))
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}
 

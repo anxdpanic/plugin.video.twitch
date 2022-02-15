@@ -21,7 +21,7 @@ from datetime import datetime
 
 from .common import kodi, json_store
 from .strings import STRINGS
-from .constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, ADDON_DATA_DIR, REQUEST_LIMIT, COLORS, Keys
+from .constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, ADDON_DATA_DIR, COLORS, Keys
 from .search_history import StreamsSearchHistory, ChannelsSearchHistory, GamesSearchHistory, IdUrlSearchHistory
 
 from twitch.api.parameters import Boolean, Period, ClipPeriod, Direction, Language, SortBy, VideoSort
@@ -209,25 +209,6 @@ def get_items_per_page():
     return int(kodi.get_setting('items_per_page'))
 
 
-def calculate_pagination_values(index):
-    index = int(index)
-    limit = get_items_per_page()
-    offset = index * limit
-    return index, offset, limit
-
-
-def get_offset(offset, item, items, key=None):
-    if item is None:
-        return int(offset) + REQUEST_LIMIT
-    try:
-        if key is None:
-            return int(offset) + next(index for (index, _item) in enumerate(items) if item == _item)
-        else:
-            return int(offset) + next(index for (index, _item) in enumerate(items) if item == _item[key])
-    except:
-        return None
-
-
 def get_thumbnail_size():
     size_map = [Keys.SOURCE, Keys.LARGE, Keys.MEDIUM, Keys.SMALL]
     return size_map[int(kodi.get_setting('thumbnail_size'))]
@@ -253,8 +234,6 @@ def the_art(art=None):
 
 
 def link_to_next_page(queries):
-    if 'index' in queries:
-        queries['index'] += 1
     return {'label': i18n('next_page'),
             'art': the_art(),
             'path': kodi.get_plugin_url(queries),
@@ -406,10 +385,6 @@ _sorting_defaults = \
 def get_stored_json():
     json_data = storage.load()
     needs_save = False
-    # set defaults
-    if 'blacklist' not in json_data:
-        json_data['blacklist'] = {'user': [], 'game': []}
-        needs_save = True
     if 'qualities' not in json_data:
         json_data['qualities'] = {'stream': [], 'video': [], 'clip': []}
         needs_save = True
@@ -428,45 +403,6 @@ def get_stored_json():
     if needs_save:
         storage.save(json_data)
     return json_data
-
-
-def is_blacklisted(target, list_type='user'):
-    json_data = get_stored_json()
-    blacklist = json_data['blacklist'].get(list_type)
-    if not blacklist:
-        return False
-    if isinstance(target, int):
-        target = str(target)
-    if list_type == 'user':
-        return any(target == blacklist_id for blacklist_id, blacklist_name in blacklist)
-    else:
-        return any((target == blacklist_id or
-                    target == blacklist_name) for blacklist_id, blacklist_name in blacklist)
-
-
-def add_blacklist(target_id, name, list_type='user'):
-    json_data = get_stored_json()
-
-    if not is_blacklisted(target_id, list_type):
-        blacklist = json_data['blacklist'].get(list_type)
-        if not blacklist:
-            json_data['blacklist'][list_type] = []
-        json_data['blacklist'][list_type].append([target_id, name])
-        storage.save(json_data)
-        return True
-    return False
-
-
-def remove_blacklist(list_type='user'):
-    json_data = get_stored_json()
-    result = kodi.Dialog().select(i18n('remove_from_blacklist') % list_type,
-                                  [blacklist_name for blacklist_id, blacklist_name in json_data['blacklist'][list_type]])
-    if result == -1:
-        return None
-    else:
-        result = json_data['blacklist'][list_type].pop(result)
-        storage.save(json_data)
-        return result
 
 
 def get_language():
@@ -553,31 +489,6 @@ def clear_list(list_type, list_name):
         return True
     else:
         return False
-
-
-class BlacklistFilter(object):
-    def by_type(self, results, result_key, parent_keys=None,
-                id_key=None, game_key=None, list_type='user'):
-        if (id_key is None) and (game_key is None): return
-        # list_type = user, game, community
-        filtered_results = {result_key: list()}
-        for result in results[result_key]:
-            identification = None
-            id_parent = result
-            key = id_key if id_key else game_key
-            if parent_keys is None:
-                identification = id_parent[key]
-            else:
-                for parent_key in parent_keys:
-                    id_parent = id_parent[parent_key]
-                    identification = id_parent[key]
-            if game_key and identification:
-                identification = identification if identification else ''
-            if identification is not None:
-                if not is_blacklisted(identification, list_type=list_type):
-                    filtered_results[result_key].append(result)
-        return filtered_results
-
 
 class TitleBuilder(object):
     class Templates(object):

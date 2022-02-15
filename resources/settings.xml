@@ -83,13 +83,6 @@
         <setting label="30195" id="clear_default_video_qualities" type="action" action="RunPlugin(plugin://$ID/?mode=clear_list&amp;list_type=video&amp;list_name=qualities)"/>
         <setting label="30196" id="clear_default_clip_qualities" type="action" action="RunPlugin(plugin://$ID/?mode=clear_list&amp;list_type=clip&amp;list_name=qualities)"/>
     </category>
-    <category label="30153">
-        <setting id="blacklist_confirm_toggle" type="bool" label="30197" default="true"/>
-        <setting label="30154" id="remove_user_blacklist" type="action" action="RunPlugin(plugin://$ID/?mode=edit_blacklist&amp;list_type=user&amp;remove=true)"/>
-        <setting label="30155" id="remove_game_blacklist" type="action" action="RunPlugin(plugin://$ID/?mode=edit_blacklist&amp;list_type=game&amp;remove=true)"/>
-        <setting label="30156" id="clear_user_blacklist" type="action" action="RunPlugin(plugin://$ID/?mode=clear_list&amp;list_type=user&amp;list_name=blacklist)"/>
-        <setting label="30157" id="clear_game_blacklist" type="action" action="RunPlugin(plugin://$ID/?mode=clear_list&amp;list_type=game&amp;list_name=blacklist)"/>
-    </category>
     <!-- IRC -->
     <category label="30081">
         <!-- Enable IRC Chat -->
