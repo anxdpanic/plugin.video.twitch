@@ -136,11 +136,11 @@ def _list_channel_videos(broadcast_type, channel_id=None, game=None, offset=0):
     channel_videos.route(twitch_api, broadcast_type, channel_id, game, offset)
 
 
-@dispatcher.register(MODES.GAMELISTS, args=['game'])
+@dispatcher.register(MODES.GAMELISTS, args=['game_id', 'game_name'])
 @error_handler
-def _game_lists(game):
+def _game_lists(game_id, game_name):
     from .routes import game_categories
-    game_categories.route(game)
+    game_categories.route(game_id, game_name)
 
 
 @dispatcher.register(MODES.GAMESTREAMS, args=['game'], kwargs=['after'])

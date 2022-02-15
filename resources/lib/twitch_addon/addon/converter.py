@@ -97,7 +97,7 @@ class JsonListItemConverter(object):
         plot = '{name}\r\n{viewers}:{viewer_count}' \
             .format(name=name, viewers=i18n('viewers'), viewer_count=viewer_count)
         return {'label': name,
-                'path': kodi.get_plugin_url({'mode': MODES.GAMELISTS, 'game': game['id']}),
+                'path': kodi.get_plugin_url({'mode': MODES.GAMELISTS, 'game_id': game['id'], 'game_name': name}),
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
                 'context_menu': context_menu,
                 'info': {u'plot': plot, u'plotoutline': plot, u'tagline': plot}}
