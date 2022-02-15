@@ -91,6 +91,11 @@ def route(api, content, query, after='MA='):
                 all_items.append(game)
 
         if len(all_items) > 0:
+            if use_history:
+                history = utils.get_search_history(content)
+                if history:
+                    history.update(query)
+
             for game in all_items:
                 kodi.create_item(converter.game_to_listitem(game))
 
