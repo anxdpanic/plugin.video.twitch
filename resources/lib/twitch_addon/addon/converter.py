@@ -607,19 +607,22 @@ class JsonListItemConverter(object):
             return videos[result]
 
     @staticmethod
-    def get_thumbnail(thumbnails, default=Images.THUMB):
+    def get_thumbnail(thumbnail, default=Images.THUMB):
+        if not thumbnail:
+            return default
+
+        sizes = {
+            Keys.SOURCE: ('0', '0'),
+            Keys.LARGE: ('640', '360'),
+            Keys.MEDIUM: ('320', '180'),
+            Keys.SMALL: ('80', '45'),
+        }
+
         thumbnail_size = get_thumbnail_size()
-        if not thumbnails:
-            return default
-        if thumbnail_size == Keys.SOURCE and 'template' in thumbnails:
-            thumbnails[Keys.SOURCE] = thumbnails['template'].format(width='0', height='0')
-        if thumbnail_size in thumbnails:
-            return thumbnails[thumbnail_size]
-        elif Keys.LARGE in thumbnails:
-            return thumbnails[Keys.LARGE]
-        elif Keys.MEDIUM in thumbnails:
-            return thumbnails[Keys.MEDIUM]
-        elif Keys.SMALL in thumbnails:
-            return thumbnails[Keys.SMALL]
-        else:
-            return default
+        width, height = sizes.get(thumbnail_size, Keys.SOURCE)
+
+        if '{width}' in thumbnail and '{height}' in thumbnail:
+            thumbnail = thumbnail.replace('%{width}', '{width}').replace('%{height}', '{height}')
+            return thumbnail.format(width=width, height=height)
+
+        return thumbnail or default
