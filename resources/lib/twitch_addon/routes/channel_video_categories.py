@@ -15,7 +15,8 @@ from ..addon.utils import i18n
 
 
 def route(channel_id=None, channel_name=None, display_name=None, game=None, game_name=None):
-    if (channel_id is None) and (game is None): return
+    if (channel_id is None) and (game is None):
+        return
     kodi.set_view('files', set_sort=False)
     context_menu = list()
     if channel_id == 'all' or game is not None:

@@ -60,19 +60,6 @@ def refresh():
 def edit_follow(channel_id, display_name):
     return run_plugin(i18n('toggle_follow'), {'mode': MODES.EDITFOLLOW, 'channel_id': channel_id, 'channel_name': display_name})
 
-
-def edit_block(target_id, display_name):
-    return run_plugin(i18n('toggle_block'), {'mode': MODES.EDITBLOCK, 'target_id': target_id, 'name': display_name})
-
-
-def add_blacklist(target_id, display_name, list_type='user'):
-    if PY2 and isinstance(display_name, unicode):
-        display_name = display_name.encode('utf-8')
-
-    return run_plugin(i18n('add_blacklist') % ''.join(['[COLOR=white][B]', display_name, '[/B][/COLOR]']),
-                      {'mode': MODES.EDITBLACKLIST, 'target_id': target_id, 'name': display_name, 'list_type': list_type, 'refresh': True})
-
-
 def set_default_quality(content_type, target_id, name, video_id=None, clip_id=None):
     return run_plugin(i18n('set_default_quality'),
                       {'mode': MODES.EDITQUALITIES, 'content_type': content_type, 'target_id': target_id,

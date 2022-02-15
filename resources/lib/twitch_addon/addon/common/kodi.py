@@ -11,7 +11,7 @@
 """
 
 from six import string_types, text_type, with_metaclass, PY2, PY3
-from six.moves.urllib.parse import urlparse, urlencode, parse_qs
+from six.moves.urllib.parse import urlencode, parse_qs
 
 from xbmc import PLAYLIST_VIDEO, PLAYLIST_MUSIC  # NOQA
 

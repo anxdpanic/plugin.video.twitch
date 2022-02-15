@@ -21,7 +21,7 @@ from twitch.api.parameters import StreamType
 def route(api, content, after='MA=='):
     converter = JsonListItemConverter(LINE_LENGTH)
     user_id = api.get_user_id()
-    username = api.get_username()
+    _ = api.get_username()
     per_page = utils.get_items_per_page()
     if content == StreamType.LIVE or content == StreamType.PLAYLIST:
         if content == StreamType.LIVE:
@@ -53,7 +53,6 @@ def route(api, content, after='MA=='):
             raise NotFound(i18n('playlists'))
     elif content == 'channels':
         kodi.set_view('files', set_sort=False)
-        sorting = utils.get_sort('followed_channels')
         all_items = list()
         followed_ids = list()
 

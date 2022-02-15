@@ -18,7 +18,8 @@ from ..addon.utils import i18n
 
 def route(api, broadcast_type, channel_id=None, game=None, after='MA=='):
     converter = JsonListItemConverter(LINE_LENGTH)
-    if (channel_id is None) and (game is None): return
+    if (channel_id is None) and (game is None):
+        return
     kodi.set_view('videos', set_sort=True)
     per_page = utils.get_items_per_page()
     all_items = list()

@@ -10,9 +10,6 @@
 """
 
 from six import PY2
-
-from base64 import b64encode
-
 from six.moves.urllib_parse import quote
 
 from . import menu_items
@@ -71,7 +68,8 @@ class JsonListItemConverter(object):
                 'context_menu': context_menu,
                 'info': {u'plot': plot, u'plotoutline': plot, u'tagline': plot}}
 
-    def followed_game_to_listitem(self, game):
+    @staticmethod
+    def followed_game_to_listitem(game):
         viewer_count = i18n('unknown')
         if 'viewersCount' in game:
             viewer_count = str(game['viewersCount'])
@@ -577,7 +575,7 @@ class JsonListItemConverter(object):
             elif source and not clip:
                 limit_framerate = int(kodi.get_setting('source_frame_rate_limit'))
                 if limit_framerate >= 30:
-                    adjusted_limit = limit_framerate + 0.999  # use + 0.999 because 30 fps may be > 30 ie. 30.211
+                    adjusted_limit = limit_framerate + 0.999  # use + 0.999 because 30 fps may be > 30 i.e. 30.211
                     fps_videos = [video for video in videos if video.get('fps') and video['fps'] < adjusted_limit]
                     if fps_videos:
                         return fps_videos[0]
