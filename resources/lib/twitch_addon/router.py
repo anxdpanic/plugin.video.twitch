@@ -101,11 +101,11 @@ def _list_followed(content, after='MA=='):
     followed.route(twitch_api, content, after)
 
 
-@dispatcher.register(MODES.CHANNELVIDEOS, kwargs=['channel_id', 'channel_name', 'display_name', 'game'])
+@dispatcher.register(MODES.CHANNELVIDEOS, kwargs=['channel_id', 'channel_name', 'display_name', 'game', 'game_name'])
 @error_handler
-def _list_channel_video_categories(channel_id=None, channel_name=None, display_name=None, game=None):
+def _list_channel_video_categories(channel_id=None, channel_name=None, display_name=None, game=None, game_name=None):
     from .routes import channel_video_categories
-    channel_video_categories.route(channel_id, channel_name, display_name, game)
+    channel_video_categories.route(channel_id, channel_name, display_name, game, game_name)
 
 
 @dispatcher.register(MODES.COLLECTIONS, args=['channel_id'], kwargs=['cursor'])
@@ -129,11 +129,11 @@ def _list_clips(cursor='MA==', channel_name=None, game=None):
     clips.route(twitch_api, cursor, channel_name, game)
 
 
-@dispatcher.register(MODES.CHANNELVIDEOLIST, args=['broadcast_type'], kwargs=['offset', 'channel_id', 'game'])
+@dispatcher.register(MODES.CHANNELVIDEOLIST, args=['broadcast_type'], kwargs=['after', 'channel_id', 'game'])
 @error_handler(route_type=1)
-def _list_channel_videos(broadcast_type, channel_id=None, game=None, offset=0):
+def _list_channel_videos(broadcast_type, channel_id=None, game=None, after='MA=='):
     from .routes import channel_videos
-    channel_videos.route(twitch_api, broadcast_type, channel_id, game, offset)
+    channel_videos.route(twitch_api, broadcast_type, channel_id, game, after)
 
 
 @dispatcher.register(MODES.GAMELISTS, args=['game_id', 'game_name'])

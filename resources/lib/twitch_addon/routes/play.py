@@ -56,9 +56,11 @@ def route(api, seek_time=0, channel_id=None, video_id=None, slug=None, ask=False
             restricted = False
             unrestricted = None
             result = api.get_video_by_id(video_id)
-            video_id = result[Keys._ID]
-            channel_id = result[Keys.CHANNEL][Keys._ID]
-            channel_name = result[Keys.CHANNEL][Keys.DISPLAY_NAME] if result[Keys.CHANNEL][Keys.DISPLAY_NAME] else result[Keys.CHANNEL][Keys.NAME]
+            result = result.get(Keys.DATA, [{}])[0]
+
+            video_id = result[Keys.ID]
+            channel_id = result[Keys.USER_ID]
+            channel_name = result[Keys.USER_NAME] if result[Keys.USER_NAME] else result[Keys.USER_LOGIN]
             try:
                 extra_info = api._get_video_token(video_id)
             except TwitchException:

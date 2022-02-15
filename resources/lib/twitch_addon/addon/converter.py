@@ -234,31 +234,30 @@ class JsonListItemConverter(object):
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image})}
 
     def video_list_to_listitem(self, video):
-        duration = video.get(Keys.LENGTH)
+        duration = video.get(Keys.DURATION)
         date = video.get(Keys.CREATED_AT)[:10] if video.get(Keys.CREATED_AT) else ''
         year = video.get(Keys.CREATED_AT)[:4] if video.get(Keys.CREATED_AT) else ''
-        image = self.get_thumbnail(video.get(Keys.PREVIEW), Images.VIDEOTHUMB)
-        channel = video[Keys.CHANNEL]
+        image = self.get_thumbnail(video.get(Keys.THUMBNAIL_URL), Images.VIDEOTHUMB)
         context_menu = list()
         context_menu.extend(menu_items.refresh())
-        display_name = to_string(channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.NAME))
-        channel_name = to_string(channel[Keys.NAME])
-        game_name = to_string(video[Keys.GAME])
+        display_name = to_string(video.get(Keys.USER_NAME) if video.get(Keys.USER_NAME) else video.get(Keys.USER_LOGIN))
+        channel_name = to_string(video[Keys.USER_LOGIN])
+        # game_name = to_string(video[Keys.TITLE])
         if self.has_token:
-            context_menu.extend(menu_items.edit_follow(channel[Keys._ID], display_name))
+            context_menu.extend(menu_items.edit_follow(video[Keys.USER_ID], display_name))
             # context_menu.extend(menu_items.edit_block(channel[Keys._ID], name))
-        context_menu.extend(menu_items.channel_videos(channel[Keys._ID], channel_name, display_name))
-        if video[Keys.GAME]:
-            context_menu.extend(menu_items.go_to_game(game_name))
-        context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], display_name))
-        context_menu.extend(menu_items.add_blacklist(b64encode(video[Keys.GAME].encode('utf-8', 'ignore')), video[Keys.GAME], list_type='game'))
-        context_menu.extend(menu_items.set_default_quality('video', channel[Keys._ID], channel[Keys.NAME], video[Keys._ID]))
+        context_menu.extend(menu_items.channel_videos(video[Keys.USER_ID], channel_name, display_name))
+        # if game_name:
+        #     context_menu.extend(menu_items.go_to_game(game_name))
+        context_menu.extend(menu_items.set_default_quality('video', video[Keys.USER_ID],
+                                                           video[Keys.USER_LOGIN], video[Keys.USER_ID]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'video_id': video[Keys._ID], 'ask': True, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'video_id': video[Keys.ID],
+                                                   'ask': True, 'use_player': True}))
         info = self.get_plot_for_video(video)
         info.update({'duration': str(duration), 'year': year, 'date': date, 'premiered': date, 'mediatype': 'video'})
         return {'label': self.get_title_for_video(video),
-                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video[Keys._ID]}),
+                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'video_id': video[Keys.ID]}),
                 'context_menu': context_menu,
                 'is_playable': True,
                 'info': info,
@@ -318,10 +317,7 @@ class JsonListItemConverter(object):
 
     def video_to_playitem(self, video):
         # path is returned '' and must be set after
-        channel = video[Keys.CHANNEL]
-        preview = self.get_thumbnail(video.get(Keys.PREVIEW), Images.VIDEOTHUMB)
-        logo = channel.get(Keys.LOGO) if channel.get(Keys.LOGO) else Images.VIDEOTHUMB
-        image = preview if preview != Images.VIDEOTHUMB else logo
+        image = self.get_thumbnail(video.get(Keys.THUMBNAIL_URL), Images.VIDEOTHUMB)
         title = self.get_title_for_video(video)
         info = self.get_plot_for_video(video, include_title=False)
         info.update({'mediatype': 'video'})
@@ -407,11 +403,10 @@ class JsonListItemConverter(object):
 
     @staticmethod
     def extract_video_title_values(video):
-        channel = video[Keys.CHANNEL]
-        viewers = video.get(Keys.VIEWS)
+        viewers = video.get(Keys.VIEW_COUNT)
         viewers = viewers if (viewers or isinstance(viewers, int)) else i18n('unknown_viewer_count')
 
-        streamer = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.NAME)
+        streamer = video.get(Keys.USER_NAME) if video.get(Keys.USER_NAME) else video.get(Keys.USER_LOGIN)
         title = video.get(Keys.TITLE) if video.get(Keys.TITLE) else i18n('untitled_stream')
         game = video.get(Keys.GAME) if video.get(Keys.GAME) else i18n('unknown_game')
         broadcaster_language = video.get(Keys.LANGUAGE) if video.get(Keys.LANGUAGE) else i18n('unknown_language')

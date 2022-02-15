@@ -155,7 +155,7 @@ class Twitch:
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
-    def get_top_videos(self, user_id, broadcast_type, period, after='MA==', before='MA==', first=20, game_id=None):
+    def get_top_videos(self, broadcast_type, period, after='MA==', before='MA==', first=20, game_id='', user_id=''):
         results = self.api.videos.get_videos(user_id=user_id, game_id=game_id, broadcast_type=broadcast_type,
                                              period=period, after=after, before=before, first=first)
         return self.error_check(results)
@@ -229,7 +229,7 @@ class Twitch:
     @api_error_handler
     def check_subscribed(self, channel_id):
         user_id = self.get_user_id()
-        results = self.api.subscriptions.get_user_subscriptions(channel_id=channel_id, user_id=user_id)
+        results = self.api.subscriptions.get_user_subscriptions(broadcaster_id=channel_id, user_id=user_id)
         return self.return_boolean(results)
 
     @api_error_handler
