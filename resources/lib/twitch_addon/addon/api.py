@@ -165,7 +165,7 @@ class Twitch:
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
-    def get_clips(self, broadcaster_id=None, game_id=None, after='MA==', first=20):
+    def get_clips(self, broadcaster_id='', game_id='', after='MA==', first=20):
         results = self.api.clips.get_clip(broadcaster_id=broadcaster_id, game_id=game_id, after=after, first=first)
         return self.error_check(results)
 
@@ -183,6 +183,8 @@ class Twitch:
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_game_streams(self, game_id=None, language=Language.ALL, after='MA==', before='MA==', first=20):
+        if game_id is None:
+            game_id = []
         results = self.api.streams.get_streams(game_id=game_id, language=language, after=after,
                                                before=before, first=first)
         return self.error_check(results)

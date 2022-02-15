@@ -161,29 +161,23 @@ class JsonListItemConverter(object):
         date = clip.get(Keys.CREATED_AT)[:10] if clip.get(Keys.CREATED_AT) else ''
         year = clip.get(Keys.CREATED_AT)[:4] if clip.get(Keys.CREATED_AT) else ''
 
-        image = self.get_thumbnail(clip.get(Keys.THUMBNAILS), Images.VIDEOTHUMB)
-        broadcaster = clip[Keys.BROADCASTER]
+        image = self.get_thumbnail(clip.get(Keys.THUMBNAIL_URL), Images.VIDEOTHUMB)
         context_menu = list()
         context_menu.extend(menu_items.refresh())
-        display_name = to_string(broadcaster.get(Keys.DISPLAY_NAME) if broadcaster.get(Keys.DISPLAY_NAME) else broadcaster.get(Keys.NAME))
-        channel_name = to_string(broadcaster[Keys.NAME])
-        game_name = to_string(clip[Keys.GAME])
+        display_name = to_string(clip.get(Keys.BROADCASTER_NAME))
         if self.has_token:
-            context_menu.extend(menu_items.edit_follow(broadcaster[Keys.ID], display_name))
+            context_menu.extend(menu_items.edit_follow(clip[Keys.BROADCASTER_ID], display_name))
             # context_menu.extend(menu_items.edit_block(broadcaster[Keys.ID], name))
-        context_menu.extend(menu_items.channel_videos(broadcaster[Keys.ID], channel_name, display_name))
-        if clip[Keys.GAME]:
-            context_menu.extend(menu_items.go_to_game(game_name))
-        context_menu.extend(menu_items.add_blacklist(broadcaster[Keys.ID], display_name))
-        context_menu.extend(menu_items.add_blacklist(b64encode(clip[Keys.GAME].encode('utf-8', 'ignore')), clip[Keys.GAME], list_type='game'))
-        context_menu.extend(menu_items.set_default_quality('clip', broadcaster[Keys.ID], broadcaster[Keys.NAME], clip_id=clip[Keys.SLUG]))
+        context_menu.extend(menu_items.channel_videos(clip[Keys.BROADCASTER_ID], display_name, display_name))
+        context_menu.extend(menu_items.set_default_quality('clip', clip[Keys.BROADCASTER_ID],
+                                                           display_name, clip_id=clip[Keys.ID]))
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
-                                                  {'mode': MODES.PLAY, 'slug': clip[Keys.SLUG], 'ask': True, 'use_player': True}))
+                                                  {'mode': MODES.PLAY, 'slug': clip[Keys.ID], 'ask': True, 'use_player': True}))
         info = self.get_plot_for_clip(clip)
         info.update({'duration': str(duration), 'year': year, 'date': date, 'premiered': date, 'mediatype': 'video'})
 
         return {'label': self.get_title_for_clip(clip),
-                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'slug': clip[Keys.SLUG]}),
+                'path': kodi.get_plugin_url({'mode': MODES.PLAY, 'slug': clip[Keys.ID]}),
                 'context_menu': context_menu,
                 'is_playable': True,
                 'info': info,
@@ -347,10 +341,7 @@ class JsonListItemConverter(object):
 
     def clip_to_playitem(self, clip):
         # path is returned '' and must be set after
-        broadcaster = clip[Keys.BROADCASTER]
-        image = self.get_thumbnail(clip.get(Keys.THUMBNAILS), Images.VIDEOTHUMB)
-        logo = broadcaster.get(Keys.LOGO) if broadcaster.get(Keys.LOGO) else Images.VIDEOTHUMB
-        image = image if image != Images.VIDEOTHUMB else logo
+        image = self.get_thumbnail(clip.get(Keys.THUMBNAIL_URL), Images.VIDEOTHUMB)
         title = self.get_title_for_clip(clip)
         info = self.get_plot_for_clip(clip, include_title=False)
         info.update({'mediatype': 'video'})
@@ -408,18 +399,15 @@ class JsonListItemConverter(object):
 
     @staticmethod
     def extract_clip_title_values(clip):
-        broadcaster = clip[Keys.BROADCASTER]
-        viewers = clip.get(Keys.VIEWS)
+        viewers = clip.get(Keys.VIEW_COUNT)
         viewers = viewers if (viewers or isinstance(viewers, int)) else i18n('unknown_viewer_count')
 
-        streamer = broadcaster.get(Keys.DISPLAY_NAME) if broadcaster.get(Keys.DISPLAY_NAME) else broadcaster.get(Keys.NAME)
+        streamer = clip.get(Keys.BROADCASTER_NAME)
         title = clip.get(Keys.TITLE)
-        game = clip.get(Keys.GAME) if clip.get(Keys.GAME) else i18n('unknown_game')
         broadcaster_language = clip.get(Keys.LANGUAGE) if clip.get(Keys.LANGUAGE) else i18n('unknown_language')
 
         return {'streamer': streamer,
                 'title': title,
-                'game': game,
                 'viewers': viewers,
                 'broadcaster_language': broadcaster_language}
 
@@ -605,24 +593,23 @@ class JsonListItemConverter(object):
     def get_plot_for_clip(self, clip, include_title=True):
         headings = {Keys.VIEWS: i18n('views'),
                     Keys.CURATOR: i18n('curated'),
-                    Keys.GAME: i18n('game'),
                     Keys.LANGUAGE: i18n('language')}
-        curator = clip[Keys.CURATOR].get(Keys.DISPLAY_NAME) if clip[Keys.CURATOR].get(Keys.DISPLAY_NAME) else clip[Keys.CURATOR].get(Keys.NAME)
-        date = '%s %s\r\n' % (clip.get(Keys.CREATED_AT)[:10], clip.get(Keys.CREATED_AT)[11:19]) if clip.get(Keys.CREATED_AT) else ''
+        curator = clip.get(Keys.CREATOR_NAME)
+        date = '%s %s\r\n' % (clip.get(Keys.CREATED_AT)[:10],
+                              clip.get(Keys.CREATED_AT)[11:19]) if clip.get(Keys.CREATED_AT) else ''
         info = {
-            Keys.VIEWS: str(clip.get(Keys.VIEWS)) if clip.get(Keys.VIEWS) else u'0',
+            Keys.VIEWS: str(clip.get(Keys.VIEW_COUNT)) if clip.get(Keys.VIEW_COUNT) else u'0',
             Keys.LANGUAGE: clip.get(Keys.LANGUAGE) if clip.get(Keys.LANGUAGE) else None,
-            Keys.GAME: clip.get(Keys.GAME) if clip.get(Keys.GAME) else i18n('unknown_game'),
             Keys.CURATOR: curator
         }
 
-        plot_template = u'{title}{date}{curator}{game}{views}{language}'
+        plot_template = u'{title}{date}{curator}{views}{language}'
         _title = clip.get(Keys.TITLE) + u'\r\n'
         title = _title
         if not include_title:
             title = ''
 
-        plot = plot_template.format(title=title, game=self._format_key(Keys.GAME, headings, info),
+        plot = plot_template.format(title=title,
                                     views=self._format_key(Keys.VIEWS, headings, info),
                                     language=self._format_key(Keys.LANGUAGE, headings, info),
                                     curator=self._format_key(Keys.CURATOR, headings, info),

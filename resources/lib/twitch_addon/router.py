@@ -122,11 +122,11 @@ def _list_collection_videos(collection_id):
     collection_videos.route(twitch_api, collection_id)
 
 
-@dispatcher.register(MODES.CLIPSLIST, kwargs=['cursor', 'channel_name', 'game'])
+@dispatcher.register(MODES.CLIPSLIST, kwargs=['after', 'channel_id', 'game_id'])
 @error_handler(route_type=1)
-def _list_clips(cursor='MA==', channel_name=None, game=None):
+def _list_clips(after='MA==', channel_id='', game_id=''):
     from .routes import clips
-    clips.route(twitch_api, cursor, channel_name, game)
+    clips.route(twitch_api, after, channel_id, game_id)
 
 
 @dispatcher.register(MODES.CHANNELVIDEOLIST, args=['broadcast_type'], kwargs=['after', 'channel_id', 'game'])

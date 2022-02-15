@@ -10,7 +10,7 @@
 """
 from ..addon import utils
 from ..addon.common import kodi
-from ..addon.constants import Keys, LINE_LENGTH, MODES, MAX_REQUESTS, REQUEST_LIMIT
+from ..addon.constants import Keys, LINE_LENGTH, MODES
 from ..addon.converter import JsonListItemConverter
 from ..addon.twitch_exceptions import NotFound
 
@@ -33,10 +33,7 @@ def route(api, after='MA=='):
 
         cursor = games.get('pagination', {}).get('cursor')
         if cursor:
-            kodi.create_item(utils.link_to_next_page({
-                                                         'mode': MODES.GAMES,
-                                                         'after': cursor
-                                                     }))
+            kodi.create_item(utils.link_to_next_page({'mode': MODES.GAMES, 'after': cursor}))
 
         kodi.end_of_directory()
         return

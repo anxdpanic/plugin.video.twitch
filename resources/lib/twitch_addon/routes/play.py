@@ -121,7 +121,9 @@ def route(api, seek_time=0, channel_id=None, video_id=None, slug=None, ask=False
                 is_live = True
         elif slug:
             result = api.get_clip_by_slug(slug)
-            channel_id = result[Keys.BROADCASTER][Keys.ID]
+            result = result.get(Keys.DATA, [{}])[0]
+
+            channel_id = result[Keys.BROADCASTER_ID]
             if not quality:
                 quality = utils.get_default_quality('clip', channel_id)
                 if quality:

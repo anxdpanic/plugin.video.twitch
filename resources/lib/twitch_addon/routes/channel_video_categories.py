@@ -26,6 +26,10 @@ def route(channel_id=None, channel_name=None, display_name=None, game=None, game
         context_menu.extend(menu_items.change_sort_by('channel_videos'))
         menu_tag = display_name if display_name else channel_name
         menu_tag = menu_tag if menu_tag else i18n('channels')
+    if not channel_id:
+        channel_id = ''
+    if not game:
+        game = ''
     kodi.create_item({'label': i18n('past_broadcasts'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': 'archive', 'game': game},
                       'context_menu': context_menu, 'info': {'plot': '%s - %s' % (menu_tag, i18n('past_broadcasts'))}, 'thumbfile': 'Past_Broadcasts.png'})
     kodi.create_item({'label': i18n('uploads'), 'path': {'mode': MODES.CHANNELVIDEOLIST, 'channel_id': channel_id, 'broadcast_type': 'upload', 'game': game},
@@ -37,7 +41,7 @@ def route(channel_id=None, channel_name=None, display_name=None, game=None, game
             context_menu = list()
             context_menu.extend(menu_items.change_sort_by('clips'))
             context_menu.extend(menu_items.change_period('clips'))
-            kodi.create_item({'label': i18n('clips'), 'path': {'mode': MODES.CLIPSLIST, 'channel_name': channel_name, 'game': game},
+            kodi.create_item({'label': i18n('clips'), 'path': {'mode': MODES.CLIPSLIST, 'channel_id': channel_id, 'game_id': game},
                               'context_menu': context_menu, 'info': {'plot': '%s - %s' % (menu_tag, i18n('clips'))}, 'thumbfile': 'Clips.png'})
 
     kodi.end_of_directory()
