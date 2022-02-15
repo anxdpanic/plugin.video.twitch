@@ -82,7 +82,6 @@ class JsonListItemConverter(object):
                 'info': {u'plot': plot, u'plotoutline': plot, u'tagline': plot}}
 
     def followed_game_to_listitem(self, game):
-        channel_count = i18n('unknown')
         viewer_count = i18n('unknown')
         if 'viewersCount' in game:
             viewer_count = str(game['viewersCount'])
@@ -95,8 +94,8 @@ class JsonListItemConverter(object):
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.edit_follow_game(game['id'], name, follow=False))
-        plot = '{name}\r\n{channels}:{channel_count} {viewers}:{viewer_count}' \
-            .format(name=name, channels=i18n('channels'), channel_count=channel_count, viewers=i18n('viewers'), viewer_count=viewer_count)
+        plot = '{name}\r\n{viewers}:{viewer_count}' \
+            .format(name=name, viewers=i18n('viewers'), viewer_count=viewer_count)
         return {'label': name,
                 'path': kodi.get_plugin_url({'mode': MODES.GAMELISTS, 'game': name}),
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image}),
@@ -152,20 +151,16 @@ class JsonListItemConverter(object):
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image})}
 
     def channel_to_listitem(self, channel):
-        image = channel.get(Keys.LOGO) if channel.get(Keys.LOGO) else Images.ICON
-        video_banner = channel.get(Keys.VIDEO_BANNER)
-        if not video_banner:
-            video_banner = channel.get(Keys.PROFILE_BANNER) if channel.get(Keys.PROFILE_BANNER) else Images.FANART
+        image = channel.get(Keys.PROFILE_IMAGE_URL) if channel.get(Keys.PROFILE_IMAGE_URL) else Images.ICON
+        video_banner = channel.get(Keys.OFFLINE_IMAGE_URL) if channel.get(Keys.OFFLINE_IMAGE_URL) else Images.FANART
         context_menu = list()
         context_menu.extend(menu_items.refresh())
-        name = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.NAME)
+        name = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.LOGIN)
         if self.has_token:
-            context_menu.extend(menu_items.edit_follow(channel[Keys._ID], name))
-            # context_menu.extend(menu_items.edit_block(channel[Keys._ID], name))
-        context_menu.extend(menu_items.add_blacklist(channel[Keys._ID], name))
+            context_menu.extend(menu_items.edit_follow(channel[Keys.ID], name))
         return {'label': name,
-                'path': kodi.get_plugin_url({'mode': MODES.CHANNELVIDEOS, 'channel_id': channel[Keys._ID],
-                                             'channel_name': channel[Keys.NAME], 'display_name': name}),
+                'path': kodi.get_plugin_url({'mode': MODES.CHANNELVIDEOS, 'channel_id': channel[Keys.ID],
+                                             'channel_name': channel[Keys.LOGIN], 'display_name': name}),
                 'art': the_art({'fanart': video_banner, 'poster': image, 'thumb': image}),
                 'context_menu': context_menu,
                 'info': self.get_plot_for_channel(channel)}
@@ -486,32 +481,22 @@ class JsonListItemConverter(object):
 
     def get_plot_for_channel(self, channel):
         headings = {Keys.VIEWS: i18n('views'),
-                    Keys.BROADCASTER_LANGUAGE: i18n('language'),
-                    Keys.MATURE: i18n('mature'),
-                    Keys.PARTNER: i18n('partner'),
-                    Keys.DELAY: i18n('delay'),
-                    Keys.FOLLOWERS: i18n('followers')}
+                    Keys.PARTNER: ''}
         info = {
-            Keys.VIEWS: str(channel.get(Keys.VIEWS)) if channel.get(Keys.VIEWS) else u'0',
-            Keys.BROADCASTER_LANGUAGE: channel.get(Keys.BROADCASTER_LANGUAGE)
-            if channel.get(Keys.BROADCASTER_LANGUAGE) else None,
-            Keys.MATURE: str(channel.get(Keys.MATURE)) if channel.get(Keys.MATURE) else u'False',
-            Keys.PARTNER: str(channel.get(Keys.PARTNER)) if channel.get(Keys.PARTNER) else u'False',
-            Keys.DELAY: str(channel.get(Keys.DELAY)) if channel.get(Keys.DELAY) else u'0',
-            Keys.FOLLOWERS: str(channel.get(Keys.FOLLOWERS)) if channel.get(Keys.FOLLOWERS) else u'0'
+            Keys.VIEWS: str(channel.get(Keys.VIEW_COUNT)) if channel.get(Keys.VIEW_COUNT) else u'0',
         }
-        title = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.NAME)
-        date = '%s %s\r\n' % (channel.get(Keys.CREATED_AT)[:10], channel.get(Keys.CREATED_AT)[11:19]) if channel.get(Keys.CREATED_AT) else ''
+        title = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.LOGIN)
+        date = u'%s %s\r\n' % (channel.get(Keys.CREATED_AT)[:10], channel.get(Keys.CREATED_AT)[11:19]) \
+            if channel.get(Keys.CREATED_AT) else u''
+        description = channel.get(Keys.DESCRIPTION)
+        broadcaster_type = u' (%s)' % str(channel.get(Keys.BROADCASTER_TYPE)) \
+            if channel.get(Keys.BROADCASTER_TYPE) else u''
 
-        plot_template = u'{title}{date}{views}{followers}{broadcaster_language}{mature}{partner}{delay}'
+        plot_template = u'{title}{broadcaster_type}{description}{date}{views}'
 
-        plot = plot_template.format(title=title + '\r\n',
+        plot = plot_template.format(title=title, description=description + '\r\n',
                                     views=self._format_key(Keys.VIEWS, headings, info),
-                                    delay=self._format_key(Keys.DELAY, headings, info),
-                                    broadcaster_language=self._format_key(Keys.BROADCASTER_LANGUAGE, headings, info),
-                                    mature=self._format_key(Keys.MATURE, headings, info),
-                                    partner=self._format_key(Keys.PARTNER, headings, info),
-                                    followers=self._format_key(Keys.FOLLOWERS, headings, info),
+                                    broadcaster_type=broadcaster_type + '\r\n',
                                     date=date)
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': title.rstrip('\r\n')}

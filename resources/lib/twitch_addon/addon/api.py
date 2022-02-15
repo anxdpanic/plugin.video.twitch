@@ -107,16 +107,24 @@ class Twitch:
 
     def get_user_id(self):
         results = self.get_user(self.access_token)
-        return results.get(Keys._ID)  # NOQA
+        results = results.get('data', [{}])[0]
+        return results.get(Keys.ID)  # NOQA
 
     def get_username(self):
         results = self.get_user(self.access_token)
-        return results.get(Keys.NAME)
+        results = results.get('data', [{}])[0]
+        return results.get(Keys.LOGIN)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_user_ids(self, logins):
         results = self.api.users.get_users(user_login=logins)
+        return self.error_check(results)
+
+    @api_error_handler
+    @cache.cache_method(cache_limit=cache.limit)
+    def get_users(self, user_ids):
+        results = self.api.users.get_users(user_id=user_ids)
         return self.error_check(results)
 
     @api_error_handler
@@ -268,7 +276,7 @@ class Twitch:
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
-    def get_followed_streams(self, user_id, after, first=20):
+    def get_followed_streams(self, user_id, after='MA==', first=20):
         results = self.api.streams.get_followed(user_id=user_id, after=after, first=first)
         results = self.error_check(results)
         if isinstance(results.get('streams'), list):

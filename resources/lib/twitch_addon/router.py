@@ -94,11 +94,11 @@ def _list_streams(stream_type=StreamType.LIVE, offset=0, platform=Platform.ALL):
     streams.route(twitch_api, stream_type, offset, platform)
 
 
-@dispatcher.register(MODES.FOLLOWED, args=['content'], kwargs=['offset', 'cursor'])
+@dispatcher.register(MODES.FOLLOWED, args=['content'], kwargs=['after'])
 @error_handler(route_type=1)
-def _list_followed(content, offset=0, cursor='MA=='):
+def _list_followed(content, after='MA=='):
     from .routes import followed
-    followed.route(twitch_api, content, offset, cursor)
+    followed.route(twitch_api, content, after)
 
 
 @dispatcher.register(MODES.CHANNELVIDEOS, kwargs=['channel_id', 'channel_name', 'display_name', 'game'])

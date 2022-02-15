@@ -22,7 +22,6 @@
         <setting label="30009" id="menu_following_live" type="bool" default="false"/>
         <setting label="30008" id="menu_following_channels" type="bool" default="false"/>
         <setting label="30001" id="menu_following_games" type="bool" default="false"/>
-        <setting label="30176" id="menu_following_clips" type="bool" default="false"/>
         <setting label="30172" type="lsep"/>
         <setting label="30009" id="menu_browse_live" type="bool" default="false"/>
         <setting label="30173" id="menu_browse_xbox_one" type="bool" default="false"/>
