@@ -31,9 +31,10 @@ def route(api, broadcast_type, channel_id=None, game=None, after='MA=='):
             period = utils.get_sort('top_videos', 'period')
             videos = api.get_top_videos(after=after, first=per_page, broadcast_type=broadcast_type, period=period)
         else:
+            period = utils.get_sort('channel_videos', 'period')
             sort_by = utils.get_sort('channel_videos', 'by')
             language = utils.get_language()
-            videos = api.get_channel_videos(channel_id, after=after, first=per_page, broadcast_type=broadcast_type,
+            videos = api.get_channel_videos(channel_id, broadcast_type, period, after=after, first=per_page,
                                             sort_by=sort_by, language=language)
 
     if Keys.DATA in videos:

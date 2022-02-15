@@ -370,9 +370,8 @@ def extract_video(url):
                 seek_time += int(minutes) * 60
             if seconds:
                 seek_time += int(seconds)
-    if id_string.startswith('v') or id_string.startswith('c') or id_string.startswith('a'):
-        video_id = id_string
-    return video_id, seek_time
+
+    return id_string, seek_time
 
 
 _sorting_defaults = \

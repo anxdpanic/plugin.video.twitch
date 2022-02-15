@@ -21,7 +21,7 @@ from twitch import queries as twitch_queries
 from twitch import oauth
 from twitch.api import usher
 from twitch.api import helix as twitch
-from twitch.api.parameters import Language, StreamType, VideoSort
+from twitch.api.parameters import Language, Boolean, VideoSort, PeriodHelix
 
 i18n = utils.i18n
 
@@ -155,7 +155,10 @@ class Twitch:
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
-    def get_top_videos(self, broadcast_type, period, after='MA==', before='MA==', first=20, game_id='', user_id=''):
+    def get_top_videos(self, broadcast_type, period=PeriodHelix.ALL,
+                       after='MA==', before='MA==', first=20, game_id='', user_id=''):
+        if not period:
+            period = PeriodHelix.ALL
         results = self.api.videos.get_videos(user_id=user_id, game_id=game_id, broadcast_type=broadcast_type,
                                              period=period, after=after, before=before, first=first)
         return self.error_check(results)
@@ -168,10 +171,12 @@ class Twitch:
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
-    def get_channel_videos(self, user_id, broadcast_type, period, after='MA==', before='MA==', first=20,
+    def get_channel_videos(self, user_id, broadcast_type, period=PeriodHelix.ALL, after='MA==', before='MA==', first=20,
                            sort_by=VideoSort.TIME, language=Language.ALL):
+        if not period:
+            period = PeriodHelix.ALL
         results = self.api.videos.get_videos(user_id=user_id, broadcast_type=broadcast_type, period=period,
-                                             after=after, before=before, first=first, sort_by=sort_by,
+                                             after=after, before=before, first=first, sort_order=sort_by,
                                              language=language)
         return self.error_check(results)
 
@@ -185,13 +190,15 @@ class Twitch:
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_channel_search(self, search_query, after='MA==', first=20):
-        results = self.api.search.get_channels(search_query=search_query, after=after, first=first, live_only=False)
+        results = self.api.search.get_channels(search_query=search_query, after=after, first=first,
+                                               live_only=Boolean.FALSE)
         return self.error_check(results)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_stream_search(self, search_query, after='MA==', first=20):
-        results = self.api.search.get_channels(search_query=search_query, after=after, first=first, live_only=True)
+        results = self.api.search.get_channels(search_query=search_query, after=after, first=first,
+                                               live_only=Boolean.TRUE)
         return self.error_check(results)
 
     @api_error_handler

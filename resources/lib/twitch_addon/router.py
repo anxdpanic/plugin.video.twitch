@@ -59,11 +59,11 @@ def _new_search(content):
     new_search.route(content)
 
 
-@dispatcher.register(MODES.SEARCHRESULTS, args=['content', 'query'], kwargs=['index'])
+@dispatcher.register(MODES.SEARCHRESULTS, args=['content', 'query'], kwargs=['after'])
 @error_handler(route_type=1)
-def _search_results(content, query, index=0):
+def _search_results(content, query, after='MA=='):
     from .routes import search_results
-    search_results.route(twitch_api, content, query, index)
+    search_results.route(twitch_api, content, query, after)
 
 
 @dispatcher.register(MODES.FOLLOWING)
@@ -80,18 +80,18 @@ def _list_featured_streams():
     popular_streams.route(twitch_api)
 
 
-@dispatcher.register(MODES.GAMES, kwargs=['offset'])
+@dispatcher.register(MODES.GAMES, kwargs=['after'])
 @error_handler(route_type=1)
-def _list_all_games(offset=0):
+def _list_all_games(after='MA=='):
     from .routes import games
-    games.route(twitch_api, offset)
+    games.route(twitch_api, after)
 
 
-@dispatcher.register(MODES.STREAMLIST, kwargs=['stream_type', 'offset', 'platform'])
+@dispatcher.register(MODES.STREAMLIST, kwargs=['after'])
 @error_handler(route_type=1)
-def _list_streams(stream_type=StreamType.LIVE, offset=0, platform=Platform.ALL):
+def _list_streams(after='MA=='):
     from .routes import streams
-    streams.route(twitch_api, stream_type, offset, platform)
+    streams.route(twitch_api, after)
 
 
 @dispatcher.register(MODES.FOLLOWED, args=['content'], kwargs=['after'])
