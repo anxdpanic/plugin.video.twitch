@@ -143,11 +143,11 @@ def _game_lists(game):
     game_categories.route(game)
 
 
-@dispatcher.register(MODES.GAMESTREAMS, args=['game'], kwargs=['offset'])
+@dispatcher.register(MODES.GAMESTREAMS, args=['game'], kwargs=['after'])
 @error_handler(route_type=1)
-def _list_game_streams(game, offset=0):
+def _list_game_streams(game, after='MA=='):
     from .routes import game_streams
-    game_streams.route(twitch_api, game, offset)
+    game_streams.route(twitch_api, game, after)
 
 
 @dispatcher.register(MODES.PLAY, kwargs=['seek_time', 'channel_id', 'video_id', 'slug', 'ask', 'use_player', 'quality', 'channel_name'])

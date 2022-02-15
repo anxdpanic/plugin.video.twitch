@@ -472,7 +472,10 @@ def remove_blacklist(list_type='user'):
 
 def get_language():
     json_data = get_stored_json()
-    return json_data['languages']
+    language = json_data['languages']
+    if language == 'all':
+        language = ''
+    return language
 
 
 def change_language(language=Language.ALL):
