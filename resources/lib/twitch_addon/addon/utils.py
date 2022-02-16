@@ -151,16 +151,16 @@ def clear_client_id():
 
 
 def get_oauth_token(token_only=True, required=False):
-    oauth_token = kodi.get_setting('oauth_token')
+    oauth_token = kodi.get_setting('oauth_token_helix')
     if not oauth_token or not oauth_token.strip():
         if not required: return ''
         kodi.notify(kodi.get_name(), i18n('token_required'), sound=False)
         kodi.show_settings()
-        oauth_token = kodi.get_setting('oauth_token')
+        oauth_token = kodi.get_setting('oauth_token_helix')
     stripped_token = oauth_token.strip()
     if oauth_token != stripped_token:
         oauth_token = stripped_token
-        kodi.set_setting('oauth_token', oauth_token)
+        kodi.set_setting('oauth_token_helix', oauth_token)
     if oauth_token:
         if token_only:
             idx = oauth_token.find(':')
