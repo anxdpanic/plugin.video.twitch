@@ -2,6 +2,7 @@
 [update] Update Twitch API usage from v5 to Helix
     - This change will require you to generate a new oauth token from the add-on settings
     - Some favorites may need to be recreated
+    - This change requires an OAuth token for access to any content
 [add] Add to queue context menu item
 [rem] Blacklisting of content
 [lang] updated translations from Weblate

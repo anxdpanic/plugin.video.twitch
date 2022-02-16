@@ -133,4 +133,6 @@ STRINGS = {
     'Follow': 30264,
     'Unfollow': 30265,
     'Add_to_queue': 30266,
+    'oauth_heading': 30132,
+    'oauth_message': 30267,
 }
