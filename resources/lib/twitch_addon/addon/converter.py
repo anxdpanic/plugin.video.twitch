@@ -15,7 +15,7 @@ from six.moves.urllib_parse import quote
 from . import menu_items
 from .common import kodi
 from .constants import Keys, Images, MODES, ADAPTIVE_SOURCE_TEMPLATE
-from .utils import the_art, TitleBuilder, i18n, get_oauth_token, get_vodcast_color, use_inputstream_adaptive, get_thumbnail_size, get_refresh_stamp, to_string, get_private_oauth_token
+from .utils import the_art, TitleBuilder, i18n, get_oauth_token, get_vodcast_color, use_inputstream_adaptive, get_thumbnail_size, get_refresh_stamp, to_string, get_private_oauth_token, convert_duration
 
 
 class PlaylistConverter(object):
@@ -135,7 +135,7 @@ class JsonListItemConverter(object):
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image})}
 
     def video_list_to_listitem(self, video):
-        duration = video.get(Keys.DURATION)
+        duration = convert_duration(video.get(Keys.DURATION))
         date = video.get(Keys.CREATED_AT)[:10] if video.get(Keys.CREATED_AT) else ''
         year = video.get(Keys.CREATED_AT)[:4] if video.get(Keys.CREATED_AT) else ''
         image = self.get_thumbnail(video.get(Keys.THUMBNAIL_URL), Images.VIDEOTHUMB)
