@@ -37,8 +37,8 @@ msgid "Settings"
 msgstr "Nastavení"
 
 msgctxt "#30005"
-msgid "Featured Streams"
-msgstr "Nejlepší streamy"
+msgid "Popular Streams"
+msgstr ""
 
 msgctxt "#30006"
 msgid "Teams"
@@ -963,3 +963,7 @@ msgstr ""
 msgctxt "#30265"
 msgid "Unfollow"
 msgstr ""
+
+#~ msgctxt "#30005"
+#~ msgid "Featured Streams"
+#~ msgstr "Nejlepší streamy"
