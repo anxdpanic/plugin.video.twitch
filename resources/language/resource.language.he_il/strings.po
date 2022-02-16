@@ -40,8 +40,8 @@ msgid "Settings"
 msgstr "הגדרות"
 
 msgctxt "#30005"
-msgid "Featured Streams"
-msgstr "הזרמות מומלצות"
+msgid "Popular Streams"
+msgstr ""
 
 msgctxt "#30006"
 msgid "Teams"
@@ -974,3 +974,7 @@ msgstr ""
 msgctxt "#30265"
 msgid "Unfollow"
 msgstr ""
+
+#~ msgctxt "#30005"
+#~ msgid "Featured Streams"
+#~ msgstr "הזרמות מומלצות"
