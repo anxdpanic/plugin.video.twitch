@@ -23,8 +23,8 @@ def route(api):
 
     if show_menu('featured'):
         context_menu = list()
-        kodi.create_item({'label': i18n('featured_streams'), 'path': {'mode': MODES.FEATUREDSTREAMS}, 'context_menu': context_menu,
-                          'info': {'plot': i18n('featured_streams')}, 'thumbfile': 'Featured_Streams.png'})
+        kodi.create_item({'label': i18n('popular_streams'), 'path': {'mode': MODES.FEATUREDSTREAMS}, 'context_menu': context_menu,
+                          'info': {'plot': i18n('popular_streams')}, 'thumbfile': 'Featured_Streams.png'})
     if has_token:
         if show_menu('live', 'following'):
             context_menu = list()
@@ -40,28 +40,12 @@ def route(api):
         if show_menu('games', 'following') and utils.get_private_oauth_token():
             kodi.create_item({'label': '%s %s' % (i18n('following'), i18n('games')), 'path': {'mode': MODES.FOLLOWED, 'content': 'games'},
                               'info': {'plot': '%s - %s' % (i18n('following'), i18n('games'))}, 'thumbfile': 'Games.png'})
-        if show_menu('clips', 'following'):
-            context_menu = list()
-            context_menu.extend(menu_items.change_sort_by('clips'))
-            kodi.create_item({'label': '%s %s' % (i18n('following'), i18n('clips')), 'path': {'mode': MODES.FOLLOWED, 'content': 'clips'}, 'context_menu': context_menu,
-                              'info': {'plot': '%s - %s' % (i18n('following'), i18n('clips'))}, 'thumbfile': 'Clips.png'})
         if show_menu('following'):
             kodi.create_item({'label': i18n('following'), 'path': {'mode': MODES.FOLLOWING}, 'info': {'plot': i18n('following')}, 'thumbfile': 'Following.png'})
     if show_menu('live', 'browse'):
         context_menu = list()
         kodi.create_item({'label': '%s %s' % (i18n('browse'), i18n('live_channels')), 'path': {'mode': MODES.STREAMLIST, 'stream_type': StreamType.LIVE},
                           'context_menu': context_menu, 'info': {'plot': '%s - %s' % (i18n('browse'), i18n('live_channels'))}, 'thumbfile': 'Live_Channels.png'})
-    if show_menu('xbox_one', 'browse'):
-        context_menu = list()
-        kodi.create_item({'label': '%s %s' % (i18n('browse'), i18n('xbox_one')), 'path': {'mode': MODES.STREAMLIST, 'platform': Platform.XBOX_ONE},
-                          'context_menu': context_menu, 'info': {'plot': '%s - %s' % (i18n('browse'), i18n('xbox_one'))}, 'thumbfile': 'Xbox_One.png'})
-    if show_menu('ps4', 'browse'):
-        context_menu = list()
-        kodi.create_item({'label': '%s %s' % (i18n('browse'), i18n('ps4')), 'path': {'mode': MODES.STREAMLIST, 'platform': Platform.PS4}, 'context_menu': context_menu,
-                          'info': {'plot': '%s - %s' % (i18n('browse'), i18n('ps4'))}, 'thumbfile': 'Playstation_4.png'})
-    if show_menu('videos', 'browse'):
-        kodi.create_item({'label': '%s %s' % (i18n('browse'), i18n('videos')), 'path': {'mode': MODES.CHANNELVIDEOS, 'channel_id': 'all'},
-                          'info': {'plot': '%s - %s' % (i18n('browse'), i18n('videos'))}, 'thumbfile': 'Videos.png'})
     if show_menu('clips', 'browse'):
         context_menu = list()
         context_menu.extend(menu_items.change_sort_by('clips'))

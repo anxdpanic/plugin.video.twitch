@@ -39,7 +39,7 @@ msgid "Settings"
 msgstr ""
 
 msgctxt "#30005"
-msgid "Featured Streams"
+msgid "Popular Streams"
 msgstr ""
 
 msgctxt "#30006"
