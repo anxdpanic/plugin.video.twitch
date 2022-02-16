@@ -111,13 +111,15 @@ def route(api, seek_time=0, channel_id=None, video_id=None, slug=None, ask=False
                     quality = utils.get_default_quality('stream', channel_id)
                     if quality:
                         quality = quality[str(channel_id)]['quality']
-                result = api.get_channel_stream(channel_id)[Keys.DATA][0]
-                channel_name = result[Keys.USER_NAME] \
-                    if result[Keys.USER_NAME] else result[Keys.USER_LOGIN]
-                name = result[Keys.USER_LOGIN]
-                videos = api.get_live(name)
-                item_dict = converter.stream_to_playitem(result)
-                is_live = True
+                result = api.get_channel_stream(channel_id)[Keys.DATA]
+                if result:
+                    result = result[0]
+                    channel_name = result[Keys.USER_NAME] \
+                        if result[Keys.USER_NAME] else result[Keys.USER_LOGIN]
+                    name = result[Keys.USER_LOGIN]
+                    videos = api.get_live(name)
+                    item_dict = converter.stream_to_playitem(result)
+                    is_live = True
         elif slug:
             result = api.get_clip_by_slug(slug)
             result = result.get(Keys.DATA, [{}])[0]
