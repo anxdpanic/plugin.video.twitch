@@ -213,7 +213,8 @@ class Twitch:
     def check_follow(self, channel_id):
         user_id = self.get_user_id()
         results = self.api.users.get_follows(from_id=user_id, to_id=channel_id)
-        return self.return_boolean(results)
+        results = self.error_check(results)
+        return results.get('total') == 1
 
     @api_error_handler
     def follow(self, channel_id):

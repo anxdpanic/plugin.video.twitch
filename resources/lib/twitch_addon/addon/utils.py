@@ -490,6 +490,27 @@ def clear_list(list_type, list_name):
     else:
         return False
 
+
+def convert_duration(duration):
+    payload = 0
+
+    pattern = re.compile('(?:(?P<hours>[0-9]+)(?:h))?(?:(?P<minutes>[0-9]+)(?:m))?(?:(?P<seconds>[0-9]+)(?:s))?')
+    match = re.search(pattern, duration)
+
+    if match:
+        hours = match.group('hours')
+        minutes = match.group('minutes')
+        seconds = match.group('seconds')
+        if hours:
+            payload += int(hours) * 3600
+        if minutes:
+            payload += int(minutes) * 60
+        if seconds:
+            payload += int(seconds)
+
+    return payload
+
+
 class TitleBuilder(object):
     class Templates(object):
         TITLE = u"{title}"

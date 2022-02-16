@@ -15,7 +15,7 @@ from six.moves.urllib_parse import quote
 from . import menu_items
 from .common import kodi
 from .constants import Keys, Images, MODES, ADAPTIVE_SOURCE_TEMPLATE
-from .utils import the_art, TitleBuilder, i18n, get_oauth_token, get_vodcast_color, use_inputstream_adaptive, get_thumbnail_size, get_refresh_stamp, to_string, get_private_oauth_token
+from .utils import the_art, TitleBuilder, i18n, get_oauth_token, get_vodcast_color, use_inputstream_adaptive, get_thumbnail_size, get_refresh_stamp, to_string, get_private_oauth_token, convert_duration
 
 
 class PlaylistConverter(object):
@@ -121,6 +121,7 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.channel_videos(clip[Keys.BROADCASTER_ID], display_name, display_name))
         context_menu.extend(menu_items.set_default_quality('clip', clip[Keys.BROADCASTER_ID],
                                                            display_name, clip_id=clip[Keys.ID]))
+        context_menu.extend(menu_items.queue())
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'slug': clip[Keys.ID], 'ask': True, 'use_player': True}))
         info = self.get_plot_for_clip(clip)
@@ -135,7 +136,7 @@ class JsonListItemConverter(object):
                 'art': the_art({'poster': image, 'thumb': image, 'icon': image})}
 
     def video_list_to_listitem(self, video):
-        duration = video.get(Keys.DURATION)
+        duration = convert_duration(video.get(Keys.DURATION))
         date = video.get(Keys.CREATED_AT)[:10] if video.get(Keys.CREATED_AT) else ''
         year = video.get(Keys.CREATED_AT)[:4] if video.get(Keys.CREATED_AT) else ''
         image = self.get_thumbnail(video.get(Keys.THUMBNAIL_URL), Images.VIDEOTHUMB)
@@ -148,6 +149,7 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.channel_videos(video[Keys.USER_ID], channel_name, display_name))
         context_menu.extend(menu_items.set_default_quality('video', video[Keys.USER_ID],
                                                            video[Keys.USER_LOGIN], video[Keys.USER_ID]))
+        context_menu.extend(menu_items.queue())
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'video_id': video[Keys.ID],
                                                    'ask': True, 'use_player': True}))
@@ -182,6 +184,7 @@ class JsonListItemConverter(object):
             context_menu.extend(menu_items.go_to_game(game_name, search[Keys.GAME_ID]))
         context_menu.extend(menu_items.set_default_quality('stream', search[Keys.ID],
                                                            search.get(Keys.BROADCASTER_LOGIN)))
+        context_menu.extend(menu_items.queue())
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'channel_id':
                                                       search[Keys.ID], 'ask': True, 'use_player': True}))
@@ -242,6 +245,7 @@ class JsonListItemConverter(object):
         if stream[Keys.GAME_NAME]:
             context_menu.extend(menu_items.go_to_game(game_name, stream[Keys.GAME_ID]))
         context_menu.extend(menu_items.set_default_quality('stream', stream[Keys.USER_ID], stream.get(Keys.USER_LOGIN)))
+        context_menu.extend(menu_items.queue())
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'channel_id': stream[Keys.USER_ID], 'ask': True, 'use_player': True}))
         return {'label': title,

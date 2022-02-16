@@ -29,10 +29,6 @@ FAQ
 > The Add-on does however provide Quality Options which may help if your internet connection / computer specs are below requirements for HD streams.
 > Try making sure that the Kodi Add-on "InputStream Adaptive" is installed, and Adaptive Quality is enabled in Twitch.tv's Add-on settings.
 
-* Which features require an OAuth token?
-
-> Live Notifications, Following (all menus), Follow/Unfollow, Subscriber only content, IRC (Chat)
-
 What's next?
 ----------------
 

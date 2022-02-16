@@ -11,7 +11,7 @@ diff --git a/resources/settings.xml b/resources/settings.xml
 index 0d22544..e895eb1 100644
 --- a/resources/settings.xml
 +++ b/resources/settings.xml
-@@ -1,110 +1,723 @@
+@@ -1,106 +1,706 @@
 -<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 -<settings>
 -    <!-- Login -->
@@ -27,19 +27,15 @@ index 0d22544..e895eb1 100644
 -    </category>
 -    <!-- Main Menu -->
 -    <category label="30219">
--        <setting label="30005" id="menu_featured" type="bool" default="true"/>
+-        <setting label="30009" id="menu_browse_live" type="bool" default="true"/>
+-        <setting label="30001" id="menu_browse_games" type="bool" default="true"/>
 -        <setting label="30002" id="menu_following" type="bool" default="true"/>
--        <setting label="30172" id="menu_browse" type="bool" default="true"/>
 -        <setting label="30003" id="menu_search" type="bool" default="true"/>
 -        <setting label="30004" id="menu_settings" type="bool" default="true"/>
 -        <setting label="30002" type="lsep"/>
 -        <setting label="30009" id="menu_following_live" type="bool" default="false"/>
 -        <setting label="30008" id="menu_following_channels" type="bool" default="false"/>
 -        <setting label="30001" id="menu_following_games" type="bool" default="false"/>
--        <setting label="30172" type="lsep"/>
--        <setting label="30009" id="menu_browse_live" type="bool" default="false"/>
--        <setting label="30176" id="menu_browse_clips" type="bool" default="false"/>
--        <setting label="30001" id="menu_browse_games" type="bool" default="false"/>
 -        <setting label="30003" type="lsep"/>
 -        <setting label="30125" id="menu_search_streams" type="bool" default="false"/>
 -        <setting label="30008" id="menu_search_channels" type="bool" default="false"/>
@@ -183,17 +179,17 @@ index 0d22544..e895eb1 100644
 +		</category>
 +		<category help="" id="main menu" label="30219">
 +			<group id="1">
-+				<setting help="" id="menu_featured" label="30005" type="boolean">
++				<setting help="" id="menu_browse_live" label="30009" type="boolean">
++					<level>0</level>
++					<default>true</default>
++					<control type="toggle"/>
++				</setting>
++				<setting help="" id="menu_browse_games" label="30001" type="boolean">
 +					<level>0</level>
 +					<default>true</default>
 +					<control type="toggle"/>
 +				</setting>
 +				<setting help="" id="menu_following" label="30002" type="boolean">
-+					<level>0</level>
-+					<default>true</default>
-+					<control type="toggle"/>
-+				</setting>
-+				<setting help="" id="menu_browse" label="30172" type="boolean">
 +					<level>0</level>
 +					<default>true</default>
 +					<control type="toggle"/>
@@ -226,24 +222,7 @@ index 0d22544..e895eb1 100644
 +					<control type="toggle"/>
 +				</setting>
 +			</group>
-+			<group id="3" label="30172">
-+				<setting help="" id="menu_browse_live" label="30009" type="boolean">
-+					<level>0</level>
-+					<default>false</default>
-+					<control type="toggle"/>
-+				</setting>
-+				<setting help="" id="menu_browse_clips" label="30176" type="boolean">
-+					<level>0</level>
-+					<default>false</default>
-+					<control type="toggle"/>
-+				</setting>
-+				<setting help="" id="menu_browse_games" label="30001" type="boolean">
-+					<level>0</level>
-+					<default>false</default>
-+					<control type="toggle"/>
-+				</setting>
-+			</group>
-+			<group id="4" label="30003">
++			<group id="3" label="30003">
 +				<setting help="" id="menu_search_streams" label="30125" type="boolean">
 +					<level>0</level>
 +					<default>false</default>

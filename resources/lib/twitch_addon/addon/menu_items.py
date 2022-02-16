@@ -84,3 +84,7 @@ def change_period(for_type):
 
 def change_direction(for_type):
     return run_plugin(i18n('change_direction'), {'mode': MODES.EDITSORTING, 'list_type': for_type, 'sort_type': 'direction'})
+
+
+def queue():
+    return [(i18n('Add_to_queue'), 'Action(Queue)')]
