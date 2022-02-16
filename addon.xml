@@ -16,7 +16,9 @@
             <fanart>fanart.jpg</fanart>
         </assets>
         <news>
-[add] new menu icons - Goldenfreddy0703
+[update] Update Twitch API usage from v5 to Helix
+    - This change will require you to generate a new oauth token from the add-on settings
+    - Some favorites may need to be recreated
 [lang] updated translations from Weblate
         </news>
         <platform>all</platform>
