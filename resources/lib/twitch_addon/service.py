@@ -134,6 +134,7 @@ class LiveNotificationsThread(threading.Thread):
         user_id = twitch_api.get_user_id()
 
         all_followed = {Keys.STREAMS: []}
+        followed_ids = []
         cursor = 'MA=='
         next_page = True
         while next_page:
@@ -142,10 +143,19 @@ class LiveNotificationsThread(threading.Thread):
 
             streams = twitch_api.get_followed_streams(user_id=user_id, first=100, after=cursor)
             next_page = False
-
             if Keys.DATA in streams:
-                for stream in streams[Keys.DATA]:
-                    all_followed[Keys.STREAMS].append(stream)
+                for follow in streams[Keys.DATA]:
+                    if follow.get(Keys.USER_ID):
+                        followed_ids.append(follow[Keys.USER_ID])
+
+                channels = twitch_api.get_users(followed_ids)
+                if Keys.DATA in channels:
+                    for channel in channels[Keys.DATA]:
+                        channel[Keys.STREAMS] = {}
+                        for follow in streams[Keys.DATA]:
+                            if channel.get(Keys.ID) == follow.get(Keys.USER_ID):
+                                channel[Keys.STREAM] = follow
+                        all_followed[Keys.STREAMS].append(channel)
 
                 if len(streams[Keys.DATA]) > 0:
                     cursor = streams.get('pagination', {}).get('cursor')
@@ -155,19 +165,19 @@ class LiveNotificationsThread(threading.Thread):
         colorized = []
 
         for stream in all_followed[Keys.STREAMS]:
-            if not self.logos.get(stream[Keys.USER_ID]):
-                self.logos[stream[Keys.USER_ID]] = stream[Keys.THUMBNAIL_URL]
-            if stream.get(Keys.TYPE) != 'live':
+            if not self.logos.get(stream[Keys.ID]):
+                self.logos[stream[Keys.ID]] = stream[Keys.PROFILE_IMAGE_URL]
+            if stream[Keys.STREAM].get(Keys.TYPE) != 'live':
                 color = get_vodcast_color()
-                if stream.get(Keys.USER_NAME):
-                    stream[Keys.USER_NAME] = u'[COLOR={color}]{name}[/COLOR]'\
-                        .format(name=stream[Keys.USER_NAME], color=color)
-                if stream.get(Keys.USER_LOGIN):
-                    stream[Keys.USER_LOGIN] = u'[COLOR={color}]{name}[/COLOR]'\
-                        .format(name=stream[Keys.USER_LOGIN], color=color)
+                if stream.get(Keys.DISPLAY_NAME):
+                    stream[Keys.DISPLAY_NAME] = u'[COLOR={color}]{name}[/COLOR]'\
+                        .format(name=stream[Keys.DISPLAY_NAME], color=color)
+                if stream.get(Keys.LOGIN):
+                    stream[Keys.LOGIN] = u'[COLOR={color}]{name}[/COLOR]'\
+                        .format(name=stream[Keys.LOGIN], color=color)
             colorized.append(stream)
-        followed_tuples = [(stream[Keys.USER_ID], stream[Keys.USER_LOGIN],
-                            stream[Keys.USER_NAME], stream[Keys.GAME_NAME])
+        followed_tuples = [(stream[Keys.ID], stream[Keys.LOGIN],
+                            stream[Keys.DISPLAY_NAME], stream[Keys.STREAM].get(Keys.GAME_NAME))
                            for stream in colorized]
         return followed_tuples
 
