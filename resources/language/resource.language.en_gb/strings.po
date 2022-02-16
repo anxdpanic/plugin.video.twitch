@@ -973,3 +973,7 @@ msgstr ""
 msgctxt "#30265"
 msgid "Unfollow"
 msgstr ""
+
+msgctxt "#30266"
+msgid "Add to queue"
+msgstr ""

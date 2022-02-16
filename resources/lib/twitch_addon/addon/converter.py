@@ -121,6 +121,7 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.channel_videos(clip[Keys.BROADCASTER_ID], display_name, display_name))
         context_menu.extend(menu_items.set_default_quality('clip', clip[Keys.BROADCASTER_ID],
                                                            display_name, clip_id=clip[Keys.ID]))
+        context_menu.extend(menu_items.queue())
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'slug': clip[Keys.ID], 'ask': True, 'use_player': True}))
         info = self.get_plot_for_clip(clip)
@@ -148,6 +149,7 @@ class JsonListItemConverter(object):
         context_menu.extend(menu_items.channel_videos(video[Keys.USER_ID], channel_name, display_name))
         context_menu.extend(menu_items.set_default_quality('video', video[Keys.USER_ID],
                                                            video[Keys.USER_LOGIN], video[Keys.USER_ID]))
+        context_menu.extend(menu_items.queue())
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'video_id': video[Keys.ID],
                                                    'ask': True, 'use_player': True}))
@@ -182,6 +184,7 @@ class JsonListItemConverter(object):
             context_menu.extend(menu_items.go_to_game(game_name, search[Keys.GAME_ID]))
         context_menu.extend(menu_items.set_default_quality('stream', search[Keys.ID],
                                                            search.get(Keys.BROADCASTER_LOGIN)))
+        context_menu.extend(menu_items.queue())
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'channel_id':
                                                       search[Keys.ID], 'ask': True, 'use_player': True}))
@@ -242,6 +245,7 @@ class JsonListItemConverter(object):
         if stream[Keys.GAME_NAME]:
             context_menu.extend(menu_items.go_to_game(game_name, stream[Keys.GAME_ID]))
         context_menu.extend(menu_items.set_default_quality('stream', stream[Keys.USER_ID], stream.get(Keys.USER_LOGIN)))
+        context_menu.extend(menu_items.queue())
         context_menu.extend(menu_items.run_plugin(i18n('play_choose_quality'),
                                                   {'mode': MODES.PLAY, 'channel_id': stream[Keys.USER_ID], 'ask': True, 'use_player': True}))
         return {'label': title,
