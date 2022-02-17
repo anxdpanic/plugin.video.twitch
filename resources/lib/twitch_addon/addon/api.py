@@ -329,6 +329,9 @@ class Twitch:
 
     @staticmethod
     def error_check(results):
+        if isinstance(results, list):
+            return results
+
         if ('error' in results.get('response', {})) and (results['response']['status'] == 401):
             _ = kodi.Dialog().ok(
                 i18n('oauth_heading'),
