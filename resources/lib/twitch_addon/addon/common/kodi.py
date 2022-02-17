@@ -149,13 +149,21 @@ def set_addon_enabled(addon_id, enabled=True):
 
 
 def get_icon():
-    return translate_path('special://home/addons/{0!s}/icon.png'.format(get_id()))
+    if PY2:
+        return translate_path('special://home/addons/{0!s}/icon.png'.format(get_id()))
+    else:
+        return translate_path('special://home/addons/{0!s}/resources/media/icon.png'.format(get_id()))
+
 
 def get_thumb(filename):
-    return translate_path('special://home/addons/{0!s}/resources/media/thumbnails/{1!s}'.format(get_id(),filename))
+    return translate_path('special://home/addons/{0!s}/resources/media/thumbnails/{1!s}'.format(get_id(), filename))
+
 
 def get_fanart():
-    return translate_path('special://home/addons/{0!s}/fanart.png'.format(get_id()))
+    if PY2:
+        return translate_path('special://home/addons/{0!s}/fanart.jpg'.format(get_id()))
+    else:
+        return translate_path('special://home/addons/{0!s}/resources/media/fanart.jpg'.format(get_id()))
 
 
 def get_kodi_version():
