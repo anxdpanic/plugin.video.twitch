@@ -91,7 +91,7 @@ class JsonListItemConverter(object):
 
     def channel_to_listitem(self, channel):
         image = channel.get(Keys.PROFILE_IMAGE_URL) if channel.get(Keys.PROFILE_IMAGE_URL) else Images.ICON
-        video_banner = channel.get(Keys.OFFLINE_IMAGE_URL) if channel.get(Keys.OFFLINE_IMAGE_URL) else Images.FANART
+        fanart = self.get_fanart(channel.get(Keys.OFFLINE_IMAGE_URL), Images.FANART)
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         name = channel.get(Keys.DISPLAY_NAME) if channel.get(Keys.DISPLAY_NAME) else channel.get(Keys.LOGIN)
@@ -100,7 +100,7 @@ class JsonListItemConverter(object):
         return {'label': name,
                 'path': kodi.get_plugin_url({'mode': MODES.CHANNELVIDEOS, 'channel_id': channel[Keys.ID],
                                              'channel_name': channel[Keys.LOGIN], 'display_name': name}),
-                'art': the_art({'fanart': video_banner, 'poster': image, 'thumb': image}),
+                'art': the_art({'fanart': fanart, 'poster': image, 'thumb': image}),
                 'context_menu': context_menu,
                 'info': self.get_plot_for_channel(channel)}
 
@@ -139,6 +139,7 @@ class JsonListItemConverter(object):
         date = video.get(Keys.CREATED_AT)[:10] if video.get(Keys.CREATED_AT) else ''
         year = video.get(Keys.CREATED_AT)[:4] if video.get(Keys.CREATED_AT) else ''
         image = self.get_thumbnail(video.get(Keys.THUMBNAIL_URL), Images.VIDEOTHUMB)
+        fanart = self.get_fanart(video.get(Keys.OFFLINE_IMAGE_URL), Images.FANART)
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         display_name = to_string(video.get(Keys.USER_NAME) if video.get(Keys.USER_NAME) else video.get(Keys.USER_LOGIN))
@@ -160,10 +161,10 @@ class JsonListItemConverter(object):
                 'is_playable': True,
                 'info': info,
                 'content_type': 'video',
-                'art': the_art({'poster': image, 'thumb': image, 'icon': image})}
+                'art': the_art({'fanart': fanart, 'poster': image, 'thumb': image, 'icon': image})}
 
     def search_stream_to_listitem(self, search):
-        video_banner = Images.FANART
+        fanart = self.get_fanart(search.get(Keys.OFFLINE_IMAGE_URL), Images.FANART)
         image = self.get_thumbnail(search.get(Keys.THUMBNAIL_URL), Images.VIDEOTHUMB)
         if get_refresh_stamp():
             image = '?timestamp='.join([image, quote(get_refresh_stamp())])
@@ -193,10 +194,10 @@ class JsonListItemConverter(object):
                 'is_playable': True,
                 'info': info,
                 'content_type': 'video',
-                'art': the_art({'fanart': video_banner, 'poster': image, 'thumb': image, 'icon': image})}
+                'art': the_art({'fanart': fanart, 'poster': image, 'thumb': image, 'icon': image})}
 
     def search_channel_to_listitem(self, search):
-        video_banner = Images.FANART
+        fanart = self.get_fanart(search.get(Keys.OFFLINE_IMAGE_URL), Images.FANART)
         image = self.get_thumbnail(search.get(Keys.THUMBNAIL_URL), Images.VIDEOTHUMB)
         if get_refresh_stamp():
             image = '?timestamp='.join([image, quote(get_refresh_stamp())])
@@ -218,10 +219,10 @@ class JsonListItemConverter(object):
                 'context_menu': context_menu,
                 'info': info,
                 'content_type': 'video',
-                'art': the_art({'fanart': video_banner, 'poster': image, 'thumb': image, 'icon': image})}
+                'art': the_art({'fanart': fanart, 'poster': image, 'thumb': image, 'icon': image})}
 
     def stream_to_listitem(self, stream):
-        video_banner = Images.FANART
+        fanart = self.get_fanart(stream.get(Keys.OFFLINE_IMAGE_URL), Images.FANART)
         preview = self.get_thumbnail(stream.get(Keys.THUMBNAIL_URL), Images.VIDEOTHUMB)
         logo = Images.VIDEOTHUMB
         if preview and get_refresh_stamp():
@@ -253,7 +254,7 @@ class JsonListItemConverter(object):
                 'is_playable': True,
                 'info': info,
                 'content_type': 'video',
-                'art': the_art({'fanart': video_banner, 'poster': image, 'thumb': image, 'icon': image})}
+                'art': the_art({'fanart': fanart, 'poster': image, 'thumb': image, 'icon': image})}
 
     def clip_to_playitem(self, clip):
         # path is returned '' and must be set after
@@ -643,7 +644,18 @@ class JsonListItemConverter(object):
         boxart = boxart.replace('52x72', '{width}x{height}').replace('285x380', '{width}x{height}')
 
         if '{width}' in boxart and '{height}' in boxart:
-            thumbnail = boxart.replace('%{width}', '{width}').replace('%{height}', '{height}')
-            return thumbnail.format(width=width, height=height)
+            boxart = boxart.replace('%{width}', '{width}').replace('%{height}', '{height}')
+            return boxart.format(width=width, height=height)
 
         return boxart or default
+
+    @staticmethod
+    def get_fanart(fanart, default=Images.FANART):
+        if not fanart:
+            return default
+
+        if '{width}' in fanart and '{height}' in fanart:
+            fanart = fanart.replace('%{width}', '{width}').replace('%{height}', '{height}')
+            return fanart.format(width='0', height='0')
+
+        return fanart or default

@@ -23,6 +23,8 @@ def route(api, broadcast_type, channel_id=None, game=None, after='MA=='):
     kodi.set_view('videos', set_sort=True)
     per_page = utils.get_items_per_page()
     all_items = list()
+    user_ids = list()
+
     if game is not None:
         period = utils.get_sort('top_videos', 'period')
         videos = api.get_top_videos(after=after, first=per_page, game_id=game,
@@ -38,9 +40,22 @@ def route(api, broadcast_type, channel_id=None, game=None, after='MA=='):
             videos = api.get_channel_videos(channel_id, broadcast_type, period, after=after, first=per_page,
                                             sort_by=sort_by, language=language)
 
-    if Keys.DATA in videos:
-        for stream in videos[Keys.DATA]:
-            all_items.append(stream)
+    for video in videos[Keys.DATA]:
+        if video.get(Keys.USER_ID):
+            user_ids.append(video[Keys.USER_ID])
+
+    if user_ids:
+        channels = api.get_users(user_ids)
+        if Keys.DATA in channels:
+            for idx, video in enumerate(videos[Keys.DATA]):
+                videos[Keys.DATA][idx][Keys.OFFLINE_IMAGE_URL] = ''
+                for channel in channels[Keys.DATA]:
+                    if channel.get(Keys.ID) == video.get(Keys.USER_ID):
+                        videos[Keys.DATA][idx][Keys.OFFLINE_IMAGE_URL] = channel[Keys.OFFLINE_IMAGE_URL]
+                        break
+
+    for video in videos[Keys.DATA]:
+        all_items.append(video)
 
     if len(all_items) > 0:
         for video in all_items:

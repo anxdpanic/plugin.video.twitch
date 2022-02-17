@@ -23,13 +23,26 @@ def route(api, after='MA=='):
     per_page = utils.get_items_per_page()
 
     all_items = list()
+    user_ids = list()
 
     language = utils.get_language()
     streams = api.get_all_streams(after=after, first=per_page, language=language)
+    for stream in streams[Keys.DATA]:
+        if stream.get(Keys.USER_ID):
+            user_ids.append(stream[Keys.USER_ID])
 
-    if Keys.DATA in streams:
-        for stream in streams[Keys.DATA]:
-            all_items.append(stream)
+    if user_ids:
+        channels = api.get_users(user_ids)
+        if Keys.DATA in channels:
+            for idx, stream in enumerate(streams[Keys.DATA]):
+                streams[Keys.DATA][idx][Keys.OFFLINE_IMAGE_URL] = ''
+                for channel in channels[Keys.DATA]:
+                    if channel.get(Keys.ID) == stream.get(Keys.USER_ID):
+                        streams[Keys.DATA][idx][Keys.OFFLINE_IMAGE_URL] = channel[Keys.OFFLINE_IMAGE_URL]
+                        break
+
+    for stream in streams[Keys.DATA]:
+        all_items.append(stream)
 
     if len(all_items) > 0:
         for stream in all_items:
