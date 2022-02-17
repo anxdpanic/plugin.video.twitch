@@ -116,7 +116,6 @@ class JsonListItemConverter(object):
         display_name = to_string(clip.get(Keys.BROADCASTER_NAME))
         if self.has_token:
             context_menu.extend(menu_items.edit_follow(clip[Keys.BROADCASTER_ID], display_name))
-            # context_menu.extend(menu_items.edit_block(broadcaster[Keys.ID], name))
         context_menu.extend(menu_items.channel_videos(clip[Keys.BROADCASTER_ID], display_name, display_name))
         context_menu.extend(menu_items.set_default_quality('clip', clip[Keys.BROADCASTER_ID],
                                                            display_name, clip_id=clip[Keys.ID]))
@@ -321,11 +320,13 @@ class JsonListItemConverter(object):
 
         streamer = clip.get(Keys.BROADCASTER_NAME)
         title = clip.get(Keys.TITLE)
+        game = clip.get(Keys.GAME_NAME) if clip.get(Keys.GAME_NAME) else i18n('unknown_game')
         broadcaster_language = clip.get(Keys.LANGUAGE) if clip.get(Keys.LANGUAGE) else i18n('unknown_language')
 
         return {'streamer': streamer,
                 'title': title,
                 'viewers': viewers,
+                'game': game,
                 'broadcaster_language': broadcaster_language}
 
     def get_title_for_search(self, search):
@@ -377,7 +378,7 @@ class JsonListItemConverter(object):
 
         streamer = video.get(Keys.USER_NAME) if video.get(Keys.USER_NAME) else video.get(Keys.USER_LOGIN)
         title = video.get(Keys.TITLE) if video.get(Keys.TITLE) else i18n('untitled_stream')
-        game = video.get(Keys.GAME) if video.get(Keys.GAME) else i18n('unknown_game')
+        game = video.get(Keys.GAME_NAME) if video.get(Keys.GAME_NAME) else i18n('unknown_game')
         broadcaster_language = video.get(Keys.LANGUAGE) if video.get(Keys.LANGUAGE) else i18n('unknown_language')
 
         return {'streamer': streamer,
