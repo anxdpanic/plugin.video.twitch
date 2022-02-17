@@ -13,7 +13,7 @@ from ..addon.common import kodi
 from ..addon.constants import MODES
 from ..addon.utils import i18n
 
-from twitch.api.parameters import StreamType, Platform
+from twitch.api.parameters import StreamType
 
 
 def route(api):
