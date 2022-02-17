@@ -281,11 +281,15 @@ class JsonListItemConverter(object):
                 'content_type': 'video',
                 'is_playable': True}
 
-    def stream_to_playitem(self, stream):
+    def stream_to_playitem(self, stream, id_only=False):
         # path is returned '' and must be set after
         image = self.get_thumbnail(stream.get(Keys.THUMBNAIL_URL), Images.VIDEOTHUMB)
-        title = self.get_title_for_stream(stream)
-        info = self.get_plot_for_stream(stream, include_title=False)
+        if not id_only:
+            title = self.get_title_for_stream(stream)
+            info = self.get_plot_for_stream(stream, include_title=False)
+        else:
+            title = stream.get(Keys.USER_NAME, stream.get(Keys.USER_LOGIN))
+            info = {}
         info.update({'mediatype': 'video'})
         return {'label': title,
                 'path': '',

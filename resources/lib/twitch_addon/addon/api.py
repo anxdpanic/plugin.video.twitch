@@ -120,7 +120,12 @@ class Twitch:
     @cache.cache_method(cache_limit=cache.limit)
     def get_user_ids(self, logins):
         results = self.api.users.get_users(user_login=logins)
-        return self.error_check(results)
+        results = self.error_check(results)
+        ids = []
+        for user in results.get(Keys.DATA, [{}]):
+            if user.get(Keys.ID):
+                ids.append(user.get(Keys.ID))
+        return ids
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
