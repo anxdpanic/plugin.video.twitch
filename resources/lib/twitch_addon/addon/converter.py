@@ -55,7 +55,7 @@ class JsonListItemConverter(object):
         if not name:
             name = i18n('unknown_game')
 
-        image = self.get_thumbnail(game.get(Keys.BOX_ART_URL), Images.BOXART)
+        image = self.get_boxart(game.get(Keys.BOX_ART_URL), Images.BOXART)
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         if get_private_oauth_token():
@@ -68,8 +68,7 @@ class JsonListItemConverter(object):
                 'context_menu': context_menu,
                 'info': {u'plot': plot, u'plotoutline': plot, u'tagline': plot}}
 
-    @staticmethod
-    def followed_game_to_listitem(game):
+    def followed_game_to_listitem(self, game):
         viewer_count = i18n('unknown')
         if 'viewersCount' in game:
             viewer_count = str(game['viewersCount'])
@@ -78,7 +77,7 @@ class JsonListItemConverter(object):
             name = name.encode('utf-8', 'ignore')
         if not name:
             name = i18n('unknown_game')
-        image = game['boxArtURL'] or Images.BOXART
+        image = self.get_boxart(game['boxArtURL'], Images.BOXART)
         context_menu = list()
         context_menu.extend(menu_items.refresh())
         context_menu.extend(menu_items.edit_follow_game(game['id'], name, follow=False))
@@ -625,3 +624,26 @@ class JsonListItemConverter(object):
             return thumbnail.format(width=width, height=height)
 
         return thumbnail or default
+
+    @staticmethod
+    def get_boxart(boxart, default=Images.BOXART):
+        if not boxart:
+            return default
+
+        sizes = {
+            Keys.SOURCE: ('0', '0'),
+            Keys.LARGE: ('540', '720'),
+            Keys.MEDIUM: ('285', '380'),
+            Keys.SMALL: ('52', '72'),
+        }
+
+        thumbnail_size = get_thumbnail_size()
+        width, height = sizes.get(thumbnail_size, Keys.SOURCE)
+
+        boxart = boxart.replace('52x72', '{width}x{height}').replace('285x380', '{width}x{height}')
+
+        if '{width}' in boxart and '{height}' in boxart:
+            thumbnail = boxart.replace('%{width}', '{width}').replace('%{height}', '{height}')
+            return thumbnail.format(width=width, height=height)
+
+        return boxart or default
