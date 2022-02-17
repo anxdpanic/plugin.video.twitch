@@ -10,6 +10,7 @@
 """
 
 import json
+import sys
 
 from . import cache, utils
 from .common import kodi, log_utils
@@ -328,10 +329,20 @@ class Twitch:
 
     @staticmethod
     def error_check(results):
+        if isinstance(results, list):
+            return results
+
+        if ('error' in results.get('response', {})) and (results['response']['status'] == 401):
+            _ = kodi.Dialog().ok(
+                i18n('oauth_heading'),
+                i18n('oauth_message') % (i18n('settings'), i18n('login'), i18n('get_oauth_token'))
+            )
+            sys.exit()
+
         if 'stream' in results and results['stream'] is None:
             raise PlaybackFailed()
 
-        if 'error' in results:
+        if 'error' in results.get('response', {}):
             raise TwitchException(results)
 
         if 'response' in results:
@@ -341,9 +352,9 @@ class Twitch:
 
     @staticmethod
     def return_boolean(results):
-        if ('error' in results) and (results['status'] == 404):
+        if ('error' in results.get('response', {})) and (results['response']['status'] == 404):
             return False
-        elif 'error' in results:
+        elif 'error' in results.get('response', {}):
             raise TwitchException(results)
         else:
             return True

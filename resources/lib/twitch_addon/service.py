@@ -155,6 +155,7 @@ class LiveNotificationsThread(threading.Thread):
                         for follow in streams[Keys.DATA]:
                             if channel.get(Keys.ID) == follow.get(Keys.USER_ID):
                                 channel[Keys.STREAM] = follow
+                                break
                         all_followed[Keys.STREAMS].append(channel)
 
                 if len(streams[Keys.DATA]) > 0:
