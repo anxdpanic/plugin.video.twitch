@@ -104,21 +104,34 @@ def route(api, seek_time=0, channel_id=None, video_id=None, slug=None, ask=False
         elif channel_id or channel_name:
             if channel_name and not channel_id:
                 result = api.get_user_ids(channel_name)
-                result = result.get(Keys.DATA, [{}])[0]
-                channel_id = result.get(Keys.ID)
+                if result:
+                    channel_id = result[0]
             if channel_id:
                 if not quality:
                     quality = utils.get_default_quality('stream', channel_id)
                     if quality:
                         quality = quality[str(channel_id)]['quality']
+                id_only = False
                 result = api.get_channel_stream(channel_id)[Keys.DATA]
                 if result:
                     result = result[0]
                     channel_name = result[Keys.USER_NAME] \
                         if result[Keys.USER_NAME] else result[Keys.USER_LOGIN]
                     name = result[Keys.USER_LOGIN]
+                else:  # rerun
+                    user = api.get_users(user_ids=channel_id)
+                    if user.get(Keys.DATA, [{}]):
+                        user = user[Keys.DATA][0]
+                        id_only = True
+                        name = user.get(Keys.LOGIN)
+                        result = {
+                            Keys.USER_NAME: user.get(Keys.DISPLAY_NAME, Keys.LOGIN),
+                            Keys.USER_LOGIN: user.get(Keys.LOGIN),
+                            Keys.USER_ID: user.get(Keys.ID),
+                        }  # make a dummy result to continue with playback
+                if name:
                     videos = api.get_live(name)
-                    item_dict = converter.stream_to_playitem(result)
+                    item_dict = converter.stream_to_playitem(result, id_only=id_only)
                     is_live = True
         elif slug:
             result = api.get_clip_by_slug(slug)
