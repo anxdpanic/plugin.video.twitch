@@ -284,7 +284,7 @@ class JsonListItemConverter(object):
 
     def stream_to_playitem(self, stream):
         # path is returned '' and must be set after
-        image = self.get_thumbnail(stream.get(Keys.PREVIEW), Images.VIDEOTHUMB)
+        image = self.get_thumbnail(stream.get(Keys.THUMBNAIL_URL), Images.VIDEOTHUMB)
         title = self.get_title_for_stream(stream)
         info = self.get_plot_for_stream(stream, include_title=False)
         info.update({'mediatype': 'video'})
