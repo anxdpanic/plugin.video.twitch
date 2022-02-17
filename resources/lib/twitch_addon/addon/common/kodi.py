@@ -439,11 +439,11 @@ class ProgressDialog(object):
             pd.create(self.heading, msg)
         else:
             pd = xbmcgui.DialogProgress()
-            pd.create(self.heading, self.__formatted_message(line1, line2, line3,))
+            pd.create(self.heading, self.__formatted_message(line1, line2, line3, bg=False))
         return pd
 
     def __formatted_message(self, line1, line2, line3, bg=True):
-        lines = []
+        lines = ['', '', '']
 
         whitespace = '' if bg else '[CR]'
 
@@ -495,7 +495,7 @@ class ProgressDialog(object):
                 msg = self.__formatted_message(line1, line2, line3, bg=True)
                 self.pd.update(percent, self.heading, msg)
             else:
-                self.pd.update(percent, self.__formatted_message(line1, line2, line3))
+                self.pd.update(percent, self.__formatted_message(line1, line2, line3, bg=False))
 
 
 class CountdownDialog(object):
