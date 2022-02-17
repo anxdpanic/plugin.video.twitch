@@ -514,25 +514,24 @@ class JsonListItemConverter(object):
 
     def get_plot_for_video(self, video, include_title=True):
         headings = {Keys.VIEWS: i18n('views'),
-                    Keys.GAME: i18n('game'),
                     Keys.LANGUAGE: i18n('language')}
         info = {
             Keys.VIEWS: str(video.get(Keys.VIEW_COUNT)) if video.get(Keys.VIEW_COUNT) else u'0',
             Keys.LANGUAGE: video.get(Keys.LANGUAGE) if video.get(Keys.LANGUAGE) else None,
-            Keys.GAME: video.get(Keys.GAME) if video.get(Keys.GAME) else i18n('unknown_game'),
         }
-        plot_template = u'{description}{date}{game}{views}{language}'
+        plot_template = u'{description}{date}{views}{language}'
 
         _title = video.get(Keys.TITLE) + u'\r\n'
         title = _title
         if not include_title:
             title = ''
-        date = '%s %s \r\n' % (video.get(Keys.CREATED_AT)[:10], video.get(Keys.CREATED_AT)[11:19]) if video.get(Keys.CREATED_AT) else ''
+        date = '%s %s \r\n' % (video.get(Keys.CREATED_AT)[:10], video.get(Keys.CREATED_AT)[11:19]) \
+            if video.get(Keys.CREATED_AT) else ''
 
-        plot = plot_template.format(game=self._format_key(Keys.GAME, headings, info),
-                                    views=self._format_key(Keys.VIEWS, headings, info),
+        plot = plot_template.format(views=self._format_key(Keys.VIEWS, headings, info),
                                     language=self._format_key(Keys.LANGUAGE, headings, info),
-                                    description=video.get(Keys.DESCRIPTION) + u'\r\n' if video.get(Keys.DESCRIPTION) else title,
+                                    description=video.get(Keys.DESCRIPTION) + u'\r\n'
+                                    if video.get(Keys.DESCRIPTION) else title,
                                     date=date)
 
         return {u'plot': plot, u'plotoutline': plot, u'tagline': _title.rstrip('\r\n')}
