@@ -345,10 +345,13 @@ class JsonListItemConverter(object):
         game = stream.get(Keys.GAME_NAME) if stream.get(Keys.GAME_NAME) else i18n('unknown_game')
         broadcaster_language = stream.get(Keys.BROADCASTER_LANGUAGE) \
             if stream.get(Keys.BROADCASTER_LANGUAGE) else i18n('unknown_language')
+        viewers = stream.get(Keys.VIEWER_COUNT)
+        viewers = viewers if (viewers or isinstance(viewers, int)) else ''
 
         return {'streamer': streamer,
                 'title': title,
                 'game': game,
+                'viewers': viewers,
                 'broadcaster_language': broadcaster_language}
 
     def get_title_for_stream(self, stream):
