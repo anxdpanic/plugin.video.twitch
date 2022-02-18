@@ -519,6 +519,7 @@ class TitleBuilder(object):
         VIEWERS_STREAMER_TITLE = u"{viewers} - {streamer} - {title}"
         STREAMER_GAME_TITLE = u"{streamer} - {game} - {title}"
         GAME_VIEWERS_STREAMER_TITLE = u"[{game}] {viewers} | {streamer} - {title}"
+        GAME_STREAMER_TITLE = u"[{game}] | {streamer} - {title}"
         BROADCASTER_LANGUAGE_STREAMER_TITLE = u"{broadcaster_language} | {streamer} - {title}"
         ELLIPSIS = u'...'
 
@@ -527,7 +528,7 @@ class TitleBuilder(object):
 
     def format_title(self, title_values):
         title_setting = int(kodi.get_setting('title_display'))
-        template = self.get_title_template(title_setting)
+        template = self.get_title_template(title_setting, title_values)
 
         for key, value in iteritems(title_values):
             title_values[key] = self.clean_title_value(value)
@@ -536,14 +537,35 @@ class TitleBuilder(object):
         return self.truncate_title(title)
 
     @staticmethod
-    def get_title_template(title_setting):
-        options = {0: TitleBuilder.Templates.STREAMER_TITLE,
-                   1: TitleBuilder.Templates.VIEWERS_STREAMER_TITLE,
-                   2: TitleBuilder.Templates.TITLE,
-                   3: TitleBuilder.Templates.STREAMER,
-                   4: TitleBuilder.Templates.STREAMER_GAME_TITLE,
-                   5: TitleBuilder.Templates.GAME_VIEWERS_STREAMER_TITLE,
-                   6: TitleBuilder.Templates.BROADCASTER_LANGUAGE_STREAMER_TITLE}
+    def get_title_template(title_setting, title_values):
+        options = {
+            0: TitleBuilder.Templates.STREAMER_TITLE,
+            1: TitleBuilder.Templates.VIEWERS_STREAMER_TITLE,
+            2: TitleBuilder.Templates.TITLE,
+            3: TitleBuilder.Templates.STREAMER,
+            4: TitleBuilder.Templates.STREAMER_GAME_TITLE,
+            5: TitleBuilder.Templates.GAME_VIEWERS_STREAMER_TITLE,
+            6: TitleBuilder.Templates.BROADCASTER_LANGUAGE_STREAMER_TITLE,
+            7: TitleBuilder.Templates.GAME_STREAMER_TITLE,
+        }
+
+        if title_setting == 1:
+            if not title_values.get('viewers'):
+                title_setting = 0
+        elif title_setting == 4:
+            if not title_values.get('game'):
+                title_setting = 0
+        elif title_setting == 5:
+            if not title_values.get('game') and not title_values.get('viewers'):
+                title_setting = 0
+            elif title_values.get('game') and not title_values.get('viewers'):
+                title_setting = 7
+            elif not title_values.get('game') and title_values.get('viewers'):
+                title_setting = 1
+        elif title_setting == 6:
+            if not title_values.get('broadcaster_language'):
+                title_setting = 0
+
         return options.get(title_setting, TitleBuilder.Templates.STREAMER)
 
     @staticmethod
