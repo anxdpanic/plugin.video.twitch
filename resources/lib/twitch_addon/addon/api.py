@@ -257,7 +257,7 @@ class Twitch:
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def _get_video_token(self, video_id):
-        results = self.usher.vod_token(video_id=video_id)
+        results = self.usher.vod_token(video_id=video_id, headers=self.get_private_credential_headers())
         if 'token' in results:
             results = json.loads(results['token'])
         return self.error_check(results)
