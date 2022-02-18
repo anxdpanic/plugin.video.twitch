@@ -337,23 +337,24 @@ class Twitch:
         if isinstance(results, list):
             return results
 
-        if ('error' in results.get('response', {})) and (results['response']['status'] == 401):
+        payload = results.copy()
+        if 'response' in payload:
+            payload = payload['response']
+
+        if ('error' in payload) and (payload['status'] == 401):
             _ = kodi.Dialog().ok(
                 i18n('oauth_heading'),
                 i18n('oauth_message') % (i18n('settings'), i18n('login'), i18n('get_oauth_token'))
             )
             sys.exit()
 
-        if 'stream' in results and results['stream'] is None:
+        if 'stream' in payload and payload['stream'] is None:
             raise PlaybackFailed()
 
-        if 'error' in results.get('response', {}):
-            raise TwitchException(results)
+        if 'error' in payload:
+            raise TwitchException(payload)
 
-        if 'response' in results:
-            return results['response']
-
-        return results
+        return payload
 
     @staticmethod
     def return_boolean(results):
