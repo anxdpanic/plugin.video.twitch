@@ -43,6 +43,13 @@ class Twitch:
         self.queries.OAUTH_TOKEN = self.access_token
         self.queries.APP_TOKEN = self.app_token
         self.client = oauth.clients.MobileClient(self.client_id, self.client_secret)
+
+        self.private_client_id = utils.get_private_client_id()
+        self.private_access_token = utils.get_private_oauth_token()
+        if self.private_access_token:
+            if not self.valid_private_token(self.private_client_id, self.private_access_token):
+                self.private_access_token = ''
+
         if self.access_token:
             if not self.valid_token(self.client_id, self.access_token, self.required_scopes):
                 self.queries.OAUTH_TOKEN = ''
@@ -76,7 +83,7 @@ class Twitch:
                 matches_default = token_check['client_id'] == utils.get_client_id(default=True)
                 log_utils.log('Error: OAuth Client-ID mismatch', log_utils.LOGERROR)
                 if matches_default:
-                    result = kodi.Dialog().ok(
+                    _ = kodi.Dialog().ok(
                         i18n('oauth_token'),
                         '[CR]'.join([i18n('client_id_mismatch'), i18n('ok_to_resolve')])
                     )
@@ -85,7 +92,7 @@ class Twitch:
                     self.queries.CLIENT_ID = self.client_id
                     self.client = oauth.clients.MobileClient(self.client_id, self.client_secret)
                 else:
-                    result = kodi.Dialog().ok(
+                    _ = kodi.Dialog().ok(
                         i18n('oauth_token'),
                         '[CR]'.join([
                             i18n('client_id_mismatch'),
@@ -95,9 +102,31 @@ class Twitch:
                     )
                     return False
 
+    @cache.cache_method(cache_limit=1)
+    def valid_private_token(self, client_id, token):  # client_id used for unique caching only
+        token_check = self.validate(token)
+        if token_check['client_id'] != self.private_client_id:
+            matches_default = token_check['client_id'] == utils.get_client_id(default=True)
+            log_utils.log('Error: Private OAuth Client-ID mismatch', log_utils.LOGERROR)
+            if matches_default:
+                log_utils.log('Private OAuth token matches add-on Client-ID', log_utils.LOGDEBUG)
+                if not self.access_token:
+                    self.access_token = self.private_access_token
+                    self.queries.OAUTH_TOKEN = self.private_access_token
+                    kodi.set_setting('oauth_token_helix', self.private_access_token)
+                    kodi.set_setting('private_oauth_token', '')
+                    self.private_access_token = ''
+            return False
+        return True
+
     @api_error_handler
     def root(self):
         results = oauth.validation.validate(self.access_token)
+        return self.error_check(results)
+
+    @api_error_handler
+    def validate(self, token):
+        results = oauth.validation.validate(token)
         return self.error_check(results)
 
     @api_error_handler
@@ -225,22 +254,22 @@ class Twitch:
     @api_error_handler
     def follow(self, channel_id):
         results = self.api.users._follow_channel(channel_id=channel_id, headers=self.get_private_credential_headers())  # NOQA
-        return self.error_check(results)
+        return self.error_check(results, private=True)
 
     @api_error_handler
     def unfollow(self, channel_id):
         results = self.api.users._unfollow_channel(channel_id=channel_id, headers=self.get_private_credential_headers())  # NOQA
-        return self.error_check(results)
+        return self.error_check(results, private=True)
 
     @api_error_handler
     def follow_game(self, game_id):
         results = self.api.games._follow(game_id=game_id, headers=self.get_private_credential_headers())  # NOQA
-        return self.error_check(results)
+        return self.error_check(results, private=True)
 
     @api_error_handler
     def unfollow_game(self, game_id):
         results = self.api.games._unfollow(game_id=game_id, headers=self.get_private_credential_headers())  # NOQA
-        return self.error_check(results)
+        return self.error_check(results, private=True)
 
     @api_error_handler
     def check_subscribed(self, channel_id):
@@ -260,7 +289,7 @@ class Twitch:
         results = self.usher.vod_token(video_id=video_id, headers=self.get_private_credential_headers())
         if 'token' in results:
             results = json.loads(results['token'])
-        return self.error_check(results)
+        return self.error_check(results, private=True)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
@@ -288,7 +317,7 @@ class Twitch:
     @cache.cache_method(cache_limit=cache.limit)
     def get_followed_games(self, limit):
         results = self.api.games._get_followed(limit=limit, headers=self.get_private_credential_headers())  # NOQA
-        return self.error_check(results)
+        return self.error_check(results, private=True)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
@@ -301,7 +330,7 @@ class Twitch:
     @cache.cache_method(cache_limit=cache.limit)
     def get_vod(self, video_id):
         results = self.usher.video(video_id, headers=self.get_private_credential_headers())
-        return self.error_check(results)
+        return self.error_check(results, private=True)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
@@ -312,7 +341,7 @@ class Twitch:
     @cache.cache_method(cache_limit=cache.limit)
     def get_live(self, name):
         results = self.usher.live(name, headers=self.get_private_credential_headers())
-        return self.error_check(results)
+        return self.error_check(results, private=True)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
@@ -321,7 +350,7 @@ class Twitch:
             results = self.usher.live_request(name, platform='ps4', headers=self.get_private_credential_headers())
         else:
             results = self.usher.live_request(name, headers=self.get_private_credential_headers())
-        return self.error_check(results)
+        return self.error_check(results, private=True)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
@@ -330,10 +359,10 @@ class Twitch:
             results = self.usher.video_request(video_id, platform='ps4', headers=self.get_private_credential_headers())
         else:
             results = self.usher.video_request(video_id, headers=self.get_private_credential_headers())
-        return self.error_check(results)
+        return self.error_check(results, private=True)
 
     @staticmethod
-    def error_check(results):
+    def error_check(results, private=False):
         if isinstance(results, list):
             return results
 
@@ -342,12 +371,17 @@ class Twitch:
             payload = payload['response']
 
         if ('error' in payload) and (payload['status'] == 401):
-            _ = kodi.Dialog().ok(
-                i18n('oauth_heading'),
-                i18n('oauth_message') % (i18n('settings'), i18n('login'), i18n('get_oauth_token'))
-            )
+            if not private:
+                _ = kodi.Dialog().ok(
+                    i18n('oauth_heading'),
+                    i18n('oauth_message') % (i18n('settings'), i18n('login'), i18n('get_oauth_token'))
+                )
+            else:
+                _ = kodi.Dialog().ok(
+                    i18n('private_oauth_heading'),
+                    i18n('private_oauth_message') % (i18n('settings'), i18n('login'), i18n('private_credentials'))
+                )
             sys.exit()
-
         if 'stream' in payload and payload['stream'] is None:
             raise PlaybackFailed()
 
