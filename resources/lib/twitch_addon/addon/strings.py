@@ -135,4 +135,7 @@ STRINGS = {
     'Add_to_queue': 30266,
     'oauth_heading': 30132,
     'oauth_message': 30267,
+    'private_oauth_heading': 30268,
+    'private_oauth_message': 30269,
+    'private_credentials': 30261,
 }

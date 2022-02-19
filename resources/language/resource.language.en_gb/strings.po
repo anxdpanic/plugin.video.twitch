@@ -981,3 +981,11 @@ msgstr ""
 msgctxt "#30267"
 msgid "An OAuth token is required for access, go to '%s' - '%s' - '%s' to generate one"
 msgstr ""
+
+msgctxt "#30268"
+msgid "Private OAuth authentication error"
+msgstr ""
+
+msgctxt "#30269"
+msgid "Private OAuth credentials are incorrect, go to '%s' - '%s' - '%s' to correct the issue"
+msgstr ""
