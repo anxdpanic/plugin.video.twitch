@@ -62,18 +62,18 @@
         </a>
     </td>
     <td align="center">
-        <a href="https://github.com/ingwinlu">
-            <img src="https://avatars.githubusercontent.com/u/4435962?v=4" width="100;" alt="ingwinlu"/>
-            <br />
-            <sub><b>ingwinlu</b></sub>
-        </a>
-    </td></tr>
-<tr>
-    <td align="center">
         <a href="https://github.com/weblate">
             <img src="https://avatars.githubusercontent.com/u/1607653?v=4" width="100;" alt="weblate"/>
             <br />
             <sub><b>weblate</b></sub>
+        </a>
+    </td></tr>
+<tr>
+    <td align="center">
+        <a href="https://github.com/ingwinlu">
+            <img src="https://avatars.githubusercontent.com/u/4435962?v=4" width="100;" alt="ingwinlu"/>
+            <br />
+            <sub><b>ingwinlu</b></sub>
         </a>
     </td>
     <td align="center">
