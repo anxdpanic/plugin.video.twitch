@@ -1001,3 +1001,7 @@ msgstr ""
 msgctxt "#30272"
 msgid "https://twitchaddon.page.link/benefits"
 msgstr ""
+
+msgctxt "#30273"
+msgid "OAuth Token is expired or invalid"
+msgstr ""
