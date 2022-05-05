@@ -11,7 +11,7 @@ diff --git a/resources/settings.xml b/resources/settings.xml
 index 0d22544..e895eb1 100644
 --- a/resources/settings.xml
 +++ b/resources/settings.xml
-@@ -1,106 +1,706 @@
+@@ -1,113 +1,734 @@
 -<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 -<settings>
 -    <!-- Login -->
@@ -21,9 +21,6 @@ index 0d22544..e895eb1 100644
 -        <setting label="30135" id="show_token_url" type="action" action="RunPlugin(plugin://$ID/?mode=get_token_url)" option="close"/>
 -        <setting label="30138" type="lsep"/>
 -        <setting label="30227" id="revoke_token" type="action" action="RunPlugin(plugin://$ID/?mode=revoke_token)" option="close"/>
--        <setting label="30261" type="lsep"/>
--        <setting id="private_oauth_clientid" type="text" label="30097" default="kimne78kx3ncx6brgo4mv6wki5h1ko"/>
--        <setting id="private_oauth_token" type="text" label="30099" default=""/>
 -    </category>
 -    <!-- Main Menu -->
 -    <category label="30219">
@@ -81,6 +78,16 @@ index 0d22544..e895eb1 100644
 -        <setting label="30120" type="lsep"/>
 -        <setting label="30234" id="refresh_cache" type="bool" default="false"/>
 -        <setting label="30121" type="slider" id="cache_expire_time" default="3" range="0,60" option="int"/>
+-    </category>
+-    <!-- Login -->
+-    <category label="30270">
+-        <setting label="30261" type="lsep"/>
+-        <setting id="private_oauth_clientid" type="text" label="30097" default="kimne78kx3ncx6brgo4mv6wki5h1ko"/>
+-        <setting id="private_oauth_token" type="text" label="30099" default=""/>
+-        <setting label="30271" type="lsep"/>
+-        <setting id="label.dummy.01" type="text" label="" default="" visible="false" enable="false"/>
+-        <setting label="30272" type="lsep"/>
+-        <setting id="label.dummy.01" type="text" label="" default="" visible="false" enable="false"/>
 -    </category>
 -    <!-- Lists -->
 -    <category label="30167">
@@ -154,25 +161,6 @@ index 0d22544..e895eb1 100644
 +					</constraints>
 +					<control format="action" type="button">
 +						<close>true</close>
-+					</control>
-+				</setting>
-+			</group>
-+			<group id="4" label="30261">
-+				<setting help="" id="private_oauth_clientid" label="30097" type="string">
-+					<level>0</level>
-+					<default>kimne78kx3ncx6brgo4mv6wki5h1ko</default>
-+					<control format="string" type="edit">
-+						<heading>30097</heading>
-+					</control>
-+				</setting>
-+				<setting help="" id="private_oauth_token" label="30099" type="string">
-+					<level>0</level>
-+					<default/>
-+					<constraints>
-+						<allowempty>true</allowempty>
-+					</constraints>
-+					<control format="string" type="edit">
-+						<heading>30099</heading>
 +					</control>
 +				</setting>
 +			</group>
@@ -653,6 +641,53 @@ index 0d22544..e895eb1 100644
 +					</constraints>
 +					<control format="integer" type="slider">
 +						<popup>false</popup>
++					</control>
++				</setting>
++			</group>
++		</category>
++		<category help="" id="login_benefits" label="30270">
++			<group id="1" label="30261">
++				<setting help="" id="private_oauth_clientid" label="30097" type="string">
++					<level>0</level>
++					<default>kimne78kx3ncx6brgo4mv6wki5h1ko</default>
++					<control format="string" type="edit">
++						<heading>30097</heading>
++					</control>
++				</setting>
++				<setting help="" id="private_oauth_token" label="30099" type="string">
++					<level>0</level>
++					<default/>
++					<constraints>
++						<allowempty>true</allowempty>
++					</constraints>
++					<control format="string" type="edit">
++						<heading>30099</heading>
++					</control>
++				</setting>
++			</group>
++			<group id="2" label="30271">
++				<setting help="" id="label.dummy.01" label="" type="string">
++					<level>0</level>
++                   <visible>false</visible>
++					<default/>
++					<constraints>
++						<allowempty>true</allowempty>
++					</constraints>
++					<control format="string" type="edit">
++						<heading></heading>
++					</control>
++				</setting>
++			</group>
++			<group id="3" label="30272">
++				<setting help="" id="label.dummy.01" label="" type="string">
++					<level>0</level>
++                   <visible>false</visible>
++					<default/>
++					<constraints>
++						<allowempty>true</allowempty>
++					</constraints>
++					<control format="string" type="edit">
++						<heading></heading>
 +					</control>
 +				</setting>
 +			</group>
