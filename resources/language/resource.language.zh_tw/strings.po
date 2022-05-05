@@ -985,6 +985,22 @@ msgctxt "#30269"
 msgid "Private OAuth credentials are incorrect, go to '%s' - '%s' - '%s' to correct the issue"
 msgstr ""
 
+msgctxt "#30270"
+msgid "Subscriber and Turbo Benefits"
+msgstr ""
+
+msgctxt "#30271"
+msgid "For information on how to obtain this token, visit"
+msgstr ""
+
+msgctxt "#30272"
+msgid "https://twitchaddon.page.link/benefits"
+msgstr ""
+
+msgctxt "#30273"
+msgid "OAuth Token is expired or invalid"
+msgstr ""
+
 #~ msgctxt "#30132"
 #~ msgid "OAuth token is required for access to authorized user functions."
 #~ msgstr "OAuth token 在存取使用者已登入功能是必要的。"

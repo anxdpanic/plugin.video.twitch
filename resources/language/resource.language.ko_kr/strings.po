@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-18 00:54+0000\n"
 "PO-Revision-Date: 2022-03-27 01:19+0000\n"
 "Last-Translator: Minho Park <parkmino@gmail.com>\n"
@@ -984,6 +984,22 @@ msgstr "비공개 OAuth 인증 오류"
 msgctxt "#30269"
 msgid "Private OAuth credentials are incorrect, go to '%s' - '%s' - '%s' to correct the issue"
 msgstr "개인 OAuth 자격 증명이 잘못되었습니다. 문제를 해결하려면 '%s' - '%s' - '%s'(으)로 이동하세요"
+
+msgctxt "#30270"
+msgid "Subscriber and Turbo Benefits"
+msgstr ""
+
+msgctxt "#30271"
+msgid "For information on how to obtain this token, visit"
+msgstr ""
+
+msgctxt "#30272"
+msgid "https://twitchaddon.page.link/benefits"
+msgstr ""
+
+msgctxt "#30273"
+msgid "OAuth Token is expired or invalid"
+msgstr ""
 
 #~ msgctxt "#30132"
 #~ msgid "OAuth token is required for access to authorized user functions."
