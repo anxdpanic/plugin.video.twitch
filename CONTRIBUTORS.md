@@ -277,13 +277,20 @@
         </a>
     </td>
     <td align="center">
+        <a href="https://github.com/M-Reimer">
+            <img src="https://avatars.githubusercontent.com/u/3519517?v=4" width="100;" alt="M-Reimer"/>
+            <br />
+            <sub><b>M-Reimer</b></sub>
+        </a>
+    </td></tr>
+<tr>
+    <td align="center">
         <a href="https://github.com/Tomalak">
             <img src="https://avatars.githubusercontent.com/u/28300?v=4" width="100;" alt="Tomalak"/>
             <br />
             <sub><b>Tomalak</b></sub>
         </a>
-    </td></tr>
-<tr>
+    </td>
     <td align="center">
         <a href="https://github.com/mCzolko">
             <img src="https://avatars.githubusercontent.com/u/1011500?v=4" width="100;" alt="mCzolko"/>
@@ -318,15 +325,15 @@
             <br />
             <sub><b>astrilchuk</b></sub>
         </a>
-    </td>
+    </td></tr>
+<tr>
     <td align="center">
         <a href="https://github.com/dnn1s">
             <img src="https://avatars.githubusercontent.com/u/8132941?v=4" width="100;" alt="dnn1s"/>
             <br />
             <sub><b>dnn1s</b></sub>
         </a>
-    </td></tr>
-<tr>
+    </td>
     <td align="center">
         <a href="https://github.com/kravone">
             <img src="https://avatars.githubusercontent.com/u/1407288?v=4" width="100;" alt="kravone"/>
