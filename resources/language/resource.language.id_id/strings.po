@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: 2016-09-18 00:54+0000\n"
-"PO-Revision-Date: 2022-03-27 01:19+0000\n"
+"PO-Revision-Date: 2022-12-22 19:15+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Indonesian <https://kodi.weblate.cloud/projects/kodi-add-ons-video/plugin-video-twitch/id_id/>\n"
 "Language: id_id\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.15\n"
 
 msgctxt "Addon Summary"
 msgid "Twitch video plugin"
@@ -31,11 +31,11 @@ msgstr ""
 
 msgctxt "#30003"
 msgid "Search"
-msgstr ""
+msgstr "Cari"
 
 msgctxt "#30004"
 msgid "Settings"
-msgstr ""
+msgstr "Pengaturan"
 
 msgctxt "#30005"
 msgid "Popular Streams"
@@ -51,7 +51,7 @@ msgstr ""
 
 msgctxt "#30008"
 msgid "Channels"
-msgstr ""
+msgstr "Saluran"
 
 msgctxt "#30009"
 msgid "Live Channels"
@@ -142,7 +142,7 @@ msgstr ""
 
 msgctxt "#30050"
 msgid "Username"
-msgstr ""
+msgstr "Nama pengguna"
 
 msgctxt "#30051"
 msgid "Streamer - Game Title - Stream Title"
@@ -227,7 +227,7 @@ msgstr ""
 
 msgctxt "#30076"
 msgid "General"
-msgstr ""
+msgstr "Umum"
 
 msgctxt "#30077"
 msgid "Play (Choose Quality)"
@@ -283,7 +283,7 @@ msgstr ""
 
 msgctxt "#30090"
 msgid "Language"
-msgstr ""
+msgstr "Bahasa"
 
 msgctxt "#30091"
 msgid "Mature"
@@ -307,7 +307,7 @@ msgstr ""
 
 msgctxt "#30096"
 msgid "API"
-msgstr ""
+msgstr "API"
 
 msgctxt "#30097"
 msgid "OAuth Client ID"
@@ -375,7 +375,7 @@ msgstr ""
 
 msgctxt "#30113"
 msgid "Uploads"
-msgstr ""
+msgstr "Unggahan"
 
 msgctxt "#30114"
 msgid "Confirm"
@@ -411,7 +411,7 @@ msgstr ""
 
 msgctxt "#30123"
 msgid "Items per page"
-msgstr ""
+msgstr "Item per halaman"
 
 msgctxt "#30124"
 msgid "Video Id/Url"
@@ -423,7 +423,7 @@ msgstr ""
 
 msgctxt "#30126"
 msgid "Refresh"
-msgstr ""
+msgstr "Segarkan"
 
 msgctxt "#30127"
 msgid "Login"
@@ -439,7 +439,7 @@ msgstr ""
 
 msgctxt "#30130"
 msgid "Go to %s"
-msgstr ""
+msgstr "Ke %s"
 
 msgctxt "#30131"
 msgid "No results returned"
@@ -527,11 +527,11 @@ msgstr ""
 
 msgctxt "#30153"
 msgid "Blacklist"
-msgstr ""
+msgstr "Daftar hitam"
 
 msgctxt "#30154"
 msgid "Remove a user"
-msgstr ""
+msgstr "Hapus pengguna"
 
 msgctxt "#30155"
 msgid "Remove a game"
@@ -595,7 +595,7 @@ msgstr ""
 
 msgctxt "#30170"
 msgid "Playlists"
-msgstr ""
+msgstr "Daftarputar"
 
 msgctxt "#30171"
 msgid "Collections"
@@ -851,7 +851,7 @@ msgstr ""
 
 msgctxt "#30236"
 msgid "Search history size"
-msgstr ""
+msgstr "Ukuran riwayat pencarian"
 
 msgctxt "#30237"
 msgid "Clear search history?"
@@ -867,7 +867,7 @@ msgstr ""
 
 msgctxt "#30240"
 msgid "Clear search history"
-msgstr ""
+msgstr "Hapus Riwayat Pencarian"
 
 msgctxt "#30241"
 msgid "Search history cleared"
@@ -879,7 +879,7 @@ msgstr ""
 
 msgctxt "#30243"
 msgid "Maintenance"
-msgstr ""
+msgstr "Pemeliharaan"
 
 msgctxt "#30244"
 msgid "Search History"
@@ -927,7 +927,7 @@ msgstr ""
 
 msgctxt "#30255"
 msgid "Thumbnail size"
-msgstr ""
+msgstr "Ukuran Thumbnail"
 
 msgctxt "#30256"
 msgid "Large"
