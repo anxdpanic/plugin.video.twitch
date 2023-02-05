@@ -335,13 +335,6 @@
         </a>
     </td>
     <td align="center">
-        <a href="https://github.com/lucabric">
-            <img src="https://avatars.githubusercontent.com/u/1241765?v=4" width="100;" alt="lucabric"/>
-            <br />
-            <sub><b>lucabric</b></sub>
-        </a>
-    </td>
-    <td align="center">
         <a href="https://github.com/markus80">
             <img src="https://avatars.githubusercontent.com/u/16596265?v=4" width="100;" alt="markus80"/>
             <br />
