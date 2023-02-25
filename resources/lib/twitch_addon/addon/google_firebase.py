@@ -12,8 +12,7 @@
 import json
 import requests
 from base64 import b64decode
-
-from six.moves.urllib_parse import quote
+from urllib.parse import quote
 
 from .common import log_utils
 

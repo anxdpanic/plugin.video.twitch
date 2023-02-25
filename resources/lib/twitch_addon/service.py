@@ -9,11 +9,11 @@
     See LICENSES/GPL-3.0-only for more information.
 """
 
-from six.moves import zip_longest as izip_longest
-from six.moves.urllib.parse import quote, unquote
-
 from ast import literal_eval
 from datetime import datetime
+from itertools import zip_longest
+from urllib.parse import quote
+from urllib.parse import unquote
 
 import threading
 
@@ -117,7 +117,7 @@ class LiveNotificationsThread(threading.Thread):
     @staticmethod
     def grouped(items):
         args = [iter(items)] * 3
-        return izip_longest(fillvalue='', *args)
+        return zip_longest(fillvalue='', *args)
 
     @staticmethod
     def notify_live():

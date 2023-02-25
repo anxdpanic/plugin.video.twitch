@@ -2,7 +2,6 @@
 <addon id="plugin.video.twitch" version="2.6.2" name="Twitch" provider-name="anxdpanic, A Talented Community">
     <requires>
         <import addon="xbmc.python" version="3.0.1"/>
-        <import addon="script.module.six" version="1.11.0"/>
         <import addon="script.module.requests" version="2.9.1"/>
         <import addon="script.module.python.twitch" version="2.0.20"/>
     </requires>
@@ -16,6 +15,9 @@
             <fanart>resources/media/fanart.jpg</fanart>
         </assets>
         <news>
+[rem] removed support for versions of Kodi pre-Nexus v20
+[rem] removed support for python 2
+[rem] removed dependency on six
 [lang] updated translations from Weblate
         </news>
         <platform>all</platform>

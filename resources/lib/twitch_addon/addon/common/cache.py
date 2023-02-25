@@ -10,12 +10,11 @@
     See LICENSES/GPL-3.0-only for more information.
 """
 
-from six.moves import cPickle as pickle
-
 import functools
 import time
 import hashlib
 import os
+import pickle
 import shutil
 
 from . import kodi, log_utils

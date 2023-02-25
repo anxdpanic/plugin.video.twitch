@@ -9,15 +9,12 @@
     See LICENSES/GPL-3.0-only for more information.
 """
 
-from six import PY2, PY3
-from six import iteritems, string_types
-from six.moves.urllib.parse import quote_plus
-
 import re
 import time
 
 from base64 import b64decode
 from datetime import datetime
+from urllib.parse import quote_plus
 
 from .common import kodi, json_store
 from .strings import STRINGS
@@ -45,11 +42,7 @@ def show_menu(menu, parent=None):
 
 
 def to_string(value):
-    if PY3:
-        return kodi.decode_utf8(value)
-    elif PY2:
-        return value.encode('utf-8')
-    return value
+    return kodi.decode_utf8(value)
 
 
 def loose_version(v):
@@ -530,7 +523,7 @@ class TitleBuilder(object):
         title_setting = int(kodi.get_setting('title_display'))
         template = self.get_title_template(title_setting, title_values)
 
-        for key, value in iteritems(title_values):
+        for key, value in title_values.items():
             title_values[key] = self.clean_title_value(value)
         title = template.format(**title_values)
 
@@ -570,7 +563,7 @@ class TitleBuilder(object):
 
     @staticmethod
     def clean_title_value(value):
-        if isinstance(value, string_types):
+        if isinstance(value, str):
             try:
                 value = value.decode('utf-8', 'ignore')
             except (UnicodeEncodeError, AttributeError) as e:

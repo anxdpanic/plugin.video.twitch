@@ -9,8 +9,6 @@
     See LICENSES/GPL-3.0-only for more information.
 """
 
-from six import PY2
-
 from . import utils
 from .common import kodi
 from .constants import MODES, Scripts
@@ -34,8 +32,6 @@ def clear_search_history(search_type, do_refresh=False):
 
 
 def remove_search_history(search_type, query, do_refresh=True):
-    if PY2 and isinstance(query, unicode):
-        query = query.encode('utf-8')
     query_label = '[B]%s[/B]' % query
     params = {'mode': MODES.REMOVESEARCHHISTORY, 'search_type': search_type, 'query': query}
     if not do_refresh:

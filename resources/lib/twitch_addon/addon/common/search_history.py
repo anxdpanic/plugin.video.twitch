@@ -9,11 +9,10 @@
     See LICENSES/GPL-3.0-only for more information.
 """
 import datetime
+import pickle
 import sqlite3
 
 import xbmcvfs
-
-from six.moves import cPickle as pickle
 
 from . import kodi
 
