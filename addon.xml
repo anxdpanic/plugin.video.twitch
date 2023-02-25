@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.twitch" version="2.6.2" name="Twitch" provider-name="anxdpanic, A Talented Community">
+<addon id="plugin.video.twitch" version="3.0.0" name="Twitch" provider-name="anxdpanic, A Talented Community">
     <requires>
         <import addon="xbmc.python" version="3.0.1"/>
         <import addon="script.module.requests" version="2.9.1"/>
-        <import addon="script.module.python.twitch" version="2.0.20"/>
+        <import addon="script.module.python.twitch" version="3.0.0"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="resources/lib/addon_runner.py">
         <provides>video</provides>
