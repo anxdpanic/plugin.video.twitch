@@ -12,8 +12,8 @@
     <extension point="xbmc.service" library="resources/lib/service_runner.py" start="login"/>
     <extension point="xbmc.addon.metadata">
         <assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
+            <icon>resources/media/icon.png</icon>
+            <fanart>resources/media/fanart.jpg</fanart>
         </assets>
         <news>
 [lang] updated translations from Weblate
