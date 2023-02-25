@@ -9,8 +9,7 @@
     See LICENSES/GPL-3.0-only for more information.
 """
 
-from six import PY2
-from six.moves.urllib_parse import quote
+from urllib.parse import quote
 
 from . import menu_items
 from .common import kodi
@@ -50,8 +49,6 @@ class JsonListItemConverter(object):
 
     def game_to_listitem(self, game):
         name = game[Keys.NAME]
-        if name and PY2:
-            name = name.encode('utf-8', 'ignore')
         if not name:
             name = i18n('unknown_game')
 
@@ -73,8 +70,6 @@ class JsonListItemConverter(object):
         if 'viewersCount' in game:
             viewer_count = str(game['viewersCount'])
         name = game['displayName']
-        if name and PY2:
-            name = name.encode('utf-8', 'ignore')
         if not name:
             name = i18n('unknown_game')
         image = self.get_boxart(game['boxArtURL'], Images.BOXART)
@@ -420,9 +415,6 @@ class JsonListItemConverter(object):
         if info.get(key) is not None:
             
             info_key = info.get(key)
-            if PY2 and isinstance(info_key, unicode):
-                info_key = info_key.encode('utf-8', 'ignore')
-         
             val_heading = kodi.decode_utf8(headings.get(key))
             val_info = kodi.decode_utf8(info_key)
             value = item_template.format(head=val_heading, info=val_info)

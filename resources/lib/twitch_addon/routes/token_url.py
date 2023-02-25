@@ -9,8 +9,6 @@
     See LICENSES/GPL-3.0-only for more information.
 """
 
-from six import PY2
-
 from ..addon import utils
 from ..addon.common import kodi
 from ..addon.google_firebase import dynamic_links_short_url
@@ -25,9 +23,6 @@ def route(api):
     except:
         short_url = None
     prompt_url = short_url if short_url else i18n('authorize_url_fail')
-
-    if PY2 and isinstance(prompt_url, unicode):
-        prompt_url = prompt_url.encode('utf-8')
 
     _ = kodi.Dialog().ok(i18n('authorize_heading'), i18n('authorize_message') + '[CR]%s' % prompt_url)
     kodi.show_settings()

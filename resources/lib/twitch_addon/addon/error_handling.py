@@ -9,8 +9,6 @@
     See LICENSES/GPL-3.0-only for more information.
 """
 
-from six import PY3
-
 from ast import literal_eval
 from copy import deepcopy
 from functools import wraps
@@ -32,40 +30,25 @@ def error_handler(func=None, route_type=0):
                 result = func(*args, **kwargs)
                 return result
             except ResourceUnavailableException as error:
-                if PY3:
-                    message = str(error)
-                else:
-                    message = error.message
+                message = str(error)
                 log_utils.log('Connection failed |{0}|'.format(message), log_utils.LOGERROR)
                 kodi.notify(i18n('connection_failed'), message, duration=7000, sound=False)
             except SubRequired as error:
-                if PY3:
-                    message = str(error)
-                else:
-                    message = error.message
+                message = str(error)
                 log_utils.log('Requires subscription to |{0}|'.format(message), log_utils.LOGDEBUG)
                 kodi.notify(kodi.get_name(), i18n('subscription_required') % message, duration=5000, sound=False)
             except NotFound as error:
-                if PY3:
-                    message = str(error)
-                else:
-                    message = error.message
+                message = str(error)
                 log_utils.log('Not found |{0}|'.format(message), log_utils.LOGDEBUG)
                 kodi.notify(kodi.get_name(), i18n('none_found') % message.lower(), duration=5000, sound=False)
             except PlaybackFailed as error:
-                if PY3:
-                    message = str(error)
-                else:
-                    message = error.message
+                message = str(error)
                 log_utils.log('Playback Failed |{0}|'.format(message), log_utils.LOGDEBUG)
                 kodi.notify(kodi.get_name(), i18n('playback_failed'), duration=5000, sound=False)
                 kodi.set_resolved_url(kodi.ListItem(), succeeded=False)
             except TwitchException as error:
                 _error = ''
-                if PY3:
-                    _message = literal_eval(str(deepcopy(error)).strip(','))
-                else:
-                    _message = error.message
+                _message = literal_eval(str(deepcopy(error)).strip(','))
                 try:
                     _error = _message['error']
                     message = '[{0}] {1}'.format(_message['status'], _message['message'])

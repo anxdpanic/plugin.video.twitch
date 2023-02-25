@@ -10,9 +10,6 @@
     See LICENSES/GPL-3.0-only for more information.
 """
 
-from six import string_types, text_type, with_metaclass, PY2, PY3
-from six.moves.urllib.parse import urlencode, parse_qs
-
 from xbmc import PLAYLIST_VIDEO, PLAYLIST_MUSIC  # NOQA
 
 import xbmcaddon
@@ -26,6 +23,8 @@ import os
 import re
 import json
 import time
+from urllib.parse import urlencode
+from urllib.parse import parse_qs
 
 try:
     xbmc.translatePath = xbmcvfs.translatePath
@@ -59,11 +58,11 @@ def decode_utf8(string):
 
 
 def is_unicode(string):
-    return PY2 and isinstance(string, text_type)
+    return False
 
 
 def execute_jsonrpc(command):
-    if not isinstance(command, string_types):
+    if not isinstance(command, str):
         command = json.dumps(command)
     response = xbmc.executeJSONRPC(command)
     return json.loads(response)
@@ -82,7 +81,7 @@ def translate_path(path):
 
 
 def set_setting(id, value):
-    if not isinstance(value, string_types): value = str(value)
+    if not isinstance(value, str): value = str(value)
     addon.setSetting(id, value)
 
 
@@ -149,10 +148,7 @@ def set_addon_enabled(addon_id, enabled=True):
 
 
 def get_icon():
-    if PY2:
-        return translate_path('special://home/addons/{0!s}/icon.png'.format(get_id()))
-    else:
-        return translate_path('special://home/addons/{0!s}/resources/media/icon.png'.format(get_id()))
+    return translate_path('special://home/addons/{0!s}/resources/media/icon.png'.format(get_id()))
 
 
 def get_thumb(filename):
@@ -160,10 +156,7 @@ def get_thumb(filename):
 
 
 def get_fanart():
-    if PY2:
-        return translate_path('special://home/addons/{0!s}/fanart.jpg'.format(get_id()))
-    else:
-        return translate_path('special://home/addons/{0!s}/resources/media/fanart.jpg'.format(get_id()))
+    return translate_path('special://home/addons/{0!s}/resources/media/fanart.jpg'.format(get_id()))
 
 
 def get_kodi_version():
@@ -171,7 +164,8 @@ def get_kodi_version():
         def __str__(self):
             return '|%s| |%s| -> |%s|%s|%s|%s|%s|' % (self.application, self.version, self.major, self.minor, self.tag, self.tag_version, self.revision)
 
-    class KodiVersion(with_metaclass(MetaClass, object)):
+    class KodiVersion(object):
+        __metaclass__ = MetaClass
         _json_query = execute_jsonrpc({"jsonrpc": "2.0", "method": "Application.GetProperties", "params": {"properties": ["name"]}, "id": 1})
         application = 'Unknown'
         if ('result' in _json_query) and ('name' in _json_query['result']):
@@ -234,7 +228,7 @@ def set_content(content):
 
 def create_item(item_dict, add=True):
     path = item_dict.get('path', '')
-    path = path if isinstance(path, string_types) else get_plugin_url(path)
+    path = path if isinstance(path, str) else get_plugin_url(path)
     list_item = ListItem(label=item_dict.get('label', ''), label2=item_dict.get('label2', ''), path=path)
     thumbfile = item_dict.get('thumbfile', None)
 
@@ -271,7 +265,7 @@ def add_item(item_dict, list_item):
 
     list_item.setProperty('isPlayable', str(is_playable).lower())
 
-    url = path if isinstance(path, string_types) else get_plugin_url(path)
+    url = path if isinstance(path, str) else get_plugin_url(path)
     xbmcplugin.addDirectoryItem(int(sys.argv[1]), url, list_item, isFolder=is_folder, totalItems=item_dict.get('total_items', 0))
 
 
@@ -376,10 +370,7 @@ class Translations(object):
 
     def i18n(self, string_id):
         try:
-            if PY3:
-                return addon.getLocalizedString(self.strings[string_id])
-            else:
-                return addon.getLocalizedString(self.strings[string_id]).encode('utf-8', 'ignore')
+            return addon.getLocalizedString(self.strings[string_id])
         except Exception as e:
             xbmc.log('%s: Failed String Lookup: %s (%s)' % (get_name(), string_id, e), xbmc.LOGWARNING)
             return string_id
