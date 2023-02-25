@@ -15,6 +15,9 @@
             <fanart>resources/media/fanart.jpg</fanart>
         </assets>
         <news>
+[rem] removed support for versions of Kodi pre-Nexus v20
+[rem] removed support for python 2
+[rem] removed dependency on six
 [lang] updated translations from Weblate
         </news>
         <platform>all</platform>
