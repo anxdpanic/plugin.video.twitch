@@ -26,12 +26,13 @@ jobs:
           fi
 
       - name: Checkout Add-on
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ${{ github.event.repository.name }}
 
       - name: Install dependencies
         run: |
+          sudo apt-get update
           sudo apt-get install libxml2-utils xmlstarlet zip
 
       - name: Get Changelog
@@ -44,8 +45,8 @@ jobs:
           echo ::set-output name=changes::$changes
         working-directory: ${{ github.event.repository.name }}
 
-      - name: Create Zip (Isengard)
-        id: zip-isengard
+      - name: Create Zip (Nexus)
+        id: zip-nexus
         run: |
           git reset
           git checkout .
@@ -54,27 +55,6 @@ jobs:
           rm -rf .??*
           rm -rf docs
           rm *.md
-          version=$(xmlstarlet sel -t -v 'string(/addon/@version)' addon.xml)
-          filename=${{ github.event.repository.name }}-${version}.zip
-          cd ..
-          zip -r $filename ${{ github.event.repository.name }}
-          mv .git ${{ github.event.repository.name }}
-          echo ::set-output name=filename::$filename
-        working-directory: ${{ github.event.repository.name }}
-
-      - name: Create Zip (Matrix)
-        id: zip-matrix
-        run: |
-          git reset
-          git checkout .
-          git clean -fdx
-          git apply .patches/matrix.patch
-          mv .git ..
-          rm -rf .??*
-          rm -rf docs
-          rm *.md
-          version=$(xmlstarlet sel -t -v 'string(/addon/@version)' addon.xml)
-          xmlstarlet ed -L -u '/addon/@version' -v "${version}+matrix.1" addon.xml
           version=$(xmlstarlet sel -t -v 'string(/addon/@version)' addon.xml)
           filename=${{ github.event.repository.name }}-${version}.zip
           cd ..
@@ -95,24 +75,13 @@ jobs:
           draft: false
           prerelease: ${{ steps.release.outputs.pre-release }}
 
-      - name: Upload Zip (Isengard)
-        id: upload-isengard
+      - name: Upload Zip (Nexus)
+        id: upload-nexus
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_name: ${{ steps.zip-isengard.outputs.filename }}
-          asset_path: ${{ steps.zip-isengard.outputs.filename }}
-          asset_content_type: application/zip
-
-      - name: Upload Zip (Matrix)
-        id: upload-matrix
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_name: ${{ steps.zip-matrix.outputs.filename }}
-          asset_path: ${{ steps.zip-matrix.outputs.filename }}
+          asset_name: ${{ steps.zip-nexus.outputs.filename }}
+          asset_path: ${{ steps.zip-nexus.outputs.filename }}
           asset_content_type: application/zip
