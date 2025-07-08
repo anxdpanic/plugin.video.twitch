@@ -64,6 +64,12 @@
         <setting label="30120" type="lsep"/>
         <setting label="30234" id="refresh_cache" type="bool" default="false"/>
         <setting label="30121" type="slider" id="cache_expire_time" default="3" range="0,60" option="int"/>
+        <setting label="Proxy" type="lsep"/>
+        <setting label="Enable Proxy" id="proxy_enabled" type="bool" default="false"/>
+        <setting label="Proxy Host" id="proxy_host" type="text" default="" enable="eq(-1,true)" visible="eq(-1,true)" subsetting="true"/>
+        <setting label="Proxy Port" id="proxy_port" type="number" default="8080" enable="eq(-2,true)" visible="eq(-2,true)" subsetting="true"/>
+        <setting label="Proxy Username" id="proxy_username" type="text" default="" enable="eq(-3,true)" visible="eq(-3,true)" subsetting="true"/>
+        <setting label="Proxy Password" id="proxy_password" type="text" default="" option="hidden" enable="eq(-4,true)" visible="eq(-4,true)" subsetting="true"/>
     </category>
     <!-- Login -->
     <category label="30270">

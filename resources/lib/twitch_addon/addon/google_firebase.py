@@ -15,6 +15,7 @@ from base64 import b64decode
 from urllib.parse import quote
 
 from .common import log_utils
+from . import utils
 
 __key = 'QUl6YVN5RDBtVGtVUU1TQnZ2dzVobnN4LTRZeGktNXNKSmdRR0E4'
 
@@ -31,7 +32,8 @@ def dynamic_links_short_url(url):
         }
     }
     headers = {'content-type': 'application/json'}
-    request = requests.post(post_url, data=json.dumps(data), headers=headers)
+    proxies = utils.get_proxy_dict()
+    request = requests.post(post_url, data=json.dumps(data), headers=headers, proxies=proxies)
     json_data = request.json()
 
     if 'shortLink' in json_data:

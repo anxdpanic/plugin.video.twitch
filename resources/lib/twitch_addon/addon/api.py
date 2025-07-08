@@ -11,6 +11,7 @@
 
 import json
 import sys
+import os
 
 from . import cache, utils
 from .common import kodi, log_utils
@@ -38,6 +39,15 @@ class Twitch:
     required_scopes = SCOPES
 
     def __init__(self):
+        proxy_config = utils.get_proxy_dict()
+        if proxy_config:
+            os.environ['HTTP_PROXY'] = proxy_config['http']
+            os.environ['HTTPS_PROXY'] = proxy_config['https']
+            log_utils.log('Proxy environment variables set: HTTP_PROXY={}, HTTPS_PROXY={}'.format(
+                proxy_config['http'], proxy_config['https']), log_utils.LOGINFO)
+        else:
+            log_utils.log('No proxy configuration found', log_utils.LOGINFO)
+        
         self.queries.CLIENT_ID = self.client_id
         self.queries.CLIENT_SECRET = self.client_secret
         self.queries.OAUTH_TOKEN = self.access_token

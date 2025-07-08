@@ -101,7 +101,27 @@ def inputstream_adpative_supports(feature):
 
 
 def append_headers(headers):
-    return '|%s' % '&'.join(['%s=%s' % (key, quote_plus(headers[key])) for key in headers])
+    from .common import log_utils
+    
+    header_parts = []
+    
+    # Add existing headers
+    if headers:
+        header_parts.extend(['%s=%s' % (key, quote_plus(headers[key])) for key in headers])
+    
+    # Add proxy configuration if enabled
+    proxy_config = get_proxy_dict()
+    if proxy_config:
+        proxy_url = proxy_config['http']
+        # Try different proxy parameter formats that Kodi might support
+        header_parts.append('http-proxy=%s' % quote_plus(proxy_url))
+        # Also try these alternative formats
+        header_parts.append('proxy=%s' % quote_plus(proxy_url))
+        log_utils.log('Adding proxy to video URL: %s' % proxy_url, log_utils.LOGINFO)
+    
+    if header_parts:
+        return '|%s' % '&'.join(header_parts)
+    return ''
 
 
 def get_redirect_uri():
@@ -177,6 +197,45 @@ def get_private_oauth_token():
     if not settings_id:
         return ""
     return kodi.decode_utf8(settings_id)
+
+
+def get_proxy_dict():
+    from .common import log_utils
+    
+    if kodi.get_setting('proxy_enabled') != 'true':
+        log_utils.log('Proxy is disabled in settings', log_utils.LOGINFO)
+        return None
+    
+    proxy_host = kodi.get_setting('proxy_host').strip()
+    proxy_port = kodi.get_setting('proxy_port')
+    proxy_username = kodi.get_setting('proxy_username').strip()
+    proxy_password = kodi.get_setting('proxy_password').strip()
+    
+    if not proxy_host:
+        log_utils.log('Proxy host is empty', log_utils.LOGWARNING)
+        return None
+    
+    proxy_url = 'http://'
+    if proxy_username and proxy_password:
+        proxy_url += '{username}:{password}@'.format(
+            username=proxy_username,
+            password=proxy_password
+        )
+        log_utils.log('Using proxy with authentication: {host}:{port}'.format(
+            host=proxy_host, port=proxy_port or '8080'), log_utils.LOGINFO)
+    else:
+        log_utils.log('Using proxy without authentication: {host}:{port}'.format(
+            host=proxy_host, port=proxy_port or '8080'), log_utils.LOGINFO)
+    
+    proxy_url += '{host}:{port}'.format(
+        host=proxy_host,
+        port=proxy_port or '8080'
+    )
+    
+    return {
+        'http': proxy_url,
+        'https': proxy_url
+    }
 
 
 def get_search_history_size():
