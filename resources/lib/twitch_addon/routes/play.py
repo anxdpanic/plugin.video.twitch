@@ -165,12 +165,14 @@ def route(api, seek_time=0, channel_id=None, video_id=None, slug=None, ask=False
 
                 if not play_url:
                     play_url = result['url']
+                    headers = {}
                     if kodi.get_kodi_version().major >= 18:
-                        play_url += '|verifypeer=false'
+                        headers['verifypeer'] = 'false'
+                    play_url += utils.append_headers(headers)
 
                 if is_live:
                     _set_live(channel_id, name, channel_name, quality_label)
-                log_utils.log('Attempting playback using quality |%s| @ |%s|' % (quality_label, play_url), log_utils.LOGDEBUG)
+                log_utils.log('Attempting playback using quality |%s| @ |%s|' % (quality_label, play_url), log_utils.LOGINFO)
                 item_dict['path'] = play_url
                 playback_item = kodi.create_item(item_dict, add=False)
                 stream_info = {

@@ -16,8 +16,10 @@ from urllib.parse import quote
 from urllib.parse import unquote
 
 import threading
+import os
 
 from .addon.common import kodi, log_utils
+from .addon import utils
 from .addon.constants import Keys
 from .addon.utils import i18n, get_stamp_diff, get_vodcast_color
 from .addon.player import TwitchPlayer
@@ -204,6 +206,14 @@ class LiveNotificationsThread(threading.Thread):
 
 def run():
     log_utils.log('Service: Start', log_utils.LOGNOTICE)
+    
+    # Set proxy environment variables for the entire Kodi process
+    proxy_config = utils.get_proxy_dict()
+    if proxy_config:
+        os.environ['HTTP_PROXY'] = proxy_config['http']
+        os.environ['HTTPS_PROXY'] = proxy_config['https']
+        log_utils.log('Service: Global proxy environment variables set: HTTP_PROXY={}, HTTPS_PROXY={}'.format(
+            proxy_config['http'], proxy_config['https']), log_utils.LOGINFO)
 
     monitor = xbmc.Monitor()
 
