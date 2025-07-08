@@ -205,6 +205,29 @@ def route(api, seek_time=0, channel_id=None, video_id=None, slug=None, ask=False
                         inputstream_property += 'addon'
                     playback_item.setProperty(inputstream_property, 'inputstream.adaptive')
                     playback_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
+                    
+                    # Configure proxy for inputstream.adaptive
+                    from urllib.parse import urlparse
+                    proxy_dict = utils.get_proxy_dict()
+                    if proxy_dict:
+                        proxy_url = proxy_dict['http']
+                        parsed = urlparse(proxy_url)
+                        playback_item.setProperty('inputstream.adaptive.proxy_host', parsed.hostname)
+                        playback_item.setProperty('inputstream.adaptive.proxy_port', str(parsed.port or 8080))
+                        if parsed.username and parsed.password:
+                            playback_item.setProperty('inputstream.adaptive.proxy_username', parsed.username)
+                            playback_item.setProperty('inputstream.adaptive.proxy_password', parsed.password)
+                        log_utils.log('Configured inputstream.adaptive proxy: {}:{}'.format(
+                            parsed.hostname, parsed.port or 8080), log_utils.LOGINFO)
+                else:
+                    # Configure proxy for regular video player (non-adaptive)
+                    proxy_dict = utils.get_proxy_dict()
+                    if proxy_dict:
+                        proxy_url = proxy_dict['http']
+                        playback_item.setProperty('http-proxy', proxy_url)
+                        playback_item.setProperty('proxy', proxy_url)  # Alternative parameter name
+                        log_utils.log('Configured video player proxy: {}'.format(proxy_url), log_utils.LOGINFO)
+                        
                 if (seek_time > 0) and video_id:
                     _set_seek_time(seek_time)
                 _set_playing()
