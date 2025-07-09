@@ -168,6 +168,8 @@ def route(api, seek_time=0, channel_id=None, video_id=None, slug=None, ask=False
                     headers = {}
                     if kodi.get_kodi_version().major >= 18:
                         headers['verifypeer'] = 'false'
+                    if 'request' in locals() and request and 'headers' in request:
+                        headers.update(request['headers'])
                     play_url += utils.append_headers(headers)
 
                 if is_live:
