@@ -103,6 +103,8 @@ def inputstream_adpative_supports(feature):
 def append_headers(headers):
     from .common import log_utils
     
+    log_utils.log('append_headers called with: %s' % headers, log_utils.LOGINFO)
+    
     header_parts = []
     
     # Add existing headers
