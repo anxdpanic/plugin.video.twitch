@@ -56,6 +56,8 @@ class Twitch:
 
         self.private_client_id = utils.get_private_client_id()
         self.private_access_token = utils.get_private_oauth_token()
+        
+        # Validate tokens
         if self.private_access_token:
             if not self.valid_private_token(self.private_client_id, self.private_access_token):
                 self.private_access_token = ''
@@ -66,70 +68,46 @@ class Twitch:
                 self.access_token = ''
 
     @cache.cache_method(cache_limit=1)
-    def valid_token(self, client_id, token, scopes):  # client_id, token used for unique caching only
+    def valid_token(self, client_id, token, scopes):  # client_id, token used for unique caching
         token_check = self.root()
         while True:
             if token_check.get('status') == 401:
                 kodi.notify(i18n('oauth_token'), i18n('invalid_expired_token'))
                 return False
-            if token_check['client_id'] == self.client_id:
-                if token_check['scopes']:
-                    token_scopes = token_check['scopes']
-                    missing_scopes = [value for value in scopes if value not in token_scopes]
-                    if len(missing_scopes) > 0:
-                        result = kodi.Dialog().ok(
-                            i18n('oauth_token'),
-                            '[CR]'.join([
-                                i18n('missing_scopes') % missing_scopes,
-                                i18n('get_new_oauth_token') %
-                                (i18n('settings'), i18n('login'), i18n('get_oauth_token'))
-                            ])
-                        )
-                        log_utils.log('Error: Current OAuth token is missing required scopes |%s|' % missing_scopes,
-                                      log_utils.LOGERROR)
-                        return False
-                    else:
-                        return True
-                else:
-                    return False
-            else:
-                matches_default = token_check['client_id'] == utils.get_client_id(default=True)
-                log_utils.log('Error: OAuth Client-ID mismatch', log_utils.LOGERROR)
-                if matches_default:
-                    _ = kodi.Dialog().ok(
-                        i18n('oauth_token'),
-                        '[CR]'.join([i18n('client_id_mismatch'), i18n('ok_to_resolve')])
-                    )
-                    utils.clear_client_id()
-                    self.client_id = utils.get_client_id(default=True)
-                    self.queries.CLIENT_ID = self.client_id
-                    self.client = oauth.clients.MobileClient(self.client_id, self.client_secret)
-                else:
-                    _ = kodi.Dialog().ok(
-                        i18n('oauth_token'),
-                        '[CR]'.join([
-                            i18n('client_id_mismatch'),
-                            i18n('get_new_oauth_token') %
-                            (i18n('settings'), i18n('login'), i18n('get_oauth_token'))
-                        ])
-                    )
-                    return False
+            
+            log_utils.log('valid_token: token_client_id=%s, self.client_id=%s' % 
+                         (token_check.get('client_id'), self.client_id), log_utils.LOGDEBUG)
+            
+            # Update client_id to match the token's client_id (user provides their own)
+            if token_check['client_id'] != self.client_id:
+                log_utils.log('Updating client_id to match token: %s' % token_check['client_id'], log_utils.LOGDEBUG)
+                self.client_id = token_check['client_id']
+                self.queries.CLIENT_ID = self.client_id
+            
+            if token_check['scopes']:
+                token_scopes = token_check['scopes']
+                missing_scopes = [value for value in scopes if value not in token_scopes]
+                if len(missing_scopes) > 0:
+                    # Just log warning but continue - user's token may have different scopes
+                    log_utils.log('Token missing scopes %s but continuing' % missing_scopes, log_utils.LOGWARNING)
+            
+            return True
 
     @cache.cache_method(cache_limit=1)
     def valid_private_token(self, client_id, token):  # client_id used for unique caching only
         token_check = self.validate(token)
-        if token_check['client_id'] != self.private_client_id:
-            matches_default = token_check['client_id'] == utils.get_client_id(default=True)
-            log_utils.log('Error: Private OAuth Client-ID mismatch', log_utils.LOGERROR)
-            if matches_default:
-                log_utils.log('Private OAuth token matches add-on Client-ID', log_utils.LOGDEBUG)
-                if not self.access_token:
-                    self.access_token = self.private_access_token
-                    self.queries.OAUTH_TOKEN = self.private_access_token
-                    kodi.set_setting('oauth_token_helix', self.private_access_token)
-                    kodi.set_setting('private_oauth_token', '')
-                    self.private_access_token = ''
+        
+        if token_check.get('status') == 401:
+            kodi.notify(i18n('oauth_token'), i18n('invalid_expired_token'))
             return False
+        
+        # Update client_id to match the token's client_id
+        if token_check.get('client_id'):
+            if token_check['client_id'] != self.private_client_id:
+                log_utils.log('Private Token: Updating client_id to match token: %s' % token_check['client_id'], log_utils.LOGDEBUG)
+                self.private_client_id = token_check['client_id']
+            return True
+        
         return True
 
     @api_error_handler
@@ -357,21 +335,22 @@ class Twitch:
         return self.error_check(results, private=True)
 
     @api_error_handler
+    @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def live_request(self, name):
-        if not utils.inputstream_adpative_supports('EXT-X-DISCONTINUITY'):
-            results = self.usher.live_request(name, platform='ps4', headers=self.get_private_credential_headers())
-        else:
-            results = self.usher.live_request(name, headers=self.get_private_credential_headers())
+        # Request streams with AV1, H.265/HEVC and H.264 support for Enhanced Broadcasting (2K/4K/1440p)
+        # The supported_codecs parameter tells Twitch which codecs the client can handle
+        # Default is 'av1,h265,h264' to enable all available quality options
+        results = self.usher.live_request(name, supported_codecs='av1,h265,h264', headers=self.get_private_credential_headers())
         return self.error_check(results, private=True)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def video_request(self, video_id):
-        if not utils.inputstream_adpative_supports('EXT-X-DISCONTINUITY'):
-            results = self.usher.video_request(video_id, platform='ps4', headers=self.get_private_credential_headers())
-        else:
-            results = self.usher.video_request(video_id, headers=self.get_private_credential_headers())
+        # Request streams with AV1, H.265/HEVC and H.264 support for Enhanced Broadcasting (2K/4K/1440p)
+        # The supported_codecs parameter tells Twitch which codecs the client can handle
+        # Default is 'av1,h265,h264' to enable all available quality options
+        results = self.usher.video_request(video_id, supported_codecs='av1,h265,h264', headers=self.get_private_credential_headers())
         return self.error_check(results, private=True)
 
     @staticmethod
@@ -415,12 +394,14 @@ class Twitch:
     @staticmethod
     def get_private_credential_headers():
         headers = {}
-        private_client_id = utils.get_private_client_id()
         private_oauth_token = utils.get_private_oauth_token()
+        private_client_id = utils.get_private_client_id()
+        
+        # Use the configured Client-ID for GQL requests
         if private_client_id:
             headers['Client-ID'] = private_client_id
-            headers['Authorization'] = ''
+        
         if private_oauth_token:
             headers['Authorization'] = 'OAuth {token}'.format(token=private_oauth_token)
-            headers['Client-ID'] = ''
+        
         return headers
