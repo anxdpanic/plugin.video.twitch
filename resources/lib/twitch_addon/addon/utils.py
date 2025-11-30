@@ -138,27 +138,51 @@ def get_redirect_uri():
         return kodi.decode_utf8(REDIRECT_URI)
 
 
-def get_client_id(default=False):
-    settings_id = kodi.get_setting('oauth_clientid')
+def get_twitch_client_id():
+    """Get the Twitch Client-ID from settings"""
+    settings_id = kodi.get_setting('twitch_client_id')
     stripped_id = settings_id.strip()
     if settings_id != stripped_id:
         settings_id = stripped_id
-        kodi.set_setting('oauth_clientid', settings_id)
-    if settings_id and not default:
-        return kodi.decode_utf8(settings_id)
-    else:
-        return kodi.decode_utf8(b64decode(CLIENT_ID))
-
-
-def get_private_client_id():
-    settings_id = kodi.get_setting('private_oauth_clientid')
-    stripped_id = settings_id.strip()
-    if settings_id != stripped_id:
-        settings_id = stripped_id
-        kodi.set_setting('private_oauth_clientid', settings_id)
+        kodi.set_setting('twitch_client_id', settings_id)
     if not settings_id:
-        return ""
+        # Default to Twitch's web Client-ID
+        return 'kimne78kx3ncx6brgo4mv6wki5h1ko'
     return kodi.decode_utf8(settings_id)
+
+
+def get_hevc_token():
+    """Get the HEVC token from settings (optional, for HEVC streams)"""
+    token = kodi.get_setting('twitch_hevc_token').strip()
+    if token:
+        # Remove 'oauth:' prefix if present
+        if token.lower().startswith('oauth:'):
+            token = token[6:]
+        elif ':' in token:
+            idx = token.find(':')
+            token = token[idx + 1:]
+    return kodi.decode_utf8(token) if token else ""
+
+
+# Legacy compatibility functions
+def use_twitch_token():
+    """Check if HEVC token is configured"""
+    return bool(get_hevc_token())
+
+
+def get_twitch_website_token():
+    """Deprecated - use get_hevc_token() instead"""
+    return get_hevc_token()
+
+
+def use_custom_oauth():
+    """Deprecated"""
+    return use_twitch_token()
+
+
+def get_client_id(default=False):
+    """Get Client-ID for Helix API - uses the main twitch_client_id setting"""
+    return get_twitch_client_id()
 
 
 def clear_client_id():
@@ -166,6 +190,11 @@ def clear_client_id():
 
 
 def get_oauth_token(token_only=True, required=False):
+    from .common import log_utils
+    # Note: Twitch Website Tokens do NOT work with Helix API
+    # They only work with GQL/Private API (use get_private_oauth_token() for that)
+    # So we do NOT use Twitch website token for Helix API calls
+    
     oauth_token = kodi.get_setting('oauth_token_helix')
     if not oauth_token or not oauth_token.strip():
         if not required: return ''
@@ -191,14 +220,26 @@ def get_oauth_token(token_only=True, required=False):
 
 
 def get_private_oauth_token():
-    settings_id = kodi.get_setting('private_oauth_token')
-    stripped_id = settings_id.strip()
-    if settings_id != stripped_id:
-        settings_id = stripped_id
-        kodi.set_setting('private_oauth_token', settings_id)
-    if not settings_id:
-        return ""
-    return kodi.decode_utf8(settings_id)
+    """Get token for private/GQL API (HEVC streams)"""
+    from .common import log_utils
+    # Use HEVC token if available, otherwise fall back to main OAuth token
+    hevc_token = get_hevc_token()
+    if hevc_token:
+        log_utils.log('get_private_oauth_token: Using HEVC token', log_utils.LOGDEBUG)
+        return hevc_token
+    
+    # Fall back to main OAuth token
+    oauth_token = get_oauth_token()
+    if oauth_token:
+        log_utils.log('get_private_oauth_token: Using main OAuth token', log_utils.LOGDEBUG)
+        return oauth_token
+    
+    return ""
+
+
+def get_private_client_id():
+    """Get Client-ID for private/GQL API - uses the main twitch_client_id setting"""
+    return get_twitch_client_id()
 
 
 def get_proxy_dict():
