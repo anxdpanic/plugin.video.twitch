@@ -2,9 +2,13 @@
 <settings>
     <!-- Login -->
     <category label="30127">
+        <!-- Client-ID -->
+        <setting id="twitch_client_id" type="text" label="30281" default="kimne78kx3ncx6brgo4mv6wki5h1ko"/>
+        <!-- OAuth Token -->
         <setting id="oauth_token_helix" type="text" label="30099" default=""/>
-        <setting label="30132" type="lsep"/>
-        <setting label="30135" id="show_token_url" type="action" action="RunPlugin(plugin://$ID/?mode=get_token_url)" option="close"/>
+        <setting label="30138" type="lsep"/>
+        <!-- Website Token for HEVC/H.265 -->
+        <setting id="twitch_hevc_token" type="text" label="30282" default=""/>
         <setting label="30138" type="lsep"/>
         <setting label="30227" id="revoke_token" type="action" action="RunPlugin(plugin://$ID/?mode=revoke_token)" option="close"/>
     </category>
@@ -70,16 +74,6 @@
         <setting label="Proxy Port" id="proxy_port" type="number" default="8080" enable="eq(-2,true)" visible="eq(-2,true)" subsetting="true"/>
         <setting label="Proxy Username" id="proxy_username" type="text" default="" enable="eq(-3,true)" visible="eq(-3,true)" subsetting="true"/>
         <setting label="Proxy Password" id="proxy_password" type="text" default="" option="hidden" enable="eq(-4,true)" visible="eq(-4,true)" subsetting="true"/>
-    </category>
-    <!-- Login -->
-    <category label="30270">
-        <setting label="30261" type="lsep"/>
-        <setting id="private_oauth_clientid" type="text" label="30097" default="kimne78kx3ncx6brgo4mv6wki5h1ko"/>
-        <setting id="private_oauth_token" type="text" label="30099" default=""/>
-        <setting label="30271" type="lsep"/>
-        <setting id="label.dummy.01" type="text" label="" default="" visible="false" enable="false"/>
-        <setting label="30272" type="lsep"/>
-        <setting id="label.dummy.01" type="text" label="" default="" visible="false" enable="false"/>
     </category>
     <!-- Lists -->
     <category label="30167">
