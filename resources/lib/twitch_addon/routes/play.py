@@ -150,18 +150,24 @@ def route(api, seek_time=0, channel_id=None, video_id=None, slug=None, ask=False
             result = converter.get_video_for_quality(videos, ask=ask, quality=quality, clip=clip)
             if result:
                 quality_label = result['name']
+                log_utils.log('Selected quality: %s, use_ia: %s, result keys: %s' % 
+                            (quality_label, use_ia, list(result.keys())), log_utils.LOGDEBUG)
 
                 request = None
                 play_url = None
-                if quality_label == 'Adaptive' and use_ia:
+                if 'Adaptive' in quality_label and use_ia:
                     if video_id:
                         request = api.video_request(video_id)
                     elif is_live:
                         request = api.live_request(name)
+                    log_utils.log('Adaptive quality requested - use_ia: %s, is_live: %s, request: %s' % 
+                                (use_ia, is_live, 'None' if request is None else 'received'), log_utils.LOGDEBUG)
                     if request:
+                        log_utils.log('Request keys: %s' % list(request.keys()), log_utils.LOGDEBUG)
                         if kodi.get_kodi_version().major >= 18:
                             request['headers']['verifypeer'] = 'false'
                         play_url = request['url'] + utils.append_headers(request['headers'])
+                        log_utils.log('Built play_url from request: %s' % play_url[:100], log_utils.LOGDEBUG)
 
                 if not play_url:
                     play_url = result['url']
@@ -201,12 +207,33 @@ def route(api, seek_time=0, channel_id=None, video_id=None, slug=None, ask=False
                         playback_item.setMimeType('video/mp4')
                     except AttributeError:
                         pass
-                if quality_label == 'Adaptive' and use_ia:
+                if 'Adaptive' in quality_label and use_ia:
                     inputstream_property = 'inputstream'
                     if kodi.get_kodi_version().major < 19:
                         inputstream_property += 'addon'
                     playback_item.setProperty(inputstream_property, 'inputstream.adaptive')
                     playback_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
+                    
+                    # Use 'fixed-res' mode to select the highest quality stream from the start
+                    # and keep it fixed without adaptive bandwidth-based switching.
+                    # 
+                    # This ensures:
+                    # - HEVC 1440p+ streams are selected when available (with correct audio)
+                    # - H.264 1080p streams are selected at full quality (not downgraded to 720p)
+                    # - No mid-stream quality switching that could cause audio desync
+                    playback_item.setProperty('inputstream.adaptive.stream_selection_type', 'fixed-res')
+                    
+                    # Set maximum resolution to 8K to allow all available qualities
+                    playback_item.setProperty('inputstream.adaptive.chooser_resolution_max', '7680x4320')
+                    # Unlimited bandwidth - don't limit based on measured connection speed
+                    playback_item.setProperty('inputstream.adaptive.chooser_bandwidth_max', '0')
+                    
+                    # IMPORTANT: Ignore display resolution to allow 4K/8K streams on any display
+                    playback_item.setProperty('inputstream.adaptive.ignore_display_resolution', 'true')
+                    
+                    # Prefer HEVC codec over H.264 when both are available
+                    # Order: HEVC variants > AV1 > H.264 > Audio
+                    playback_item.setProperty('inputstream.adaptive.preferred_codecs', 'hev1,hvc1,av1,avc1,mp4a')
                     
                     # Configure proxy for inputstream.adaptive
                     from urllib.parse import urlparse
