@@ -67,6 +67,11 @@ def route(api):
                               'info': {'plot': '%s - %s[CR]%s' % (i18n('search'), i18n('video_id_url'), i18n('search_id_url_description'))}, 'thumbfile': 'Video_Url.png'})
         if show_menu('search'):
             kodi.create_item({'label': i18n('search'), 'path': {'mode': MODES.SEARCH}, 'info': {'plot': i18n('search')}, 'thumbfile': 'Search.png'})
+        
+        # Watch History - always show if enabled
+        if utils.get_watch_history_size() > 0:
+            kodi.create_item({'label': i18n('watch_history'), 'path': {'mode': MODES.WATCHHISTORY}, 
+                              'info': {'plot': i18n('watch_history_description')}, 'thumbfile': 'History.png'})
 
     if show_menu('settings'):
         kodi.create_item({'label': i18n('settings'), 'path': {'mode': MODES.SETTINGS}, 'info': {'plot': i18n('settings')}, 'is_folder': False, 'is_playable': False, 'thumbfile': 'Settings.png'})
