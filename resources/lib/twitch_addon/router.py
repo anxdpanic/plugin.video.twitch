@@ -276,6 +276,20 @@ def _maintain(sub_mode, file_type):
     maintain.route(sub_mode, file_type)
 
 
+@dispatcher.register(MODES.WATCHHISTORY, kwargs=['content_type'])
+@error_handler
+def _watch_history(content_type=None):
+    from .routes import watch_history
+    watch_history.route(twitch_api, content_type)
+
+
+@dispatcher.register(MODES.CLEARWATCHHISTORY, kwargs=['content_type', 'content_id', 'clear_all'])
+@error_handler
+def _clear_watch_history(content_type=None, content_id=None, clear_all=False):
+    from .routes import clear_watch_history
+    clear_watch_history.route(content_type, content_id, clear_all)
+
+
 def run(argv):
     queries = kodi.parse_query(argv[2])
     log_utils.log('Version: |%s| Application Version: %s' % (kodi.get_version(), kodi.get_kodi_version()), log_utils.LOGDEBUG)
