@@ -1,113 +1,558 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<settings>
-    <!-- Login -->
-    <category label="30127">
-        <!-- Client-ID -->
-        <setting id="twitch_client_id" type="text" label="30281" default="kimne78kx3ncx6brgo4mv6wki5h1ko"/>
-        <!-- OAuth Token -->
-        <setting id="oauth_token_helix" type="text" label="30099" default=""/>
-        <setting label="30138" type="lsep"/>
-        <!-- Website Token for HEVC/H.265 -->
-        <setting id="twitch_hevc_token" type="text" label="30282" default=""/>
-        <setting label="30138" type="lsep"/>
-        <setting label="30227" id="revoke_token" type="action" action="RunPlugin(plugin://$ID/?mode=revoke_token)" option="close"/>
-    </category>
-    <!-- Main Menu -->
-    <category label="30219">
-        <setting label="30009" id="menu_browse_live" type="bool" default="true"/>
-        <setting label="30001" id="menu_browse_games" type="bool" default="true"/>
-        <setting label="30002" id="menu_following" type="bool" default="true"/>
-        <setting label="30003" id="menu_search" type="bool" default="true"/>
-        <setting label="30004" id="menu_settings" type="bool" default="true"/>
-        <setting label="30002" type="lsep"/>
-        <setting label="30009" id="menu_following_live" type="bool" default="false"/>
-        <setting label="30008" id="menu_following_channels" type="bool" default="false"/>
-        <setting label="30001" id="menu_following_games" type="bool" default="false"/>
-        <setting label="30003" type="lsep"/>
-        <setting label="30125" id="menu_search_streams" type="bool" default="false"/>
-        <setting label="30008" id="menu_search_channels" type="bool" default="false"/>
-        <setting label="30001" id="menu_search_games" type="bool" default="false"/>
-        <setting label="30124" id="menu_search_url" type="bool" default="false"/>
-    </category>
-    <!-- General -->
-    <category label="30076">
-        <!-- Video Quality -->
-        <setting id="video_quality" type="enum" label="30040" lvalues="30102|30136|30201|30254" default="0"/>
-        <setting id="bandwidth" type="number" label="30201" default="2500000" enable="eq(-1,2)" visible="eq(-1,2)" subsetting="true"/>
-        <setting label="30263" type="slider" id="source_frame_rate_limit" default="0" range="0,30,60" option="int"  enable="eq(-2,0)" visible="eq(-2,0)" subsetting="true"/>
-        <setting id="video_support_ia_builtin" type="bool" label="" visible="false" enable="true" default="false"/>
-        <setting id="video_support_ia_addon" type="bool" label="" visible="false" enable="true" default="false"/>
-        <setting id="video_quality_ia" type="bool" label="30223" default="false" enable="eq(-1,true)|eq(-2,true)"/>
-        <setting id="video_quality_ia_configure" type="action" label="30224" enable="eq(-1,true)+eq(-2,true)" visible="eq(-1,true)+eq(-2,true)" option="close" action="RunPlugin(plugin://$ID/?mode=configure_ia)"/>
-        <!-- Title Display -->
-        <setting id="title_display" type="enum" label="30045" lvalues="30046|30047|30048|30049|30051|30067|30054" default="0"/>
-        <!-- Truncate titles -->
-        <setting id="title_truncate" type="bool" label="30065" default="true"/>
+<settings version="1">
+    <section id="plugin.video.twitch">
+        <!-- ==================== Login ==================== -->
+        <category id="login" label="30127" help="">
+            <group id="1" label="30280">
+                <setting id="twitch_client_id" type="string" label="30281" help="">
+                    <level>2</level>
+                    <default>kimne78kx3ncx6brgo4mv6wki5h1ko</default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="oauth_token_helix" type="string" label="30099" help="">
+                    <level>0</level>
+                    <default></default>
+                    <control type="edit" format="string"/>
+                </setting>
+            </group>
+            <group id="2" label="30138">
+                <setting id="twitch_hevc_token" type="string" label="30282" help="">
+                    <level>0</level>
+                    <default></default>
+                    <control type="edit" format="string"/>
+                </setting>
+            </group>
+            <group id="3" label="">
+                <setting id="revoke_token" type="action" label="30227" help="">
+                    <level>0</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=revoke_token)</data>
+                </setting>
+            </group>
+        </category>
 
-        <setting id="thumbnail_size" type="enum" label="30255" lvalues="30102|30256|30257|30258" default="2"/>
+        <!-- ==================== Main Menu ==================== -->
+        <category id="mainmenu" label="30219" help="">
+            <group id="1" label="30219">
+                <setting id="menu_browse_live" type="boolean" label="30009" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_browse_games" type="boolean" label="30001" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_following" type="boolean" label="30002" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_search" type="boolean" label="30003" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_settings" type="boolean" label="30004" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+            </group>
+            <group id="2" label="30002">
+                <setting id="menu_following_live" type="boolean" label="30009" help="">
+                    <level>1</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_following_channels" type="boolean" label="30008" help="">
+                    <level>1</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_following_games" type="boolean" label="30001" help="">
+                    <level>1</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+            </group>
+            <group id="3" label="30003">
+                <setting id="menu_search_streams" type="boolean" label="30125" help="">
+                    <level>1</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_search_channels" type="boolean" label="30008" help="">
+                    <level>1</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_search_games" type="boolean" label="30001" help="">
+                    <level>1</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="menu_search_url" type="boolean" label="30124" help="">
+                    <level>1</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+            </group>
+        </category>
 
-        <!-- Live preview refresh interval -->
-        <setting label="30259" type="slider" id="refresh_interval" default="10" range="0,1,180" option="int"/>
+        <!-- ==================== Video Quality ==================== -->
+        <category id="video" label="30076" help="">
+            <group id="1" label="30040">
+                <setting id="video_quality" type="integer" label="30040" help="">
+                    <level>0</level>
+                    <default>0</default>
+                    <constraints>
+                        <options>
+                            <option label="30102">0</option>
+                            <option label="30136">1</option>
+                            <option label="30201">2</option>
+                            <option label="30254">3</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                </setting>
+                <setting id="bandwidth" type="integer" label="30201" help="" parent="video_quality">
+                    <level>1</level>
+                    <default>2500000</default>
+                    <constraints>
+                        <minimum>100000</minimum>
+                        <maximum>50000000</maximum>
+                        <step>100000</step>
+                    </constraints>
+                    <control type="edit" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible" setting="video_quality">2</dependency>
+                        <dependency type="enable" setting="video_quality">2</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="source_frame_rate_limit" type="integer" label="30263" help="" parent="video_quality">
+                    <level>1</level>
+                    <default>0</default>
+                    <constraints>
+                        <minimum>0</minimum>
+                        <maximum>60</maximum>
+                        <step>30</step>
+                    </constraints>
+                    <control type="slider" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible" setting="video_quality">0</dependency>
+                        <dependency type="enable" setting="video_quality">0</dependency>
+                    </dependencies>
+                </setting>
+            </group>
+            <group id="2" label="30223">
+                <setting id="video_support_ia_builtin" type="boolean" label="" help="">
+                    <level>4</level>
+                    <default>false</default>
+                    <visible>false</visible>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="video_support_ia_addon" type="boolean" label="" help="">
+                    <level>4</level>
+                    <default>false</default>
+                    <visible>false</visible>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="video_quality_ia" type="boolean" label="30223" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="enable">
+                            <or>
+                                <condition setting="video_support_ia_builtin">true</condition>
+                                <condition setting="video_support_ia_addon">true</condition>
+                            </or>
+                        </dependency>
+                    </dependencies>
+                </setting>
+                <setting id="video_quality_ia_configure" type="action" label="30224" help="">
+                    <level>0</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=configure_ia)</data>
+                    <dependencies>
+                        <dependency type="visible">
+                            <and>
+                                <condition setting="video_quality_ia">true</condition>
+                                <condition setting="video_support_ia_addon">true</condition>
+                            </and>
+                        </dependency>
+                        <dependency type="enable">
+                            <and>
+                                <condition setting="video_quality_ia">true</condition>
+                                <condition setting="video_support_ia_addon">true</condition>
+                            </and>
+                        </dependency>
+                    </dependencies>
+                </setting>
+            </group>
+            <group id="3" label="30283">
+                <setting id="low_latency" type="boolean" label="30283" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="live_reconnect" type="boolean" label="30210" help="">
+                    <level>1</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+            </group>
+        </category>
 
-        <setting id="vodcast_highlight" type="enum" label="30222" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgrey|lightgreen|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|snow|springgreen|steelblue|tan|teal|thistle|tomato|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen" default="79"/>
+        <!-- ==================== Display ==================== -->
+        <category id="display" label="30045" help="">
+            <group id="1" label="30045">
+                <setting id="title_display" type="integer" label="30045" help="">
+                    <level>0</level>
+                    <default>0</default>
+                    <constraints>
+                        <options>
+                            <option label="30046">0</option>
+                            <option label="30047">1</option>
+                            <option label="30048">2</option>
+                            <option label="30049">3</option>
+                            <option label="30051">4</option>
+                            <option label="30067">5</option>
+                            <option label="30054">6</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                </setting>
+                <setting id="title_truncate" type="boolean" label="30065" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+            </group>
+            <group id="2" label="30255">
+                <setting id="thumbnail_size" type="integer" label="30255" help="">
+                    <level>0</level>
+                    <default>2</default>
+                    <constraints>
+                        <options>
+                            <option label="30102">0</option>
+                            <option label="30256">1</option>
+                            <option label="30257">2</option>
+                            <option label="30258">3</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                </setting>
+                <setting id="refresh_interval" type="integer" label="30259" help="">
+                    <level>1</level>
+                    <default>10</default>
+                    <constraints>
+                        <minimum>0</minimum>
+                        <maximum>180</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="slider" format="integer"/>
+                </setting>
+            </group>
+            <group id="3" label="30222">
+                <setting id="vodcast_highlight" type="string" label="30222" help="">
+                    <level>2</level>
+                    <default>red</default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                        <options>
+                            <option label="aliceblue">aliceblue</option>
+                            <option label="aqua">aqua</option>
+                            <option label="blue">blue</option>
+                            <option label="coral">coral</option>
+                            <option label="crimson">crimson</option>
+                            <option label="cyan">cyan</option>
+                            <option label="darkblue">darkblue</option>
+                            <option label="deeppink">deeppink</option>
+                            <option label="gold">gold</option>
+                            <option label="green">green</option>
+                            <option label="hotpink">hotpink</option>
+                            <option label="lime">lime</option>
+                            <option label="magenta">magenta</option>
+                            <option label="none">none</option>
+                            <option label="orange">orange</option>
+                            <option label="purple">purple</option>
+                            <option label="red">red</option>
+                            <option label="tomato">tomato</option>
+                            <option label="violet">violet</option>
+                            <option label="yellow">yellow</option>
+                            <option label="white">white</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="string"/>
+                </setting>
+            </group>
+        </category>
 
-        <setting label="30123" type="slider" id="items_per_page" default="25" range="10,100" option="int"/>
-        <setting label="30236" type="slider" id="search_history_size" default="25" range="0,200" option="int"/>
+        <!-- ==================== Lists & History ==================== -->
+        <category id="lists" label="30167" help="">
+            <group id="1" label="30123">
+                <setting id="items_per_page" type="integer" label="30123" help="">
+                    <level>0</level>
+                    <default>25</default>
+                    <constraints>
+                        <minimum>10</minimum>
+                        <maximum>100</maximum>
+                        <step>5</step>
+                    </constraints>
+                    <control type="slider" format="integer"/>
+                </setting>
+                <setting id="search_history_size" type="integer" label="30236" help="">
+                    <level>0</level>
+                    <default>25</default>
+                    <constraints>
+                        <minimum>0</minimum>
+                        <maximum>200</maximum>
+                        <step>5</step>
+                    </constraints>
+                    <control type="slider" format="integer"/>
+                </setting>
+                <setting id="watch_history_size" type="integer" label="30284" help="">
+                    <level>0</level>
+                    <default>50</default>
+                    <constraints>
+                        <minimum>0</minimum>
+                        <maximum>200</maximum>
+                        <step>5</step>
+                    </constraints>
+                    <control type="slider" format="integer"/>
+                </setting>
+            </group>
+            <group id="2" label="30191">
+                <setting id="remove_default_stream_quality" type="action" label="30191" help="">
+                    <level>1</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=edit_qualities&amp;remove=true&amp;content_type=stream)</data>
+                </setting>
+                <setting id="remove_default_video_quality" type="action" label="30192" help="">
+                    <level>1</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=edit_qualities&amp;remove=true&amp;content_type=video)</data>
+                </setting>
+                <setting id="remove_default_clip_quality" type="action" label="30193" help="">
+                    <level>1</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=edit_qualities&amp;remove=true&amp;content_type=clip)</data>
+                </setting>
+            </group>
+            <group id="3" label="30194">
+                <setting id="clear_default_stream_qualities" type="action" label="30194" help="">
+                    <level>2</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=clear_list&amp;list_type=stream&amp;list_name=qualities)</data>
+                </setting>
+                <setting id="clear_default_video_qualities" type="action" label="30195" help="">
+                    <level>2</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=clear_list&amp;list_type=video&amp;list_name=qualities)</data>
+                </setting>
+                <setting id="clear_default_clip_qualities" type="action" label="30196" help="">
+                    <level>2</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=clear_list&amp;list_type=clip&amp;list_name=qualities)</data>
+                </setting>
+            </group>
+        </category>
 
-        <setting label="30210" id="live_reconnect" type="bool" default="false"/>
+        <!-- ==================== Notifications ==================== -->
+        <category id="notifications" label="30211" help="">
+            <group id="1" label="30211">
+                <setting id="live_notify" type="boolean" label="30211" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="live_notify_audible" type="boolean" label="30205" help="" parent="live_notify">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible" setting="live_notify">true</dependency>
+                        <dependency type="enable" setting="live_notify">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="live_notify_at_start" type="boolean" label="30232" help="" parent="live_notify">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible" setting="live_notify">true</dependency>
+                        <dependency type="enable" setting="live_notify">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="live_notify_group_start" type="boolean" label="30233" help="" parent="live_notify">
+                    <level>1</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="visible" setting="live_notify_at_start">true</dependency>
+                        <dependency type="enable" setting="live_notify_at_start">true</dependency>
+                    </dependencies>
+                </setting>
+            </group>
+        </category>
 
-        <setting label="30204" type="lsep"/>
-        <setting label="30211" id="live_notify" type="bool" default="false"/>
-        <setting label="30205" id="live_notify_audible" type="bool" default="false" enable="eq(-1,true)" visible="eq(-1,true)"/>
-        <setting label="30232" id="live_notify_at_start" type="bool" default="true" enable="eq(-2,true)" visible="eq(-2,true)"/>
-        <setting label="30233" id="live_notify_group_start" type="bool" default="false" enable="eq(-1,true)" visible="eq(-1,true)"/>
+        <!-- ==================== Language & Localization ==================== -->
+        <category id="language" label="30262" help="">
+            <group id="1" label="30262">
+                <setting id="change_language" type="action" label="30262" help="">
+                    <level>0</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=edit_languages&amp;action=change)</data>
+                </setting>
+            </group>
+        </category>
 
-        <setting label="30090" type="lsep"/>
-        <setting label="30262" id="change_language" type="action" action="RunPlugin(plugin://$ID/?mode=edit_languages&amp;action=change)"/>
+        <!-- ==================== Cache & Proxy ==================== -->
+        <category id="cache" label="30120" help="">
+            <group id="1" label="30120">
+                <setting id="refresh_cache" type="boolean" label="30234" help="">
+                    <level>1</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="cache_expire_time" type="integer" label="30121" help="">
+                    <level>1</level>
+                    <default>3</default>
+                    <constraints>
+                        <minimum>0</minimum>
+                        <maximum>60</maximum>
+                        <step>1</step>
+                    </constraints>
+                    <control type="slider" format="integer"/>
+                </setting>
+                <setting id="reset_cache" type="action" label="30122" help="">
+                    <level>1</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=reset_cache)</data>
+                </setting>
+            </group>
+            <group id="2" label="Proxy">
+                <setting id="proxy_enabled" type="boolean" label="Enable Proxy" help="">
+                    <level>2</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="proxy_host" type="string" label="Proxy Host" help="" parent="proxy_enabled">
+                    <level>2</level>
+                    <default></default>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible" setting="proxy_enabled">true</dependency>
+                        <dependency type="enable" setting="proxy_enabled">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="proxy_port" type="integer" label="Proxy Port" help="" parent="proxy_enabled">
+                    <level>2</level>
+                    <default>8080</default>
+                    <constraints>
+                        <minimum>1</minimum>
+                        <maximum>65535</maximum>
+                    </constraints>
+                    <control type="edit" format="integer"/>
+                    <dependencies>
+                        <dependency type="visible" setting="proxy_enabled">true</dependency>
+                        <dependency type="enable" setting="proxy_enabled">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="proxy_username" type="string" label="Proxy Username" help="" parent="proxy_enabled">
+                    <level>2</level>
+                    <default></default>
+                    <control type="edit" format="string"/>
+                    <dependencies>
+                        <dependency type="visible" setting="proxy_enabled">true</dependency>
+                        <dependency type="enable" setting="proxy_enabled">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="proxy_password" type="string" label="Proxy Password" help="" parent="proxy_enabled">
+                    <level>2</level>
+                    <default></default>
+                    <control type="edit" format="string" hidden="true"/>
+                    <dependencies>
+                        <dependency type="visible" setting="proxy_enabled">true</dependency>
+                        <dependency type="enable" setting="proxy_enabled">true</dependency>
+                    </dependencies>
+                </setting>
+            </group>
+        </category>
 
-        <setting label="30120" type="lsep"/>
-        <setting label="30234" id="refresh_cache" type="bool" default="false"/>
-        <setting label="30121" type="slider" id="cache_expire_time" default="3" range="0,60" option="int"/>
-        <setting label="Proxy" type="lsep"/>
-        <setting label="Enable Proxy" id="proxy_enabled" type="bool" default="false"/>
-        <setting label="Proxy Host" id="proxy_host" type="text" default="" enable="eq(-1,true)" visible="eq(-1,true)" subsetting="true"/>
-        <setting label="Proxy Port" id="proxy_port" type="number" default="8080" enable="eq(-2,true)" visible="eq(-2,true)" subsetting="true"/>
-        <setting label="Proxy Username" id="proxy_username" type="text" default="" enable="eq(-3,true)" visible="eq(-3,true)" subsetting="true"/>
-        <setting label="Proxy Password" id="proxy_password" type="text" default="" option="hidden" enable="eq(-4,true)" visible="eq(-4,true)" subsetting="true"/>
-    </category>
-    <!-- Lists -->
-    <category label="30167">
-        <setting label="30191" id="remove_default_stream_quality" type="action" action="RunPlugin(plugin://$ID/?mode=edit_qualities&amp;remove=true&amp;content_type=stream)"/>
-        <setting label="30192" id="remove_default_video_quality" type="action" action="RunPlugin(plugin://$ID/?mode=edit_qualities&amp;remove=true&amp;content_type=video)"/>
-        <setting label="30193" id="remove_default_clip_quality" type="action" action="RunPlugin(plugin://$ID/?mode=edit_qualities&amp;remove=true&amp;content_type=clip)"/>
+        <!-- ==================== IRC Chat ==================== -->
+        <category id="irc" label="30081" help="">
+            <group id="1" label="30081">
+                <setting id="irc_enable" type="boolean" label="30052" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="enable" on="property" name="infobool">System.HasAddon(script.ircchat)</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="install_ircscript" type="action" label="30075" help="">
+                    <level>0</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=install_ircchat)</data>
+                    <dependencies>
+                        <dependency type="visible" on="property" name="infobool">!System.HasAddon(script.ircchat)</dependency>
+                        <dependency type="enable" on="property" name="infobool">!System.HasAddon(script.ircchat)</dependency>
+                    </dependencies>
+                </setting>
+            </group>
+        </category>
 
-        <setting label="30194" id="clear_default_stream_qualities" type="action" action="RunPlugin(plugin://$ID/?mode=clear_list&amp;list_type=stream&amp;list_name=qualities)"/>
-        <setting label="30195" id="clear_default_video_qualities" type="action" action="RunPlugin(plugin://$ID/?mode=clear_list&amp;list_type=video&amp;list_name=qualities)"/>
-        <setting label="30196" id="clear_default_clip_qualities" type="action" action="RunPlugin(plugin://$ID/?mode=clear_list&amp;list_type=clip&amp;list_name=qualities)"/>
-    </category>
-    <!-- IRC -->
-    <category label="30081">
-        <!-- Enable IRC Chat -->
-        <setting id="irc_enable" type="bool" label="30052" default="false" enable="System.HasAddon(script.ircchat)"/>
-        <setting label="30075" id="install_ircscript" type="action" action="RunPlugin(plugin://$ID/?mode=install_ircchat)"
-                 enable="!System.HasAddon(script.ircchat)" visible="!System.HasAddon(script.ircchat)" option="close"/>
-    </category>
-    <!-- Maintenance -->
-    <category label="30243">
-        <setting label="30120" type="lsep"/>
-        <setting label="30122" id="reset_cache" type="action" action="RunPlugin(plugin://$ID/?mode=reset_cache)"/>
-        <setting label="30244" type="lsep"/>
-        <setting label="30245" id="delete_streams_search" type="action" action="RunPlugin(plugin://$ID/?mode=maintain&amp;sub_mode=delete&amp;file_type=streams_search)"/>
-        <setting label="30246" id="delete_channels_search" type="action" action="RunPlugin(plugin://$ID/?mode=maintain&amp;sub_mode=delete&amp;file_type=channels_search)"/>
-        <setting label="30247" id="delete_games_search" type="action" action="RunPlugin(plugin://$ID/?mode=maintain&amp;sub_mode=delete&amp;file_type=games_search)"/>
-        <setting label="30248" id="delete_idurl_search" type="action" action="RunPlugin(plugin://$ID/?mode=maintain&amp;sub_mode=delete&amp;file_type=id_url_search)"/>
-        <setting label="30249" type="lsep"/>
-        <setting label="30250" id="delete_storage_json" type="action" action="RunPlugin(plugin://$ID/?mode=maintain&amp;sub_mode=delete&amp;file_type=storage_json)"/>
-    </category>
-    <!-- Developer -->
-    <category label="30118">
-        <!-- OAuth Client ID -->
-        <setting id="oauth_clientid" type="text" label="30097" default=""/>
-        <setting id="oauth_redirecturi" type="text" label="30142" default=""/>
-    </category>
+        <!-- ==================== Maintenance ==================== -->
+        <category id="maintenance" label="30243" help="">
+            <group id="1" label="30244">
+                <setting id="delete_streams_search" type="action" label="30245" help="">
+                    <level>0</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=maintain&amp;sub_mode=delete&amp;file_type=streams_search)</data>
+                </setting>
+                <setting id="delete_channels_search" type="action" label="30246" help="">
+                    <level>0</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=maintain&amp;sub_mode=delete&amp;file_type=channels_search)</data>
+                </setting>
+                <setting id="delete_games_search" type="action" label="30247" help="">
+                    <level>0</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=maintain&amp;sub_mode=delete&amp;file_type=games_search)</data>
+                </setting>
+                <setting id="delete_idurl_search" type="action" label="30248" help="">
+                    <level>0</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=maintain&amp;sub_mode=delete&amp;file_type=id_url_search)</data>
+                </setting>
+            </group>
+            <group id="2" label="30249">
+                <setting id="delete_storage_json" type="action" label="30250" help="">
+                    <level>1</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=maintain&amp;sub_mode=delete&amp;file_type=storage_json)</data>
+                </setting>
+            </group>
+        </category>
+
+        <!-- ==================== Developer ==================== -->
+        <category id="developer" label="30118" help="">
+            <group id="1" label="OAuth">
+                <setting id="oauth_clientid" type="string" label="30097" help="">
+                    <level>3</level>
+                    <default></default>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="oauth_redirecturi" type="string" label="30142" help="">
+                    <level>3</level>
+                    <default></default>
+                    <control type="edit" format="string"/>
+                </setting>
+            </group>
+        </category>
+    </section>
 </settings>
