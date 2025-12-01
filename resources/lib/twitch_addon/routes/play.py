@@ -13,6 +13,7 @@ from ..addon.common import kodi, log_utils
 from ..addon.constants import Keys, LINE_LENGTH
 from ..addon.converter import JsonListItemConverter
 from ..addon.twitch_exceptions import PlaybackFailed, SubRequired, TwitchException
+from ..addon.watch_history import get_watch_history
 
 
 def route(api, seek_time=0, channel_id=None, video_id=None, slug=None, ask=False, use_player=False, quality=None, channel_name=None):
@@ -260,6 +261,47 @@ def route(api, seek_time=0, channel_id=None, video_id=None, slug=None, ask=False
                 if (seek_time > 0) and video_id:
                     _set_seek_time(seek_time)
                 _set_playing()
+                
+                # Save to watch history
+                try:
+                    watch_history = get_watch_history()
+                    if utils.get_watch_history_size() > 0:
+                        if is_live and name:
+                            # Live stream
+                            watch_history.add(
+                                content_type='stream',
+                                content_id=channel_id,
+                                channel_id=channel_id,
+                                channel_name=channel_name or name,
+                                title=item_dict.get('info', {}).get('title', ''),
+                                thumbnail=item_dict.get('thumbnail', ''),
+                                game_name=item_dict.get('info', {}).get('genre', '')
+                            )
+                        elif video_id:
+                            # VOD
+                            watch_history.add(
+                                content_type='video',
+                                content_id=video_id,
+                                channel_id=channel_id,
+                                channel_name=channel_name or '',
+                                title=item_dict.get('info', {}).get('title', ''),
+                                thumbnail=item_dict.get('thumbnail', ''),
+                                game_name=item_dict.get('info', {}).get('genre', ''),
+                                duration=item_dict.get('info', {}).get('duration', '')
+                            )
+                        elif slug:
+                            # Clip
+                            watch_history.add(
+                                content_type='clip',
+                                content_id=slug,
+                                channel_id=channel_id,
+                                channel_name=channel_name or '',
+                                title=item_dict.get('info', {}).get('title', ''),
+                                thumbnail=item_dict.get('thumbnail', '')
+                            )
+                except Exception as e:
+                    log_utils.log('Failed to save watch history: %s' % str(e), log_utils.LOGWARNING)
+                
                 if use_player:
                     kodi.Player().play(item_dict['path'], playback_item)
                 else:
