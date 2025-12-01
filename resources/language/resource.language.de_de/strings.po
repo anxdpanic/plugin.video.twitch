@@ -1025,6 +1025,10 @@ msgctxt "#30280"
 msgid "Private OAuth Token (for HEVC)"
 msgstr "Privater OAuth Token (für HEVC)"
 
+msgctxt "#30280"
+msgid "Authentication"
+msgstr "Authentifizierung"
+
 msgctxt "#30281"
 msgid "Twitch Client-ID"
 msgstr "Twitch Client-ID"
@@ -1032,6 +1036,98 @@ msgstr "Twitch Client-ID"
 msgctxt "#30282"
 msgid "Website Token (for HEVC/H.265)"
 msgstr "Website Token (für HEVC/H.265)"
+
+msgctxt "#30283"
+msgid "Low Latency Mode"
+msgstr "Niedrige Latenz Modus"
+
+msgctxt "#30284"
+msgid "Watch History Size"
+msgstr "Größe des Wiedergabeverlaufs"
+
+msgctxt "#30285"
+msgid "Watch History"
+msgstr "Wiedergabeverlauf"
+
+msgctxt "#30286"
+msgid "Recently watched streams and videos"
+msgstr "Zuletzt angesehene Streams und Videos"
+
+msgctxt "#30287"
+msgid "No watch history"
+msgstr "Kein Wiedergabeverlauf"
+
+msgctxt "#30288"
+msgid "Remove from history"
+msgstr "Aus Verlauf entfernen"
+
+msgctxt "#30289"
+msgid "Clear watch history"
+msgstr "Wiedergabeverlauf löschen"
+
+msgctxt "#30290"
+msgid "Are you sure you want to clear all watch history?"
+msgstr "Möchtest du wirklich den gesamten Wiedergabeverlauf löschen?"
+
+msgctxt "#30291"
+msgid "Watch history cleared"
+msgstr "Wiedergabeverlauf gelöscht"
+
+msgctxt "#30292"
+msgid "Removed from history"
+msgstr "Aus Verlauf entfernt"
+
+msgctxt "#30293"
+msgid "Not authorized. Please check your login."
+msgstr "Nicht autorisiert. Bitte überprüfe deine Anmeldung."
+
+msgctxt "#30294"
+msgid "Access denied. You may need to subscribe."
+msgstr "Zugriff verweigert. Du musst möglicherweise abonnieren."
+
+msgctxt "#30295"
+msgid "Content not found. It may have been deleted."
+msgstr "Inhalt nicht gefunden. Er wurde möglicherweise gelöscht."
+
+msgctxt "#30296"
+msgid "Too many requests. Please wait a moment."
+msgstr "Zu viele Anfragen. Bitte warte einen Moment."
+
+msgctxt "#30297"
+msgid "Twitch server error. Please try again later."
+msgstr "Twitch-Serverfehler. Bitte versuche es später erneut."
+
+msgctxt "#30298"
+msgid "Connection timed out. Please try again."
+msgstr "Verbindungszeitüberschreitung. Bitte versuche es erneut."
+
+msgctxt "#30299"
+msgid "This VOD is for subscribers only."
+msgstr "Dieses VOD ist nur für Abonnenten."
+
+msgctxt "#30300"
+msgid "Your token has expired. Please re-authenticate."
+msgstr "Dein Token ist abgelaufen. Bitte erneut anmelden."
+
+msgctxt "#30301"
+msgid "This stream is currently offline."
+msgstr "Dieser Stream ist derzeit offline."
+
+msgctxt "#30302"
+msgid "Selected quality is not available."
+msgstr "Ausgewählte Qualität ist nicht verfügbar."
+
+msgctxt "#30303"
+msgid "Please check your internet connection."
+msgstr "Bitte überprüfe deine Internetverbindung."
+
+msgctxt "#30304"
+msgid "An unexpected error occurred."
+msgstr "Ein unerwarteter Fehler ist aufgetreten."
+
+msgctxt "#30305"
+msgid "An unknown error occurred."
+msgstr "Ein unbekannter Fehler ist aufgetreten."
 
 #~ msgctxt "#30132"
 #~ msgid "OAuth token is required for access to authorized user functions."
