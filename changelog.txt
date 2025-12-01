@@ -1,3 +1,18 @@
+3.1.0
+[add] Low Latency Mode - Reduces stream delay for live streams (Settings → General → Low Latency Mode)
+[add] Watch History - Track recently watched streams, VODs and clips with SQLite storage
+[add] HEVC/H.265 support with Website Token authentication
+[add] H.264 quality selection fix - Proper resolution filtering for non-HEVC streams
+[fix] Improved error handling with user-friendly error messages
+[fix] Better exception handling for network, authentication and streaming errors
+[upd] Settings modernized to Kodi 21 format with better organization
+[upd] Settings now use sections, categories and groups for clearer navigation
+[upd] New setting levels (Basic, Standard, Advanced, Expert) for complexity control
+
+3.0.2
+[fix] Fix HEVC streaming with proper GQL token authentication
+[fix] Audio codec handling for HEVC streams
+
 2.6.0
 [update] Update Twitch API usage from v5 to Helix
     - This change will require you to generate a new oauth token from the add-on settings
