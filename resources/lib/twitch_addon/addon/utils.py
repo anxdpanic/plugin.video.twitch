@@ -242,6 +242,20 @@ def get_private_client_id():
     return get_twitch_client_id()
 
 
+def get_low_latency():
+    """Check if low latency mode is enabled in settings"""
+    return kodi.get_setting('low_latency') == 'true'
+
+
+def get_watch_history_size():
+    """Get the maximum number of watch history entries to keep"""
+    try:
+        size = int(kodi.get_setting('watch_history_size'))
+        return max(0, min(size, 200))  # Clamp between 0 and 200
+    except (ValueError, TypeError):
+        return 50  # Default
+
+
 def get_proxy_dict():
     from .common import log_utils
     
