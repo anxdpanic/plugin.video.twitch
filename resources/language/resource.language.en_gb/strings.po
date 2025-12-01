@@ -1038,6 +1038,106 @@ msgctxt "#30281"
 msgid "Twitch Client-ID"
 msgstr ""
 
+msgctxt "#30280"
+msgid "Authentication"
+msgstr ""
+
+msgctxt "#30281"
+msgid "Client ID"
+msgstr ""
+
 msgctxt "#30282"
 msgid "Website Token (for HEVC/H.265)"
+msgstr ""
+
+msgctxt "#30283"
+msgid "Low Latency Mode"
+msgstr ""
+
+msgctxt "#30284"
+msgid "Watch History Size"
+msgstr ""
+
+msgctxt "#30285"
+msgid "Watch History"
+msgstr ""
+
+msgctxt "#30286"
+msgid "Recently watched streams and videos"
+msgstr ""
+
+msgctxt "#30287"
+msgid "No watch history"
+msgstr ""
+
+msgctxt "#30288"
+msgid "Remove from history"
+msgstr ""
+
+msgctxt "#30289"
+msgid "Clear watch history"
+msgstr ""
+
+msgctxt "#30290"
+msgid "Are you sure you want to clear all watch history?"
+msgstr ""
+
+msgctxt "#30291"
+msgid "Watch history cleared"
+msgstr ""
+
+msgctxt "#30292"
+msgid "Removed from history"
+msgstr ""
+
+msgctxt "#30293"
+msgid "Not authorized. Please check your login."
+msgstr ""
+
+msgctxt "#30294"
+msgid "Access denied. You may need to subscribe."
+msgstr ""
+
+msgctxt "#30295"
+msgid "Content not found. It may have been deleted."
+msgstr ""
+
+msgctxt "#30296"
+msgid "Too many requests. Please wait a moment."
+msgstr ""
+
+msgctxt "#30297"
+msgid "Twitch server error. Please try again later."
+msgstr ""
+
+msgctxt "#30298"
+msgid "Connection timed out. Please try again."
+msgstr ""
+
+msgctxt "#30299"
+msgid "This VOD is for subscribers only."
+msgstr ""
+
+msgctxt "#30300"
+msgid "Your token has expired. Please re-authenticate."
+msgstr ""
+
+msgctxt "#30301"
+msgid "This stream is currently offline."
+msgstr ""
+
+msgctxt "#30302"
+msgid "Selected quality is not available."
+msgstr ""
+
+msgctxt "#30303"
+msgid "Please check your internet connection."
+msgstr ""
+
+msgctxt "#30304"
+msgid "An unexpected error occurred."
+msgstr ""
+
+msgctxt "#30305"
+msgid "An unknown error occurred."
 msgstr ""
