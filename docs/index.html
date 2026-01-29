@@ -1,16 +1,117 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Twitch for Kodi</title>
-    <meta name="description" content="">
-    <meta name="author" content="A Talented Community">
+    <meta name="description" content="Twitch addon for Kodi - Documentation and Tools">
+    <meta name="author" content="Twitch for Kodi Community">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        html, body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #9147ff;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #888;
+            font-size: 1.1em;
+            margin-bottom: 50px;
+        }
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .tool-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(145, 71, 255, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(145, 71, 255, 0.2);
+            border-color: #9147ff;
+        }
+        .tool-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        .tool-title {
+            color: #bf94ff;
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .tool-description {
+            color: #888;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        footer {
+            margin-top: 60px;
+            font-size: 0.85em;
+            color: #666;
+        }
+        footer a {
+            color: #9147ff;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
-
 <body>
-<div class="body">
-
+    <div class="container">
+        <h1>🎮 Twitch for Kodi</h1>
+        <p class="subtitle">Tools and Documentation</p>
+        
+        <div class="tools-grid">
+            <a href="oauth/" class="tool-card">
+                <div class="tool-icon">🔐</div>
+                <div class="tool-title">OAuth Token Generator</div>
+                <div class="tool-description">
+                    Generate OAuth tokens using your own Twitch application credentials for enhanced privacy and control.
+                </div>
+            </a>
+            
+            <a href="token/" class="tool-card">
+                <div class="tool-icon">🎫</div>
+                <div class="tool-title">Token Callback</div>
+                <div class="tool-description">
+                    OAuth callback handler for receiving authentication tokens from Twitch.
+                </div>
+            </a>
+        </div>
+        
+        <footer>
+            <p>
+                <a href="https://github.com/anxdpanic/plugin.video.twitch" target="_blank">GitHub Repository</a> · 
+                <a href="https://github.com/anxdpanic/plugin.video.twitch/issues" target="_blank">Report Issues</a>
+            </p>
+        </footer>
+    </div>
 </body>
 </html>

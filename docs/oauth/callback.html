@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAuth Callback - Twitch for Kodi</title>
+    <meta name="description" content="OAuth callback handler for Twitch Kodi Addon">
+    <style>
+        @font-face {
+            font-family: JetBrains-Mono;
+            src: url('../token/JetBrainsMono-Regular.woff2') format('woff2'), 
+                url('../token/JetBrainsMono-Regular.woff') format('woff');
+        }
+        * {
+            box-sizing: border-box;
+        }
+        html, body {
+            font-family: JetBrains-Mono, 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(145, 71, 255, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+        h1 {
+            color: #9147ff;
+            margin-bottom: 10px;
+            font-size: 1.8em;
+        }
+        .subtitle {
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+        .success-icon, .error-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        .success-icon { color: #00ff64; }
+        .error-icon { color: #ff4747; }
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(145, 71, 255, 0.3);
+            border-top-color: #9147ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .token-display {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            word-break: break-all;
+            text-align: left;
+        }
+        .token-label {
+            color: #bf94ff;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+        }
+        .token-value {
+            color: #00ff64;
+            font-size: 0.9em;
+            position: relative;
+        }
+        .token-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #00ff64;
+            font-family: inherit;
+            font-size: 0.9em;
+            padding: 10px;
+            padding-right: 80px;
+            outline: none;
+            cursor: text;
+        }
+        .copy-btn {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #9147ff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.85em;
+            transition: background 0.2s;
+        }
+        .copy-btn:hover {
+            background: #772ce8;
+        }
+        .error-message {
+            color: #ff6b6b;
+            background: rgba(255, 71, 71, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .scopes-section {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .scopes-section h3 {
+            color: #bf94ff;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        .scope-item {
+            color: #aaa;
+            font-size: 0.8em;
+            padding: 4px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #9147ff 0%, #772ce8 100%);
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.95em;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(145, 71, 255, 0.4);
+        }
+        .instructions {
+            background: rgba(145, 71, 255, 0.1);
+            border-left: 3px solid #9147ff;
+            padding: 15px;
+            margin: 25px 0;
+            font-size: 0.85em;
+            line-height: 1.6;
+            text-align: left;
+        }
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #bf94ff;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.8em;
+            color: #666;
+        }
+        footer a {
+            color: #9147ff;
+            text-decoration: none;
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 15px;
+            }
+            .card {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.4em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card" id="loading-card">
+            <div class="loading">
+                <div class="spinner"></div>
+                <span>Processing authentication...</span>
+            </div>
+        </div>
+
+        <div class="card" id="success-card" style="display: none;">
+            <div class="success-icon">✅</div>
+            <h1>Authentication Successful!</h1>
+            <p class="subtitle">Your OAuth token has been generated</p>
+            
+            <div class="token-display">
+                <div class="token-label">OAuth Token</div>
+                <div class="token-value">
+                    <input type="text" class="token-input" id="token-value" readonly onclick="this.select()">
+                    <button class="copy-btn" onclick="copyToken()">Copy</button>
+                </div>
+            </div>
+
+            <div class="instructions">
+                <strong>How to use:</strong><br>
+                1. Copy the token above<br>
+                2. Open Kodi and go to the Twitch addon settings<br>
+                3. Navigate to <code>Login</code> section<br>
+                4. Paste the token in the <code>OAuth Token</code> field
+            </div>
+
+            <div class="scopes-section" id="scopes-section">
+                <h3>Authorized Scopes:</h3>
+                <div id="scopes-list"></div>
+            </div>
+
+            <a href="index.html" class="btn">Generate Another Token</a>
+        </div>
+
+        <div class="card" id="error-card" style="display: none;">
+            <div class="error-icon">❌</div>
+            <h1>Authentication Failed</h1>
+            <p class="subtitle">Something went wrong during authentication</p>
+            
+            <div class="error-message" id="error-message"></div>
+
+            <a href="index.html" class="btn">Try Again</a>
+        </div>
+        
+        <footer>
+            <p>Part of <a href="https://github.com/anxdpanic/plugin.video.twitch" target="_blank">Twitch for Kodi</a> addon</p>
+        </footer>
+    </div>
+
+    <script>
+        // Scope descriptions
+        const SCOPE_DESCRIPTIONS = {
+            'analytics:read:extensions': 'View analytics data for the Twitch Extensions owned by the authenticated account.',
+            'analytics:read:games': 'View analytics data for the games owned by the authenticated account.',
+            'bits:read': 'View Bits information for a channel.',
+            'channel:edit:commercial': 'Run commercials on a channel.',
+            'channel:manage:broadcast': 'Manage a channel\'s broadcast configuration.',
+            'channel:manage:extensions': 'Manage a channel\'s Extension configuration.',
+            'channel:manage:polls': 'Manage a channel\'s polls.',
+            'channel:manage:predictions': 'Manage of channel\'s Channel Points Predictions.',
+            'channel:manage:redemptions': 'Manage Channel Points custom rewards.',
+            'channel:manage:schedule': 'Manage a channel\'s stream schedule.',
+            'channel:manage:videos': 'Manage a channel\'s videos.',
+            'channel:read:editors': 'View a list of users with the editor role for a channel.',
+            'channel:read:goals': 'View Creator Goals for a channel.',
+            'channel:read:hype_train': 'View Hype Train information for a channel.',
+            'channel:read:polls': 'View a channel\'s polls.',
+            'channel:read:predictions': 'View a channel\'s Channel Points Predictions.',
+            'channel:read:redemptions': 'View Channel Points custom rewards.',
+            'channel:read:stream_key': 'View an authorized user\'s stream key.',
+            'channel:read:subscriptions': 'View a list of all subscribers to a channel.',
+            'clips:edit': 'Manage Clips for a channel.',
+            'moderation:read': 'View a channel\'s moderation data.',
+            'moderator:manage:banned_users': 'Ban and unban users.',
+            'moderator:read:blocked_terms': 'View a broadcaster\'s list of blocked terms.',
+            'moderator:manage:blocked_terms': 'Manage a broadcaster\'s list of blocked terms.',
+            'moderator:manage:automod': 'Manage messages held for review by AutoMod.',
+            'moderator:read:automod_settings': 'View a broadcaster\'s AutoMod settings.',
+            'moderator:manage:automod_settings': 'Manage a broadcaster\'s AutoMod settings.',
+            'moderator:read:chat_settings': 'View a broadcaster\'s chat room settings.',
+            'moderator:manage:chat_settings': 'Manage a broadcaster\'s chat room settings.',
+            'user:edit': 'Manage a user object.',
+            'user:manage:blocked_users': 'Manage the block list of a user.',
+            'user:read:blocked_users': 'View the block list of a user.',
+            'user:read:broadcast': 'View a user\'s broadcasting configuration.',
+            'user:read:email': 'View a user\'s email address.',
+            'user:read:follows': 'View the list of channels a user follows.',
+            'user:read:subscriptions': 'View if an authorized user is subscribed to specific channels.',
+            'channel:moderate': 'Perform moderation actions in a channel.',
+            'chat:edit': 'Send live stream chat and rooms messages.',
+            'chat:read': 'View live stream chat and rooms messages.',
+            'whispers:read': 'View your whisper messages.',
+            'whispers:edit': 'Send whisper messages.'
+        };
+
+        function showLoading() {
+            document.getElementById('loading-card').style.display = 'block';
+            document.getElementById('success-card').style.display = 'none';
+            document.getElementById('error-card').style.display = 'none';
+        }
+
+        function showSuccess(token, scopes) {
+            document.getElementById('loading-card').style.display = 'none';
+            document.getElementById('success-card').style.display = 'block';
+            document.getElementById('error-card').style.display = 'none';
+            
+            document.getElementById('token-value').value = token;
+            
+            // Display scopes
+            const scopesList = document.getElementById('scopes-list');
+            scopesList.innerHTML = '';
+            if (scopes && scopes.length > 0) {
+                scopes.forEach(scope => {
+                    if (scope.trim()) {
+                        const div = document.createElement('div');
+                        div.className = 'scope-item';
+                        div.textContent = scope.trim();
+                        if (SCOPE_DESCRIPTIONS[scope.trim()]) {
+                            div.title = SCOPE_DESCRIPTIONS[scope.trim()];
+                            div.style.cursor = 'help';
+                        }
+                        scopesList.appendChild(div);
+                    }
+                });
+            } else {
+                document.getElementById('scopes-section').style.display = 'none';
+            }
+        }
+
+        function showError(error, description) {
+            document.getElementById('loading-card').style.display = 'none';
+            document.getElementById('success-card').style.display = 'none';
+            document.getElementById('error-card').style.display = 'block';
+            
+            let errorMsg = '<strong>Error:</strong> ' + error;
+            if (description) {
+                errorMsg += '<br><br>' + decodeURIComponent(description.replace(/\+/g, ' '));
+            }
+            document.getElementById('error-message').innerHTML = errorMsg;
+        }
+
+        function copyToken() {
+            const tokenInput = document.getElementById('token-value');
+            tokenInput.select();
+            tokenInput.setSelectionRange(0, 99999); // For mobile
+            
+            try {
+                document.execCommand('copy');
+                const copyBtn = document.querySelector('.copy-btn');
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copied!';
+                copyBtn.style.background = '#00cc52';
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.background = '';
+                }, 2000);
+            } catch (err) {
+                alert('Failed to copy. Please select and copy manually.');
+            }
+        }
+
+        function parseResponse() {
+            // Check hash fragment (for implicit grant)
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                const params = new URLSearchParams(hash);
+                const accessToken = params.get('access_token');
+                const scope = params.get('scope');
+                
+                if (accessToken) {
+                    let scopes = [];
+                    if (scope) {
+                        scopes = decodeURIComponent(scope).split(/[+ ]/);
+                    }
+                    showSuccess(accessToken, scopes);
+                    return;
+                }
+
+                const error = params.get('error');
+                if (error) {
+                    showError(error, params.get('error_description'));
+                    return;
+                }
+            }
+
+            // Check query parameters (for errors)
+            const urlParams = new URLSearchParams(window.location.search);
+            const error = urlParams.get('error');
+            if (error) {
+                showError(error, urlParams.get('error_description'));
+                return;
+            }
+
+            // No response found
+            showError('No Response', 'No authentication response was received. Please try again.');
+        }
+
+        // Process on page load
+        window.addEventListener('load', parseResponse);
+    </script>
+</body>
+</html>

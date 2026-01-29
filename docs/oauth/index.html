@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitch OAuth Token Generator - Kodi Addon</title>
+    <meta name="description" content="Generate OAuth tokens for Twitch Kodi Addon">
+    <meta name="author" content="Twitch for Kodi Community">
+    <link rel="stylesheet" href="https://unpkg.com/balloon-css/balloon.min.css">
+    <style>
+        @font-face {
+            font-family: JetBrains-Mono;
+            src: url('../token/JetBrainsMono-Regular.woff2') format('woff2'), 
+                url('../token/JetBrainsMono-Regular.woff') format('woff');
+        }
+        * {
+            box-sizing: border-box;
+        }
+        html, body {
+            font-family: JetBrains-Mono, 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(145, 71, 255, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            color: #9147ff;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 1.8em;
+        }
+        .subtitle {
+            color: #888;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #bf94ff;
+            font-size: 0.9em;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(145, 71, 255, 0.4);
+            border-radius: 6px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #9147ff;
+            box-shadow: 0 0 0 3px rgba(145, 71, 255, 0.2);
+        }
+        input::placeholder {
+            color: #666;
+        }
+        .btn {
+            width: 100%;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #9147ff 0%, #772ce8 100%);
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(145, 71, 255, 0.4);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .btn:disabled {
+            background: #444;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .info-box {
+            background: rgba(145, 71, 255, 0.1);
+            border-left: 3px solid #9147ff;
+            padding: 15px;
+            margin: 25px 0;
+            font-size: 0.85em;
+            line-height: 1.6;
+        }
+        .info-box a {
+            color: #bf94ff;
+        }
+        .warning-box {
+            background: rgba(255, 171, 0, 0.1);
+            border-left: 3px solid #ffab00;
+            padding: 15px;
+            margin: 25px 0;
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #ffcc66;
+        }
+        .result-box {
+            display: none;
+            background: rgba(0, 255, 100, 0.1);
+            border: 1px solid rgba(0, 255, 100, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+        .result-box.error {
+            background: rgba(255, 71, 71, 0.1);
+            border-color: rgba(255, 71, 71, 0.3);
+        }
+        .result-box h3 {
+            color: #00ff64;
+            margin: 0 0 15px 0;
+            font-size: 1em;
+        }
+        .result-box.error h3 {
+            color: #ff4747;
+        }
+        .token-display {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 6px;
+            word-break: break-all;
+            font-size: 0.9em;
+            position: relative;
+        }
+        .token-display input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #00ff64;
+            font-family: inherit;
+            font-size: inherit;
+            outline: none;
+        }
+        .copy-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #9147ff;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.8em;
+        }
+        .copy-btn:hover {
+            background: #772ce8;
+        }
+        .scopes-list {
+            margin-top: 15px;
+        }
+        .scopes-list h4 {
+            color: #bf94ff;
+            margin: 0 0 10px 0;
+            font-size: 0.9em;
+        }
+        .scopes-list ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .scopes-list li {
+            font-size: 0.8em;
+            padding: 4px 0;
+            color: #aaa;
+        }
+        .steps {
+            margin: 20px 0;
+        }
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        .step-number {
+            background: #9147ff;
+            color: #fff;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        .step-content {
+            font-size: 0.85em;
+            line-height: 1.5;
+        }
+        .toggle-visibility {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 5px;
+        }
+        .input-wrapper {
+            position: relative;
+        }
+        .input-wrapper input {
+            padding-right: 45px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.8em;
+            color: #666;
+        }
+        footer a {
+            color: #9147ff;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 15px;
+            }
+            .card {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.4em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>🎮 Twitch OAuth Generator</h1>
+            <p class="subtitle">Generate OAuth tokens for Twitch Kodi Addon</p>
+            
+            <div class="info-box">
+                <strong>Before you start:</strong><br>
+                You need a Twitch Application. Create one at 
+                <a href="https://dev.twitch.tv/console/apps" target="_blank">dev.twitch.tv/console/apps</a>
+            </div>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        Go to <a href="https://dev.twitch.tv/console/apps" target="_blank">Twitch Developer Console</a> and create a new application (or use an existing one)
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        Set the OAuth Redirect URL to:<br>
+                        <code style="color: #9147ff; word-break: break-all;">https://YOUR_GITHUB_USERNAME.github.io/plugin.video.twitch/docs/oauth/callback.html</code>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        Copy your <strong>Client ID</strong> from the application settings and paste it below
+                    </div>
+                </div>
+            </div>
+
+            <form id="oauth-form">
+                <div class="form-group">
+                    <label for="client-id">Client ID</label>
+                    <input type="text" id="client-id" placeholder="Enter your Twitch Client ID" required>
+                </div>
+                
+                <div class="warning-box">
+                    <strong>⚠️ Security Note:</strong> Your Client ID is only stored locally in your browser and is never sent to any server except Twitch during authentication.
+                </div>
+                
+                <button type="submit" class="btn" id="auth-btn">
+                    🔐 Authenticate with Twitch
+                </button>
+            </form>
+
+            <div class="result-box" id="result-box">
+                <h3 id="result-title">✅ OAuth Token Generated!</h3>
+                <div class="token-display">
+                    <input type="text" id="token-value" readonly onclick="this.select()">
+                    <button type="button" class="copy-btn" onclick="copyToken()">Copy</button>
+                </div>
+                <div class="scopes-list" id="scopes-list">
+                    <h4>Authorized Scopes:</h4>
+                    <ul id="scopes-ul"></ul>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Part of <a href="https://github.com/anxdpanic/plugin.video.twitch" target="_blank">Twitch for Kodi</a> addon</p>
+        </footer>
+    </div>
+
+    <script>
+        // OAuth scopes required by the Kodi addon
+        const OAUTH_SCOPES = [
+            'user:read:email',
+            'user:read:follows',
+            'user:edit:follows',
+            'user:read:subscriptions',
+            'user:read:blocked_users',
+            'user:manage:blocked_users',
+            'chat:read',
+            'chat:edit'
+        ];
+
+        // Scope descriptions for tooltips
+        const SCOPE_DESCRIPTIONS = {
+            'user:read:email': 'View your email address',
+            'user:read:follows': 'View the list of channels you follow',
+            'user:edit:follows': 'Manage the list of channels you follow',
+            'user:read:subscriptions': 'View your channel subscriptions',
+            'user:read:blocked_users': 'View your blocked users list',
+            'user:manage:blocked_users': 'Manage your blocked users list',
+            'chat:read': 'View live stream chat messages',
+            'chat:edit': 'Send live stream chat messages'
+        };
+
+        // Check if we're returning from OAuth
+        function checkOAuthCallback() {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                const params = new URLSearchParams(hash);
+                const accessToken = params.get('access_token');
+                const scope = params.get('scope');
+                const error = params.get('error');
+                const errorDescription = params.get('error_description');
+
+                if (accessToken) {
+                    showToken(accessToken, scope);
+                    // Clear the hash from URL
+                    history.replaceState(null, '', window.location.pathname);
+                } else if (error) {
+                    showError(error, errorDescription);
+                    history.replaceState(null, '', window.location.pathname);
+                }
+            }
+
+            // Also check query params for errors
+            const urlParams = new URLSearchParams(window.location.search);
+            const error = urlParams.get('error');
+            if (error) {
+                showError(error, urlParams.get('error_description'));
+                history.replaceState(null, '', window.location.pathname);
+            }
+        }
+
+        function showToken(token, scopeString) {
+            const resultBox = document.getElementById('result-box');
+            const tokenValue = document.getElementById('token-value');
+            const scopesUl = document.getElementById('scopes-ul');
+            const resultTitle = document.getElementById('result-title');
+
+            resultTitle.textContent = '✅ OAuth Token Generated!';
+            resultBox.classList.remove('error');
+            tokenValue.value = token;
+
+            // Parse and display scopes
+            scopesUl.innerHTML = '';
+            if (scopeString) {
+                const scopes = decodeURIComponent(scopeString).split(/[+ ]/);
+                scopes.forEach(scope => {
+                    if (scope.trim()) {
+                        const li = document.createElement('li');
+                        li.textContent = scope.trim();
+                        if (SCOPE_DESCRIPTIONS[scope.trim()]) {
+                            li.title = SCOPE_DESCRIPTIONS[scope.trim()];
+                            li.style.cursor = 'help';
+                        }
+                        scopesUl.appendChild(li);
+                    }
+                });
+            }
+
+            resultBox.style.display = 'block';
+        }
+
+        function showError(error, description) {
+            const resultBox = document.getElementById('result-box');
+            const tokenValue = document.getElementById('token-value');
+            const resultTitle = document.getElementById('result-title');
+            const scopesList = document.getElementById('scopes-list');
+
+            resultTitle.textContent = '❌ Authentication Failed';
+            resultBox.classList.add('error');
+            
+            let errorMsg = error;
+            if (description) {
+                errorMsg += ': ' + decodeURIComponent(description.replace(/\+/g, ' '));
+            }
+            tokenValue.value = errorMsg;
+            scopesList.style.display = 'none';
+
+            resultBox.style.display = 'block';
+        }
+
+        function copyToken() {
+            const tokenInput = document.getElementById('token-value');
+            tokenInput.select();
+            document.execCommand('copy');
+            
+            const copyBtn = document.querySelector('.copy-btn');
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+            }, 2000);
+        }
+
+        // Form submission
+        document.getElementById('oauth-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const clientId = document.getElementById('client-id').value.trim();
+            
+            if (!clientId) {
+                alert('Please enter your Client ID');
+                return;
+            }
+
+            // Store client ID in localStorage (for reference)
+            localStorage.setItem('twitch_client_id', clientId);
+
+            // Build OAuth URL
+            const redirectUri = window.location.href.replace(/\/[^\/]*$/, '/') + 'callback.html';
+            const scope = OAUTH_SCOPES.join(' ');
+            
+            const authUrl = 'https://id.twitch.tv/oauth2/authorize' +
+                '?client_id=' + encodeURIComponent(clientId) +
+                '&redirect_uri=' + encodeURIComponent(redirectUri) +
+                '&response_type=token' +
+                '&scope=' + encodeURIComponent(scope);
+
+            // Redirect to Twitch OAuth
+            window.location.href = authUrl;
+        });
+
+        // Load saved client ID
+        window.addEventListener('load', function() {
+            const savedClientId = localStorage.getItem('twitch_client_id');
+            if (savedClientId) {
+                document.getElementById('client-id').value = savedClientId;
+            }
+            checkOAuthCallback();
+        });
+    </script>
+</body>
+</html>
