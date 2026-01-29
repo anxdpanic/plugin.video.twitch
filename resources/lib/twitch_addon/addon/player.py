@@ -80,9 +80,43 @@ class TwitchPlayer(xbmc.Player):
         if not is_playing:
             self.reset()
         else:
+            # Auto-select second audio track if multiple tracks are available
+            # This fixes HEVC streams where the first audio track is often muted
+            self._auto_select_audio_track()
+            
             if seek_time:
                 seek_time = float(seek_time)
                 self.seekTime(seek_time)
+
+    def _auto_select_audio_track(self):
+        """
+        Automatically select the second audio track if available.
+        
+        Twitch HEVC/1440p+ streams often have 2 audio tracks where the first one
+        is muted/empty and the second one contains the actual audio.
+        This workaround switches to the second audio track when detected.
+        """
+        try:
+            # Wait a short moment for streams to be fully initialized
+            xbmc.sleep(500)
+            
+            # Get available audio streams
+            audio_streams = self.getAvailableAudioStreams()
+            log_utils.log('Player: Available audio streams: {}'.format(audio_streams), log_utils.LOGDEBUG)
+            
+            if audio_streams and len(audio_streams) > 1:
+                # Get current audio stream index
+                current_audio = self.getAudioStream()
+                log_utils.log('Player: Current audio stream index: {}'.format(current_audio), log_utils.LOGDEBUG)
+                
+                # If we're on the first audio track (index 0), switch to the second (index 1)
+                if current_audio == 0:
+                    log_utils.log('Player: Multiple audio tracks detected, switching to track 2 (index 1)', 
+                                  log_utils.LOGINFO)
+                    self.setAudioStream(1)
+        except Exception as e:
+            log_utils.log('Player: Error in _auto_select_audio_track: {}'.format(str(e)), 
+                          log_utils.LOGWARNING)
 
     def onPlayBackStopped(self):
         log_utils.log('Player: |onPlayBackStopped|', log_utils.LOGDEBUG)
