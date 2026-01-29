@@ -285,7 +285,8 @@
                     <div class="step-number">2</div>
                     <div class="step-content">
                         Set the OAuth Redirect URL to:<br>
-                        <code style="color: #9147ff; word-break: break-all;">https://YOUR_GITHUB_USERNAME.github.io/plugin.video.twitch/docs/oauth/callback.html</code>
+                        <code id="redirect-uri-display" style="color: #9147ff; word-break: break-all; cursor: pointer;" onclick="copyRedirectUri()" title="Click to copy"></code>
+                        <button type="button" onclick="copyRedirectUri()" style="margin-left: 10px; padding: 4px 10px; background: #9147ff; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 0.8em;">Copy</button>
                     </div>
                 </div>
                 <div class="step">
@@ -460,8 +461,10 @@
             localStorage.setItem('twitch_client_id', clientId);
 
             // Build OAuth URL
-            const redirectUri = window.location.href.replace(/\/[^\/]*$/, '/') + 'callback.html';
+            const redirectUri = getRedirectUri();
             const scope = OAUTH_SCOPES.join(' ');
+            
+            console.log('Redirect URI:', redirectUri);
             
             const authUrl = 'https://id.twitch.tv/oauth2/authorize' +
                 '?client_id=' + encodeURIComponent(clientId) +
@@ -473,12 +476,53 @@
             window.location.href = authUrl;
         });
 
-        // Load saved client ID
+        // Get the correct redirect URI based on current location
+        function getRedirectUri() {
+            const currentUrl = window.location.href;
+            // Remove any hash or query params and get the base path
+            const baseUrl = currentUrl.split('?')[0].split('#')[0];
+            // Replace index.html or trailing slash with callback.html
+            if (baseUrl.endsWith('index.html')) {
+                return baseUrl.replace('index.html', 'callback.html');
+            } else if (baseUrl.endsWith('/')) {
+                return baseUrl + 'callback.html';
+            } else {
+                return baseUrl.replace(/\/[^\/]*$/, '/callback.html');
+            }
+        }
+
+        function copyRedirectUri() {
+            const redirectUri = getRedirectUri();
+            navigator.clipboard.writeText(redirectUri).then(function() {
+                const display = document.getElementById('redirect-uri-display');
+                const originalText = display.textContent;
+                display.textContent = 'Copied!';
+                display.style.color = '#00ff64';
+                setTimeout(function() {
+                    display.textContent = originalText;
+                    display.style.color = '#9147ff';
+                }, 1500);
+            }).catch(function() {
+                // Fallback
+                const textArea = document.createElement('textarea');
+                textArea.value = getRedirectUri();
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            });
+        }
+
+        // Load saved client ID and set redirect URI display
         window.addEventListener('load', function() {
             const savedClientId = localStorage.getItem('twitch_client_id');
             if (savedClientId) {
                 document.getElementById('client-id').value = savedClientId;
             }
+            
+            // Display the redirect URI
+            document.getElementById('redirect-uri-display').textContent = getRedirectUri();
+            
             checkOAuthCallback();
         });
     </script>
