@@ -105,15 +105,11 @@ class TwitchPlayer(xbmc.Player):
             log_utils.log('Player: Available audio streams: {}'.format(audio_streams), log_utils.LOGDEBUG)
             
             if audio_streams and len(audio_streams) > 1:
-                # Get current audio stream index
-                current_audio = self.getAudioStream()
-                log_utils.log('Player: Current audio stream index: {}'.format(current_audio), log_utils.LOGDEBUG)
-                
-                # If we're on the first audio track (index 0), switch to the second (index 1)
-                if current_audio == 0:
-                    log_utils.log('Player: Multiple audio tracks detected, switching to track 2 (index 1)', 
-                                  log_utils.LOGINFO)
-                    self.setAudioStream(1)
+                # Switch to the second audio track (index 1)
+                # Twitch HEVC streams typically have the actual audio on the second track
+                log_utils.log('Player: Multiple audio tracks detected ({}), switching to track 2 (index 1)'.format(
+                              len(audio_streams)), log_utils.LOGINFO)
+                self.setAudioStream(1)
         except Exception as e:
             log_utils.log('Player: Error in _auto_select_audio_track: {}'.format(str(e)), 
                           log_utils.LOGWARNING)
