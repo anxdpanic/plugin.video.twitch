@@ -210,10 +210,13 @@ def route(api, seek_time=0, channel_id=None, video_id=None, slug=None, ask=False
                         pass
                 if 'Adaptive' in quality_label and use_ia:
                     inputstream_property = 'inputstream'
-                    if kodi.get_kodi_version().major < 19:
+                    kodi_version = kodi.get_kodi_version()
+                    if kodi_version.major < 19:
                         inputstream_property += 'addon'
                     playback_item.setProperty(inputstream_property, 'inputstream.adaptive')
-                    playback_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
+                    # manifest_type is deprecated on Kodi 21+ (auto-detected)
+                    if kodi_version.major < 21:
+                        playback_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
                     
                     # Use 'fixed-res' mode to select the highest quality stream from the start
                     # and keep it fixed without adaptive bandwidth-based switching.
@@ -224,10 +227,9 @@ def route(api, seek_time=0, channel_id=None, video_id=None, slug=None, ask=False
                     # - No mid-stream quality switching that could cause audio desync
                     playback_item.setProperty('inputstream.adaptive.stream_selection_type', 'fixed-res')
                     
-                    # Set maximum resolution to 8K to allow all available qualities
-                    playback_item.setProperty('inputstream.adaptive.chooser_resolution_max', '7680x4320')
-                    # Unlimited bandwidth - don't limit based on measured connection speed
-                    playback_item.setProperty('inputstream.adaptive.chooser_bandwidth_max', '0')
+                    # Set maximum resolution to 4K to allow all available qualities
+                    # Valid values: 480p, 640p, 720p, 1080p, 2K, 1440p, 4K
+                    playback_item.setProperty('inputstream.adaptive.chooser_resolution_max', '4K')
                     
                     # IMPORTANT: Ignore display resolution to allow 4K/8K streams on any display
                     playback_item.setProperty('inputstream.adaptive.ignore_display_resolution', 'true')
