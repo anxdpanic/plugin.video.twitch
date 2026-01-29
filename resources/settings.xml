@@ -5,20 +5,26 @@
         <category id="login" label="30127" help="">
             <group id="1" label="30280">
                 <setting id="twitch_client_id" type="string" label="30281" help="">
-                    <level>2</level>
+                    <level>0</level>
                     <default>kimne78kx3ncx6brgo4mv6wki5h1ko</default>
                     <control type="edit" format="string"/>
                 </setting>
                 <setting id="oauth_token_helix" type="string" label="30099" help="">
                     <level>0</level>
-                    <default></default>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
                     <control type="edit" format="string"/>
                 </setting>
             </group>
-            <group id="2" label="30138">
-                <setting id="twitch_hevc_token" type="string" label="30282" help="">
+            <group id="2" label="30282">
+                <setting id="twitch_hevc_token" type="string" label="30279" help="">
                     <level>0</level>
-                    <default></default>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
                     <control type="edit" format="string"/>
                 </setting>
             </group>
@@ -442,7 +448,10 @@
                 </setting>
                 <setting id="proxy_host" type="string" label="Proxy Host" help="" parent="proxy_enabled">
                     <level>2</level>
-                    <default></default>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
                     <control type="edit" format="string"/>
                     <dependencies>
                         <dependency type="visible" setting="proxy_enabled">true</dependency>
@@ -464,7 +473,10 @@
                 </setting>
                 <setting id="proxy_username" type="string" label="Proxy Username" help="" parent="proxy_enabled">
                     <level>2</level>
-                    <default></default>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
                     <control type="edit" format="string"/>
                     <dependencies>
                         <dependency type="visible" setting="proxy_enabled">true</dependency>
@@ -473,7 +485,10 @@
                 </setting>
                 <setting id="proxy_password" type="string" label="Proxy Password" help="" parent="proxy_enabled">
                     <level>2</level>
-                    <default></default>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
                     <control type="edit" format="string" hidden="true"/>
                     <dependencies>
                         <dependency type="visible" setting="proxy_enabled">true</dependency>
@@ -544,12 +559,18 @@
             <group id="1" label="OAuth">
                 <setting id="oauth_clientid" type="string" label="30097" help="">
                     <level>3</level>
-                    <default></default>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
                     <control type="edit" format="string"/>
                 </setting>
                 <setting id="oauth_redirecturi" type="string" label="30142" help="">
                     <level>3</level>
-                    <default></default>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
                     <control type="edit" format="string"/>
                 </setting>
             </group>
