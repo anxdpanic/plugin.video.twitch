@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.twitch" version="3.1.0" name="Twitch" provider-name="anxdpanic, A Talented Community">
+<addon id="plugin.video.twitch" version="3.1.0" name="Twitch" provider-name="Seraph91P">
     <requires>
         <import addon="xbmc.python" version="3.0.1"/>
         <import addon="script.module.requests" version="2.9.1"/>
@@ -22,9 +22,8 @@
 [upd] Settings modernized to Kodi 21 format
         </news>
         <platform>all</platform>
-        <source>https://github.com/anxdpanic/plugin.video.twitch</source>
+        <source>https://github.com/Serph91P/plugin.video.twitch</source>
         <license>GPL-3.0-only</license>
-        <forum>https://twitchaddon.panicked.xyz/forum</forum>
         <reuselanguageinvoker>true</reuselanguageinvoker>
         <summary lang="ca_ES">Connector de vídeo de Twitch</summary>
         <summary lang="da_DK">Twitch video-plugin</summary>
