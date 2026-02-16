@@ -2,27 +2,24 @@ name: Add-on Validations
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [main, develop]
 
   pull_request:
-    branches: [ master, main ]
+    branches: [main, develop]
 
 jobs:
-
   addon-validations:
-    if: github.repository == 'anxdpanic/plugin.video.twitch'
-
     name: Add-on Validations
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set up Python v3.9
-        uses: actions/setup-python@v3
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.11'
 
       - name: Checkout Add-on
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: ${{ github.event.repository.name }}
 
@@ -31,7 +28,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install git+https://github.com/xbmc/addon-check.git
 
-      - name: Kodi Add-on Checker (Nexus)
-        id: kodi-addon-checker-nexus
+      - name: Kodi Add-on Checker (Omega)
+        id: kodi-addon-checker
         run: |
-          kodi-addon-checker ${{ github.event.repository.name }} --branch=nexus
+          kodi-addon-checker ${{ github.event.repository.name }} --branch=omega

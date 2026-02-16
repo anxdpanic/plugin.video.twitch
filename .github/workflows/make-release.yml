@@ -1,5 +1,5 @@
-# Based on https://github.com/im85288/service.upnext/blob/master/.github/workflows/release.yml
 name: Make Release
+
 on:
   push:
     tags:
@@ -8,8 +8,6 @@ on:
 
 jobs:
   release:
-    if: github.repository == 'anxdpanic/plugin.video.twitch'
-
     name: Make Release
     runs-on: ubuntu-latest
 
@@ -18,15 +16,14 @@ jobs:
         id: release
         run: |
           version=${GITHUB_REF/refs\/tags\//}
-          if [[ $version == *-dev ]] ;
-          then
-            echo ::set-output name=pre-release::true
+          if [[ $version == *-dev ]] ; then
+            echo "pre-release=true" >> $GITHUB_OUTPUT
           else
-            echo ::set-output name=pre-release::false
+            echo "pre-release=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Checkout Add-on
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: ${{ github.event.repository.name }}
 
@@ -39,14 +36,14 @@ jobs:
         id: changelog
         run: |
           changes=$(xmlstarlet sel -t -v '//news' -n addon.xml)
-          changes="${changes//'%'/'%25'}"
-          changes="${changes//$'\n'/'%0A'}"
-          changes="${changes//$'\r'/'%0D'}"
-          echo ::set-output name=changes::$changes
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "changes<<$EOF" >> $GITHUB_OUTPUT
+          echo "$changes" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
         working-directory: ${{ github.event.repository.name }}
 
-      - name: Create Zip (Nexus)
-        id: zip-nexus
+      - name: Create Zip
+        id: create-zip
         run: |
           git reset
           git checkout .
@@ -60,28 +57,14 @@ jobs:
           cd ..
           zip -r $filename ${{ github.event.repository.name }}
           mv .git ${{ github.event.repository.name }}
-          echo ::set-output name=filename::$filename
+          echo "filename=$filename" >> $GITHUB_OUTPUT
         working-directory: ${{ github.event.repository.name }}
 
       - name: Create Release
-        id: create-release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
+          files: ${{ steps.create-zip.outputs.filename }}
           body: ${{ steps.changelog.outputs.changes }}
-          draft: false
           prerelease: ${{ steps.release.outputs.pre-release }}
-
-      - name: Upload Zip (Nexus)
-        id: upload-nexus
-        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_name: ${{ steps.zip-nexus.outputs.filename }}
-          asset_path: ${{ steps.zip-nexus.outputs.filename }}
-          asset_content_type: application/zip
