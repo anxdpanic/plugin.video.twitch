@@ -49,6 +49,12 @@ class Twitch:
         else:
             log_utils.log('No proxy configuration found', log_utils.LOGINFO)
         
+        # Try to auto-refresh token if expired (Device Code Flow)
+        self._try_auto_refresh()
+        
+        # Re-read token after potential refresh
+        self.access_token = utils.get_oauth_token(token_only=True, required=False)
+        
         self.queries.CLIENT_ID = self.client_id
         self.queries.CLIENT_SECRET = self.client_secret
         self.queries.OAUTH_TOKEN = self.access_token
@@ -67,6 +73,22 @@ class Twitch:
             if not self.valid_token(self.client_id, self.access_token, self.required_scopes):
                 self.queries.OAUTH_TOKEN = ''
                 self.access_token = ''
+
+    def _try_auto_refresh(self):
+        """Try to auto-refresh token if using Device Code Flow and token is expired."""
+        try:
+            from .device_auth import auto_refresh_token, is_token_expired, get_device_tokens
+            
+            tokens = get_device_tokens()
+            if tokens and tokens.get('refresh_token'):
+                if is_token_expired():
+                    log_utils.log('Token expired, attempting auto-refresh', log_utils.LOGINFO)
+                    if auto_refresh_token():
+                        log_utils.log('Token auto-refreshed successfully', log_utils.LOGINFO)
+                    else:
+                        log_utils.log('Token auto-refresh failed', log_utils.LOGWARNING)
+        except Exception as e:
+            log_utils.log('Auto-refresh check failed: %s' % str(e), log_utils.LOGDEBUG)
 
     @cache.cache_method(cache_limit=0.25)  # 15 minutes cache for token validation
     def valid_token(self, client_id, token, scopes):  # client_id, token used for unique caching

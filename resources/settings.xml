@@ -3,6 +3,18 @@
     <section id="plugin.video.twitch">
         <!-- ==================== Login ==================== -->
         <category id="login" label="30127" help="">
+            <group id="0" label="30310">
+                <setting id="device_auth_connect" type="action" label="30314" help="">
+                    <level>0</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=device_auth)</data>
+                </setting>
+                <setting id="device_auth_disconnect" type="action" label="30315" help="">
+                    <level>0</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=device_auth_disconnect)</data>
+                </setting>
+            </group>
             <group id="1" label="30280">
                 <setting id="twitch_client_id" type="string" label="30281" help="">
                     <level>0</level>
@@ -11,6 +23,22 @@
                 </setting>
                 <setting id="oauth_token_helix" type="string" label="30099" help="">
                     <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="device_refresh_token" type="string" label="" help="" visible="false">
+                    <level>3</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="device_token_expires_at" type="string" label="" help="" visible="false">
+                    <level>3</level>
                     <default/>
                     <constraints>
                         <allowempty>true</allowempty>

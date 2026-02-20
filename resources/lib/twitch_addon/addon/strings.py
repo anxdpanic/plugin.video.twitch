@@ -164,4 +164,16 @@ STRINGS = {
     'error_network_check': 30303,
     'error_unexpected': 30304,
     'error_unknown': 30305,
+    # Device Auth
+    'device_auth_title': 30310,
+    'device_auth_instructions': 30311,
+    'device_auth_waiting': 30312,
+    'device_auth_success': 30313,
+    'device_auth_connect': 30314,
+    'device_auth_disconnect': 30315,
+    'device_auth_refresh_success': 30316,
+    'device_auth_refresh_failed': 30317,
+    'device_auth_disconnect_confirm': 30318,
+    'device_auth_disconnected': 30319,
+    'device_auth_recommended': 30320,
 }

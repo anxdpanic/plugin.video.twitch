@@ -290,6 +290,20 @@ def _clear_watch_history(content_type=None, content_id=None, clear_all=False):
     clear_watch_history.route(content_type, content_id, clear_all)
 
 
+@dispatcher.register(MODES.DEVICEAUTH)
+@error_handler
+def _device_auth():
+    from .routes import device_auth
+    device_auth.route_connect(twitch_api)
+
+
+@dispatcher.register(MODES.DEVICEAUTHDISCONNECT)
+@error_handler
+def _device_auth_disconnect():
+    from .routes import device_auth
+    device_auth.route_disconnect(twitch_api)
+
+
 def run(argv):
     queries = kodi.parse_query(argv[2])
     log_utils.log('Version: |%s| Application Version: %s' % (kodi.get_version(), kodi.get_kodi_version()), log_utils.LOGDEBUG)
