@@ -3,13 +3,20 @@
     <section id="plugin.video.twitch">
         <!-- ==================== Login ==================== -->
         <category id="login" label="30127" help="">
-            <group id="1" label="30280">
-                <setting id="twitch_client_id" type="string" label="30281" help="">
+            <group id="0" label="30310">
+                <setting id="device_auth_connect" type="action" label="30314" help="">
                     <level>0</level>
-                    <default>kimne78kx3ncx6brgo4mv6wki5h1ko</default>
-                    <control type="edit" format="string"/>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=device_auth)</data>
                 </setting>
-                <setting id="oauth_token_helix" type="string" label="30099" help="">
+                <setting id="device_auth_disconnect" type="action" label="30315" help="">
+                    <level>0</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=device_auth_disconnect)</data>
+                </setting>
+            </group>
+            <group id="1" label="30280">
+                <setting id="twitch_client_id" type="string" label="30281" help="30321">
                     <level>0</level>
                     <default/>
                     <constraints>
@@ -28,6 +35,8 @@
                     <control type="edit" format="string"/>
                 </setting>
             </group>
+            <!-- oauth_token_helix, device_refresh_token, device_token_expires_at
+                 are managed internally via setSetting/getSetting (no XML needed) -->
             <group id="3" label="">
                 <setting id="revoke_token" type="action" label="30227" help="">
                     <level>0</level>

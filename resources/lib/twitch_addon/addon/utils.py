@@ -139,16 +139,18 @@ def get_redirect_uri():
 
 
 def get_twitch_client_id():
-    """Get the Twitch Client-ID from settings"""
+    """Get the user's Twitch App Client-ID from settings.
+    
+    This is the user's own registered Twitch application Client-ID,
+    required for Helix API access and Device Auth flow.
+    Returns empty string if not configured.
+    """
     settings_id = kodi.get_setting('twitch_client_id')
     stripped_id = settings_id.strip()
     if settings_id != stripped_id:
         settings_id = stripped_id
         kodi.set_setting('twitch_client_id', settings_id)
-    if not settings_id:
-        # Default to Twitch's web Client-ID
-        return 'kimne78kx3ncx6brgo4mv6wki5h1ko'
-    return kodi.decode_utf8(settings_id)
+    return kodi.decode_utf8(settings_id) if settings_id else ''
 
 
 def get_hevc_token():
@@ -238,8 +240,12 @@ def get_private_oauth_token():
 
 
 def get_private_client_id():
-    """Get Client-ID for private/GQL API - uses the main twitch_client_id setting"""
-    return get_twitch_client_id()
+    """Get Client-ID for private/GQL API - always uses Twitch's web client ID.
+    
+    The GQL API (gql.twitch.tv) only accepts Twitch's own web client ID.
+    Third-party app client IDs get rejected with 'The Client-ID header is invalid'.
+    """
+    return 'kimne78kx3ncx6brgo4mv6wki5h1ko'
 
 
 def get_low_latency():

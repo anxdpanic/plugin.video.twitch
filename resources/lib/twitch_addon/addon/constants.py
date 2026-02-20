@@ -60,7 +60,9 @@ MODES = __enum(
     REMOVESEARCHHISTORY='remove_search_history',
     MAINTAIN='maintain',
     WATCHHISTORY='watch_history',
-    CLEARWATCHHISTORY='clear_watch_history'
+    CLEARWATCHHISTORY='clear_watch_history',
+    DEVICEAUTH='device_auth',
+    DEVICEAUTHDISCONNECT='device_auth_disconnect'
 )
 
 LINE_LENGTH = 60
