@@ -256,22 +256,20 @@ def show_device_auth_dialog(client_id=None):
         device_code = device_info['device_code']
         
         # Show dialog with user code
-        dialog = kodi.Dialog()
-        progress = dialog.progressDialog()
-        
-        progress.create(
+        instructions = i18n('device_auth_instructions') % (verification_uri, user_code)
+        progress = kodi.ProgressDialog(
             i18n('device_auth_title'),
-            i18n('device_auth_instructions') % (verification_uri, user_code)
+            line1=instructions
         )
         
         def progress_callback(elapsed, total):
             percent = int((elapsed / total) * 100)
             progress.update(
                 percent,
-                i18n('device_auth_instructions') % (verification_uri, user_code),
-                i18n('device_auth_waiting')
+                line1=instructions,
+                line2=i18n('device_auth_waiting')
             )
-            if progress.iscanceled():
+            if progress.is_canceled():
                 raise DeviceAuthError('Cancelled by user')
         
         try:
@@ -282,7 +280,8 @@ def show_device_auth_dialog(client_id=None):
                 progress_callback=progress_callback
             )
             
-            progress.close()
+            if progress.pd:
+                progress.pd.close()
             
             # Save the tokens
             save_device_tokens(tokens)
@@ -296,9 +295,10 @@ def show_device_auth_dialog(client_id=None):
             return tokens
             
         except DeviceAuthError as e:
-            progress.close()
+            if progress.pd:
+                progress.pd.close()
             if str(e) != 'Cancelled by user':
-                dialog.ok(i18n('device_auth_title'), str(e))
+                kodi.Dialog().ok(i18n('device_auth_title'), str(e))
             return None
             
     except DeviceAuthError as e:
