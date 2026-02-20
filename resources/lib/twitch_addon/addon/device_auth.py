@@ -320,13 +320,13 @@ def save_device_tokens(tokens):
     # Calculate expiry timestamp
     expires_at = int(time.time()) + expires_in if expires_in else 0
     
-    # Save to settings
+    # Save to settings - only save to oauth_token_helix (for Helix API)
+    # Do NOT save to twitch_hevc_token - Device Auth tokens are third-party tokens
+    # that don't work with the GQL/private API (causes 401). The GQL API works
+    # anonymously with just a Client-ID, or with first-party website tokens.
     kodi.set_setting('oauth_token_helix', access_token)
     kodi.set_setting('device_refresh_token', refresh_token)
     kodi.set_setting('device_token_expires_at', str(expires_at))
-    
-    # Also use as HEVC token (same token works for GQL API)
-    kodi.set_setting('twitch_hevc_token', access_token)
     
     log_utils.log('Device tokens saved. Expires at: %s' % expires_at, log_utils.LOGDEBUG)
 
@@ -408,9 +408,8 @@ def auto_refresh_token():
 
 
 def clear_device_tokens():
-    """Clear all saved device tokens."""
+    """Clear all saved device tokens (does not touch twitch_hevc_token)."""
     kodi.set_setting('oauth_token_helix', '')
     kodi.set_setting('device_refresh_token', '')
     kodi.set_setting('device_token_expires_at', '')
-    kodi.set_setting('twitch_hevc_token', '')
     log_utils.log('Device tokens cleared', log_utils.LOGINFO)

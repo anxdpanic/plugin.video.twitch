@@ -79,6 +79,16 @@ class Twitch:
         try:
             from .device_auth import auto_refresh_token, is_token_expired, get_device_tokens
             
+            # Migration cleanup: old code saved Device Auth tokens to twitch_hevc_token,
+            # but third-party tokens don't work with the GQL API (401 error).
+            # If twitch_hevc_token matches oauth_token_helix, it was set by old Device Auth
+            # code and should be cleared so GQL uses anonymous access instead.
+            helix_token = kodi.get_setting('oauth_token_helix')
+            hevc_token = kodi.get_setting('twitch_hevc_token')
+            if helix_token and hevc_token and helix_token.strip() == hevc_token.strip():
+                log_utils.log('Clearing twitch_hevc_token (matches Device Auth token)', log_utils.LOGINFO)
+                kodi.set_setting('twitch_hevc_token', '')
+            
             tokens = get_device_tokens()
             if tokens and tokens.get('refresh_token'):
                 if is_token_expired():
@@ -423,14 +433,18 @@ class Twitch:
     @staticmethod
     def get_private_credential_headers():
         headers = {}
-        private_oauth_token = utils.get_private_oauth_token()
         private_client_id = utils.get_private_client_id()
         
         # Use the configured Client-ID for GQL requests
         if private_client_id:
             headers['Client-ID'] = private_client_id
         
-        if private_oauth_token:
-            headers['Authorization'] = 'OAuth {token}'.format(token=private_oauth_token)
+        # Only use manually configured HEVC/website tokens for the GQL API.
+        # Device Auth tokens are third-party OAuth tokens and get rejected
+        # by the GQL API with 401. The GQL API works fine anonymously
+        # (Client-ID only) or with first-party website tokens.
+        hevc_token = utils.get_hevc_token()
+        if hevc_token:
+            headers['Authorization'] = 'OAuth {token}'.format(token=hevc_token)
         
         return headers
