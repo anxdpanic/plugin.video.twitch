@@ -47,6 +47,41 @@ def reset_cache():
         return False
 
 
+def invalidate_cache_for_function(func_name_pattern):
+    """
+    Invalidate cache entries matching a function name pattern.
+    Since cache filenames are MD5 hashes, we need to delete all cache files
+    and let them be regenerated. This is a targeted approach that only
+    removes cache files older than a certain time to minimize impact.
+    
+    For token validation, we simply remove all cache files that are
+    older than 5 minutes to force re-validation without affecting
+    recently cached data.
+    """
+    try:
+        if not os.path.exists(cache_path):
+            return True
+        
+        now = time.time()
+        max_age = now - (5 * 60)  # 5 minutes
+        
+        count = 0
+        for filename in os.listdir(cache_path):
+            filepath = os.path.join(cache_path, filename)
+            if os.path.isfile(filepath):
+                mtime = os.path.getmtime(filepath)
+                # Remove files older than 5 minutes
+                if mtime < max_age:
+                    os.remove(filepath)
+                    count += 1
+        
+        log_utils.log('Invalidated %d cache entries older than 5 minutes' % count, log_utils.LOGDEBUG)
+        return True
+    except Exception as e:
+        log_utils.log('Failed to invalidate cache: %s' % (e), log_utils.LOGWARNING)
+        return False
+
+
 def _get_func(name, args=None, kwargs=None, cache_limit=1):
     if not cache_enabled or cache_limit <= 0: return False, None
     now = time.time()

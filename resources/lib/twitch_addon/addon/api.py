@@ -15,6 +15,7 @@ import os
 
 from . import cache, utils
 from .common import kodi, log_utils
+from .common.cache import invalidate_cache_for_function
 from .constants import Keys, SCOPES
 from .error_handling import api_error_handler
 from .twitch_exceptions import PlaybackFailed, TwitchException
@@ -48,6 +49,18 @@ class Twitch:
         else:
             log_utils.log('No proxy configuration found', log_utils.LOGINFO)
         
+        # Try to auto-refresh token if expired (Device Code Flow)
+        self._try_auto_refresh()
+        
+        # Re-read token after potential refresh
+        self.access_token = utils.get_oauth_token(token_only=True, required=False)
+        
+        log_utils.log('Init: client_id=%s, has_token=%s, token_len=%s' % (
+            self.client_id[:8] + '...' if self.client_id else 'None',
+            bool(self.access_token),
+            len(self.access_token) if self.access_token else 0
+        ), log_utils.LOGINFO)
+        
         self.queries.CLIENT_ID = self.client_id
         self.queries.CLIENT_SECRET = self.client_secret
         self.queries.OAUTH_TOKEN = self.access_token
@@ -64,10 +77,51 @@ class Twitch:
 
         if self.access_token:
             if not self.valid_token(self.client_id, self.access_token, self.required_scopes):
+                log_utils.log('Init: Token validation FAILED, clearing token', log_utils.LOGWARNING)
                 self.queries.OAUTH_TOKEN = ''
                 self.access_token = ''
+            else:
+                log_utils.log('Init: Token validation passed', log_utils.LOGINFO)
 
-    @cache.cache_method(cache_limit=1)
+    def _try_auto_refresh(self):
+        """Try to auto-refresh token if using Device Code Flow and token is expired."""
+        try:
+            from .device_auth import auto_refresh_token, is_token_expired, get_device_tokens
+            
+            # Migration cleanup: old code saved Device Auth tokens to twitch_hevc_token,
+            # but third-party tokens don't work with the GQL API (401 error).
+            # If twitch_hevc_token matches oauth_token_helix, it was set by old Device Auth
+            # code and should be cleared so GQL uses anonymous access instead.
+            helix_token = kodi.get_setting('oauth_token_helix')
+            hevc_token = kodi.get_setting('twitch_hevc_token')
+            if helix_token and hevc_token and helix_token.strip() == hevc_token.strip():
+                log_utils.log('Clearing twitch_hevc_token (matches Device Auth token)', log_utils.LOGINFO)
+                kodi.set_setting('twitch_hevc_token', '')
+            
+            tokens = get_device_tokens()
+            log_utils.log('Auto-refresh: tokens=%s, has_refresh=%s' % (
+                'present' if tokens else 'None',
+                bool(tokens.get('refresh_token')) if tokens else 'N/A'
+            ), log_utils.LOGINFO)
+            
+            if tokens and tokens.get('refresh_token'):
+                expired = is_token_expired()
+                log_utils.log('Auto-refresh: is_expired=%s, expires_at=%s' % (
+                    expired, tokens.get('expires_at')
+                ), log_utils.LOGINFO)
+                
+                if expired:
+                    log_utils.log('Token expired, attempting auto-refresh', log_utils.LOGINFO)
+                    if auto_refresh_token():
+                        log_utils.log('Token auto-refreshed successfully', log_utils.LOGINFO)
+                    else:
+                        log_utils.log('Token auto-refresh failed', log_utils.LOGWARNING)
+                else:
+                    log_utils.log('Token still valid, no refresh needed', log_utils.LOGINFO)
+        except Exception as e:
+            log_utils.log('Auto-refresh check failed: %s' % str(e), log_utils.LOGWARNING)
+
+    @cache.cache_method(cache_limit=0.25)  # 15 minutes cache for token validation
     def valid_token(self, client_id, token, scopes):  # client_id, token used for unique caching
         token_check = self.root()
         while True:
@@ -78,9 +132,18 @@ class Twitch:
             log_utils.log('valid_token: token_client_id=%s, self.client_id=%s' % 
                          (token_check.get('client_id'), self.client_id), log_utils.LOGDEBUG)
             
-            # Update client_id to match the token's client_id (user provides their own)
-            if token_check['client_id'] != self.client_id:
-                log_utils.log('Updating client_id to match token: %s' % token_check['client_id'], log_utils.LOGDEBUG)
+            # Check if token's client_id matches the configured client_id
+            if self.client_id and token_check['client_id'] != self.client_id:
+                log_utils.log('Token client_id mismatch: token=%s, configured=%s. Clearing stale token.' % (
+                    token_check['client_id'], self.client_id), log_utils.LOGWARNING)
+                # Token was obtained with a different client_id — it won't work with Helix
+                kodi.set_setting('oauth_token_helix', '')
+                kodi.set_setting('device_refresh_token', '')
+                kodi.set_setting('device_token_expires_at', '')
+                return False
+            elif not self.client_id:
+                # No client_id configured — adopt the token's client_id
+                log_utils.log('No client_id configured, adopting from token: %s' % token_check['client_id'], log_utils.LOGDEBUG)
                 self.client_id = token_check['client_id']
                 self.queries.CLIENT_ID = self.client_id
             
@@ -93,7 +156,7 @@ class Twitch:
             
             return True
 
-    @cache.cache_method(cache_limit=1)
+    @cache.cache_method(cache_limit=0.25)  # 15 minutes cache for token validation
     def valid_private_token(self, client_id, token):  # client_id used for unique caching only
         token_check = self.validate(token)
         
@@ -365,10 +428,14 @@ class Twitch:
             payload = payload['response']
 
         if ('error' in payload) and (payload['status'] == 401):
+            # Clear old cache entries when we get a 401 error (token expired)
+            log_utils.log('401 Unauthorized - invalidating stale cache entries', log_utils.LOGWARNING)
+            invalidate_cache_for_function('valid')
+            
             if not private:
                 _ = kodi.Dialog().ok(
                     i18n('oauth_heading'),
-                    i18n('oauth_message') % (i18n('settings'), i18n('login'), i18n('get_oauth_token'))
+                    i18n('oauth_message') % (i18n('settings'), i18n('login'), i18n('device_auth_connect'))
                 )
             else:
                 _ = kodi.Dialog().ok(
@@ -396,14 +463,18 @@ class Twitch:
     @staticmethod
     def get_private_credential_headers():
         headers = {}
-        private_oauth_token = utils.get_private_oauth_token()
         private_client_id = utils.get_private_client_id()
         
         # Use the configured Client-ID for GQL requests
         if private_client_id:
             headers['Client-ID'] = private_client_id
         
-        if private_oauth_token:
-            headers['Authorization'] = 'OAuth {token}'.format(token=private_oauth_token)
+        # Only use manually configured HEVC/website tokens for the GQL API.
+        # Device Auth tokens are third-party OAuth tokens and get rejected
+        # by the GQL API with 401. The GQL API works fine anonymously
+        # (Client-ID only) or with first-party website tokens.
+        hevc_token = utils.get_hevc_token()
+        if hevc_token:
+            headers['Authorization'] = 'OAuth {token}'.format(token=hevc_token)
         
         return headers

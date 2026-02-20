@@ -1133,3 +1133,50 @@ msgstr ""
 msgctxt "#30305"
 msgid "An unknown error occurred."
 msgstr ""
+msgctxt "#30310"
+msgid "Device Authentication"
+msgstr ""
+
+msgctxt "#30311"
+msgid "Go to: %s[CR][CR]Enter code: [B]%s[/B]"
+msgstr ""
+
+msgctxt "#30312"
+msgid "Waiting for authorization..."
+msgstr ""
+
+msgctxt "#30313"
+msgid "Authentication successful!"
+msgstr ""
+
+msgctxt "#30314"
+msgid "Connect with Twitch"
+msgstr ""
+
+msgctxt "#30315"
+msgid "Disconnect from Twitch"
+msgstr ""
+
+msgctxt "#30316"
+msgid "Token refreshed automatically"
+msgstr ""
+
+msgctxt "#30317"
+msgid "Token refresh failed - please re-authenticate"
+msgstr ""
+
+msgctxt "#30318"
+msgid "Are you sure you want to disconnect your Twitch account?"
+msgstr ""
+
+msgctxt "#30319"
+msgid "Account disconnected"
+msgstr ""
+
+msgctxt "#30320"
+msgid "Use Device Authentication (recommended)"
+msgstr ""
+
+msgctxt "#30321"
+msgid "Please enter your Twitch Application Client ID in the settings first. You can create one at dev.twitch.tv/console"
+msgstr ""
