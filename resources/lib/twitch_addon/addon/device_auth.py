@@ -40,16 +40,20 @@ class DeviceAuth:
     
     This flow is designed for devices with limited input capabilities
     like set-top boxes, game consoles, and media centers (Kodi).
+    
+    Requires the user's own registered Twitch application Client-ID.
     """
     
-    def __init__(self, client_id=None):
+    def __init__(self, client_id):
         """
         Initialize Device Auth with a client ID.
         
         Args:
-            client_id: Twitch application Client ID. If None, uses the addon's configured client ID.
+            client_id: Twitch application Client ID (required).
         """
-        self.client_id = client_id or utils.get_client_id()
+        if not client_id:
+            raise DeviceAuthError('Client ID is required for Device Authentication')
+        self.client_id = client_id
         self.proxies = utils.get_proxy_dict()
         
     def _make_request(self, url, data, method='POST'):
@@ -231,12 +235,12 @@ class DeviceAuth:
             return {'status': 401, 'message': 'Validation request failed'}
 
 
-def show_device_auth_dialog(client_id=None):
+def show_device_auth_dialog(client_id):
     """
     Show the Device Auth dialog to the user and handle the complete flow.
     
     Args:
-        client_id: Optional Twitch Client ID
+        client_id: Twitch application Client ID (required)
         
     Returns:
         dict with tokens on success, None on failure/cancel
@@ -318,7 +322,12 @@ def save_device_tokens(tokens):
     expires_in = tokens.get('expires_in', 0)
     
     # Calculate expiry timestamp
-    expires_at = int(time.time()) + expires_in if expires_in else 0
+    # expires_in=0 means the token never expires (e.g. Twitch web client ID tokens)
+    # Use -1 as sentinel for "never expires"
+    if expires_in and expires_in > 0:
+        expires_at = int(time.time()) + expires_in
+    else:
+        expires_at = -1  # Never expires
     
     # Save to settings - only save to oauth_token_helix (for Helix API)
     # Do NOT save to twitch_hevc_token - Device Auth tokens are third-party tokens
@@ -328,7 +337,7 @@ def save_device_tokens(tokens):
     kodi.set_setting('device_refresh_token', refresh_token)
     kodi.set_setting('device_token_expires_at', str(expires_at))
     
-    log_utils.log('Device tokens saved. Expires at: %s' % expires_at, log_utils.LOGDEBUG)
+    log_utils.log('Device tokens saved. Expires at: %s (expires_in=%s)' % (expires_at, expires_in), log_utils.LOGINFO)
 
 
 def get_device_tokens():
@@ -363,12 +372,17 @@ def is_token_expired():
     
     Returns:
         True if token is expired or expires within 5 minutes
+        False if token is still valid or never expires (expires_at <= 0)
     """
     tokens = get_device_tokens()
     if not tokens:
         return True
     
     expires_at = tokens.get('expires_at', 0)
+    # expires_at <= 0 means "never expires" (sentinel -1 or legacy 0)
+    # Tokens from Twitch web client ID have expires_in=0
+    if expires_at <= 0:
+        return False
     # Consider expired if less than 5 minutes remaining
     return time.time() >= (expires_at - 300)
 
@@ -394,7 +408,11 @@ def auto_refresh_token():
         return False
     
     try:
-        auth = DeviceAuth()
+        client_id = utils.get_client_id()
+        if not client_id:
+            log_utils.log('No client_id configured, cannot auto-refresh', log_utils.LOGWARNING)
+            return False
+        auth = DeviceAuth(client_id)
         new_tokens = auth.refresh_token(refresh_token)
         save_device_tokens(new_tokens)
         log_utils.log('Token auto-refreshed successfully', log_utils.LOGINFO)

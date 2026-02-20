@@ -1176,3 +1176,7 @@ msgstr ""
 msgctxt "#30320"
 msgid "Use Device Authentication (recommended)"
 msgstr ""
+
+msgctxt "#30321"
+msgid "Please enter your Twitch Application Client ID in the settings first. You can create one at dev.twitch.tv/console"
+msgstr ""

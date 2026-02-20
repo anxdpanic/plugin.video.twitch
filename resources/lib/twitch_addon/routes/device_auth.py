@@ -22,10 +22,17 @@ def route_connect(api):
     Start the Device Code Authentication flow.
     Shows a dialog with the user code and waits for authorization.
     """
-    # Use the configured client ID
+    # Check if user has entered their Client-ID
     client_id = utils.get_client_id()
+    if not client_id:
+        kodi.Dialog().ok(
+            i18n('device_auth_title'),
+            i18n('client_id_required')
+        )
+        kodi.show_settings()
+        return
     
-    result = show_device_auth_dialog(client_id)
+    result = show_device_auth_dialog(client_id=client_id)
     
     if result:
         # Refresh the settings dialog to show updated state

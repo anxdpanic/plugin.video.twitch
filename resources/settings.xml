@@ -16,29 +16,8 @@
                 </setting>
             </group>
             <group id="1" label="30280">
-                <setting id="twitch_client_id" type="string" label="30281" help="">
+                <setting id="twitch_client_id" type="string" label="30281" help="30321">
                     <level>0</level>
-                    <default>kimne78kx3ncx6brgo4mv6wki5h1ko</default>
-                    <control type="edit" format="string"/>
-                </setting>
-                <setting id="oauth_token_helix" type="string" label="30099" help="">
-                    <level>0</level>
-                    <default/>
-                    <constraints>
-                        <allowempty>true</allowempty>
-                    </constraints>
-                    <control type="edit" format="string"/>
-                </setting>
-                <setting id="device_refresh_token" type="string" label="" help="" visible="false">
-                    <level>3</level>
-                    <default/>
-                    <constraints>
-                        <allowempty>true</allowempty>
-                    </constraints>
-                    <control type="edit" format="string"/>
-                </setting>
-                <setting id="device_token_expires_at" type="string" label="" help="" visible="false">
-                    <level>3</level>
                     <default/>
                     <constraints>
                         <allowempty>true</allowempty>
@@ -56,6 +35,8 @@
                     <control type="edit" format="string"/>
                 </setting>
             </group>
+            <!-- oauth_token_helix, device_refresh_token, device_token_expires_at
+                 are managed internally via setSetting/getSetting (no XML needed) -->
             <group id="3" label="">
                 <setting id="revoke_token" type="action" label="30227" help="">
                     <level>0</level>

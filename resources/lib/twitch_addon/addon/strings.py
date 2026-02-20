@@ -176,4 +176,5 @@ STRINGS = {
     'device_auth_disconnect_confirm': 30318,
     'device_auth_disconnected': 30319,
     'device_auth_recommended': 30320,
+    'client_id_required': 30321,
 }
