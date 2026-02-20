@@ -15,6 +15,7 @@ import os
 
 from . import cache, utils
 from .common import kodi, log_utils
+from .common.cache import invalidate_cache_for_function
 from .constants import Keys, SCOPES
 from .error_handling import api_error_handler
 from .twitch_exceptions import PlaybackFailed, TwitchException
@@ -67,7 +68,7 @@ class Twitch:
                 self.queries.OAUTH_TOKEN = ''
                 self.access_token = ''
 
-    @cache.cache_method(cache_limit=1)
+    @cache.cache_method(cache_limit=0.25)  # 15 minutes cache for token validation
     def valid_token(self, client_id, token, scopes):  # client_id, token used for unique caching
         token_check = self.root()
         while True:
@@ -93,7 +94,7 @@ class Twitch:
             
             return True
 
-    @cache.cache_method(cache_limit=1)
+    @cache.cache_method(cache_limit=0.25)  # 15 minutes cache for token validation
     def valid_private_token(self, client_id, token):  # client_id used for unique caching only
         token_check = self.validate(token)
         
@@ -365,6 +366,10 @@ class Twitch:
             payload = payload['response']
 
         if ('error' in payload) and (payload['status'] == 401):
+            # Clear old cache entries when we get a 401 error (token expired)
+            log_utils.log('401 Unauthorized - invalidating stale cache entries', log_utils.LOGWARNING)
+            invalidate_cache_for_function('valid')
+            
             if not private:
                 _ = kodi.Dialog().ok(
                     i18n('oauth_heading'),
