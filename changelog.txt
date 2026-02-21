@@ -1,3 +1,11 @@
+3.1.3
+[fix] Notifications category label showed "Enabled" instead of "Notifications"
+[fix] Login page: Connect/Disconnect buttons now toggle based on authentication state
+[fix] Login page: hidden token fields no longer create empty UI sections
+[fix] Proxy settings had hardcoded English labels instead of localizable string IDs
+[fix] Revoke Token button only visible when authenticated
+[upd] Localized proxy setting labels (EN + DE)
+
 3.1.2
 [fix] OAuth token persistence on Kodi 21+ (Omega) / LibreELEC - token settings now properly defined in settings.xml
 

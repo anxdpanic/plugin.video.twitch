@@ -140,6 +140,7 @@ class Twitch:
                 kodi.set_setting('oauth_token_helix', '')
                 kodi.set_setting('device_refresh_token', '')
                 kodi.set_setting('device_token_expires_at', '')
+                kodi.set_setting('is_device_authenticated', 'false')
                 return False
             elif not self.client_id:
                 # No client_id configured — adopt the token's client_id

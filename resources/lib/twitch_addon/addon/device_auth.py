@@ -336,6 +336,7 @@ def save_device_tokens(tokens):
     kodi.set_setting('oauth_token_helix', access_token)
     kodi.set_setting('device_refresh_token', refresh_token)
     kodi.set_setting('device_token_expires_at', str(expires_at))
+    kodi.set_setting('is_device_authenticated', 'true')
     
     log_utils.log('Device tokens saved. Expires at: %s (expires_in=%s)' % (expires_at, expires_in), log_utils.LOGINFO)
 
@@ -430,4 +431,5 @@ def clear_device_tokens():
     kodi.set_setting('oauth_token_helix', '')
     kodi.set_setting('device_refresh_token', '')
     kodi.set_setting('device_token_expires_at', '')
+    kodi.set_setting('is_device_authenticated', 'false')
     log_utils.log('Device tokens cleared', log_utils.LOGINFO)

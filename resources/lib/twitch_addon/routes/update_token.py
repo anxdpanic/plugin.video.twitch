@@ -14,4 +14,5 @@ from ..addon.utils import i18n
 
 def route(oauth_token):
     kodi.set_setting('oauth_token_helix', oauth_token)
+    kodi.set_setting('is_device_authenticated', 'true' if oauth_token else 'false')
     kodi.notify(msg=i18n('token_updated'))
