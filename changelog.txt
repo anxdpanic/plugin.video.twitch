@@ -1,3 +1,6 @@
+3.1.2
+[fix] OAuth token persistence on Kodi 21+ (Omega) / LibreELEC - token settings now properly defined in settings.xml
+
 3.1.0
 [add] Low Latency Mode - Reduces stream delay for live streams (Settings → General → Low Latency Mode)
 [add] Watch History - Track recently watched streams, VODs and clips with SQLite storage

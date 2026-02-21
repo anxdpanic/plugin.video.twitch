@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.twitch" version="3.1.1" name="Twitch" provider-name="Seraph91P">
+<addon id="plugin.video.twitch" version="3.1.2" name="Twitch" provider-name="Seraph91P">
     <requires>
         <import addon="xbmc.python" version="3.0.1"/>
         <import addon="script.module.requests" version="2.9.1"/>
@@ -15,11 +15,7 @@
             <fanart>resources/media/fanart.jpg</fanart>
         </assets>
         <news>
-[add] HEVC/H.265 streaming with Website Token authentication
-[add] Low Latency Mode for live streams
-[add] Watch History for streams, VODs and clips
-[add] Improved error handling with user-friendly messages
-[upd] Settings modernized to Kodi 21 format
+[fix] OAuth token persistence on Kodi 21+ (Omega) / LibreELEC
         </news>
         <platform>all</platform>
         <source>https://github.com/Serph91P/plugin.video.twitch</source>

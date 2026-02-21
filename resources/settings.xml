@@ -35,9 +35,35 @@
                     <control type="edit" format="string"/>
                 </setting>
             </group>
-            <!-- oauth_token_helix, device_refresh_token, device_token_expires_at
-                 are managed internally via setSetting/getSetting (no XML needed) -->
+            <!-- Hidden settings managed internally via setSetting/getSetting.
+                 Must be defined here for Kodi 21+ (Omega) to persist them properly. -->
             <group id="3" label="">
+                <setting id="oauth_token_helix" type="string" visible="false">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="device_refresh_token" type="string" visible="false">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="device_token_expires_at" type="string" visible="false">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                </setting>
+            </group>
+            <group id="4" label="">
                 <setting id="revoke_token" type="action" label="30227" help="">
                     <level>0</level>
                     <control type="button" format="action"/>
