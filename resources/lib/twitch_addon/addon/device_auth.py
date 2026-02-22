@@ -414,8 +414,13 @@ def auto_refresh_token():
         if not client_id:
             log_utils.log('No client_id configured, cannot auto-refresh', log_utils.LOGWARNING)
             return False
+        client_secret = utils.get_client_secret()
+        if not client_secret:
+            log_utils.log('No client_secret configured, cannot auto-refresh. '
+                         'Please add your Client Secret in addon settings.', log_utils.LOGWARNING)
+            return False
         auth = DeviceAuth(client_id)
-        new_tokens = auth.refresh_token(refresh_token)
+        new_tokens = auth.refresh_token(refresh_token, client_secret=client_secret)
         save_device_tokens(new_tokens)
         log_utils.log('Token auto-refreshed successfully', log_utils.LOGINFO)
         return True

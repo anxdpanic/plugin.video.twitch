@@ -153,6 +153,21 @@ def get_twitch_client_id():
     return kodi.decode_utf8(settings_id) if settings_id else ''
 
 
+def get_twitch_client_secret():
+    """Get the user's Twitch App Client Secret from settings.
+    
+    Required for token refresh. Without it, access tokens cannot be
+    refreshed and the user must re-authenticate every ~4 hours.
+    Returns empty string if not configured.
+    """
+    settings_val = kodi.get_setting('twitch_client_secret')
+    stripped_val = settings_val.strip()
+    if settings_val != stripped_val:
+        settings_val = stripped_val
+        kodi.set_setting('twitch_client_secret', settings_val)
+    return kodi.decode_utf8(settings_val) if settings_val else ''
+
+
 def get_hevc_token():
     """Get the HEVC token from settings (optional, for HEVC streams)"""
     token = kodi.get_setting('twitch_hevc_token').strip()
@@ -185,6 +200,11 @@ def use_custom_oauth():
 def get_client_id(default=False):
     """Get Client-ID for Helix API - uses the main twitch_client_id setting"""
     return get_twitch_client_id()
+
+
+def get_client_secret():
+    """Get Client Secret for token refresh - uses the twitch_client_secret setting"""
+    return get_twitch_client_secret()
 
 
 def clear_client_id():

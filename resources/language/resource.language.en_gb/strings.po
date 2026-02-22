@@ -1212,3 +1212,11 @@ msgstr ""
 msgctxt "#30329"
 msgid "Proxy Password"
 msgstr ""
+
+msgctxt "#30330"
+msgid "Client Secret"
+msgstr ""
+
+msgctxt "#30331"
+msgid "Your Twitch Application Client Secret. Required for automatic token refresh. Find it at dev.twitch.tv/console under your app settings."
+msgstr ""

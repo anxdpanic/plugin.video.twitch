@@ -1,3 +1,7 @@
+3.1.5
+[fix] Token refresh now sends Client Secret (required by Twitch API) - fixes re-auth every 4 hours
+[add] New Client Secret setting in addon settings (Login > OAuth Authentication)
+
 3.1.4
 [fix] Token auto-refresh now works reliably after reboot - fallback refresh on validation failure
 [fix] Refresh token no longer cleared on temporary network errors (e.g. during boot)

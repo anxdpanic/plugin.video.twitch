@@ -44,6 +44,14 @@
                     </constraints>
                     <control type="edit" format="string"/>
                 </setting>
+                <setting id="twitch_client_secret" type="string" label="30330" help="30331">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string" hidden="true"/>
+                </setting>
             </group>
             <group id="2" label="30282">
                 <setting id="twitch_hevc_token" type="string" label="30279" help="">
