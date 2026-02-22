@@ -77,9 +77,33 @@ class Twitch:
 
         if self.access_token:
             if not self.valid_token(self.client_id, self.access_token, self.required_scopes):
-                log_utils.log('Init: Token validation FAILED, clearing token', log_utils.LOGWARNING)
-                self.queries.OAUTH_TOKEN = ''
-                self.access_token = ''
+                log_utils.log('Init: Token validation FAILED, attempting fallback refresh', log_utils.LOGWARNING)
+                recovered = False
+                # Try a fallback refresh if we have a refresh token
+                refresh_token_val = kodi.get_setting('device_refresh_token').strip()
+                if refresh_token_val:
+                    try:
+                        from .device_auth import auto_refresh_token as fallback_refresh
+                        if fallback_refresh():
+                            # Re-read the refreshed token
+                            self.access_token = utils.get_oauth_token(token_only=True, required=False)
+                            self.queries.OAUTH_TOKEN = self.access_token
+                            if self.access_token:
+                                log_utils.log('Init: Token recovered via fallback refresh', log_utils.LOGINFO)
+                                recovered = True
+                    except Exception as e:
+                        log_utils.log('Init: Fallback refresh error: %s' % str(e), log_utils.LOGWARNING)
+                
+                if not recovered:
+                    log_utils.log('Init: Token unrecoverable, clearing auth state', log_utils.LOGWARNING)
+                    self.queries.OAUTH_TOKEN = ''
+                    self.access_token = ''
+                    # Update UI state so settings don't show "connected" for a dead token
+                    kodi.set_setting('is_device_authenticated', 'false')
+                    # Only clear the token from settings if there's no refresh token
+                    # (with a refresh token, a future attempt might succeed)
+                    if not refresh_token_val:
+                        kodi.set_setting('oauth_token_helix', '')
             else:
                 log_utils.log('Init: Token validation passed', log_utils.LOGINFO)
 
