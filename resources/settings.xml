@@ -263,11 +263,6 @@
                     <default>false</default>
                     <control type="toggle"/>
                 </setting>
-                <setting id="auto_select_audio" type="boolean" label="30285" help="">
-                    <level>0</level>
-                    <default>true</default>
-                    <control type="toggle"/>
-                </setting>
                 <setting id="live_reconnect" type="boolean" label="30210" help="">
                     <level>1</level>
                     <default>false</default>

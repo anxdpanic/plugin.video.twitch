@@ -80,39 +80,30 @@ class TwitchPlayer(xbmc.Player):
         if not is_playing:
             self.reset()
         else:
-            # Auto-select second audio track if multiple tracks are available
-            # This fixes HEVC streams where the first audio track is often muted
-            if kodi.get_setting('auto_select_audio') == 'true':
-                self._auto_select_audio_track()
-            
+            # Keep Twitch playback on the first audio track by default. Users can
+            # still switch tracks manually in Kodi if a stream exposes more than one.
+            self._select_first_audio_track()
+
             if seek_time:
                 seek_time = float(seek_time)
                 self.seekTime(seek_time)
 
-    def _auto_select_audio_track(self):
+    def _select_first_audio_track(self):
         """
-        Automatically select the second audio track if available.
-        
-        Twitch HEVC/1440p+ streams often have 2 audio tracks where the first one
-        is muted/empty and the second one contains the actual audio.
-        This workaround switches to the second audio track when detected.
+        Select the first available audio track for Twitch playback.
         """
         try:
             # Wait a short moment for streams to be fully initialized
             xbmc.sleep(500)
-            
-            # Get available audio streams
+
             audio_streams = self.getAvailableAudioStreams()
             log_utils.log('Player: Available audio streams: {}'.format(audio_streams), log_utils.LOGDEBUG)
-            
-            if audio_streams and len(audio_streams) > 1:
-                # Switch to the second audio track (index 1)
-                # Twitch HEVC streams typically have the actual audio on the second track
-                log_utils.log('Player: Multiple audio tracks detected ({}), switching to track 2 (index 1)'.format(
-                              len(audio_streams)), log_utils.LOGINFO)
-                self.setAudioStream(1)
+
+            if audio_streams:
+                log_utils.log('Player: Selecting first audio track (index 0)', log_utils.LOGINFO)
+                self.setAudioStream(0)
         except Exception as e:
-            log_utils.log('Player: Error in _auto_select_audio_track: {}'.format(str(e)), 
+            log_utils.log('Player: Error in _select_first_audio_track: {}'.format(str(e)),
                           log_utils.LOGWARNING)
 
     def onPlayBackStopped(self):
