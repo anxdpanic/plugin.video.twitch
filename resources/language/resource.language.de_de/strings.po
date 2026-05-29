@@ -1133,6 +1133,46 @@ msgctxt "#30321"
 msgid "Please enter your Twitch Application Client ID in the settings first. You can create one at dev.twitch.tv/console"
 msgstr "Bitte gib zuerst deine Twitch Application Client ID in den Einstellungen ein. Du kannst eine unter dev.twitch.tv/console erstellen."
 
+msgctxt "#30322"
+msgid "Notifications"
+msgstr "Benachrichtigungen"
+
+msgctxt "#30323"
+msgid "Live Notifications"
+msgstr "Live-Benachrichtigungen"
+
+msgctxt "#30324"
+msgid "Proxy"
+msgstr "Proxy"
+
+msgctxt "#30325"
+msgid "Enable Proxy"
+msgstr "Proxy aktivieren"
+
+msgctxt "#30326"
+msgid "Proxy Host"
+msgstr "Proxy-Host"
+
+msgctxt "#30327"
+msgid "Proxy Port"
+msgstr "Proxy-Port"
+
+msgctxt "#30328"
+msgid "Proxy Username"
+msgstr "Proxy-Benutzername"
+
+msgctxt "#30329"
+msgid "Proxy Password"
+msgstr "Proxy-Passwort"
+
+msgctxt "#30330"
+msgid "Client Secret"
+msgstr "Client Secret"
+
+msgctxt "#30331"
+msgid "Your Twitch Application Client Secret. Required for automatic token refresh. Find it at dev.twitch.tv/console under your app settings."
+msgstr "Dein Twitch Application Client Secret. Wird für die automatische Token-Aktualisierung benötigt. Du findest es unter dev.twitch.tv/console in deinen App-Einstellungen."
+
 #~ msgctxt "#30132"
 #~ msgid "OAuth token is required for access to authorized user functions."
 #~ msgstr "Für den Zugriff auf geschützte Benutzerfunktionen wird ein OAuth-Token benötigt."

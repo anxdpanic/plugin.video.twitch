@@ -4,15 +4,35 @@
         <!-- ==================== Login ==================== -->
         <category id="login" label="30127" help="">
             <group id="0" label="30310">
+                <setting id="is_device_authenticated" type="boolean" label="" help="">
+                    <level>0</level>
+                    <default>false</default>
+                    <visible>false</visible>
+                    <control type="toggle"/>
+                </setting>
                 <setting id="device_auth_connect" type="action" label="30314" help="">
                     <level>0</level>
                     <control type="button" format="action"/>
                     <data>RunPlugin(plugin://$ID/?mode=device_auth)</data>
+                    <dependencies>
+                        <dependency type="visible" setting="is_device_authenticated">false</dependency>
+                    </dependencies>
                 </setting>
                 <setting id="device_auth_disconnect" type="action" label="30315" help="">
                     <level>0</level>
                     <control type="button" format="action"/>
                     <data>RunPlugin(plugin://$ID/?mode=device_auth_disconnect)</data>
+                    <dependencies>
+                        <dependency type="visible" setting="is_device_authenticated">true</dependency>
+                    </dependencies>
+                </setting>
+                <setting id="revoke_token" type="action" label="30227" help="">
+                    <level>0</level>
+                    <control type="button" format="action"/>
+                    <data>RunPlugin(plugin://$ID/?mode=revoke_token)</data>
+                    <dependencies>
+                        <dependency type="visible" setting="is_device_authenticated">true</dependency>
+                    </dependencies>
                 </setting>
             </group>
             <group id="1" label="30280">
@@ -23,6 +43,14 @@
                         <allowempty>true</allowempty>
                     </constraints>
                     <control type="edit" format="string"/>
+                </setting>
+                <setting id="twitch_client_secret" type="string" label="30330" help="30331">
+                    <level>0</level>
+                    <default/>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string" hidden="true"/>
                 </setting>
             </group>
             <group id="2" label="30282">
@@ -35,13 +63,35 @@
                     <control type="edit" format="string"/>
                 </setting>
             </group>
-            <!-- oauth_token_helix, device_refresh_token, device_token_expires_at
-                 are managed internally via setSetting/getSetting (no XML needed) -->
+            <!-- Hidden settings managed internally via setSetting/getSetting.
+                 Must be defined here for Kodi 21+ (Omega) to persist them properly. -->
             <group id="3" label="">
-                <setting id="revoke_token" type="action" label="30227" help="">
+                <setting id="oauth_token_helix" type="string" label="" help="">
                     <level>0</level>
-                    <control type="button" format="action"/>
-                    <data>RunPlugin(plugin://$ID/?mode=revoke_token)</data>
+                    <default/>
+                    <visible>false</visible>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="device_refresh_token" type="string" label="" help="">
+                    <level>0</level>
+                    <default/>
+                    <visible>false</visible>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
+                </setting>
+                <setting id="device_token_expires_at" type="string" label="" help="">
+                    <level>0</level>
+                    <default/>
+                    <visible>false</visible>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="edit" format="string"/>
                 </setting>
             </group>
         </category>
@@ -213,6 +263,11 @@
                     <default>false</default>
                     <control type="toggle"/>
                 </setting>
+                <setting id="auto_select_audio" type="boolean" label="30285" help="">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
                 <setting id="live_reconnect" type="boolean" label="30210" help="">
                     <level>1</level>
                     <default>false</default>
@@ -377,9 +432,9 @@
         </category>
 
         <!-- ==================== Notifications ==================== -->
-        <category id="notifications" label="30211" help="">
-            <group id="1" label="30211">
-                <setting id="live_notify" type="boolean" label="30211" help="">
+        <category id="notifications" label="30322" help="">
+            <group id="1" label="30322">
+                <setting id="live_notify" type="boolean" label="30323" help="">
                     <level>0</level>
                     <default>false</default>
                     <control type="toggle"/>
@@ -449,13 +504,13 @@
                     <data>RunPlugin(plugin://$ID/?mode=reset_cache)</data>
                 </setting>
             </group>
-            <group id="2" label="Proxy">
-                <setting id="proxy_enabled" type="boolean" label="Enable Proxy" help="">
+            <group id="2" label="30324">
+                <setting id="proxy_enabled" type="boolean" label="30325" help="">
                     <level>2</level>
                     <default>false</default>
                     <control type="toggle"/>
                 </setting>
-                <setting id="proxy_host" type="string" label="Proxy Host" help="" parent="proxy_enabled">
+                <setting id="proxy_host" type="string" label="30326" help="" parent="proxy_enabled">
                     <level>2</level>
                     <default/>
                     <constraints>
@@ -467,7 +522,7 @@
                         <dependency type="enable" setting="proxy_enabled">true</dependency>
                     </dependencies>
                 </setting>
-                <setting id="proxy_port" type="integer" label="Proxy Port" help="" parent="proxy_enabled">
+                <setting id="proxy_port" type="integer" label="30327" help="" parent="proxy_enabled">
                     <level>2</level>
                     <default>8080</default>
                     <constraints>
@@ -480,7 +535,7 @@
                         <dependency type="enable" setting="proxy_enabled">true</dependency>
                     </dependencies>
                 </setting>
-                <setting id="proxy_username" type="string" label="Proxy Username" help="" parent="proxy_enabled">
+                <setting id="proxy_username" type="string" label="30328" help="" parent="proxy_enabled">
                     <level>2</level>
                     <default/>
                     <constraints>
@@ -492,7 +547,7 @@
                         <dependency type="enable" setting="proxy_enabled">true</dependency>
                     </dependencies>
                 </setting>
-                <setting id="proxy_password" type="string" label="Proxy Password" help="" parent="proxy_enabled">
+                <setting id="proxy_password" type="string" label="30329" help="" parent="proxy_enabled">
                     <level>2</level>
                     <default/>
                     <constraints>

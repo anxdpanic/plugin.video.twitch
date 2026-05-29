@@ -1180,3 +1180,43 @@ msgstr ""
 msgctxt "#30321"
 msgid "Please enter your Twitch Application Client ID in the settings first. You can create one at dev.twitch.tv/console"
 msgstr ""
+
+msgctxt "#30322"
+msgid "Notifications"
+msgstr ""
+
+msgctxt "#30323"
+msgid "Live Notifications"
+msgstr ""
+
+msgctxt "#30324"
+msgid "Proxy"
+msgstr ""
+
+msgctxt "#30325"
+msgid "Enable Proxy"
+msgstr ""
+
+msgctxt "#30326"
+msgid "Proxy Host"
+msgstr ""
+
+msgctxt "#30327"
+msgid "Proxy Port"
+msgstr ""
+
+msgctxt "#30328"
+msgid "Proxy Username"
+msgstr ""
+
+msgctxt "#30329"
+msgid "Proxy Password"
+msgstr ""
+
+msgctxt "#30330"
+msgid "Client Secret"
+msgstr ""
+
+msgctxt "#30331"
+msgid "Your Twitch Application Client Secret. Required for automatic token refresh. Find it at dev.twitch.tv/console under your app settings."
+msgstr ""

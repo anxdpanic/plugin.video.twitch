@@ -82,7 +82,8 @@ class TwitchPlayer(xbmc.Player):
         else:
             # Auto-select second audio track if multiple tracks are available
             # This fixes HEVC streams where the first audio track is often muted
-            self._auto_select_audio_track()
+            if kodi.get_setting('auto_select_audio') == 'true':
+                self._auto_select_audio_track()
             
             if seek_time:
                 seek_time = float(seek_time)

@@ -322,12 +322,13 @@ def save_device_tokens(tokens):
     expires_in = tokens.get('expires_in', 0)
     
     # Calculate expiry timestamp
-    # expires_in=0 means the token never expires (e.g. Twitch web client ID tokens)
-    # Use -1 as sentinel for "never expires"
+    # Twitch access tokens typically expire in ~4 hours (14400 seconds).
+    # Always set a concrete expiry so auto-refresh triggers reliably.
     if expires_in and expires_in > 0:
         expires_at = int(time.time()) + expires_in
     else:
-        expires_at = -1  # Never expires
+        # Conservative default: assume 4 hours if Twitch didn't provide expires_in
+        expires_at = int(time.time()) + 14400
     
     # Save to settings - only save to oauth_token_helix (for Helix API)
     # Do NOT save to twitch_hevc_token - Device Auth tokens are third-party tokens
@@ -336,6 +337,7 @@ def save_device_tokens(tokens):
     kodi.set_setting('oauth_token_helix', access_token)
     kodi.set_setting('device_refresh_token', refresh_token)
     kodi.set_setting('device_token_expires_at', str(expires_at))
+    kodi.set_setting('is_device_authenticated', 'true')
     
     log_utils.log('Device tokens saved. Expires at: %s (expires_in=%s)' % (expires_at, expires_in), log_utils.LOGINFO)
 
@@ -372,17 +374,17 @@ def is_token_expired():
     
     Returns:
         True if token is expired or expires within 5 minutes
-        False if token is still valid or never expires (expires_at <= 0)
+        False if token is still valid
     """
     tokens = get_device_tokens()
     if not tokens:
         return True
     
     expires_at = tokens.get('expires_at', 0)
-    # expires_at <= 0 means "never expires" (sentinel -1 or legacy 0)
-    # Tokens from Twitch web client ID have expires_in=0
+    # If we don't have a valid expiry timestamp, assume expired
+    # (Twitch tokens always expire after ~4 hours)
     if expires_at <= 0:
-        return False
+        return True
     # Consider expired if less than 5 minutes remaining
     return time.time() >= (expires_at - 300)
 
@@ -412,16 +414,25 @@ def auto_refresh_token():
         if not client_id:
             log_utils.log('No client_id configured, cannot auto-refresh', log_utils.LOGWARNING)
             return False
+        client_secret = utils.get_client_secret()
+        if not client_secret:
+            log_utils.log('No client_secret configured, cannot auto-refresh. '
+                         'Please add your Client Secret in addon settings.', log_utils.LOGWARNING)
+            return False
         auth = DeviceAuth(client_id)
-        new_tokens = auth.refresh_token(refresh_token)
+        new_tokens = auth.refresh_token(refresh_token, client_secret=client_secret)
         save_device_tokens(new_tokens)
         log_utils.log('Token auto-refreshed successfully', log_utils.LOGINFO)
         return True
     except DeviceAuthError as e:
-        log_utils.log('Token auto-refresh failed: %s' % str(e), log_utils.LOGWARNING)
-        # Clear invalid tokens
-        kodi.set_setting('device_refresh_token', '')
-        kodi.set_setting('device_token_expires_at', '')
+        error_msg = str(e)
+        log_utils.log('Token auto-refresh failed: %s' % error_msg, log_utils.LOGWARNING)
+        # Only clear refresh token if Twitch says it's definitively invalid.
+        # Do NOT clear on network errors — next startup might succeed.
+        if any(keyword in error_msg.lower() for keyword in ['invalid refresh token', 'invalid_grant', 'invalid grant']):
+            log_utils.log('Refresh token is invalid, clearing device tokens', log_utils.LOGWARNING)
+            kodi.set_setting('device_refresh_token', '')
+            kodi.set_setting('device_token_expires_at', '')
         return False
 
 
@@ -430,4 +441,5 @@ def clear_device_tokens():
     kodi.set_setting('oauth_token_helix', '')
     kodi.set_setting('device_refresh_token', '')
     kodi.set_setting('device_token_expires_at', '')
+    kodi.set_setting('is_device_authenticated', 'false')
     log_utils.log('Device tokens cleared', log_utils.LOGINFO)

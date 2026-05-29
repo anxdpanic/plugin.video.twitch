@@ -29,5 +29,6 @@ def route(api):
             raise TwitchException(response['error'])
         else:
             kodi.set_setting('oauth_token_helix', '')
+            kodi.set_setting('is_device_authenticated', 'false')
             kodi.notify(msg=i18n('token_revoked'))
             cache.reset_cache()

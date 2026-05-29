@@ -313,6 +313,13 @@ def run(argv):
     plugin_url = 'plugin://%s/' % kodi.get_id()
     if argv[0] != plugin_url:
         return
+
+    # Sync is_device_authenticated with actual token state (migration for existing users)
+    _has_token = bool(kodi.get_setting('oauth_token_helix').strip())
+    _is_auth = kodi.get_setting('is_device_authenticated') == 'true'
+    if _has_token != _is_auth:
+        kodi.set_setting('is_device_authenticated', 'true' if _has_token else 'false')
+
     try:
         global twitch_api
         twitch_api = api.Twitch()

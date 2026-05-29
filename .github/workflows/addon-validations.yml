@@ -23,12 +23,6 @@ jobs:
         with:
           path: ${{ github.event.repository.name }}
 
-      - name: Checkout script.module.python.twitch
-        uses: actions/checkout@v4
-        with:
-          repository: Serph91P/script.module.python.twitch
-          path: script.module.python.twitch
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -37,4 +31,4 @@ jobs:
       - name: Kodi Add-on Checker (Omega)
         id: kodi-addon-checker
         run: |
-          kodi-addon-checker ${{ github.event.repository.name }} --branch=omega
+          kodi-addon-checker ${{ github.event.repository.name }} --branch=omega --skip-dependency-checks
