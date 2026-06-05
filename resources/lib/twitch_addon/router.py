@@ -255,6 +255,13 @@ def _get_token_url():
     token_url.route(twitch_api)
 
 
+@dispatcher.register(MODES.DEVICELOGIN)
+@error_handler
+def _device_login():
+    from .routes import device_login
+    device_login.route()
+
+
 @dispatcher.register(MODES.REVOKETOKEN)
 @error_handler
 def _revoke_token():

@@ -38,6 +38,9 @@ class Twitch:
     required_scopes = SCOPES
 
     def __init__(self):
+        # Silently refresh the Helix OAuth token if it is (near) expired (Device Code Flow).
+        utils.ensure_valid_token()
+        self.access_token = utils.get_oauth_token(token_only=True, required=False)
         self.queries.CLIENT_ID = self.client_id
         self.queries.CLIENT_SECRET = self.client_secret
         self.queries.OAUTH_TOKEN = self.access_token

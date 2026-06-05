@@ -38,6 +38,7 @@ MODES = __enum(
     INSTALLIRCCHAT='install_ircchat',
     PLAY='play',
     TOKENURL='get_token_url',
+    DEVICELOGIN='device_login',
     EDITFOLLOW='edit_user_follows',
     EDITBLOCK='edit_user_blocks',
     EDITBLACKLIST='edit_blacklist',

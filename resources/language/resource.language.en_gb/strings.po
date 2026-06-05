@@ -1005,3 +1005,31 @@ msgstr ""
 msgctxt "#30273"
 msgid "OAuth Token is expired or invalid"
 msgstr ""
+
+msgctxt "#30300"
+msgid "Login (device code)"
+msgstr ""
+
+msgctxt "#30301"
+msgid "Go to [B]%s[/B] and enter this code:[CR][CR][B]%s[/B]"
+msgstr ""
+
+msgctxt "#30302"
+msgid "Waiting for authorization..."
+msgstr ""
+
+msgctxt "#30303"
+msgid "Login successful. The access token will now be refreshed automatically."
+msgstr ""
+
+msgctxt "#30304"
+msgid "Login failed or timed out."
+msgstr ""
+
+msgctxt "#30305"
+msgid "Login cancelled."
+msgstr ""
+
+msgctxt "#30306"
+msgid "Device login is not available for this Client-ID.[CR]Register your own application (Public type) at dev.twitch.tv/console/apps and set its Client-ID in the add-on settings, then try again."
+msgstr ""

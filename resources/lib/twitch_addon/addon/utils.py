@@ -16,7 +16,7 @@ from base64 import b64decode
 from datetime import datetime
 from urllib.parse import quote_plus
 
-from .common import kodi, json_store
+from .common import kodi, json_store, log_utils
 from .strings import STRINGS
 from .constants import CLIENT_ID, REDIRECT_URI, LIVE_PREVIEW_TEMPLATE, Images, ADDON_DATA_DIR, COLORS, Keys
 from .search_history import StreamsSearchHistory, ChannelsSearchHistory, GamesSearchHistory, IdUrlSearchHistory
@@ -177,6 +177,53 @@ def get_private_oauth_token():
     if not settings_id:
         return ""
     return kodi.decode_utf8(settings_id)
+
+
+# --- OAuth Device Code Flow: token storage + silent refresh -----------------------------
+
+def get_refresh_token():
+    return kodi.get_setting('oauth_refresh_token').strip()
+
+
+def store_oauth_tokens(access_token, refresh_token, expires_in):
+    kodi.set_setting('oauth_token_helix', access_token)
+    kodi.set_setting('oauth_refresh_token', refresh_token or '')
+    try:
+        expiry = int(time.time()) + int(expires_in) - 120  # refresh ~2 min before expiry
+    except (TypeError, ValueError):
+        expiry = int(time.time()) + 3600
+    kodi.set_setting('oauth_token_expiry', str(expiry))
+
+
+def clear_oauth_tokens():
+    kodi.set_setting('oauth_token_helix', '')
+    kodi.set_setting('oauth_refresh_token', '')
+    kodi.set_setting('oauth_token_expiry', '0')
+
+
+def ensure_valid_token(force=False):
+    """Silently refresh the Helix OAuth token via the stored refresh_token when it is
+    (near) expired. No-op for legacy implicit tokens (no refresh_token stored).
+    Returns the (possibly refreshed) access token, or '' if none available."""
+    from . import device_oauth
+    refresh_token = get_refresh_token()
+    access_token = kodi.get_setting('oauth_token_helix').strip()
+    if not refresh_token:
+        return access_token  # legacy implicit-grant token -> nothing to refresh
+    try:
+        expiry = float(kodi.get_setting('oauth_token_expiry') or '0')
+    except ValueError:
+        expiry = 0
+    if access_token and not force and time.time() < expiry:
+        return access_token
+    ok, data = device_oauth.refresh_access_token(get_client_id(), refresh_token)
+    if ok and data.get('access_token'):
+        store_oauth_tokens(data['access_token'], data.get('refresh_token', refresh_token),
+                           data.get('expires_in', 3600))
+        log_utils.log('OAuth: access token refreshed via refresh_token', log_utils.LOGNOTICE)
+        return data['access_token']
+    log_utils.log('OAuth: token refresh failed |%s|' % data, log_utils.LOGWARNING)
+    return access_token  # keep current; valid_token() will prompt re-login if truly invalid
 
 
 def get_search_history_size():
