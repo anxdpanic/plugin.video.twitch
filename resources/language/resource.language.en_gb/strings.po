@@ -1005,3 +1005,15 @@ msgstr ""
 msgctxt "#30273"
 msgid "OAuth Token is expired or invalid"
 msgstr ""
+
+msgctxt "#30330"
+msgid "Search method"
+msgstr ""
+
+msgctxt "#30331"
+msgid "Website (twitch.tv, fuzzy)"
+msgstr ""
+
+msgctxt "#30332"
+msgid "Helix API"
+msgstr ""

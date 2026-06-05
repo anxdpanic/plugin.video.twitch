@@ -183,6 +183,14 @@ def get_search_history_size():
     return int(kodi.get_setting('search_history_size'))
 
 
+def use_gql_search():
+    # search_backend: 0 = Website (GQL, fuzzy/relevance ranking), 1 = Helix (search/channels)
+    try:
+        return int(kodi.get_setting('search_backend')) == 0
+    except (ValueError, TypeError):
+        return True  # default to the website (GQL) search
+
+
 def get_search_history(search_type):
     history = None
     history_size = get_search_history_size()
