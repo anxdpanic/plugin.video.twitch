@@ -1033,3 +1033,7 @@ msgstr ""
 msgctxt "#30306"
 msgid "Device login is not available for this Client-ID.[CR]Register your own application (Public type) at dev.twitch.tv/console/apps and set its Client-ID in the add-on settings, then try again."
 msgstr ""
+
+msgctxt "#30310"
+msgid "Automatic token refresh needs a public Client-ID.[CR]Register your own application (Public type) at dev.twitch.tv/console/apps and set its Client-ID in the add-on settings."
+msgstr ""

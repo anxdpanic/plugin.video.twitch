@@ -188,6 +188,7 @@ def get_refresh_token():
 def store_oauth_tokens(access_token, refresh_token, expires_in):
     kodi.set_setting('oauth_token_helix', access_token)
     kodi.set_setting('oauth_refresh_token', refresh_token or '')
+    kodi.set_setting('oauth_refresh_unsupported', '')  # fresh working tokens -> (re)enable auto-refresh
     try:
         expiry = int(time.time()) + int(expires_in) - 120  # refresh ~2 min before expiry
     except (TypeError, ValueError):
@@ -210,18 +211,33 @@ def ensure_valid_token(force=False):
     access_token = kodi.get_setting('oauth_token_helix').strip()
     if not refresh_token:
         return access_token  # legacy implicit-grant token -> nothing to refresh
+    client_id = get_client_id()
+    # A confidential app (one registered with a secret) cannot refresh without that secret;
+    # Twitch then replies 'missing client secret'. Once we have seen that for this client id we
+    # stop retrying, so we neither spam the log every few minutes nor block API calls -> the user
+    # falls back to the manual login until they configure a public client id.
+    if not force and kodi.get_setting('oauth_refresh_unsupported') == client_id:
+        return access_token
     try:
         expiry = float(kodi.get_setting('oauth_token_expiry') or '0')
     except ValueError:
         expiry = 0
     if access_token and not force and time.time() < expiry:
         return access_token
-    ok, data = device_oauth.refresh_access_token(get_client_id(), refresh_token)
+    ok, data = device_oauth.refresh_access_token(client_id, refresh_token)
     if ok and data.get('access_token'):
         store_oauth_tokens(data['access_token'], data.get('refresh_token', refresh_token),
                            data.get('expires_in', 3600))
         log_utils.log('OAuth: access token refreshed via refresh_token', log_utils.LOGNOTICE)
         return data['access_token']
+    if 'client secret' in str(data.get('message', '')).lower():
+        # Confidential client id -> a silent refresh is impossible. Remember it, and tell the
+        # user once how to fix it (register a public app and set its Client-ID).
+        kodi.set_setting('oauth_refresh_unsupported', client_id)
+        log_utils.log('OAuth: refresh needs a public client id (this one is confidential); set your own '
+                      'under Settings > Login. Falling back to manual login.', log_utils.LOGWARNING)
+        kodi.notify(msg=i18n('oauth_refresh_needs_public_client'))
+        return access_token
     log_utils.log('OAuth: token refresh failed |%s|' % data, log_utils.LOGWARNING)
     return access_token  # keep current; valid_token() will prompt re-login if truly invalid
 

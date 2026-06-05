@@ -125,6 +125,7 @@ STRINGS = {
     'device_login_failed': 30304,
     'device_login_cancelled': 30305,
     'device_login_unsupported': 30306,
+    'oauth_refresh_needs_public_client': 30310,
     'started_streaming': 30231,
     'new_search': 30235,
     'clear_search_history_': 30237,
