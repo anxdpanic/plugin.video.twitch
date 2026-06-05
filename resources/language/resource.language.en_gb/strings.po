@@ -1005,3 +1005,15 @@ msgstr ""
 msgctxt "#30273"
 msgid "OAuth Token is expired or invalid"
 msgstr ""
+
+msgctxt "#30307"
+msgid "Supported codecs"
+msgstr ""
+
+msgctxt "#30308"
+msgid "Twitch default"
+msgstr ""
+
+msgctxt "#30309"
+msgid "H.265 (HEVC)"
+msgstr ""

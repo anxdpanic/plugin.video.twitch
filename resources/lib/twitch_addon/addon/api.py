@@ -24,6 +24,13 @@ from twitch.api import usher
 from twitch.api import helix as twitch
 from twitch.api.parameters import Language, Boolean, VideoSort, PeriodHelix
 
+try:
+    from inspect import signature as _signature
+    # Older library versions don't accept the supported_codecs keyword; degrade gracefully.
+    _USHER_SUPPORTS_CODECS = 'supported_codecs' in _signature(usher.live_request).parameters
+except Exception:
+    _USHER_SUPPORTS_CODECS = False
+
 i18n = utils.i18n
 
 
@@ -329,10 +336,17 @@ class Twitch:
         results = self.error_check(results)
         return results
 
+    @staticmethod
+    def _codec_kwargs():
+        codecs = utils.get_supported_codecs()
+        if codecs and _USHER_SUPPORTS_CODECS:
+            return {'supported_codecs': codecs}
+        return {}
+
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_vod(self, video_id):
-        results = self.usher.video(video_id, headers=self.get_private_credential_headers())
+        results = self.usher.video(video_id, headers=self.get_private_credential_headers(), **self._codec_kwargs())
         return self.error_check(results, private=True)
 
     @api_error_handler
@@ -343,25 +357,25 @@ class Twitch:
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_live(self, name):
-        results = self.usher.live(name, headers=self.get_private_credential_headers())
+        results = self.usher.live(name, headers=self.get_private_credential_headers(), **self._codec_kwargs())
         return self.error_check(results, private=True)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def live_request(self, name):
         if not utils.inputstream_adpative_supports('EXT-X-DISCONTINUITY'):
-            results = self.usher.live_request(name, platform='ps4', headers=self.get_private_credential_headers())
+            results = self.usher.live_request(name, platform='ps4', headers=self.get_private_credential_headers(), **self._codec_kwargs())
         else:
-            results = self.usher.live_request(name, headers=self.get_private_credential_headers())
+            results = self.usher.live_request(name, headers=self.get_private_credential_headers(), **self._codec_kwargs())
         return self.error_check(results, private=True)
 
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def video_request(self, video_id):
         if not utils.inputstream_adpative_supports('EXT-X-DISCONTINUITY'):
-            results = self.usher.video_request(video_id, platform='ps4', headers=self.get_private_credential_headers())
+            results = self.usher.video_request(video_id, platform='ps4', headers=self.get_private_credential_headers(), **self._codec_kwargs())
         else:
-            results = self.usher.video_request(video_id, headers=self.get_private_credential_headers())
+            results = self.usher.video_request(video_id, headers=self.get_private_credential_headers(), **self._codec_kwargs())
         return self.error_check(results, private=True)
 
     @staticmethod
