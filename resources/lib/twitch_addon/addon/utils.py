@@ -11,6 +11,13 @@
 
 import re
 import time
+import os
+import json as _json
+
+try:
+    import fcntl as _fcntl
+except ImportError:
+    _fcntl = None
 
 from base64 import b64decode
 from datetime import datetime
@@ -144,16 +151,15 @@ def clear_client_id():
 
 
 def get_oauth_token(token_only=True, required=False):
-    oauth_token = kodi.get_setting('oauth_token_helix')
+    oauth_token = _read_oauth_store().get('access', '')
+    if not oauth_token or not oauth_token.strip():
+        oauth_token = kodi.get_setting('oauth_token_helix')  # legacy fallback (manual entry)
     if not oauth_token or not oauth_token.strip():
         if not required: return ''
         kodi.notify(kodi.get_name(), i18n('token_required'), sound=False)
         kodi.show_settings()
-        oauth_token = kodi.get_setting('oauth_token_helix')
-    stripped_token = oauth_token.strip()
-    if oauth_token != stripped_token:
-        oauth_token = stripped_token
-        kodi.set_setting('oauth_token_helix', oauth_token)
+        oauth_token = _read_oauth_store().get('access', '') or kodi.get_setting('oauth_token_helix')
+    oauth_token = oauth_token.strip()
     if oauth_token:
         if token_only:
             idx = oauth_token.find(':')
@@ -180,66 +186,152 @@ def get_private_oauth_token():
 
 
 # --- OAuth Device Code Flow: token storage + silent refresh -----------------------------
+#
+# The rotating, single-use refresh token must survive two hazards the Kodi settings store
+# cannot: (a) concurrent refreshes from several add-on processes (service + plugin calls)
+# racing to consume the same single-use token, and (b) one process clobbering another's
+# settings.xml write from its in-memory cache. Both are solved by keeping the tokens in a
+# dedicated JSON file that is read fresh every time, written atomically (os.replace), and
+# guarded by a cross-process file lock for the whole refresh.
+
+_OAUTH_STORE_FILE = os.path.join(ADDON_DATA_DIR, 'oauth_tokens.json')
+_OAUTH_LOCK_FILE = os.path.join(ADDON_DATA_DIR, 'oauth_tokens.lock')
+
+
+class _OAuthLock:
+    """Serialise token refresh across processes (flock on POSIX; no-op fallback elsewhere)."""
+
+    def __init__(self):
+        self._fh = None
+
+    def __enter__(self):
+        if _fcntl is not None:
+            try:
+                self._fh = open(_OAUTH_LOCK_FILE, 'a+')
+                _fcntl.flock(self._fh.fileno(), _fcntl.LOCK_EX)
+            except Exception as e:
+                log_utils.log('OAuth: lock acquire failed: %s' % e, log_utils.LOGWARNING)
+                self._fh = None
+        return self
+
+    def __exit__(self, *exc):
+        if self._fh is not None:
+            try:
+                _fcntl.flock(self._fh.fileno(), _fcntl.LOCK_UN)
+                self._fh.close()
+            except Exception:
+                pass
+            self._fh = None
+        return False
+
+
+def _read_oauth_store():
+    """Token dict {access, refresh, expiry}, read fresh from disk (never cached). Migrates
+    once from the legacy Kodi settings so existing logins keep working. Never logs values."""
+    data = {}
+    try:
+        if os.path.exists(_OAUTH_STORE_FILE):
+            with open(_OAUTH_STORE_FILE, 'r') as fh:
+                data = _json.load(fh) or {}
+    except Exception as e:
+        log_utils.log('OAuth: store read failed: %s' % e, log_utils.LOGWARNING)
+        data = {}
+    if not data.get('access') and not data.get('refresh'):
+        access = (kodi.get_setting('oauth_token_helix') or '').strip()
+        refresh = (kodi.get_setting('oauth_refresh_token') or '').strip()
+        try:
+            expiry = int(float(kodi.get_setting('oauth_token_expiry') or '0'))
+        except (TypeError, ValueError):
+            expiry = 0
+        if access or refresh:
+            data = {'access': access, 'refresh': refresh, 'expiry': expiry}
+            _write_oauth_store(data)
+    return data
+
+
+def _write_oauth_store(data):
+    """Atomically persist the token dict, then mirror it to the legacy settings for backward
+    compatibility (the mirror is never read back for refresh, so a clobber is harmless). Never
+    logs token values."""
+    try:
+        tmp = _OAUTH_STORE_FILE + '.tmp'
+        with open(tmp, 'w') as fh:
+            _json.dump(data, fh)
+        os.replace(tmp, _OAUTH_STORE_FILE)
+    except Exception as e:
+        log_utils.log('OAuth: store write failed: %s' % e, log_utils.LOGERROR)
+        return False
+    try:
+        kodi.set_setting('oauth_token_helix', data.get('access', ''))
+        kodi.set_setting('oauth_refresh_token', data.get('refresh', ''))
+        kodi.set_setting('oauth_token_expiry', str(int(data.get('expiry', 0) or 0)))
+    except Exception:
+        pass
+    return True
+
 
 def get_refresh_token():
-    return kodi.get_setting('oauth_refresh_token').strip()
+    return (_read_oauth_store().get('refresh') or '').strip()
 
 
 def store_oauth_tokens(access_token, refresh_token, expires_in):
-    kodi.set_setting('oauth_token_helix', access_token)
-    kodi.set_setting('oauth_refresh_token', refresh_token or '')
-    kodi.set_setting('oauth_refresh_unsupported', '')  # fresh working tokens -> (re)enable auto-refresh
     try:
         expiry = int(time.time()) + int(expires_in) - 120  # refresh ~2 min before expiry
     except (TypeError, ValueError):
         expiry = int(time.time()) + 3600
-    kodi.set_setting('oauth_token_expiry', str(expiry))
+    _write_oauth_store({'access': (access_token or '').strip(),
+                        'refresh': (refresh_token or '').strip(),
+                        'expiry': expiry})
+    kodi.set_setting('oauth_refresh_unsupported', '')  # fresh working tokens -> (re)enable auto-refresh
 
 
 def clear_oauth_tokens():
-    kodi.set_setting('oauth_token_helix', '')
-    kodi.set_setting('oauth_refresh_token', '')
-    kodi.set_setting('oauth_token_expiry', '0')
+    _write_oauth_store({'access': '', 'refresh': '', 'expiry': 0})
 
 
 def ensure_valid_token(force=False):
     """Silently refresh the Helix OAuth token via the stored refresh_token when it is
-    (near) expired. No-op for legacy implicit tokens (no refresh_token stored).
-    Returns the (possibly refreshed) access token, or '' if none available."""
+    (near) expired. No-op for legacy implicit tokens (no refresh_token stored). Serialised
+    across processes so the single-use refresh token is never consumed twice. Returns the
+    (possibly refreshed) access token, or '' if none available."""
     from . import device_oauth
-    refresh_token = get_refresh_token()
-    access_token = kodi.get_setting('oauth_token_helix').strip()
-    if not refresh_token:
-        return access_token  # legacy implicit-grant token -> nothing to refresh
     client_id = get_client_id()
     # A confidential app (one registered with a secret) cannot refresh without that secret;
     # Twitch then replies 'missing client secret'. Once we have seen that for this client id we
     # stop retrying, so we neither spam the log every few minutes nor block API calls -> the user
     # falls back to the manual login until they configure a public client id.
     if not force and kodi.get_setting('oauth_refresh_unsupported') == client_id:
-        return access_token
-    try:
-        expiry = float(kodi.get_setting('oauth_token_expiry') or '0')
-    except ValueError:
-        expiry = 0
-    if access_token and not force and time.time() < expiry:
-        return access_token
-    ok, data = device_oauth.refresh_access_token(client_id, refresh_token)
-    if ok and data.get('access_token'):
-        store_oauth_tokens(data['access_token'], data.get('refresh_token', refresh_token),
-                           data.get('expires_in', 3600))
-        log_utils.log('OAuth: access token refreshed via refresh_token', log_utils.LOGNOTICE)
-        return data['access_token']
-    if 'client secret' in str(data.get('message', '')).lower():
-        # Confidential client id -> a silent refresh is impossible. Remember it, and tell the
-        # user once how to fix it (register a public app and set its Client-ID).
-        kodi.set_setting('oauth_refresh_unsupported', client_id)
-        log_utils.log('OAuth: refresh needs a public client id (this one is confidential); set your own '
-                      'under Settings > Login. Falling back to manual login.', log_utils.LOGWARNING)
-        kodi.notify(msg=i18n('oauth_refresh_needs_public_client'))
-        return access_token
-    log_utils.log('OAuth: token refresh failed |%s|' % data, log_utils.LOGWARNING)
-    return access_token  # keep current; valid_token() will prompt re-login if truly invalid
+        return (_read_oauth_store().get('access') or '').strip()
+    with _OAuthLock():
+        store = _read_oauth_store()
+        refresh_token = (store.get('refresh') or '').strip()
+        access_token = (store.get('access') or '').strip()
+        if not refresh_token:
+            return access_token  # legacy implicit-grant token -> nothing to refresh
+        try:
+            expiry = float(store.get('expiry') or 0)
+        except (TypeError, ValueError):
+            expiry = 0
+        # Re-check INSIDE the lock: if another process refreshed while we waited, the store
+        # is now fresh -> reuse it instead of consuming the rotated token a second time.
+        if access_token and not force and time.time() < expiry:
+            return access_token
+        ok, data = device_oauth.refresh_access_token(client_id, refresh_token)
+        if ok and data.get('access_token'):
+            store_oauth_tokens(data['access_token'], data.get('refresh_token', refresh_token),
+                               data.get('expires_in', 3600))
+            log_utils.log('OAuth: access token refreshed via refresh_token', log_utils.LOGNOTICE)
+            return data['access_token']
+        if 'client secret' in str(data.get('message', '')).lower():
+            # Confidential client id -> a silent refresh is impossible. Remember it, and tell the
+            # user once how to fix it (register a public app and set its Client-ID).
+            kodi.set_setting('oauth_refresh_unsupported', client_id)
+            log_utils.log('OAuth: refresh needs a public client id (this one is confidential); set your own '
+                          'under Settings > Login. Falling back to manual login.', log_utils.LOGWARNING)
+            kodi.notify(msg=i18n('oauth_refresh_needs_public_client'))
+            return access_token
+        log_utils.log('OAuth: token refresh failed |%s|' % data, log_utils.LOGWARNING)
+        return access_token  # keep current; valid_token() will prompt re-login if truly invalid
 
 
 def get_search_history_size():
