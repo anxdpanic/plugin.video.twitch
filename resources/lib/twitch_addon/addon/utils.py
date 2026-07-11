@@ -111,6 +111,17 @@ def append_headers(headers):
     return '|%s' % '&'.join(['%s=%s' % (key, quote_plus(headers[key])) for key in headers])
 
 
+# supported_codecs setting -> usher 'supported_codecs' value. Index 0 = Twitch default (omit param).
+SUPPORTED_CODECS = ('', 'h265,h264')
+
+
+def get_supported_codecs():
+    try:
+        return SUPPORTED_CODECS[int(kodi.get_setting('supported_codecs'))]
+    except (ValueError, IndexError):
+        return ''
+
+
 def get_redirect_uri():
     settings_id = kodi.get_setting('oauth_redirecturi')
     stripped_id = settings_id.strip()

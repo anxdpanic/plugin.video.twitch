@@ -39,6 +39,8 @@
         <setting id="video_support_ia_addon" type="bool" label="" visible="false" enable="true" default="false"/>
         <setting id="video_quality_ia" type="bool" label="30223" default="false" enable="eq(-1,true)|eq(-2,true)"/>
         <setting id="video_quality_ia_configure" type="action" label="30224" enable="eq(-1,true)+eq(-2,true)" visible="eq(-1,true)+eq(-2,true)" option="close" action="RunPlugin(plugin://$ID/?mode=configure_ia)"/>
+        <!-- Supported codecs (Twitch Enhanced Broadcasting: HEVC enables 1440p+ variants; requires hardware decode) -->
+        <setting id="supported_codecs" type="enum" label="30307" lvalues="30308|30309" default="0"/>
         <!-- Title Display -->
         <setting id="title_display" type="enum" label="30045" lvalues="30046|30047|30048|30049|30051|30067|30054" default="0"/>
         <!-- Truncate titles -->
