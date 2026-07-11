@@ -70,3 +70,16 @@ def refresh_access_token(client_id, refresh_token):
     except Exception as e:
         log_utils.log('device_oauth.refresh_access_token error: %s' % e, log_utils.LOGERROR)
         return False, {'message': str(e)}
+
+
+def revoke_token(client_id, token):
+    """Best-effort server-side revoke of an access token (public client). Returns True on 200."""
+    if not token:
+        return False
+    try:
+        r = requests.post(OAUTH_BASE + '/revoke',
+                          data={'client_id': client_id, 'token': token}, timeout=TIMEOUT)
+        return r.status_code == 200
+    except Exception as e:
+        log_utils.log('device_oauth.revoke_token error: %s' % e, log_utils.LOGWARNING)
+        return False

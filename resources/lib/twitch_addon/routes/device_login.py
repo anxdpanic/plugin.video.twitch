@@ -18,13 +18,11 @@ from ..addon.constants import SCOPES
 from ..addon.utils import i18n
 
 
-def route():
-    client_id = utils.get_client_id()
-    scopes = ' '.join(SCOPES)
-
+def do_device_login(heading, body_i18n, client_id, scopes, store_tokens, success_i18n, log_tag):
+    """Shared device-code login flow: show code, poll, store tokens via store_tokens()."""
     ok, data = device_oauth.request_device_code(client_id, scopes)
     if not ok or not data.get('user_code'):
-        kodi.Dialog().ok(i18n('device_login'), i18n('device_login_unsupported'))
+        kodi.Dialog().ok(heading, i18n('device_login_unsupported'))
         return
 
     user_code = data['user_code']
@@ -34,11 +32,11 @@ def route():
 
     # Short, clean activation URL (Twitch's verification_uri carries the code as a long query string).
     activate_url = 'https://www.twitch.tv/activate'
-    body = i18n('device_login_instructions') % (activate_url, user_code)
+    body = i18n(body_i18n) % (activate_url, user_code)
 
     monitor = xbmc.Monitor()
     progress = xbmcgui.DialogProgress()
-    progress.create(i18n('device_login'), body)
+    progress.create(heading, body)
 
     token = None
     waited = 0
@@ -70,10 +68,21 @@ def route():
 
     progress.close()
     if token and token.get('access_token'):
-        utils.store_oauth_tokens(token['access_token'],
-                                 token.get('refresh_token', ''),
-                                 token.get('expires_in', 14400))
-        log_utils.log('OAuth: device login succeeded, refresh token stored', log_utils.LOGNOTICE)
-        kodi.Dialog().ok(i18n('device_login'), i18n('device_login_success'))
+        store_tokens(token['access_token'],
+                     token.get('refresh_token', ''),
+                     token.get('expires_in', 14400))
+        log_utils.log('OAuth%s: device login succeeded, refresh token stored' % log_tag,
+                      log_utils.LOGNOTICE)
+        kodi.Dialog().ok(heading, i18n(success_i18n))
     else:
         kodi.notify(i18n('login'), i18n('device_login_failed'), sound=False)
+
+
+def route():
+    do_device_login(heading=i18n('device_login'),
+                    body_i18n='device_login_instructions',
+                    client_id=utils.get_client_id(),
+                    scopes=' '.join(SCOPES),
+                    store_tokens=utils.store_oauth_tokens,
+                    success_i18n='device_login_success',
+                    log_tag='')

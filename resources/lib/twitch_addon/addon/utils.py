@@ -107,8 +107,13 @@ def inputstream_adpative_supports(feature):
     return False
 
 
+def format_isa_headers(headers):
+    # key=value&... (url-encoded) for InputStream Adaptive stream_headers / manifest_headers properties.
+    return '&'.join(['%s=%s' % (key, quote_plus(headers[key])) for key in headers])
+
+
 def append_headers(headers):
-    return '|%s' % '&'.join(['%s=%s' % (key, quote_plus(headers[key])) for key in headers])
+    return '|%s' % format_isa_headers(headers)
 
 
 # supported_codecs setting -> usher 'supported_codecs' value. Index 0 = Twitch default (omit param).
@@ -120,6 +125,18 @@ def get_supported_codecs():
         return SUPPORTED_CODECS[int(kodi.get_setting('supported_codecs'))]
     except (ValueError, IndexError):
         return ''
+
+
+# Drop sub-720p video variants from a usher quality list; keep Source/720p+/audio_only/Adaptive.
+QUALITY_FLOOR_DROP = ('160p', '360p', '480p')
+
+
+def filter_qualities(videos):
+    if not videos:
+        return videos
+    filtered = [v for v in videos
+                if not any(drop in v.get('name', '').lower() for drop in QUALITY_FLOOR_DROP)]
+    return filtered if filtered else videos  # never return empty -> fall back to original list
 
 
 def get_redirect_uri():
@@ -186,6 +203,12 @@ def get_oauth_token(token_only=True, required=False):
 
 
 def get_private_oauth_token():
+    # Prefer the device-login store (Turbo/ad-free, auto-refreshed); fall back to the manual
+    # `private_oauth_token` setting so an existing long-lived token keeps working.
+    if (_read_private_store().get('access') or '').strip():
+        token = ensure_valid_private_token()
+        if token:
+            return kodi.decode_utf8(token)
     settings_id = kodi.get_setting('private_oauth_token')
     stripped_id = settings_id.strip()
     if settings_id != stripped_id:
@@ -212,13 +235,14 @@ _OAUTH_LOCK_FILE = os.path.join(ADDON_DATA_DIR, 'oauth_tokens.lock')
 class _OAuthLock:
     """Serialise token refresh across processes (flock on POSIX; no-op fallback elsewhere)."""
 
-    def __init__(self):
+    def __init__(self, lock_file=_OAUTH_LOCK_FILE):
         self._fh = None
+        self._lock_file = lock_file
 
     def __enter__(self):
         if _fcntl is not None:
             try:
-                self._fh = open(_OAUTH_LOCK_FILE, 'a+')
+                self._fh = open(self._lock_file, 'a+')
                 _fcntl.flock(self._fh.fileno(), _fcntl.LOCK_EX)
             except Exception as e:
                 log_utils.log('OAuth: lock acquire failed: %s' % e, log_utils.LOGWARNING)
@@ -341,8 +365,101 @@ def ensure_valid_token(force=False):
                           'under Settings > Login. Falling back to manual login.', log_utils.LOGWARNING)
             kodi.notify(msg=i18n('oauth_refresh_needs_public_client'))
             return access_token
-        log_utils.log('OAuth: token refresh failed |%s|' % data, log_utils.LOGWARNING)
+        log_utils.log('OAuth: token refresh failed |%s|' % (data.get('message') or data.get('error') or 'error'),
+                      log_utils.LOGWARNING)  # log only the reason, never token values
         return access_token  # keep current; valid_token() will prompt re-login if truly invalid
+
+
+# --- Private (Turbo/ad-free) OAuth token store -- device login + silent refresh ----------
+#
+# Mirrors the main store above but for the "private" credentials used by usher/GQL
+# (Turbo/subscriber ad-free playback). Separate file from the main (login/Helix) token and
+# additive: get_private_oauth_token() prefers this store (auto-refreshed) and falls back to
+# the manual `private_oauth_token` setting, so an existing long-lived token keeps working.
+
+_PRIVATE_STORE_FILE = os.path.join(ADDON_DATA_DIR, 'oauth_private_tokens.json')
+_PRIVATE_LOCK_FILE = os.path.join(ADDON_DATA_DIR, 'oauth_private_tokens.lock')
+
+_KIMNE_CLIENT_ID = 'kimne78kx3ncx6brgo4mv6wki5h1ko'  # Twitch public web client (Turbo-aware GQL)
+
+
+def effective_private_client_id():
+    return get_private_client_id() or _KIMNE_CLIENT_ID
+
+
+def _read_private_store():
+    try:
+        if os.path.exists(_PRIVATE_STORE_FILE):
+            with open(_PRIVATE_STORE_FILE, 'r') as fh:
+                return _json.load(fh) or {}
+    except Exception as e:
+        log_utils.log('OAuth(private): store read failed: %s' % e, log_utils.LOGWARNING)
+    return {}
+
+
+def _write_private_store(data):
+    try:
+        tmp = _PRIVATE_STORE_FILE + '.tmp'
+        with open(tmp, 'w') as fh:
+            _json.dump(data, fh)
+        os.replace(tmp, _PRIVATE_STORE_FILE)
+    except Exception as e:
+        log_utils.log('OAuth(private): store write failed: %s' % e, log_utils.LOGERROR)
+        return False
+    return True
+
+
+def store_private_tokens(access_token, refresh_token, expires_in):
+    try:
+        expiry = int(time.time()) + int(expires_in) - 120  # refresh ~2 min before expiry
+    except (TypeError, ValueError):
+        expiry = int(time.time()) + 3600
+    _write_private_store({'access': (access_token or '').strip(),
+                          'refresh': (refresh_token or '').strip(),
+                          'expiry': expiry})
+
+
+def clear_private_tokens():
+    _write_private_store({'access': '', 'refresh': '', 'expiry': 0})
+
+
+def ensure_valid_private_token(force=False):
+    """Refresh the private (Turbo) token via its stored refresh_token when (near)
+    expired. No-op if no refresh_token (e.g. legacy long-lived token). Serialised across
+    processes. Never logs token values."""
+    from . import device_oauth
+    with _OAuthLock(_PRIVATE_LOCK_FILE):
+        store = _read_private_store()
+        refresh_token = (store.get('refresh') or '').strip()
+        access_token = (store.get('access') or '').strip()
+        if not refresh_token:
+            return access_token
+        # The kimne78 web client is a *confidential* client: its tokens cannot be refreshed
+        # without a client secret we don't have (-> "missing client secret"), but they also
+        # never expire (Twitch /validate reports expires_in=0). Our stored expiry is just the
+        # device-flow expires_in, which lapses while the token stays valid -> attempting a
+        # refresh here only spams a doomed HTTP POST + warning on every API call. So for
+        # kimne78 just use the stored access token. Only a user-supplied *public* private
+        # client (own client id) is actually refreshable.
+        if effective_private_client_id() == _KIMNE_CLIENT_ID:
+            return access_token
+        try:
+            expiry = float(store.get('expiry') or 0)
+        except (TypeError, ValueError):
+            expiry = 0
+        if access_token and not force and time.time() < expiry:
+            return access_token
+        ok, data = device_oauth.refresh_access_token(effective_private_client_id(), refresh_token)
+        if ok and data.get('access_token'):
+            store_private_tokens(data['access_token'], data.get('refresh_token', refresh_token),
+                                 data.get('expires_in', 3600))
+            log_utils.log('OAuth(private): token refreshed via refresh_token', log_utils.LOGNOTICE)
+            return data['access_token']
+        # Token (near) expired and refresh failed -> signal invalid so get_private_oauth_token()
+        # falls back to the manual long-lived private_oauth_token instead of using a dead token.
+        log_utils.log('OAuth(private): token refresh failed |%s|' % (data.get('message') or data.get('error') or 'error'),
+                      log_utils.LOGWARNING)  # log only the reason, never token values
+        return ''
 
 
 def get_search_history_size():
@@ -405,21 +522,6 @@ def link_to_next_page(queries):
             'art': the_art(),
             'path': kodi.get_plugin_url(queries),
             'info': {'plot': i18n('next_page')}}
-
-
-def irc_enabled():
-    return (kodi.get_setting('irc_enable') == 'true') and kodi.has_addon('script.ircchat')
-
-
-def exec_irc_script(username, channel):
-    if not irc_enabled():
-        return
-    password = get_oauth_token(token_only=False, required=True)
-    if username and password:
-        host = 'irc.chat.twitch.tv'
-        builtin = 'RunScript(script.ircchat, run_irc=True&nickname=%s&username=%s&password=%s&host=%s&channel=#%s)' % \
-                  (username, username, password, host, channel)
-        kodi.execute_builtin(builtin)
 
 
 def notify_refresh():
@@ -678,6 +780,31 @@ def convert_duration(duration):
     return payload
 
 
+# Characters Kodi's default skin font (Estuary/Noto Sans) cannot render show up as an empty
+# box ("tofu") -- mostly emoji/symbols in stream titles. Filter them out before display.
+_TOFU_RE = re.compile(
+    u'['
+    u'\U0001F000-\U0001FAFF'  # emoji & pictographs (emoticons, transport, symbols & pictographs, flags ...)
+    u'\U00002600-\U000027BF'  # misc symbols + dingbats
+    u'\U00002B00-\U00002BFF'  # misc symbols and arrows
+    u'\U000023E9-\U000023FA'  # media/clock emoji from misc technical
+    u'\U0000FE00-\U0000FE0F'  # variation selectors (emoji presentation)
+    u'\U0000200D'             # zero width joiner (emoji sequences)
+    u'\U000020E3'             # combining enclosing keycap
+    u']'
+)
+
+
+def strip_tofu(text):
+    # Remove non-renderable emoji/symbols (would show as tofu boxes). Only collapse
+    # horizontal double spaces -- line breaks are kept (matters for plots).
+    if not isinstance(text, str):
+        return text
+    text = _TOFU_RE.sub(u'', text)
+    text = re.sub(u'[ \\t]{2,}', u' ', text)
+    return text
+
+
 class TitleBuilder(object):
     class Templates(object):
         TITLE = u"{title}"
@@ -744,6 +871,7 @@ class TitleBuilder(object):
                 pass
             value = value.replace(u'\r\n', u' ')
             value = value.replace(u'\n', u' ')
+            value = strip_tofu(value)  # drop emoji/symbols the skin font cannot render
             value = value.strip()
             return value
         else:
