@@ -82,7 +82,7 @@ class Twitch:
                             '[CR]'.join([
                                 i18n('missing_scopes') % missing_scopes,
                                 i18n('get_new_oauth_token') %
-                                (i18n('settings'), i18n('login'), i18n('get_oauth_token'))
+                                (i18n('settings'), i18n('login'), i18n('device_login'))
                             ])
                         )
                         log_utils.log('Error: Current OAuth token is missing required scopes |%s|' % missing_scopes,
@@ -110,7 +110,7 @@ class Twitch:
                         '[CR]'.join([
                             i18n('client_id_mismatch'),
                             i18n('get_new_oauth_token') %
-                            (i18n('settings'), i18n('login'), i18n('get_oauth_token'))
+                            (i18n('settings'), i18n('login'), i18n('device_login'))
                         ])
                     )
                     return False
@@ -406,7 +406,7 @@ class Twitch:
             if not private:
                 _ = kodi.Dialog().ok(
                     i18n('oauth_heading'),
-                    i18n('oauth_message') % (i18n('settings'), i18n('login'), i18n('get_oauth_token'))
+                    i18n('oauth_message') % (i18n('settings'), i18n('login'), i18n('device_login'))
                 )
             else:
                 _ = kodi.Dialog().ok(

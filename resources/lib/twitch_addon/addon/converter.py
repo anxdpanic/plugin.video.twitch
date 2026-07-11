@@ -581,12 +581,15 @@ class JsonListItemConverter(object):
                     bwidth = int(video['bandwidth'])
                     if bwidth <= bandwidth_value:
                         bandwidths.append(bwidth)
-                best_match = max(bandwidths)
-                try:
-                    index = next(idx for idx, video in enumerate(videos) if int(video['bandwidth']) == best_match)
-                    return videos[index]
-                except:
-                    pass
+                # may be empty: with sub-720p variants filtered out, every remaining
+                # variant can exceed the configured limit -> fall through to the dialog
+                if bandwidths:
+                    best_match = max(bandwidths)
+                    try:
+                        index = next(idx for idx, video in enumerate(videos) if int(video['bandwidth']) == best_match)
+                        return videos[index]
+                    except:
+                        pass
             return self.select_video_for_quality(videos)
 
     @staticmethod

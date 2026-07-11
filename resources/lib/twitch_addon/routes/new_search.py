@@ -37,12 +37,13 @@ def route(api, content):
     # property is set -> re-render the previous results instead of re-prompting. The search
     # menus clear the property before "New Search" is reachable, so a deliberate new search
     # still prompts. An empty/cancelled keyboard ends the directory cleanly (no hang).
+    from . import search_results
+
     win = kodi.Window(10000)
     key = _query_key(content)
     previous = win.getProperty(key)
 
     if previous:
-        from . import search_results
         search_results.route(api, content, previous)
         return
 
@@ -52,5 +53,4 @@ def route(api, content):
         return
 
     win.setProperty(key, user_input)
-    from . import search_results
     search_results.route(api, content, user_input)
