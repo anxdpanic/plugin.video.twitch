@@ -19,7 +19,7 @@ import threading
 
 from .addon.common import kodi, log_utils
 from .addon.constants import Keys
-from .addon.utils import i18n, get_stamp_diff, get_vodcast_color
+from .addon.utils import i18n, get_stamp_diff, get_vodcast_color, ensure_valid_token
 from .addon.player import TwitchPlayer
 from .addon import api, cache
 
@@ -216,10 +216,22 @@ def run():
 
     live_notifications_thread = LiveNotificationsThread()
 
+    token_check = 0
+    try:
+        ensure_valid_token()  # refresh on startup if needed
+    except Exception:
+        pass
     while not monitor.abortRequested():
 
         if monitor.waitForAbort(1.0):
             break
+        token_check += 1
+        if token_check >= 300:  # proactively refresh the OAuth token every ~5 min
+            token_check = 0
+            try:
+                ensure_valid_token()
+            except Exception:
+                pass
 
     live_notifications_thread.stop()
     live_notifications_thread.join()
