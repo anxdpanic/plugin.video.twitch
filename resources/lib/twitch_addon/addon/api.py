@@ -12,7 +12,7 @@
 import json
 import sys
 
-from . import cache, utils
+from . import cache, utils, gql_search
 from .common import kodi, log_utils
 from .constants import Keys, SCOPES
 from .error_handling import api_error_handler
@@ -233,6 +233,10 @@ class Twitch:
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_channel_search(self, search_query, after='MA==', first=20):
+        if utils.use_gql_search():
+            gql = gql_search.search(search_query, 'channels')
+            if gql is not None:
+                return gql  # GQL ok -> use it; else fall back to Helix below
         results = self.api.search.get_channels(search_query=search_query, after=after, first=first,
                                                live_only=Boolean.FALSE)
         return self.error_check(results)
@@ -240,6 +244,10 @@ class Twitch:
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_stream_search(self, search_query, after='MA==', first=20):
+        if utils.use_gql_search():
+            gql = gql_search.search(search_query, 'streams')
+            if gql is not None:
+                return gql
         results = self.api.search.get_channels(search_query=search_query, after=after, first=first,
                                                live_only=Boolean.TRUE)
         return self.error_check(results)
@@ -247,6 +255,10 @@ class Twitch:
     @api_error_handler
     @cache.cache_method(cache_limit=cache.limit)
     def get_game_search(self, search_query, after='MA==', first=20):
+        if utils.use_gql_search():
+            gql = gql_search.search(search_query, 'games')
+            if gql is not None:
+                return gql
         results = self.api.search.get_categories(search_query=search_query, after=after, first=first)
         return self.error_check(results)
 

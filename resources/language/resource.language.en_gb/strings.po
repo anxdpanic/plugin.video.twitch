@@ -1037,3 +1037,15 @@ msgstr ""
 msgctxt "#30310"
 msgid "Automatic token refresh needs a public Client-ID.[CR]Register your own application (Public type) at dev.twitch.tv/console/apps and set its Client-ID in the add-on settings."
 msgstr ""
+
+msgctxt "#30330"
+msgid "Search method"
+msgstr ""
+
+msgctxt "#30331"
+msgid "Website (twitch.tv, fuzzy)"
+msgstr ""
+
+msgctxt "#30332"
+msgid "Helix API"
+msgstr ""

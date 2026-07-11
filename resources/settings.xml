@@ -53,6 +53,8 @@
 
         <setting label="30123" type="slider" id="items_per_page" default="25" range="10,100" option="int"/>
         <setting label="30236" type="slider" id="search_history_size" default="25" range="0,200" option="int"/>
+        <!-- Search backend: 0 = Website (GQL, fuzzy/relevance ranking like twitch.tv), 1 = Helix (search/channels) -->
+        <setting id="search_backend" type="enum" label="30330" lvalues="30331|30332" default="0"/>
 
         <setting label="30210" id="live_reconnect" type="bool" default="false"/>
 
