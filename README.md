@@ -11,10 +11,24 @@ Watch your favorite gaming streams on Kodi.
 LOGIN
 ----------------
 
-1. Go to __Settings - Login - Get OAuth token__ and visit the url you are prompted with  
-   _The prompted url is case-sensitive, if your skin's text is all UPPERCASE you will need to switch to Estuary/Confluence to see the proper url_
-2. Login/Sign-up and Authorize TTV on Kodi
-3. Input your new OAuth token in __Settings - Login__
+1. Go to __Settings - Login - Login (device code)__
+2. Visit [twitch.tv/activate](https://www.twitch.tv/activate) on any device, sign in, and enter the code shown in Kodi
+
+The add-on stores the tokens and refreshes them automatically. Automatic refresh
+requires a public Client ID — the bundled Client ID cannot refresh tokens, so you
+will be asked to log in again once the token expires. To enable automatic refresh:
+
+1. Register your own application at [dev.twitch.tv/console/apps](https://dev.twitch.tv/console/apps)
+   (OAuth Redirect URL: `http://localhost`, Client Type: __Public__)
+2. Enter its Client ID in __Settings - Developer - OAuth Client ID__
+3. Log in again via __Settings - Login - Login (device code)__
+
+AD-FREE PLAYBACK (TURBO / SUBSCRIPTIONS)
+----------------
+
+If your Twitch account has Turbo, or you are subscribed to a channel, you can use
+__Settings - Subscriber and Turbo Benefits - Login: ad-free playback / Turbo (device code)__
+and authorize with that account to watch without ads (where Twitch grants it).
 
 FAQ
 ----------------
