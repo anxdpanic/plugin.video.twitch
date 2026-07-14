@@ -3,31 +3,31 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-18 00:54+0000\n"
-"PO-Revision-Date: 2022-04-08 00:13+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2025-04-24 00:15+0000\n"
+"Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://kodi.weblate.cloud/projects/kodi-add-ons-video/plugin-video-twitch/sv_se/>\n"
 "Language: sv_se\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 5.11\n"
 
 msgctxt "Addon Summary"
 msgid "Twitch video plugin"
-msgstr ""
+msgstr "Twitch videotillägg"
 
 msgctxt "Addon Description"
 msgid "Watch your favorite gaming streams!"
-msgstr ""
+msgstr "Titta på dina favoritspelströmmar!"
 
 msgctxt "#30001"
 msgid "Games"
-msgstr ""
+msgstr "Spel"
 
 msgctxt "#30002"
 msgid "Following"
-msgstr ""
+msgstr "Följer"
 
 msgctxt "#30003"
 msgid "Search"
@@ -39,15 +39,15 @@ msgstr "Inställningar"
 
 msgctxt "#30005"
 msgid "Popular Streams"
-msgstr ""
+msgstr "Populära strömmar"
 
 msgctxt "#30006"
 msgid "Teams"
-msgstr ""
+msgstr "Teams"
 
 msgctxt "#30007"
 msgid "Search for channels"
-msgstr ""
+msgstr "Sök efter kanaler"
 
 msgctxt "#30008"
 msgid "Channels"
@@ -55,90 +55,90 @@ msgstr "Kanaler"
 
 msgctxt "#30009"
 msgid "Live Channels"
-msgstr ""
+msgstr "Live-kanaler"
 
 msgctxt "#30010"
 msgid "TwitchTV"
-msgstr ""
+msgstr "TwitchTV"
 
 msgctxt "#30011"
 msgid "next page..."
-msgstr ""
+msgstr "nästa sida..."
 
 msgctxt "#30012"
 msgid "-- Currently Live Streams --"
-msgstr ""
+msgstr "-- Aktuella direktsända strömmar --"
 
 msgctxt "#30013"
 msgid "-- Followed Channels --"
-msgstr ""
+msgstr "-- Följda kanaler --"
 
 # empty strings from id 30014 to 30019
 msgctxt "#30020"
 msgid "Http error"
-msgstr ""
+msgstr "Http-fel"
 
 msgctxt "#30021"
 msgid "No Live Data Found"
-msgstr ""
+msgstr "Ingen live-data hittades"
 
 msgctxt "#30022"
 msgid "No archives found for"
-msgstr ""
+msgstr "Inga arkiv hittades för"
 
 msgctxt "#30023"
 msgid "User Token Error"
-msgstr ""
+msgstr "Fel på användartoken"
 
 msgctxt "#30024"
 msgid "Changed video settings"
-msgstr ""
+msgstr "Ändrade videoinställningar"
 
 msgctxt "#30025"
 msgid "Selected video settings are not available"
-msgstr ""
+msgstr "Valda videoinställningar är inte tillgängliga"
 
 msgctxt "#30026"
 msgid "TwitchApi error"
-msgstr ""
+msgstr "TwitchApi-fel"
 
 msgctxt "#30027"
 msgid "JSON error"
-msgstr ""
+msgstr "JSON-fel"
 
 msgctxt "#30028"
 msgid "Failed to parse the result set"
-msgstr ""
+msgstr "Misslyckades med att tolka resultaten"
 
 msgctxt "#30029"
 msgid "Please check your internet connection"
-msgstr ""
+msgstr "Kontrollera din internetanslutning"
 
 # empty strings from id 30030 to 30039
 msgctxt "#30040"
 msgid "Video Quality"
-msgstr ""
+msgstr "Videokvalitet"
 
 # empty strings from id 30041 to 30044
 msgctxt "#30045"
 msgid "Display titles"
-msgstr ""
+msgstr "Visa titlar"
 
 msgctxt "#30046"
 msgid "Streamer - Stream Title"
-msgstr ""
+msgstr "Streamer - Strömmens titel"
 
 msgctxt "#30047"
 msgid "Viewers - Streamer - Stream Title"
-msgstr ""
+msgstr "Tittare - Streamer - Strömmens titel"
 
 msgctxt "#30048"
 msgid "Stream Title"
-msgstr ""
+msgstr "Strömningstitel"
 
 msgctxt "#30049"
 msgid "Streamer"
-msgstr ""
+msgstr "Streamer"
 
 msgctxt "#30050"
 msgid "Username"
@@ -146,64 +146,64 @@ msgstr "Användarnamn"
 
 msgctxt "#30051"
 msgid "Streamer - Game Title - Stream Title"
-msgstr ""
+msgstr "Streamer - Speltitel - Strömmens titel"
 
 msgctxt "#30052"
 msgid "Enable"
-msgstr ""
+msgstr "Aktivera"
 
 msgctxt "#30053"
 msgid "Password (OAuth Token)"
-msgstr ""
+msgstr "Lösenord (OAuth-token)"
 
 msgctxt "#30054"
 msgid "Language | Streamer - Stream Title"
-msgstr ""
+msgstr "Språk | Streamer - Strömmens titel"
 
 # empty strings from id 30055 to 30059
 msgctxt "#30060"
 msgid "Unnamed Streamer"
-msgstr ""
+msgstr "Namnlös streamer"
 
 msgctxt "#30061"
 msgid "Untitled Stream"
-msgstr ""
+msgstr "Namnlös ström"
 
 msgctxt "#30062"
 msgid "Unknown Number of Viewers"
-msgstr ""
+msgstr "Okänt antal tittare"
 
 msgctxt "#30063"
 msgid "Unknown Language"
-msgstr ""
+msgstr "Okänt språk"
 
 msgctxt "#30064"
 msgid "Unknown Game"
-msgstr ""
+msgstr "Okänt spel"
 
 msgctxt "#30065"
 msgid "Truncate displayed titles"
-msgstr ""
+msgstr "Korta ner visningstitlar"
 
 msgctxt "#30066"
 msgid "Followed Games"
-msgstr ""
+msgstr "Följda spel"
 
 msgctxt "#30067"
 msgid "Game Title Viewers | Streamer - Stream Title"
-msgstr ""
+msgstr "Tittare på speltitel | Streamer - Strömmens titel"
 
 msgctxt "#30068"
 msgid "Content Type"
-msgstr ""
+msgstr "Innehållstyp"
 
 msgctxt "#30069"
 msgid "Files"
-msgstr ""
+msgstr "Filer"
 
 msgctxt "#30070"
 msgid "TV Shows"
-msgstr ""
+msgstr "TV-serier"
 
 msgctxt "#30071"
 msgid "Movies"
@@ -215,15 +215,15 @@ msgstr "Avsnitt"
 
 msgctxt "#30073"
 msgid "Music Videos"
-msgstr ""
+msgstr "Musikvideor"
 
 msgctxt "#30074"
 msgid "Automatically refresh live preview cache"
-msgstr ""
+msgstr "Automatisk uppdatering av cache för live-förhandsvisning"
 
 msgctxt "#30075"
 msgid "Install IrcChat (script.ircchat)"
-msgstr ""
+msgstr "Installera IrcChat (script.ircchat)"
 
 msgctxt "#30076"
 msgid "General"
@@ -231,207 +231,207 @@ msgstr "Allmänt"
 
 msgctxt "#30077"
 msgid "Play (Choose Quality)"
-msgstr ""
+msgstr "Spela (välj kvalitet)"
 
 msgctxt "#30078"
 msgid "Past Broadcasts"
-msgstr ""
+msgstr "Tidigare sändningar"
 
 msgctxt "#30079"
 msgid "Video Highlights"
-msgstr ""
+msgstr "Höjdpunkter i video"
 
 msgctxt "#30080"
 msgid "Could not find any playable urls"
-msgstr ""
+msgstr "Kunde inte hitta några uppspelningsbara URLer"
 
 msgctxt "#30081"
 msgid "IRC Chat"
-msgstr ""
+msgstr "IRC-chatt"
 
 msgctxt "#30082"
 msgid "Live Previews"
-msgstr ""
+msgstr "Live förhandsvisningar"
 
 msgctxt "#30083"
 msgid "Live Preview Settings"
-msgstr ""
+msgstr "Inställningar för liveförhandsvisning"
 
 msgctxt "#30084"
 msgid "Clear live preview cache"
-msgstr ""
+msgstr "Töm cache för live-förhandsvisning"
 
 msgctxt "#30085"
 msgid "***** WARNING *****"
-msgstr ""
+msgstr "***** VARNING *****"
 
 msgctxt "#30086"
 msgid "These settings may allow this add-on to delete database entries and images[CR]for cached live previews."
-msgstr ""
+msgstr "Dessa inställningar kan göra det möjligt för detta tillägg att ta bort databasposter och bilder[CR] för cachade liveförhandsvisningar."
 
 msgctxt "#30087"
 msgid "Notifications"
-msgstr ""
+msgstr "Notifieringar"
 
 msgctxt "#30088"
 msgid "Game"
-msgstr ""
+msgstr "Spel"
 
 msgctxt "#30089"
 msgid "Viewers"
-msgstr ""
+msgstr "Tittare"
 
 msgctxt "#30090"
 msgid "Language"
-msgstr ""
+msgstr "Språk"
 
 msgctxt "#30091"
 msgid "Mature"
-msgstr ""
+msgstr "Vuxen"
 
 msgctxt "#30092"
 msgid "Partner"
-msgstr ""
+msgstr "Partner"
 
 msgctxt "#30093"
 msgid "Delay"
-msgstr ""
+msgstr "Fördröj"
 
 msgctxt "#30094"
 msgid "Automatic refresh interval (minutes)"
-msgstr ""
+msgstr "Automatiskt uppdateringsintervall (minuter)"
 
 msgctxt "#30095"
 msgid "Username is required"
-msgstr ""
+msgstr "Användarnamn krävs"
 
 msgctxt "#30096"
 msgid "API"
-msgstr ""
+msgstr "API"
 
 msgctxt "#30097"
 msgid "OAuth Client ID"
-msgstr ""
+msgstr "Klient-ID för OAuth"
 
 msgctxt "#30098"
 msgid "Select Video by ID or URL"
-msgstr ""
+msgstr "Välj video efter ID eller URL"
 
 msgctxt "#30099"
 msgid "OAuth Token"
-msgstr ""
+msgstr "OAuth-token"
 
 msgctxt "#30100"
 msgid "Visit www.twitch.tv/settings/connections and [CR]'Register your application' for an OAuth Client-ID"
-msgstr ""
+msgstr "Besök www.twitch.tv/settings/connections och [CR]\"Registrera din applikation\" för ett OAuth Client-ID"
 
 msgctxt "#30101"
 msgid "Visit www.twitchapps.com/tmi to generate an OAuth token"
-msgstr ""
+msgstr "Besök www.twitchapps.com/tmi för att generera en OAuth-token"
 
 msgctxt "#30102"
 msgid "Source"
-msgstr ""
+msgstr "Källa"
 
 msgctxt "#30103"
 msgid "1080p60"
-msgstr ""
+msgstr "1080p60"
 
 msgctxt "#30104"
 msgid "1080p30"
-msgstr ""
+msgstr "1080p30"
 
 msgctxt "#30105"
 msgid "720p60"
-msgstr ""
+msgstr "720p60"
 
 msgctxt "#30106"
 msgid "720p30"
-msgstr ""
+msgstr "720p30"
 
 msgctxt "#30107"
 msgid "540p30"
-msgstr ""
+msgstr "540p30"
 
 msgctxt "#30108"
 msgid "480p30"
-msgstr ""
+msgstr "480p30"
 
 msgctxt "#30109"
 msgid "360p30"
-msgstr ""
+msgstr "360p30"
 
 msgctxt "#30110"
 msgid "240p30"
-msgstr ""
+msgstr "240p30"
 
 msgctxt "#30111"
 msgid "144p30"
-msgstr ""
+msgstr "144p30"
 
 msgctxt "#30112"
 msgid "Quality may result in best match"
-msgstr ""
+msgstr "Kvalitet kan resultera i bästa matchning"
 
 msgctxt "#30113"
 msgid "Uploads"
-msgstr ""
+msgstr "Uppladdningar"
 
 msgctxt "#30114"
 msgid "Confirm"
-msgstr ""
+msgstr "Bekräfta"
 
 msgctxt "#30115"
 msgid "Function cache has been reset"
-msgstr ""
+msgstr "Funktionscachen har nollställts"
 
 msgctxt "#30116"
 msgid "Function cache reset failed"
-msgstr ""
+msgstr "Nollställning av funktionscache misslyckades"
 
 msgctxt "#30117"
 msgid "Reset function cache?"
-msgstr ""
+msgstr "Nollställ funktionscache?"
 
 msgctxt "#30118"
 msgid "Developer"
-msgstr ""
+msgstr "Utvecklare"
 
 msgctxt "#30120"
 msgid "Cache"
-msgstr ""
+msgstr "Cache"
 
 msgctxt "#30121"
 msgid "Cache expire time (minutes)"
-msgstr ""
+msgstr "Utgångstid för cachen (minuter)"
 
 msgctxt "#30122"
 msgid "Reset function cache"
-msgstr ""
+msgstr "Nollställ funktionscache"
 
 msgctxt "#30123"
 msgid "Items per page"
-msgstr ""
+msgstr "Antal per sida"
 
 msgctxt "#30124"
 msgid "Video Id/Url"
-msgstr ""
+msgstr "Video Id/Url"
 
 msgctxt "#30125"
 msgid "Streams"
-msgstr ""
+msgstr "Strömmar"
 
 msgctxt "#30126"
 msgid "Refresh"
-msgstr ""
+msgstr "Uppdatera"
 
 msgctxt "#30127"
 msgid "Login"
-msgstr ""
+msgstr "Logga in"
 
 msgctxt "#30128"
 msgid "OAuth token is required"
-msgstr ""
+msgstr "OAuth-token krävs"
 
 msgctxt "#30129"
 msgid "Error"
@@ -439,183 +439,183 @@ msgstr "Fel"
 
 msgctxt "#30130"
 msgid "Go to %s"
-msgstr ""
+msgstr "Gå till %s"
 
 msgctxt "#30131"
 msgid "No results returned"
-msgstr ""
+msgstr "Inga resultat returnerades"
 
 msgctxt "#30132"
 msgid "OAuth token is required for access"
-msgstr ""
+msgstr "OAuth-token krävs för åtkomst"
 
 msgctxt "#30133"
 msgid "Authorize"
-msgstr ""
+msgstr "Auktorisera"
 
 msgctxt "#30134"
 msgid "Get your OAuth token by logging in/signing up to Twitch.tv here:"
-msgstr ""
+msgstr "Hämta din OAuth-token genom att logga in/registrera dig på Twitch.tv här:"
 
 msgctxt "#30135"
 msgid "Get OAuth token"
-msgstr ""
+msgstr "Hämta OAuth-token"
 
 msgctxt "#30136"
 msgid "Always ask"
-msgstr ""
+msgstr "Fråga alltid"
 
 msgctxt "#30138"
 msgid "*** Do NOT share your OAuth token. ***"
-msgstr ""
+msgstr "*** Dela INTE din OAuth-token. ***"
 
 msgctxt "#30139"
 msgid "Toggle follow"
-msgstr ""
+msgstr "Växla följ"
 
 msgctxt "#30140"
 msgid "Now following %s"
-msgstr ""
+msgstr "Följer nu %s"
 
 msgctxt "#30141"
 msgid "Unfollowed %s"
-msgstr ""
+msgstr "Avföljde %s"
 
 msgctxt "#30142"
 msgid "Redirect URI"
-msgstr ""
+msgstr "Omdirigerings-URL"
 
 msgctxt "#30143"
 msgid "Would you like to follow %s?"
-msgstr ""
+msgstr "Skulle du vilja följa %s?"
 
 msgctxt "#30144"
 msgid "Are you sure you want to unfollow %s?"
-msgstr ""
+msgstr "Är du säker på att du vill avfölja %s?"
 
 msgctxt "#30145"
 msgid "Toggle block user"
-msgstr ""
+msgstr "Växla blockera användare"
 
 msgctxt "#30146"
 msgid "Blocked %s"
-msgstr ""
+msgstr "Blockerade %s"
 
 msgctxt "#30147"
 msgid "Unblocked %s"
-msgstr ""
+msgstr "Avblockerade %s"
 
 msgctxt "#30148"
 msgid "Would you like to block %s?"
-msgstr ""
+msgstr "Vill du blockera %s?"
 
 msgctxt "#30149"
 msgid "Are you sure you want to unblock %s?"
-msgstr ""
+msgstr "Är du säker på att du vill avblockera %s?"
 
 msgctxt "#30150"
 msgid "Blacklist %s"
-msgstr ""
+msgstr "Svartlista %s"
 
 msgctxt "#30151"
 msgid "Blacklisted %s"
-msgstr ""
+msgstr "Svartlistade %s"
 
 msgctxt "#30152"
 msgid "Lists"
-msgstr ""
+msgstr "Listor"
 
 msgctxt "#30153"
 msgid "Blacklist"
-msgstr ""
+msgstr "Svartlista"
 
 msgctxt "#30154"
 msgid "Remove a user"
-msgstr ""
+msgstr "Ta bort en användare"
 
 msgctxt "#30155"
 msgid "Remove a game"
-msgstr ""
+msgstr "Ta bort ett spel"
 
 msgctxt "#30156"
 msgid "Remove all users"
-msgstr ""
+msgstr "Ta bort alla användare"
 
 msgctxt "#30157"
 msgid "Remove all games"
-msgstr ""
+msgstr "Ta bort alla spel"
 
 msgctxt "#30158"
 msgid "Remove %s from blacklist"
-msgstr ""
+msgstr "Ta bort %s från svartlistan"
 
 msgctxt "#30159"
 msgid "Removed %s from blacklist"
-msgstr ""
+msgstr "Tog bort %s från svarta listan"
 
 msgctxt "#30160"
 msgid "Cleared %s %s"
-msgstr ""
+msgstr "Tömde %s %s"
 
 msgctxt "#30161"
 msgid "Are you sure you want to clear %s %s?"
-msgstr ""
+msgstr "Är du säker på att du vill tömma %s %s?"
 
 msgctxt "#30162"
 msgid "Clear list"
-msgstr ""
+msgstr "Töm lista"
 
 msgctxt "#30163"
 msgid "Set default quality"
-msgstr ""
+msgstr "Ställ in standardkvalitet"
 
 msgctxt "#30164"
 msgid "Default '%s' quality '%s' set for %s"
-msgstr ""
+msgstr "Standard '%s' kvalitet '%s' inställd för %s"
 
 msgctxt "#30165"
 msgid "Removed default '%s' quality for %s"
-msgstr ""
+msgstr "Tog bort standardkvalitet '%s' för %s"
 
 msgctxt "#30166"
 msgid "Remove %s quality"
-msgstr ""
+msgstr "Ta bort %s-kvalitet"
 
 msgctxt "#30167"
 msgid "Default Qualities"
-msgstr ""
+msgstr "Standardkvaliteter"
 
 msgctxt "#30168"
 msgid "Clear default quality"
-msgstr ""
+msgstr "Töm standardkvalitet"
 
 msgctxt "#30169"
 msgid "Choose Quality"
-msgstr ""
+msgstr "Välj kvalitet"
 
 msgctxt "#30170"
 msgid "Playlists"
-msgstr ""
+msgstr "Spellistor"
 
 msgctxt "#30171"
 msgid "Collections"
-msgstr ""
+msgstr "Samlingar"
 
 msgctxt "#30172"
 msgid "Browse"
-msgstr ""
+msgstr "Bläddra"
 
 msgctxt "#30173"
 msgid "Xbox One"
-msgstr ""
+msgstr "Xbox One"
 
 msgctxt "#30174"
 msgid "Playstation 4"
-msgstr ""
+msgstr "Playstation 4"
 
 msgctxt "#30175"
 msgid "Videos"
-msgstr "VIDEO"
+msgstr "Videor"
 
 msgctxt "#30176"
 msgid "Clips"
@@ -623,35 +623,35 @@ msgstr "Klipp"
 
 msgctxt "#30177"
 msgid "Invalid OAuth token"
-msgstr ""
+msgstr "Ogiltig OAuth-token"
 
 msgctxt "#30178"
 msgid "Missing required scopes: %s"
-msgstr ""
+msgstr "Saknar nödvändiga scopes: %s"
 
 msgctxt "#30179"
 msgid "Client id mismatch"
-msgstr ""
+msgstr "Felaktig matchning av klient-ID"
 
 msgctxt "#30180"
 msgid "Go to '%s' - '%s' - '%s' to generate a new token"
-msgstr ""
+msgstr "Gå till '%s' - '%s' - '%s' för att generera en ny token"
 
 msgctxt "#30181"
 msgid "Are you sure you want to blacklist %s?"
-msgstr ""
+msgstr "Är du säker på att du vill svartlista %s?"
 
 msgctxt "#30184"
 msgid "Change sort by"
-msgstr ""
+msgstr "Ändra sortering efter"
 
 msgctxt "#30185"
 msgid "Change sort direction"
-msgstr ""
+msgstr "Ändra sorteringsriktning"
 
 msgctxt "#30186"
 msgid "Change period"
-msgstr ""
+msgstr "Ändra period"
 
 msgctxt "#30187"
 msgid "Popular"
@@ -659,95 +659,95 @@ msgstr "Populära"
 
 msgctxt "#30188"
 msgid "Views"
-msgstr ""
+msgstr "Visningar"
 
 msgctxt "#30189"
 msgid "Add a language"
-msgstr ""
+msgstr "Lägg till ett språk"
 
 msgctxt "#30190"
 msgid "Remove a language"
-msgstr ""
+msgstr "Ta bort ett språk"
 
 msgctxt "#30191"
 msgid "Remove a stream quality"
-msgstr ""
+msgstr "Ta bort en strömkvalitet"
 
 msgctxt "#30192"
 msgid "Remove a video quality"
-msgstr ""
+msgstr "Ta bort en videokvalitet"
 
 msgctxt "#30193"
 msgid "Remove a clip quality"
-msgstr ""
+msgstr "Ta bort en klippkvalitet"
 
 msgctxt "#30194"
 msgid "Remove all stream qualities"
-msgstr ""
+msgstr "Ta bort alla strömkvaliteter"
 
 msgctxt "#30195"
 msgid "Remove all video qualities"
-msgstr ""
+msgstr "Ta bort alla videokvaliteter"
 
 msgctxt "#30196"
 msgid "Remove all clip qualities"
-msgstr ""
+msgstr "Ta bort alla klippkvaliteter"
 
 msgctxt "#30197"
 msgid "Requires confirmation"
-msgstr ""
+msgstr "Kräver bekräftelse"
 
 msgctxt "#30198"
 msgid "Requires subscription to %s"
-msgstr ""
+msgstr "Kräver prenumeration på %s"
 
 msgctxt "#30199"
 msgid "Connection failed"
-msgstr ""
+msgstr "Anslutning misslyckades"
 
 msgctxt "#30200"
 msgid "No %s found"
-msgstr ""
+msgstr "Ingen %s hittades"
 
 msgctxt "#30201"
 msgid "Bandwidth"
-msgstr ""
+msgstr "Bandbredd"
 
 msgctxt "#30202"
 msgid "Currently Live"
-msgstr ""
+msgstr "För närvarande Live"
 
 msgctxt "#30203"
 msgid "Went Live"
-msgstr ""
+msgstr "Gick live"
 
 msgctxt "#30204"
 msgid "Live notifications"
-msgstr ""
+msgstr "Live-meddelanden"
 
 msgctxt "#30205"
 msgid "Audible"
-msgstr ""
+msgstr "Ljudbar"
 
 msgctxt "#30206"
 msgid "Playback failed"
-msgstr ""
+msgstr "Uppspelningen misslyckades"
 
 msgctxt "#30207"
 msgid "Retrying in %d seconds"
-msgstr ""
+msgstr "Försök på nytt inom %d sekunder"
 
 msgctxt "#30208"
 msgid "Attempting to reconnect to %s"
-msgstr ""
+msgstr "Försöker återansluta till %s"
 
 msgctxt "#30209"
 msgid "Attempt #%d"
-msgstr ""
+msgstr "Försök #%d"
 
 msgctxt "#30210"
 msgid "Attempt reconnection to live streams"
-msgstr ""
+msgstr "Försök att återansluta till livestreams"
 
 msgctxt "#30211"
 msgid "Enabled"
@@ -755,151 +755,151 @@ msgstr "Aktiverad"
 
 msgctxt "#30212"
 msgid "Failed to connect to Twitch API"
-msgstr ""
+msgstr "Misslyckades med att ansluta till Twitch API"
 
 msgctxt "#30213"
 msgid "Followers"
-msgstr ""
+msgstr "Följare"
 
 msgctxt "#30214"
 msgid "Items"
-msgstr ""
+msgstr "Objekt"
 
 msgctxt "#30215"
 msgid "Duration"
-msgstr ""
+msgstr "Speltid"
 
 msgctxt "#30216"
 msgid "Curated"
-msgstr ""
+msgstr "Utvalda"
 
 msgctxt "#30217"
 msgid "Press OK to resolve"
-msgstr ""
+msgstr "Tryck på OK för att lösa problemet"
 
 msgctxt "#30218"
 msgid "Supported video ids: a123435, c123435, v123435, videos123435[CR]Example urls:[CR]https://twitch.tv/gamesdonequick...[CR].../v/113336135[CR].../v/113336135?t=1h52m35s"
-msgstr ""
+msgstr "Video-ID:n som stöds: a123435, c123435, v123435, videos123435[CR]Exempel på URLer:[CR]https://twitch.tv/gamesdonequick...[CR].../v/113336135[CR].../v/113336135?t=1h52m35s"
 
 msgctxt "#30219"
 msgid "Main Menu"
-msgstr ""
+msgstr "Huvudmeny"
 
 msgctxt "#30220"
 msgid "Failed to get url, try again shortly."
-msgstr ""
+msgstr "Misslyckades med att hämta URL, försök igen inom kort."
 
 msgctxt "#30221"
 msgid "Unknown"
-msgstr ""
+msgstr "Okänt"
 
 msgctxt "#30222"
 msgid "VODCast highlight color"
-msgstr ""
+msgstr "Framhävningsfärg för VODCast"
 
 msgctxt "#30223"
 msgid "Use inputstream.adaptive"
-msgstr ""
+msgstr "Använd inputstream.adaptive"
 
 msgctxt "#30224"
 msgid "Configure inputstream.adaptive"
-msgstr ""
+msgstr "Konfigurera inputstream.adaptive"
 
 msgctxt "#30225"
 msgid "inputstream.adaptive is enabled in the Twitch settings, however inputstream.adaptive appears to be disabled. Would you like to enable inputstream.adaptive now?"
-msgstr ""
+msgstr "inputstream.adaptive är aktiverat i Twitch-inställningarna, men inputstream.adaptive verkar vara inaktiverat. Vill du aktivera inputstream.adaptive nu?"
 
 msgctxt "#30226"
 msgid "The installed inputstream.adaptive add-on does not meet the version requirement(%s), and has been disabled in the Twitch add-on settings."
-msgstr ""
+msgstr "Det installerade inputstream.adaptive-tillägget uppfyller inte versionskravet(%s) och har inaktiverats i Twitch-tilläggsinställningarna."
 
 msgctxt "#30227"
 msgid "Revoke Token"
-msgstr ""
+msgstr "Återkalla token"
 
 msgctxt "#30228"
 msgid "Are you sure you want to revoke your OAuth token?"
-msgstr ""
+msgstr "Är du säker på att du vill återkalla din OAuth-token?"
 
 msgctxt "#30229"
 msgid "OAuth token has been revoked"
-msgstr ""
+msgstr "OAuth-token har återkallats"
 
 msgctxt "#30230"
 msgid "OAuth token has been updated"
-msgstr ""
+msgstr "OAuth-token har uppdaterats"
 
 msgctxt "#30231"
 msgid "%s started streaming %s"
-msgstr ""
+msgstr "%s började strömma %s"
 
 msgctxt "#30232"
 msgid "Notify at start"
-msgstr ""
+msgstr "Meddela vid start"
 
 msgctxt "#30233"
 msgid "Group notifications at start"
-msgstr ""
+msgstr "Gruppmeddelanden vid start"
 
 msgctxt "#30234"
 msgid "Reset cache on Refresh"
-msgstr ""
+msgstr "Nollställ cache vid uppdatering"
 
 msgctxt "#30235"
 msgid "New search"
-msgstr ""
+msgstr "Ny sökning"
 
 msgctxt "#30236"
 msgid "Search history size"
-msgstr ""
+msgstr "Storlek för sökhistorik"
 
 msgctxt "#30237"
 msgid "Clear search history?"
-msgstr ""
+msgstr "Töm sökhistorik?"
 
 msgctxt "#30238"
 msgid "Remove %s from search history?"
-msgstr ""
+msgstr "Ta bort %s från sökhistoriken?"
 
 msgctxt "#30239"
 msgid "Remove %s"
-msgstr ""
+msgstr "Ta bort %s"
 
 msgctxt "#30240"
 msgid "Clear search history"
-msgstr ""
+msgstr "Töm sökhistorik"
 
 msgctxt "#30241"
 msgid "Search history cleared"
-msgstr ""
+msgstr "Sökhistoriken tömdes"
 
 msgctxt "#30242"
 msgid "Removed %s from search history"
-msgstr ""
+msgstr "Tog bort %s från sökhistoriken"
 
 msgctxt "#30243"
 msgid "Maintenance"
-msgstr ""
+msgstr "Underhåll"
 
 msgctxt "#30244"
 msgid "Search History"
-msgstr ""
+msgstr "Sökhistorik"
 
 msgctxt "#30245"
 msgid "Delete streams search history"
-msgstr ""
+msgstr "Ta bort sökhistorik för strömmar"
 
 msgctxt "#30246"
 msgid "Delete channels search history"
-msgstr ""
+msgstr "Ta bort sökhistorik för kanaler"
 
 msgctxt "#30247"
 msgid "Delete games search history"
-msgstr ""
+msgstr "Ta bort sökhistorik för spel"
 
 msgctxt "#30248"
 msgid "Delete video id/url search history"
-msgstr ""
+msgstr "Ta bort sökhistorik för video-id/url"
 
 msgctxt "#30249"
 msgid "Other"
@@ -907,31 +907,31 @@ msgstr "Andra"
 
 msgctxt "#30250"
 msgid "Delete storage.json"
-msgstr ""
+msgstr "Ta bort storage.json"
 
 msgctxt "#30251"
 msgid "Are you sure you want to delete %s?"
-msgstr ""
+msgstr "Är du säker på att du vill ta bort %s?"
 
 msgctxt "#30252"
 msgid "Deleting %s succeeded"
-msgstr ""
+msgstr "Borttagning av %s lyckades"
 
 msgctxt "#30253"
 msgid "Deleting %s failed"
-msgstr ""
+msgstr "Borttagning av %s misslyckades"
 
 msgctxt "#30254"
 msgid "Adaptive"
-msgstr ""
+msgstr "Adaptiv"
 
 msgctxt "#30255"
 msgid "Thumbnail size"
-msgstr ""
+msgstr "Storlek på miniatyrbild"
 
 msgctxt "#30256"
 msgid "Large"
-msgstr ""
+msgstr "Stor"
 
 msgctxt "#30257"
 msgid "Medium"
@@ -939,64 +939,132 @@ msgstr "Mellan"
 
 msgctxt "#30258"
 msgid "Small"
-msgstr ""
+msgstr "Liten"
 
 msgctxt "#30259"
 msgid "Live preview refresh interval (minutes)"
-msgstr ""
+msgstr "Uppdateringsintervall för live-förhandsvisning (minuter)"
 
 msgctxt "#30260"
 msgid "Limit to 30 fps"
-msgstr ""
+msgstr "Begränsa till 30 bilder/s"
 
 msgctxt "#30261"
 msgid "Private API Credentials"
-msgstr ""
+msgstr "Privata API-autentiseringsuppgifter"
 
 msgctxt "#30262"
 msgid "Change languages"
-msgstr ""
+msgstr "Ändra språk"
 
 msgctxt "#30263"
 msgid "Frame rate limit"
-msgstr ""
+msgstr "Begränsning av bildfrekvens"
 
 msgctxt "#30264"
 msgid "Follow"
-msgstr ""
+msgstr "Följ"
 
 msgctxt "#30265"
 msgid "Unfollow"
-msgstr ""
+msgstr "Följ inte"
 
 msgctxt "#30266"
 msgid "Add to queue"
-msgstr ""
+msgstr "Lägg till i kö"
 
 msgctxt "#30267"
 msgid "An OAuth token is required for access, go to '%s' - '%s' - '%s' to generate one"
-msgstr ""
+msgstr "En OAuth-token krävs för åtkomst, gå till '%s' - '%s' - '%s' för att skapa en"
 
 msgctxt "#30268"
 msgid "Private OAuth authentication error"
-msgstr ""
+msgstr "Fel vid autentisering av Private OAuth"
 
 msgctxt "#30269"
 msgid "Private OAuth credentials are incorrect, go to '%s' - '%s' - '%s' to correct the issue"
-msgstr ""
+msgstr "Privata OAuth-autentiseringsuppgifter är felaktiga, gå till '%s' - '%s' - '%s' för att rätta till problemet"
 
 msgctxt "#30270"
 msgid "Subscriber and Turbo Benefits"
-msgstr ""
+msgstr "Prenumerant- och turboförmåner"
 
 msgctxt "#30271"
 msgid "For information on how to obtain this token, visit"
-msgstr ""
+msgstr "För information om hur du får tag på denna token, besök"
 
 msgctxt "#30272"
 msgid "https://twitchaddon.page.link/benefits"
-msgstr ""
+msgstr "https://twitchaddon.page.link/benefits"
 
 msgctxt "#30273"
 msgid "OAuth Token is expired or invalid"
+msgstr "OAuth-token har löpt ut eller är ogiltig"
+
+msgctxt "#30300"
+msgid "Login (device code)"
+msgstr ""
+
+msgctxt "#30301"
+msgid "Go to [B]%s[/B] and enter this code:[CR][CR][B]%s[/B]"
+msgstr ""
+
+msgctxt "#30302"
+msgid "Waiting for authorization..."
+msgstr ""
+
+msgctxt "#30303"
+msgid "Login successful. The access token will now be refreshed automatically."
+msgstr ""
+
+msgctxt "#30304"
+msgid "Login failed or timed out."
+msgstr ""
+
+msgctxt "#30305"
+msgid "Login cancelled."
+msgstr ""
+
+msgctxt "#30306"
+msgid "Device login is not available for this Client-ID.[CR]Register your own application (Public type) at dev.twitch.tv/console/apps and set its Client-ID in the add-on settings, then try again."
+msgstr ""
+
+msgctxt "#30307"
+msgid "Supported codecs"
+msgstr ""
+
+msgctxt "#30308"
+msgid "Twitch default"
+msgstr ""
+
+msgctxt "#30309"
+msgid "H.265 (HEVC)"
+msgstr ""
+
+msgctxt "#30310"
+msgid "Automatic token refresh needs a public Client-ID.[CR]Register your own application (Public type) at dev.twitch.tv/console/apps and set its Client-ID in the add-on settings."
+msgstr ""
+
+msgctxt "#30311"
+msgid "Login: ad-free playback / Turbo (device code)"
+msgstr ""
+
+msgctxt "#30312"
+msgid "Go to [B]%s[/B] with your [B]Turbo/subscriber account[/B] and enter this code:[CR][CR][B]%s[/B]"
+msgstr ""
+
+msgctxt "#30313"
+msgid "Turbo / ad-free login successful. The token is renewed automatically. Ad-free playback only applies if the logged-in account has Turbo or is subscribed to the channel."
+msgstr ""
+
+msgctxt "#30330"
+msgid "Search method"
+msgstr ""
+
+msgctxt "#30331"
+msgid "Website (twitch.tv, fuzzy)"
+msgstr ""
+
+msgctxt "#30332"
+msgid "Helix API"
 msgstr ""
