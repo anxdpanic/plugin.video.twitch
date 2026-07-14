@@ -3,15 +3,15 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-18 00:54+0000\n"
-"PO-Revision-Date: 2022-02-21 15:48+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2024-08-06 06:21+0000\n"
+"Last-Translator: \"Enol P.\" <enolp@softastur.org>\n"
 "Language-Team: Asturian (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-video/plugin-video-twitch/ast_es/>\n"
 "Language: ast_es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 5.6.2\n"
 
 msgctxt "Addon Summary"
 msgid "Twitch video plugin"
@@ -999,4 +999,72 @@ msgstr ""
 
 msgctxt "#30273"
 msgid "OAuth Token is expired or invalid"
+msgstr ""
+
+msgctxt "#30300"
+msgid "Login (device code)"
+msgstr ""
+
+msgctxt "#30301"
+msgid "Go to [B]%s[/B] and enter this code:[CR][CR][B]%s[/B]"
+msgstr ""
+
+msgctxt "#30302"
+msgid "Waiting for authorization..."
+msgstr ""
+
+msgctxt "#30303"
+msgid "Login successful. The access token will now be refreshed automatically."
+msgstr ""
+
+msgctxt "#30304"
+msgid "Login failed or timed out."
+msgstr ""
+
+msgctxt "#30305"
+msgid "Login cancelled."
+msgstr ""
+
+msgctxt "#30306"
+msgid "Device login is not available for this Client-ID.[CR]Register your own application (Public type) at dev.twitch.tv/console/apps and set its Client-ID in the add-on settings, then try again."
+msgstr ""
+
+msgctxt "#30307"
+msgid "Supported codecs"
+msgstr ""
+
+msgctxt "#30308"
+msgid "Twitch default"
+msgstr ""
+
+msgctxt "#30309"
+msgid "H.265 (HEVC)"
+msgstr ""
+
+msgctxt "#30310"
+msgid "Automatic token refresh needs a public Client-ID.[CR]Register your own application (Public type) at dev.twitch.tv/console/apps and set its Client-ID in the add-on settings."
+msgstr ""
+
+msgctxt "#30311"
+msgid "Login: ad-free playback / Turbo (device code)"
+msgstr ""
+
+msgctxt "#30312"
+msgid "Go to [B]%s[/B] with your [B]Turbo/subscriber account[/B] and enter this code:[CR][CR][B]%s[/B]"
+msgstr ""
+
+msgctxt "#30313"
+msgid "Turbo / ad-free login successful. The token is renewed automatically. Ad-free playback only applies if the logged-in account has Turbo or is subscribed to the channel."
+msgstr ""
+
+msgctxt "#30330"
+msgid "Search method"
+msgstr ""
+
+msgctxt "#30331"
+msgid "Website (twitch.tv, fuzzy)"
+msgstr ""
+
+msgctxt "#30332"
+msgid "Helix API"
 msgstr ""

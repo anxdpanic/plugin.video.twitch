@@ -3,15 +3,15 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-18 00:54+0000\n"
-"PO-Revision-Date: 2022-03-03 13:47+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
-"Language-Team: Chinese (China) <https://kodi.weblate.cloud/projects/kodi-add-ons-video/plugin-video-twitch/zh_cn/>\n"
+"PO-Revision-Date: 2026-01-24 03:13+0000\n"
+"Last-Translator: wabisabi926 <liwenliang926@163.com>\n"
+"Language-Team: Chinese (Simplified Han script) <https://kodi.weblate.cloud/projects/kodi-add-ons-video/plugin-video-twitch/zh_Hans/>\n"
 "Language: zh_cn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11\n"
+"X-Generator: Weblate 5.15.2\n"
 
 msgctxt "Addon Summary"
 msgid "Twitch video plugin"
@@ -39,7 +39,7 @@ msgstr "设置"
 
 msgctxt "#30005"
 msgid "Popular Streams"
-msgstr ""
+msgstr "热门流媒体"
 
 msgctxt "#30006"
 msgid "Teams"
@@ -59,7 +59,7 @@ msgstr "直播频道"
 
 msgctxt "#30010"
 msgid "TwitchTV"
-msgstr ""
+msgstr "TwitchTV"
 
 msgctxt "#30011"
 msgid "next page..."
@@ -203,7 +203,7 @@ msgstr "文件"
 
 msgctxt "#30070"
 msgid "TV Shows"
-msgstr "电视节目"
+msgstr "电视剧"
 
 msgctxt "#30071"
 msgid "Movies"
@@ -335,39 +335,39 @@ msgstr "来源"
 
 msgctxt "#30103"
 msgid "1080p60"
-msgstr ""
+msgstr "1080p60"
 
 msgctxt "#30104"
 msgid "1080p30"
-msgstr ""
+msgstr "1080p30"
 
 msgctxt "#30105"
 msgid "720p60"
-msgstr ""
+msgstr "720p60"
 
 msgctxt "#30106"
 msgid "720p30"
-msgstr ""
+msgstr "720p30"
 
 msgctxt "#30107"
 msgid "540p30"
-msgstr ""
+msgstr "540p30"
 
 msgctxt "#30108"
 msgid "480p30"
-msgstr ""
+msgstr "480p30"
 
 msgctxt "#30109"
 msgid "360p30"
-msgstr ""
+msgstr "360p30"
 
 msgctxt "#30110"
 msgid "240p30"
-msgstr ""
+msgstr "240p30"
 
 msgctxt "#30111"
 msgid "144p30"
-msgstr ""
+msgstr "144p30"
 
 msgctxt "#30112"
 msgid "Quality may result in best match"
@@ -447,7 +447,7 @@ msgstr "没有返回结果"
 
 msgctxt "#30132"
 msgid "OAuth token is required for access"
-msgstr ""
+msgstr "访问需要 OAuth 令牌"
 
 msgctxt "#30133"
 msgid "Authorize"
@@ -607,11 +607,11 @@ msgstr "浏览"
 
 msgctxt "#30173"
 msgid "Xbox One"
-msgstr ""
+msgstr "Xbox One"
 
 msgctxt "#30174"
 msgid "Playstation 4"
-msgstr ""
+msgstr "Playstation 4"
 
 msgctxt "#30175"
 msgid "Videos"
@@ -971,34 +971,102 @@ msgstr "取消关注"
 
 msgctxt "#30266"
 msgid "Add to queue"
-msgstr ""
+msgstr "添加到队列"
 
 msgctxt "#30267"
 msgid "An OAuth token is required for access, go to '%s' - '%s' - '%s' to generate one"
-msgstr ""
+msgstr "访问需要 OAuth 令牌，请转到\"%s\"-\"%s\"-\"%s \"生成一个令牌"
 
 msgctxt "#30268"
 msgid "Private OAuth authentication error"
-msgstr ""
+msgstr "私有 OAuth 身份验证错误"
 
 msgctxt "#30269"
 msgid "Private OAuth credentials are incorrect, go to '%s' - '%s' - '%s' to correct the issue"
-msgstr ""
+msgstr "私人 OAuth 凭据不正确，请转到\"%s\"-\"%s\"-\"%s \"更正问题"
 
 msgctxt "#30270"
 msgid "Subscriber and Turbo Benefits"
-msgstr ""
+msgstr "订阅者和 Turbo 的好处"
 
 msgctxt "#30271"
 msgid "For information on how to obtain this token, visit"
-msgstr ""
+msgstr "有关如何获取此令牌的信息，请访问"
 
 msgctxt "#30272"
 msgid "https://twitchaddon.page.link/benefits"
-msgstr ""
+msgstr "https://twitchaddon.page.link/benefits"
 
 msgctxt "#30273"
 msgid "OAuth Token is expired or invalid"
+msgstr "OAuth 令牌已过期或无效"
+
+msgctxt "#30300"
+msgid "Login (device code)"
+msgstr ""
+
+msgctxt "#30301"
+msgid "Go to [B]%s[/B] and enter this code:[CR][CR][B]%s[/B]"
+msgstr ""
+
+msgctxt "#30302"
+msgid "Waiting for authorization..."
+msgstr ""
+
+msgctxt "#30303"
+msgid "Login successful. The access token will now be refreshed automatically."
+msgstr ""
+
+msgctxt "#30304"
+msgid "Login failed or timed out."
+msgstr ""
+
+msgctxt "#30305"
+msgid "Login cancelled."
+msgstr ""
+
+msgctxt "#30306"
+msgid "Device login is not available for this Client-ID.[CR]Register your own application (Public type) at dev.twitch.tv/console/apps and set its Client-ID in the add-on settings, then try again."
+msgstr ""
+
+msgctxt "#30307"
+msgid "Supported codecs"
+msgstr ""
+
+msgctxt "#30308"
+msgid "Twitch default"
+msgstr ""
+
+msgctxt "#30309"
+msgid "H.265 (HEVC)"
+msgstr ""
+
+msgctxt "#30310"
+msgid "Automatic token refresh needs a public Client-ID.[CR]Register your own application (Public type) at dev.twitch.tv/console/apps and set its Client-ID in the add-on settings."
+msgstr ""
+
+msgctxt "#30311"
+msgid "Login: ad-free playback / Turbo (device code)"
+msgstr ""
+
+msgctxt "#30312"
+msgid "Go to [B]%s[/B] with your [B]Turbo/subscriber account[/B] and enter this code:[CR][CR][B]%s[/B]"
+msgstr ""
+
+msgctxt "#30313"
+msgid "Turbo / ad-free login successful. The token is renewed automatically. Ad-free playback only applies if the logged-in account has Turbo or is subscribed to the channel."
+msgstr ""
+
+msgctxt "#30330"
+msgid "Search method"
+msgstr ""
+
+msgctxt "#30331"
+msgid "Website (twitch.tv, fuzzy)"
+msgstr ""
+
+msgctxt "#30332"
+msgid "Helix API"
 msgstr ""
 
 #~ msgctxt "#30132"
