@@ -107,6 +107,24 @@ def inputstream_adpative_supports(feature):
     return False
 
 
+def use_ffmpegdirect_for_live():
+    """Whether live streams should be played through inputstream.ffmpegdirect.
+
+    Optional alternative live-playback backend (off by default): ffmpegdirect uses
+    ffmpeg's own demuxer and manages realtime buffering itself, instead of
+    inputstream.adaptive / Kodi's direct player. Some devices and setups play
+    Twitch live more reliably through it (e.g. it avoids the inputstream.adaptive
+    live-HLS demuxer issues seen on some Kodi 22 / CoreELEC builds, and the
+    occasional "cache full 100%" buffering stall). Returns False when the option
+    is off or the add-on isn't installed/enabled, leaving the default IA / direct
+    behaviour untouched. VODs and clips are never affected.
+    """
+    if kodi.get_setting('live_use_ffmpegdirect') != 'true':
+        return False
+    # addon_enabled() returns True/False when installed, None when missing.
+    return kodi.addon_enabled('inputstream.ffmpegdirect') is True
+
+
 def format_isa_headers(headers):
     # key=value&... (url-encoded) for InputStream Adaptive stream_headers / manifest_headers properties.
     return '&'.join(['%s=%s' % (key, quote_plus(headers[key])) for key in headers])
