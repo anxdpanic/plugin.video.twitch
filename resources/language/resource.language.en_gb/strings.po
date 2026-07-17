@@ -1073,3 +1073,15 @@ msgstr ""
 msgctxt "#30332"
 msgid "Helix API"
 msgstr ""
+
+msgctxt "#30334"
+msgid "Scan the QR code, or go to [B]%s[/B]"
+msgstr ""
+
+msgctxt "#30335"
+msgid "Enter this code: [B]%s[/B]"
+msgstr ""
+
+msgctxt "#30336"
+msgid "Waiting for authorization... (press Back to cancel)"
+msgstr ""
