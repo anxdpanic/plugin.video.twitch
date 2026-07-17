@@ -27,3 +27,9 @@ class NotFound(Exception):
 
 class PlaybackFailed(Exception):
     pass
+
+
+class TokenRefreshed(Exception):
+    """Signal raised by error_check() when a 401 was recovered by a silent token
+    refresh, so api_error_handler can reload the token and retry the request once."""
+    pass

@@ -337,6 +337,11 @@ def ensure_valid_token(force=False):
     # falls back to the manual login until they configure a public client id.
     if not force and kodi.get_setting('oauth_refresh_unsupported') == client_id:
         return (_read_oauth_store().get('access') or '').strip()
+    # While Kodi reports no internet, skip the (doomed) refresh entirely instead of hanging
+    # up to ~15s on a dead connection. The stored token is kept untouched and refreshed once
+    # we're back online. A forced recovery (post-401) bypasses this and attempts anyway.
+    if not force and not kodi.connection_available():
+        return (_read_oauth_store().get('access') or '').strip()
     with _OAuthLock():
         store = _read_oauth_store()
         refresh_token = (store.get('refresh') or '').strip()
