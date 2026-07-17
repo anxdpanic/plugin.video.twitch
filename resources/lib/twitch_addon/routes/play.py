@@ -151,9 +151,15 @@ def route(api, seek_time=0, channel_id=None, video_id=None, slug=None, ask=False
             if result:
                 quality_label = result['name']
 
+                # Optional alternative live-playback backend (off by default): when enabled
+                # and available, play live streams through inputstream.ffmpegdirect instead
+                # of inputstream.adaptive / the direct player. Live only -- VODs and clips
+                # keep the default behaviour.
+                use_ffmpegdirect = is_live and utils.use_ffmpegdirect_for_live()
+
                 request = None
                 play_url = None
-                if quality_label == 'Adaptive' and use_ia:
+                if quality_label == 'Adaptive' and (use_ia or use_ffmpegdirect):
                     if video_id:
                         request = api.video_request(video_id)
                     elif is_live:
@@ -161,7 +167,12 @@ def route(api, seek_time=0, channel_id=None, video_id=None, slug=None, ask=False
                     if request:
                         if kodi.get_kodi_version().major >= 18:
                             request['headers']['verifypeer'] = 'false'
-                        play_url = request['url']  # headers passed via ISA stream/manifest_headers below
+                        if use_ffmpegdirect:
+                            # ffmpegdirect (open_mode=ffmpeg) reads HTTP headers from the
+                            # URL's |Header=... suffix, not from ISA manifest_headers.
+                            play_url = request['url'] + utils.append_headers(request['headers'])
+                        else:
+                            play_url = request['url']  # headers passed via ISA stream/manifest_headers below
 
                 if not play_url:
                     play_url = result['url']
@@ -197,7 +208,17 @@ def route(api, seek_time=0, channel_id=None, video_id=None, slug=None, ask=False
                         playback_item.setMimeType('video/mp4')
                     except AttributeError:
                         pass
-                if quality_label == 'Adaptive' and use_ia:
+                if use_ffmpegdirect:
+                    inputstream_property = 'inputstream'
+                    if kodi.get_kodi_version().major < 19:
+                        inputstream_property += 'addon'
+                    # ffmpeg's demuxer + its own realtime buffering. Covers both a specific
+                    # quality (variant URL) and Adaptive (master URL).
+                    playback_item.setProperty(inputstream_property, 'inputstream.ffmpegdirect')
+                    playback_item.setProperty('inputstream.ffmpegdirect.is_realtime_stream', 'true')
+                    playback_item.setProperty('inputstream.ffmpegdirect.manifest_type', 'hls')
+                    playback_item.setProperty('inputstream.ffmpegdirect.open_mode', 'ffmpeg')
+                elif quality_label == 'Adaptive' and use_ia:
                     inputstream_property = 'inputstream'
                     if kodi.get_kodi_version().major < 19:
                         inputstream_property += 'addon'
