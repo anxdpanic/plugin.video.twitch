@@ -15,7 +15,7 @@ from functools import wraps
 
 from . import utils
 from .common import kodi, log_utils
-from .twitch_exceptions import TwitchException, SubRequired, ResourceUnavailableException, NotFound, PlaybackFailed
+from .twitch_exceptions import TwitchException, SubRequired, ResourceUnavailableException, NotFound, PlaybackFailed, TokenRefreshed
 
 i18n = utils.i18n
 
@@ -69,9 +69,14 @@ def api_error_handler(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:
-            result = func(*args, **kwargs)
-            return result
-        except:
-            raise
+            return func(*args, **kwargs)
+        except TokenRefreshed:
+            # error_check() silently refreshed an expired token after a 401. Reload it onto
+            # the Twitch instance (args[0]==self) and retry the request once, so the user
+            # gets their data on the first try instead of a re-login prompt. The one-shot
+            # guard in error_check ensures the retry can't raise TokenRefreshed again.
+            if args and hasattr(args[0], 'reload_access_token'):
+                args[0].reload_access_token()
+            return func(*args, **kwargs)
 
     return wrapper

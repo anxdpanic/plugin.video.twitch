@@ -111,6 +111,15 @@ def has_addon(addon_id):
     return xbmc.getCondVisibility('System.HasAddon(%s)' % addon_id) == 1
 
 
+def connection_available():
+    """Kodi's own view of whether the host currently has internet access. Used to skip a
+    doomed OAuth token refresh while offline (an outage, or the network simply not up yet
+    after a reboot) so we never hammer a dead connection -- and never mistake "no
+    connection" for "bad token". Kodi can lag a network change by a few seconds, which is
+    fine: the refresh is just deferred until this reports back true."""
+    return xbmc.getCondVisibility('System.InternetState') == 1
+
+
 def addon_enabled(addon_id):
     rpc_request = {"jsonrpc": "2.0",
                    "method": "Addons.GetAddonDetails",

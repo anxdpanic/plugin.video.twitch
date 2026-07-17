@@ -16,7 +16,7 @@ from . import cache, utils, gql_search
 from .common import kodi, log_utils
 from .constants import Keys, SCOPES
 from .error_handling import api_error_handler
-from .twitch_exceptions import PlaybackFailed, TwitchException
+from .twitch_exceptions import PlaybackFailed, TwitchException, TokenRefreshed
 
 from twitch import queries as twitch_queries
 from twitch import oauth
@@ -45,6 +45,9 @@ class Twitch:
     required_scopes = SCOPES
 
     def __init__(self):
+        # Guards the one-shot silent 401 recovery in error_check, so a brand-new token that
+        # is somehow still rejected can't drive an endless refresh/retry loop.
+        self._oauth_recovery_attempted = False
         # Silently refresh the Helix OAuth token if it is (near) expired (Device Code Flow).
         utils.ensure_valid_token()
         self.access_token = utils.get_oauth_token(token_only=True, required=False)
@@ -64,6 +67,12 @@ class Twitch:
             if not self.valid_token(self.client_id, self.access_token, self.required_scopes):
                 self.queries.OAUTH_TOKEN = ''
                 self.access_token = ''
+
+    def reload_access_token(self):
+        """Re-read the (just-refreshed) access token from the store onto this instance and
+        the query layer, so an in-flight retry (see api_error_handler) uses the new token."""
+        self.access_token = utils.get_oauth_token(token_only=True, required=False)
+        self.queries.OAUTH_TOKEN = self.access_token
 
     @cache.cache_method(cache_limit=1)
     def valid_token(self, client_id, token, scopes):  # client_id, token used for unique caching only
@@ -393,8 +402,7 @@ class Twitch:
             results = self.usher.video_request(video_id, headers=self.get_private_credential_headers(), **self._codec_kwargs())
         return self.error_check(results, private=True)
 
-    @staticmethod
-    def error_check(results, private=False):
+    def error_check(self, results, private=False):
         if isinstance(results, list):
             return results
 
@@ -404,6 +412,28 @@ class Twitch:
 
         if ('error' in payload) and (payload['status'] == 401):
             if not private:
+                # A 401 while a refresh token is still stored is almost always recoverable:
+                # the short-lived access token lapsed (e.g. Kodi / the network only just came
+                # up after a reboot or an overnight gap) but the refresh token is still good.
+                # Refresh once and re-issue the request transparently instead of dragging the
+                # user through a needless re-login. The hard sign-in dialog is reached ONLY
+                # when no refresh token remains (a definitively dead session).
+                refresh_token = utils.get_refresh_token()
+                if refresh_token:
+                    # Forced refresh is attempted at most once per instance (one-shot guard),
+                    # so a token still rejected after a successful refresh can't loop.
+                    if not self._oauth_recovery_attempted:
+                        self._oauth_recovery_attempted = True
+                        if utils.ensure_valid_token(force=True):
+                            # Refreshed: hand back up to api_error_handler, which reloads the
+                            # token and retries the request once (no toast, no re-login).
+                            raise TokenRefreshed()
+                    # Recovery already spent this instance (the retry itself 401'd), or the
+                    # refresh returned nothing -- but a refresh token still survives, so this
+                    # is a transient / in-flight refresh, not a dead session. Bail silently
+                    # this once (next visit, or the proactive service refresh, recovers).
+                    if utils.get_refresh_token():
+                        sys.exit()
                 _ = kodi.Dialog().ok(
                     i18n('oauth_heading'),
                     i18n('oauth_message') % (i18n('settings'), i18n('login'), i18n('device_login'))
