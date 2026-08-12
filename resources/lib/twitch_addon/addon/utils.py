@@ -174,10 +174,6 @@ def get_private_client_id():
     return kodi.decode_utf8(settings_id)
 
 
-def clear_client_id():
-    kodi.set_setting('oauth_clientid', '')
-
-
 def get_oauth_token(token_only=True, required=False):
     oauth_token = _read_oauth_store().get('access', '')
     if not oauth_token or not oauth_token.strip():

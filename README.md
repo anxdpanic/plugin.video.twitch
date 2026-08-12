@@ -11,17 +11,20 @@ Watch your favorite gaming streams on Kodi.
 LOGIN
 ----------------
 
-1. Go to __Settings - Login - Login (device code)__
-2. Visit [twitch.tv/activate](https://www.twitch.tv/activate) on any device, sign in, and enter the code shown in Kodi
-
-The add-on stores the tokens and refreshes them automatically. Automatic refresh
-requires a public Client ID — the bundled Client ID cannot refresh tokens, so you
-will be asked to log in again once the token expires. To enable automatic refresh:
+Set up your own Client ID first, then log in — in that order. The bundled Client ID
+cannot refresh tokens (Twitch treats it as a confidential client), so with it you have
+to log in again every time the token expires.
 
 1. Register your own application at [dev.twitch.tv/console/apps](https://dev.twitch.tv/console/apps)
    (OAuth Redirect URL: `http://localhost`, Client Type: __Public__)
 2. Enter its Client ID in __Settings - Developer - OAuth Client ID__
-3. Log in again via __Settings - Login - Login (device code)__
+3. Go to __Settings - Login - Login (device code)__
+4. Visit [twitch.tv/activate](https://www.twitch.tv/activate) on any device, sign in, and enter the code shown in Kodi
+
+The add-on stores the tokens and refreshes them automatically from then on.
+
+If you logged in before entering your Client ID, simply log in again (step 3) — the
+previous token belongs to the bundled Client ID and cannot be refreshed.
 
 AD-FREE PLAYBACK (TURBO / SUBSCRIPTIONS)
 ----------------
