@@ -30,6 +30,20 @@ If your Twitch account has Turbo, or you are subscribed to a channel, you can us
 __Settings - Subscriber and Turbo Benefits - Login: ad-free playback / Turbo (device code)__
 and authorize with that account to watch without ads (where Twitch grants it).
 
+1440P / HEVC (ENHANCED BROADCASTING)
+----------------
+
+Twitch offers resolutions above 1080p only on channels that use Enhanced
+Broadcasting, and only as HEVC. Two things are required to receive them:
+
+1. Set __Settings - General - Supported codecs__ to __H.265 (HEVC)__ (the default,
+   __Twitch default__, requests no specific codec and yields H.264)
+2. Use __script.module.python.twitch__ 3.0.3 or newer — the codec is requested by the
+   library, not by this add-on. With an older library the request is dropped silently
+   and playback stays on H.264, whatever the setting says.
+
+Your device also has to be able to decode HEVC at that resolution.
+
 FAQ
 ----------------
 
