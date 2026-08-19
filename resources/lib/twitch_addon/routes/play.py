@@ -202,7 +202,8 @@ def route(api, seek_time=0, channel_id=None, video_id=None, slug=None, ask=False
                     if kodi.get_kodi_version().major < 19:
                         inputstream_property += 'addon'
                     playback_item.setProperty(inputstream_property, 'inputstream.adaptive')
-                    playback_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
+                    if not utils.inputstream_adpative_supports('MANIFEST_TYPE_DETECTION'):
+                        playback_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
                     # allow up to Twitch-2K (1440p HEVC) regardless of screen res (ISA "2K"=2048x1080 < 1440p)
                     playback_item.setProperty('inputstream.adaptive.chooser_resolution_max', '1440p')
                     playback_item.setProperty('inputstream.adaptive.chooser_resolution_secure_max', '1440p')

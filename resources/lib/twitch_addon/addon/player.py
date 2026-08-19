@@ -147,7 +147,8 @@ class TwitchPlayer(xbmc.Player):
                                             if kodi.get_kodi_version().major < 19:
                                                 inputstream_property += 'addon'
                                             playback_item.setProperty(inputstream_property, 'inputstream.adaptive')
-                                            playback_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
+                                            if not utils.inputstream_adpative_supports('MANIFEST_TYPE_DETECTION'):
+                                                playback_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
                                             playback_item.setProperty('inputstream.adaptive.chooser_resolution_max', '1440p')
                                             playback_item.setProperty('inputstream.adaptive.chooser_resolution_secure_max', '1440p')
                                             if request:

@@ -104,6 +104,12 @@ def inputstream_adpative_supports(feature):
         if loose_version(ia_version) >= loose_version('2.4.6'):
             return True
 
+    # Kodi 21 detects the manifest type itself and warns that the property is deprecated;
+    # Kodi 22 drops it entirely. Older versions still need it, so it is set conditionally.
+    if feature == 'MANIFEST_TYPE_DETECTION':
+        if loose_version(ia_version) >= loose_version('21.0.0'):
+            return True
+
     return False
 
 
