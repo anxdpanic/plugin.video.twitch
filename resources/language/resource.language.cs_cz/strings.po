@@ -1,25 +1,25 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: 2016-09-18 00:54+0000\n"
-"PO-Revision-Date: 2022-05-05 16:16+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2026-07-14 21:18+0000\n"
+"Last-Translator: Michal Várady <miko.vaji@gmail.com>\n"
 "Language-Team: Czech <https://kodi.weblate.cloud/projects/kodi-add-ons-video/plugin-video-twitch/cs_cz/>\n"
 "Language: cs_cz\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.12.1\n"
+"X-Generator: Weblate 2026.7.1\n"
 
 msgctxt "Addon Summary"
 msgid "Twitch video plugin"
-msgstr ""
+msgstr "Doplněk pro videa Twitch"
 
 msgctxt "Addon Description"
 msgid "Watch your favorite gaming streams!"
-msgstr ""
+msgstr "Sledujte své oblíbené herní streamy!"
 
 msgctxt "#30001"
 msgid "Games"
@@ -39,7 +39,7 @@ msgstr "Nastavení"
 
 msgctxt "#30005"
 msgid "Popular Streams"
-msgstr ""
+msgstr "Populární streamy"
 
 msgctxt "#30006"
 msgid "Teams"
@@ -47,7 +47,7 @@ msgstr "Týmy"
 
 msgctxt "#30007"
 msgid "Search for channels"
-msgstr "Hledat kanál"
+msgstr "Hledat kanály"
 
 msgctxt "#30008"
 msgid "Channels"
@@ -55,7 +55,7 @@ msgstr "Kanály"
 
 msgctxt "#30009"
 msgid "Live Channels"
-msgstr ""
+msgstr "Živé kanály"
 
 msgctxt "#30010"
 msgid "TwitchTV"
@@ -67,7 +67,7 @@ msgstr "další stránka..."
 
 msgctxt "#30012"
 msgid "-- Currently Live Streams --"
-msgstr "-- Živé streamy --"
+msgstr "-- Aktuálně živé streamy --"
 
 msgctxt "#30013"
 msgid "-- Followed Channels --"
@@ -75,19 +75,19 @@ msgstr "-- Sledované kanály --"
 
 msgctxt "#30020"
 msgid "Http error"
-msgstr "Http chyba"
+msgstr "Chyba HTTP"
 
 msgctxt "#30021"
 msgid "No Live Data Found"
-msgstr "Živé data nenalezeny"
+msgstr "Nebyla nalezena žádná živá data"
 
 msgctxt "#30022"
 msgid "No archives found for"
-msgstr "Archivy nenalezeny"
+msgstr "Nenalezeny žádné archivy pro"
 
 msgctxt "#30023"
 msgid "User Token Error"
-msgstr "Chyba v uživatelském tokenu"
+msgstr "Chyba uživatelského tokenu"
 
 msgctxt "#30024"
 msgid "Changed video settings"
@@ -99,35 +99,35 @@ msgstr "Zvolené nastavení videa není dostupné"
 
 msgctxt "#30026"
 msgid "TwitchApi error"
-msgstr "TwitchApi chyba"
+msgstr "Chyba Twitch API"
 
 msgctxt "#30027"
 msgid "JSON error"
-msgstr "JSON chyba"
+msgstr "Chyba JSON"
 
 msgctxt "#30028"
 msgid "Failed to parse the result set"
-msgstr "Nepodařilo se naparsovat výsledky"
+msgstr "Nepodařilo se zpracovat sadu výsledků"
 
 msgctxt "#30029"
 msgid "Please check your internet connection"
-msgstr "Zkontrolujte prosím internetové připojení"
+msgstr "Zkontrolujte připojení k internetu"
 
 msgctxt "#30040"
 msgid "Video Quality"
-msgstr "Video kvalita"
+msgstr "Kvalita videa"
 
 msgctxt "#30045"
 msgid "Display titles"
-msgstr "Zobrazení titulku"
+msgstr "Zobrazení názvů"
 
 msgctxt "#30046"
 msgid "Streamer - Stream Title"
-msgstr "Streamer - Název streamu"
+msgstr "Streamer - název streamu"
 
 msgctxt "#30047"
 msgid "Viewers - Streamer - Stream Title"
-msgstr "Sledující - Streamer - Název streamu"
+msgstr "Diváci - streamer - název streamu"
 
 msgctxt "#30048"
 msgid "Stream Title"
@@ -143,23 +143,23 @@ msgstr "Uživatelské jméno"
 
 msgctxt "#30051"
 msgid "Streamer - Game Title - Stream Title"
-msgstr "Streamer - Název hry - Název streamu"
+msgstr "Streamer - název hry - název streamu"
 
 msgctxt "#30052"
 msgid "Enable"
-msgstr ""
+msgstr "Povolit"
 
 msgctxt "#30053"
 msgid "Password (OAuth Token)"
-msgstr ""
+msgstr "Heslo (token OAuth)"
 
 msgctxt "#30054"
 msgid "Language | Streamer - Stream Title"
-msgstr ""
+msgstr "Jazyk | streamer - název streamu"
 
 msgctxt "#30060"
 msgid "Unnamed Streamer"
-msgstr "Bezejmenný Streamer"
+msgstr "Bezejmenný streamer"
 
 msgctxt "#30061"
 msgid "Untitled Stream"
@@ -167,11 +167,11 @@ msgstr "Stream bez názvu"
 
 msgctxt "#30062"
 msgid "Unknown Number of Viewers"
-msgstr "Neznámý počet sledujících"
+msgstr "Neznámý počet diváků"
 
 msgctxt "#30063"
 msgid "Unknown Language"
-msgstr ""
+msgstr "Neznámý jazyk"
 
 msgctxt "#30064"
 msgid "Unknown Game"
@@ -179,47 +179,47 @@ msgstr "Neznámá hra"
 
 msgctxt "#30065"
 msgid "Truncate displayed titles"
-msgstr "Zkrátit zobrazené tituly"
+msgstr "Zkracovat zobrazené názvy"
 
 msgctxt "#30066"
 msgid "Followed Games"
-msgstr ""
+msgstr "Sledované hry"
 
 msgctxt "#30067"
 msgid "Game Title Viewers | Streamer - Stream Title"
-msgstr ""
+msgstr "Název hry diváci | streamer - název streamu"
 
 msgctxt "#30068"
 msgid "Content Type"
-msgstr ""
+msgstr "Typ obsahu"
 
 msgctxt "#30069"
 msgid "Files"
-msgstr ""
+msgstr "Soubory"
 
 msgctxt "#30070"
 msgid "TV Shows"
-msgstr ""
+msgstr "Seriály"
 
 msgctxt "#30071"
 msgid "Movies"
-msgstr ""
+msgstr "Filmy"
 
 msgctxt "#30072"
 msgid "Episodes"
-msgstr ""
+msgstr "Epizody"
 
 msgctxt "#30073"
 msgid "Music Videos"
-msgstr ""
+msgstr "Hudební videa"
 
 msgctxt "#30074"
 msgid "Automatically refresh live preview cache"
-msgstr ""
+msgstr "Automaticky obnovovat mezipaměť živých náhledů"
 
 msgctxt "#30075"
 msgid "Install IrcChat (script.ircchat)"
-msgstr ""
+msgstr "Nainstalovat IrcChat (script.ircchat)"
 
 msgctxt "#30076"
 msgid "General"
@@ -227,55 +227,55 @@ msgstr "Obecné"
 
 msgctxt "#30077"
 msgid "Play (Choose Quality)"
-msgstr ""
+msgstr "Přehrát (zvolit kvalitu)"
 
 msgctxt "#30078"
 msgid "Past Broadcasts"
-msgstr ""
+msgstr "Minulá vysílání"
 
 msgctxt "#30079"
 msgid "Video Highlights"
-msgstr ""
+msgstr "Výběry videí"
 
 msgctxt "#30080"
 msgid "Could not find any playable urls"
-msgstr ""
+msgstr "Nebyly nalezeny žádné přehratelné adresy URL"
 
 msgctxt "#30081"
 msgid "IRC Chat"
-msgstr ""
+msgstr "IRC chat"
 
 msgctxt "#30082"
 msgid "Live Previews"
-msgstr ""
+msgstr "Živé náhledy"
 
 msgctxt "#30083"
 msgid "Live Preview Settings"
-msgstr ""
+msgstr "Nastavení živých náhledů"
 
 msgctxt "#30084"
 msgid "Clear live preview cache"
-msgstr ""
+msgstr "Vyprázdnit mezipaměť živých náhledů"
 
 msgctxt "#30085"
 msgid "***** WARNING *****"
-msgstr ""
+msgstr "***** VAROVÁNÍ *****"
 
 msgctxt "#30086"
 msgid "These settings may allow this add-on to delete database entries and images[CR]for cached live previews."
-msgstr ""
+msgstr "Tato nastavení mohou tomuto doplňku umožnit mazat databázové záznamy a obrázky[CR]pro živé náhledy uložené v mezipaměti."
 
 msgctxt "#30087"
 msgid "Notifications"
-msgstr ""
+msgstr "Oznámení"
 
 msgctxt "#30088"
 msgid "Game"
-msgstr ""
+msgstr "Hra"
 
 msgctxt "#30089"
 msgid "Viewers"
-msgstr ""
+msgstr "Diváci"
 
 msgctxt "#30090"
 msgid "Language"
@@ -283,23 +283,23 @@ msgstr "Jazyk"
 
 msgctxt "#30091"
 msgid "Mature"
-msgstr ""
+msgstr "Pro dospělé"
 
 msgctxt "#30092"
 msgid "Partner"
-msgstr ""
+msgstr "Partner"
 
 msgctxt "#30093"
 msgid "Delay"
-msgstr ""
+msgstr "Zpoždění"
 
 msgctxt "#30094"
 msgid "Automatic refresh interval (minutes)"
-msgstr ""
+msgstr "Interval automatického obnovení (minuty)"
 
 msgctxt "#30095"
 msgid "Username is required"
-msgstr ""
+msgstr "Je vyžadováno uživatelské jméno"
 
 msgctxt "#30096"
 msgid "API"
@@ -307,103 +307,103 @@ msgstr "API"
 
 msgctxt "#30097"
 msgid "OAuth Client ID"
-msgstr ""
+msgstr "ID klienta OAuth"
 
 msgctxt "#30098"
 msgid "Select Video by ID or URL"
-msgstr ""
+msgstr "Vybrat video podle ID nebo adresy URL"
 
 msgctxt "#30099"
 msgid "OAuth Token"
-msgstr ""
+msgstr "Token OAuth"
 
 msgctxt "#30100"
 msgid "Visit www.twitch.tv/settings/connections and [CR]'Register your application' for an OAuth Client-ID"
-msgstr ""
+msgstr "Přejděte na www.twitch.tv/settings/connections [CR]a klikněte na položku „Register Your Application“, abyste získali ID klienta OAuth"
 
 msgctxt "#30101"
 msgid "Visit www.twitchapps.com/tmi to generate an OAuth token"
-msgstr ""
+msgstr "Přejděte na www.twitchapps.com/tmi a vygenerujte token OAuth"
 
 msgctxt "#30102"
 msgid "Source"
-msgstr ""
+msgstr "Zdroj"
 
 msgctxt "#30103"
 msgid "1080p60"
-msgstr ""
+msgstr "1080p60"
 
 msgctxt "#30104"
 msgid "1080p30"
-msgstr ""
+msgstr "1080p30"
 
 msgctxt "#30105"
 msgid "720p60"
-msgstr ""
+msgstr "720p60"
 
 msgctxt "#30106"
 msgid "720p30"
-msgstr ""
+msgstr "720p30"
 
 msgctxt "#30107"
 msgid "540p30"
-msgstr ""
+msgstr "540p30"
 
 msgctxt "#30108"
 msgid "480p30"
-msgstr ""
+msgstr "480p30"
 
 msgctxt "#30109"
 msgid "360p30"
-msgstr ""
+msgstr "360p30"
 
 msgctxt "#30110"
 msgid "240p30"
-msgstr ""
+msgstr "240p30"
 
 msgctxt "#30111"
 msgid "144p30"
-msgstr ""
+msgstr "144p30"
 
 msgctxt "#30112"
 msgid "Quality may result in best match"
-msgstr ""
+msgstr "Kvalita může vést k volbě nejlepší shody"
 
 msgctxt "#30113"
 msgid "Uploads"
-msgstr "Nahrát"
+msgstr "Nahraná videa"
 
 msgctxt "#30114"
 msgid "Confirm"
-msgstr ""
+msgstr "Potvrdit"
 
 msgctxt "#30115"
 msgid "Function cache has been reset"
-msgstr ""
+msgstr "Mezipaměť funkcí byla resetována"
 
 msgctxt "#30116"
 msgid "Function cache reset failed"
-msgstr ""
+msgstr "Resetování mezipaměti funkcí se nezdařilo"
 
 msgctxt "#30117"
 msgid "Reset function cache?"
-msgstr ""
+msgstr "Resetovat mezipaměť funkcí?"
 
 msgctxt "#30118"
 msgid "Developer"
-msgstr ""
+msgstr "Vývojář"
 
 msgctxt "#30120"
 msgid "Cache"
-msgstr ""
+msgstr "Mezipaměť"
 
 msgctxt "#30121"
 msgid "Cache expire time (minutes)"
-msgstr ""
+msgstr "Doba vypršení mezipaměti (minuty)"
 
 msgctxt "#30122"
 msgid "Reset function cache"
-msgstr ""
+msgstr "Resetovat mezipaměť funkcí"
 
 msgctxt "#30123"
 msgid "Items per page"
@@ -411,11 +411,11 @@ msgstr "Položek na stránku"
 
 msgctxt "#30124"
 msgid "Video Id/Url"
-msgstr ""
+msgstr "ID nebo URL videa"
 
 msgctxt "#30125"
 msgid "Streams"
-msgstr ""
+msgstr "Streamy"
 
 msgctxt "#30126"
 msgid "Refresh"
@@ -423,15 +423,15 @@ msgstr "Obnovit"
 
 msgctxt "#30127"
 msgid "Login"
-msgstr ""
+msgstr "Přihlášení"
 
 msgctxt "#30128"
 msgid "OAuth token is required"
-msgstr ""
+msgstr "Je vyžadován token OAuth"
 
 msgctxt "#30129"
 msgid "Error"
-msgstr ""
+msgstr "Chyba"
 
 msgctxt "#30130"
 msgid "Go to %s"
@@ -439,155 +439,155 @@ msgstr "Přejít na %s"
 
 msgctxt "#30131"
 msgid "No results returned"
-msgstr ""
+msgstr "Nebyly vráceny žádné výsledky"
 
 msgctxt "#30132"
 msgid "OAuth token is required for access"
-msgstr ""
+msgstr "Pro přístup je vyžadován token OAuth"
 
 msgctxt "#30133"
 msgid "Authorize"
-msgstr ""
+msgstr "Autorizovat"
 
 msgctxt "#30134"
 msgid "Get your OAuth token by logging in/signing up to Twitch.tv here:"
-msgstr ""
+msgstr "Získejte svůj token OAuth přihlášením nebo registrací k Twitch.tv zde:"
 
 msgctxt "#30135"
 msgid "Get OAuth token"
-msgstr ""
+msgstr "Získat token OAuth"
 
 msgctxt "#30136"
 msgid "Always ask"
-msgstr ""
+msgstr "Vždy se zeptat"
 
 msgctxt "#30138"
 msgid "*** Do NOT share your OAuth token. ***"
-msgstr ""
+msgstr "*** Nesdílejte svůj token OAuth. ***"
 
 msgctxt "#30139"
 msgid "Toggle follow"
-msgstr ""
+msgstr "Přepnout sledování"
 
 msgctxt "#30140"
 msgid "Now following %s"
-msgstr ""
+msgstr "Nyní sledujete %s"
 
 msgctxt "#30141"
 msgid "Unfollowed %s"
-msgstr ""
+msgstr "Přestali jste sledovat %s"
 
 msgctxt "#30142"
 msgid "Redirect URI"
-msgstr ""
+msgstr "URI přesměrování"
 
 msgctxt "#30143"
 msgid "Would you like to follow %s?"
-msgstr ""
+msgstr "Chcete sledovat %s?"
 
 msgctxt "#30144"
 msgid "Are you sure you want to unfollow %s?"
-msgstr ""
+msgstr "Opravdu chcete přestat sledovat %s?"
 
 msgctxt "#30145"
 msgid "Toggle block user"
-msgstr ""
+msgstr "Přepnout blokování uživatele"
 
 msgctxt "#30146"
 msgid "Blocked %s"
-msgstr ""
+msgstr "Uživatel %s zablokován"
 
 msgctxt "#30147"
 msgid "Unblocked %s"
-msgstr ""
+msgstr "Uživatel %s odblokován"
 
 msgctxt "#30148"
 msgid "Would you like to block %s?"
-msgstr ""
+msgstr "Chcete zablokovat %s?"
 
 msgctxt "#30149"
 msgid "Are you sure you want to unblock %s?"
-msgstr ""
+msgstr "Opravdu chcete odblokovat %s?"
 
 msgctxt "#30150"
 msgid "Blacklist %s"
-msgstr ""
+msgstr "Přidat %s na seznam blokovaných"
 
 msgctxt "#30151"
 msgid "Blacklisted %s"
-msgstr ""
+msgstr "%s přidán na seznam blokovaných"
 
 msgctxt "#30152"
 msgid "Lists"
-msgstr ""
+msgstr "Seznamy"
 
 msgctxt "#30153"
 msgid "Blacklist"
-msgstr "Černý seznam"
+msgstr "Seznam blokovaných"
 
 msgctxt "#30154"
 msgid "Remove a user"
-msgstr "Odstranit uživatele"
+msgstr "Odebrat uživatele"
 
 msgctxt "#30155"
 msgid "Remove a game"
-msgstr ""
+msgstr "Odebrat hru"
 
 msgctxt "#30156"
 msgid "Remove all users"
-msgstr ""
+msgstr "Odebrat všechny uživatele"
 
 msgctxt "#30157"
 msgid "Remove all games"
-msgstr ""
+msgstr "Odebrat všechny hry"
 
 msgctxt "#30158"
 msgid "Remove %s from blacklist"
-msgstr ""
+msgstr "Odebrat %s ze seznamu blokovaných"
 
 msgctxt "#30159"
 msgid "Removed %s from blacklist"
-msgstr ""
+msgstr "%s odebrán ze seznamu blokovaných"
 
 msgctxt "#30160"
 msgid "Cleared %s %s"
-msgstr ""
+msgstr "Vymazáno %s %s"
 
 msgctxt "#30161"
 msgid "Are you sure you want to clear %s %s?"
-msgstr ""
+msgstr "Opravdu chcete vymazat %s %s?"
 
 msgctxt "#30162"
 msgid "Clear list"
-msgstr ""
+msgstr "Vymazat seznam"
 
 msgctxt "#30163"
 msgid "Set default quality"
-msgstr ""
+msgstr "Nastavit výchozí kvalitu"
 
 msgctxt "#30164"
 msgid "Default '%s' quality '%s' set for %s"
-msgstr ""
+msgstr "Výchozí kvalita „%s“ nastavena na „%s“ pro %s"
 
 msgctxt "#30165"
 msgid "Removed default '%s' quality for %s"
-msgstr ""
+msgstr "Odebrána výchozí kvalita „%s“ pro %s"
 
 msgctxt "#30166"
 msgid "Remove %s quality"
-msgstr ""
+msgstr "Odebrat kvalitu %s"
 
 msgctxt "#30167"
 msgid "Default Qualities"
-msgstr ""
+msgstr "Výchozí kvality"
 
 msgctxt "#30168"
 msgid "Clear default quality"
-msgstr ""
+msgstr "Vymazat výchozí kvalitu"
 
 msgctxt "#30169"
 msgid "Choose Quality"
-msgstr ""
+msgstr "Zvolit kvalitu"
 
 msgctxt "#30170"
 msgid "Playlists"
@@ -595,19 +595,19 @@ msgstr "Seznamy přehrávání"
 
 msgctxt "#30171"
 msgid "Collections"
-msgstr ""
+msgstr "Sbírky"
 
 msgctxt "#30172"
 msgid "Browse"
-msgstr ""
+msgstr "Procházet"
 
 msgctxt "#30173"
 msgid "Xbox One"
-msgstr ""
+msgstr "Xbox One"
 
 msgctxt "#30174"
 msgid "Playstation 4"
-msgstr ""
+msgstr "PlayStation 4"
 
 msgctxt "#30175"
 msgid "Videos"
@@ -615,387 +615,455 @@ msgstr "Videa"
 
 msgctxt "#30176"
 msgid "Clips"
-msgstr ""
+msgstr "Klipy"
 
 msgctxt "#30177"
 msgid "Invalid OAuth token"
-msgstr ""
+msgstr "Neplatný token OAuth"
 
 msgctxt "#30178"
 msgid "Missing required scopes: %s"
-msgstr ""
+msgstr "Chybí požadované rozsahy: %s"
 
 msgctxt "#30179"
 msgid "Client id mismatch"
-msgstr ""
+msgstr "Neshoda ID klienta"
 
 msgctxt "#30180"
 msgid "Go to '%s' - '%s' - '%s' to generate a new token"
-msgstr ""
+msgstr "Přejděte do „%s“ - „%s“ - „%s“ a vygenerujte nový token"
 
 msgctxt "#30181"
 msgid "Are you sure you want to blacklist %s?"
-msgstr ""
+msgstr "Opravdu chcete přidat %s na seznam blokovaných?"
 
 msgctxt "#30184"
 msgid "Change sort by"
-msgstr ""
+msgstr "Změnit řazení podle"
 
 msgctxt "#30185"
 msgid "Change sort direction"
-msgstr ""
+msgstr "Změnit směr řazení"
 
 msgctxt "#30186"
 msgid "Change period"
-msgstr ""
+msgstr "Změnit období"
 
 msgctxt "#30187"
 msgid "Popular"
-msgstr ""
+msgstr "Populární"
 
 msgctxt "#30188"
 msgid "Views"
-msgstr ""
+msgstr "Zhlédnutí"
 
 msgctxt "#30189"
 msgid "Add a language"
-msgstr ""
+msgstr "Přidat jazyk"
 
 msgctxt "#30190"
 msgid "Remove a language"
-msgstr ""
+msgstr "Odebrat jazyk"
 
 msgctxt "#30191"
 msgid "Remove a stream quality"
-msgstr ""
+msgstr "Odebrat kvalitu streamu"
 
 msgctxt "#30192"
 msgid "Remove a video quality"
-msgstr ""
+msgstr "Odebrat kvalitu videa"
 
 msgctxt "#30193"
 msgid "Remove a clip quality"
-msgstr ""
+msgstr "Odebrat kvalitu klipů"
 
 msgctxt "#30194"
 msgid "Remove all stream qualities"
-msgstr ""
+msgstr "Odebrat všechny kvality streamů"
 
 msgctxt "#30195"
 msgid "Remove all video qualities"
-msgstr ""
+msgstr "Odebrat všechny kvality videí"
 
 msgctxt "#30196"
 msgid "Remove all clip qualities"
-msgstr ""
+msgstr "Odebrat všechny kvality klipů"
 
 msgctxt "#30197"
 msgid "Requires confirmation"
-msgstr ""
+msgstr "Vyžaduje potvrzení"
 
 msgctxt "#30198"
 msgid "Requires subscription to %s"
-msgstr ""
+msgstr "Vyžaduje předplatné kanálu %s"
 
 msgctxt "#30199"
 msgid "Connection failed"
-msgstr ""
+msgstr "Připojení se nezdařilo"
 
 msgctxt "#30200"
 msgid "No %s found"
-msgstr ""
+msgstr "Nenalezeno: %s"
 
 msgctxt "#30201"
 msgid "Bandwidth"
-msgstr ""
+msgstr "Šířka pásma"
 
 msgctxt "#30202"
 msgid "Currently Live"
-msgstr ""
+msgstr "Aktuálně živě"
 
 msgctxt "#30203"
 msgid "Went Live"
-msgstr ""
+msgstr "Zahájení živého vysílání"
 
 msgctxt "#30204"
 msgid "Live notifications"
-msgstr ""
+msgstr "Oznámení o živém vysílání"
 
 msgctxt "#30205"
 msgid "Audible"
-msgstr ""
+msgstr "Se zvukem"
 
 msgctxt "#30206"
 msgid "Playback failed"
-msgstr ""
+msgstr "Přehrávání se nezdařilo"
 
 msgctxt "#30207"
 msgid "Retrying in %d seconds"
-msgstr ""
+msgstr "Opakování za %d sekund"
 
 msgctxt "#30208"
 msgid "Attempting to reconnect to %s"
-msgstr ""
+msgstr "Pokus o opětovné připojení k %s"
 
 msgctxt "#30209"
 msgid "Attempt #%d"
-msgstr ""
+msgstr "Pokus č. %d"
 
 msgctxt "#30210"
 msgid "Attempt reconnection to live streams"
-msgstr ""
+msgstr "Pokusit se znovu připojit k živým streamům"
 
 msgctxt "#30211"
 msgid "Enabled"
-msgstr ""
+msgstr "Povoleno"
 
 msgctxt "#30212"
 msgid "Failed to connect to Twitch API"
-msgstr ""
+msgstr "Nepodařilo se připojit k API Twitch"
 
 msgctxt "#30213"
 msgid "Followers"
-msgstr ""
+msgstr "Sledující"
 
 msgctxt "#30214"
 msgid "Items"
-msgstr ""
+msgstr "Položky"
 
 msgctxt "#30215"
 msgid "Duration"
-msgstr ""
+msgstr "Délka"
 
 msgctxt "#30216"
 msgid "Curated"
-msgstr ""
+msgstr "Vybrané"
 
 msgctxt "#30217"
 msgid "Press OK to resolve"
-msgstr ""
+msgstr "Vyřešit stisknutím OK"
 
 msgctxt "#30218"
 msgid "Supported video ids: a123435, c123435, v123435, videos123435[CR]Example urls:[CR]https://twitch.tv/gamesdonequick...[CR].../v/113336135[CR].../v/113336135?t=1h52m35s"
-msgstr ""
+msgstr "Podporovaná ID videí: a123435, c123435, v123435, videos123435[CR]Ukázkové adresy URL:[CR]https://twitch.tv/gamesdonequick...[CR].../v/113336135[CR].../v/113336135?t=1h52m35s"
 
 msgctxt "#30219"
 msgid "Main Menu"
-msgstr ""
+msgstr "Hlavní nabídka"
 
 msgctxt "#30220"
 msgid "Failed to get url, try again shortly."
-msgstr ""
+msgstr "Nepodařilo se získat adresu URL, zkuste to za chvíli znovu."
 
 msgctxt "#30221"
 msgid "Unknown"
-msgstr ""
+msgstr "Neznámé"
 
 msgctxt "#30222"
 msgid "VODCast highlight color"
-msgstr ""
+msgstr "Barva zvýraznění VODCast"
 
 msgctxt "#30223"
 msgid "Use inputstream.adaptive"
-msgstr ""
+msgstr "Používat inputstream.adaptive"
 
 msgctxt "#30224"
 msgid "Configure inputstream.adaptive"
-msgstr ""
+msgstr "Nastavit inputstream.adaptive"
 
 msgctxt "#30225"
 msgid "inputstream.adaptive is enabled in the Twitch settings, however inputstream.adaptive appears to be disabled. Would you like to enable inputstream.adaptive now?"
-msgstr ""
+msgstr "inputstream.adaptive je povolen v nastavení Twitche, ale zdá se, že samotný inputstream.adaptive je zakázán. Chcete ho nyní povolit?"
 
 msgctxt "#30226"
 msgid "The installed inputstream.adaptive add-on does not meet the version requirement(%s), and has been disabled in the Twitch add-on settings."
-msgstr ""
+msgstr "Nainstalovaný doplněk inputstream.adaptive nesplňuje požadavek na verzi (%s) a byl zakázán v nastavení doplňku Twitch."
 
 msgctxt "#30227"
 msgid "Revoke Token"
-msgstr ""
+msgstr "Odvolat token"
 
 msgctxt "#30228"
 msgid "Are you sure you want to revoke your OAuth token?"
-msgstr ""
+msgstr "Opravdu chcete odvolat svůj token OAuth?"
 
 msgctxt "#30229"
 msgid "OAuth token has been revoked"
-msgstr ""
+msgstr "Token OAuth byl odvolán"
 
 msgctxt "#30230"
 msgid "OAuth token has been updated"
-msgstr ""
+msgstr "Token OAuth byl aktualizován"
 
 msgctxt "#30231"
 msgid "%s started streaming %s"
-msgstr ""
+msgstr "Kanál %s začal vysílat %s"
 
 msgctxt "#30232"
 msgid "Notify at start"
-msgstr ""
+msgstr "Upozornit při zahájení"
 
 msgctxt "#30233"
 msgid "Group notifications at start"
-msgstr ""
+msgstr "Seskupovat oznámení při zahájení"
 
 msgctxt "#30234"
 msgid "Reset cache on Refresh"
-msgstr ""
+msgstr "Resetovat mezipaměť při obnovení"
 
 msgctxt "#30235"
 msgid "New search"
-msgstr ""
+msgstr "Nové hledání"
 
 msgctxt "#30236"
 msgid "Search history size"
-msgstr "Velikost historie vyhledávání"
+msgstr "Velikost historie hledání"
 
 msgctxt "#30237"
 msgid "Clear search history?"
-msgstr ""
+msgstr "Vymazat historii hledání?"
 
 msgctxt "#30238"
 msgid "Remove %s from search history?"
-msgstr ""
+msgstr "Odebrat %s z historie hledání?"
 
 msgctxt "#30239"
 msgid "Remove %s"
-msgstr ""
+msgstr "Odebrat %s"
 
 msgctxt "#30240"
 msgid "Clear search history"
-msgstr "Smazat historii"
+msgstr "Vymazat historii hledání"
 
 msgctxt "#30241"
 msgid "Search history cleared"
-msgstr ""
+msgstr "Historie hledání vymazána"
 
 msgctxt "#30242"
 msgid "Removed %s from search history"
-msgstr ""
+msgstr "%s odebráno z historie hledání"
 
 msgctxt "#30243"
 msgid "Maintenance"
-msgstr "Podporované"
+msgstr "Údržba"
 
 msgctxt "#30244"
 msgid "Search History"
-msgstr ""
+msgstr "Historie hledání"
 
 msgctxt "#30245"
 msgid "Delete streams search history"
-msgstr ""
+msgstr "Smazat historii hledání streamů"
 
 msgctxt "#30246"
 msgid "Delete channels search history"
-msgstr ""
+msgstr "Smazat historii hledání kanálů"
 
 msgctxt "#30247"
 msgid "Delete games search history"
-msgstr ""
+msgstr "Smazat historii hledání her"
 
 msgctxt "#30248"
 msgid "Delete video id/url search history"
-msgstr ""
+msgstr "Smazat historii hledání podle ID/URL videa"
 
 msgctxt "#30249"
 msgid "Other"
-msgstr ""
+msgstr "Ostatní"
 
 msgctxt "#30250"
 msgid "Delete storage.json"
-msgstr ""
+msgstr "Smazat storage.json"
 
 msgctxt "#30251"
 msgid "Are you sure you want to delete %s?"
-msgstr ""
+msgstr "Opravdu chcete smazat %s?"
 
 msgctxt "#30252"
 msgid "Deleting %s succeeded"
-msgstr ""
+msgstr "Smazání %s bylo úspěšné"
 
 msgctxt "#30253"
 msgid "Deleting %s failed"
-msgstr ""
+msgstr "Smazání %s se nezdařilo"
 
 msgctxt "#30254"
 msgid "Adaptive"
-msgstr ""
+msgstr "Adaptivní"
 
 msgctxt "#30255"
 msgid "Thumbnail size"
-msgstr "Poměr stran náhledu"
+msgstr "Velikost miniatury"
 
 msgctxt "#30256"
 msgid "Large"
-msgstr ""
+msgstr "Velká"
 
 msgctxt "#30257"
 msgid "Medium"
-msgstr ""
+msgstr "Střední"
 
 msgctxt "#30258"
 msgid "Small"
-msgstr ""
+msgstr "Malá"
 
 msgctxt "#30259"
 msgid "Live preview refresh interval (minutes)"
-msgstr ""
+msgstr "Interval obnovení živého náhledu (minuty)"
 
 msgctxt "#30260"
 msgid "Limit to 30 fps"
-msgstr ""
+msgstr "Omezit na 30 sn./s"
 
 msgctxt "#30261"
 msgid "Private API Credentials"
-msgstr ""
+msgstr "Soukromé přihlašovací údaje API"
 
 msgctxt "#30262"
 msgid "Change languages"
-msgstr ""
+msgstr "Změnit jazyky"
 
 msgctxt "#30263"
 msgid "Frame rate limit"
-msgstr ""
+msgstr "Limit snímkové frekvence"
 
 msgctxt "#30264"
 msgid "Follow"
-msgstr ""
+msgstr "Sledovat"
 
 msgctxt "#30265"
 msgid "Unfollow"
-msgstr ""
+msgstr "Přestat sledovat"
 
 msgctxt "#30266"
 msgid "Add to queue"
-msgstr ""
+msgstr "Přidat do fronty"
 
 msgctxt "#30267"
 msgid "An OAuth token is required for access, go to '%s' - '%s' - '%s' to generate one"
-msgstr ""
+msgstr "Pro přístup je vyžadován token OAuth. Přejděte do „%s“ - „%s“ - „%s“ a vygenerujte ho"
 
 msgctxt "#30268"
 msgid "Private OAuth authentication error"
-msgstr ""
+msgstr "Chyba soukromého ověření OAuth"
 
 msgctxt "#30269"
 msgid "Private OAuth credentials are incorrect, go to '%s' - '%s' - '%s' to correct the issue"
-msgstr ""
+msgstr "Soukromé přihlašovací údaje OAuth nejsou správné. Přejděte do „%s“ - „%s“ - „%s“ a opravte problém"
 
 msgctxt "#30270"
 msgid "Subscriber and Turbo Benefits"
-msgstr ""
+msgstr "Výhody pro předplatitele a Turbo"
 
 msgctxt "#30271"
 msgid "For information on how to obtain this token, visit"
-msgstr ""
+msgstr "Informace o získání tohoto tokenu najdete na"
 
 msgctxt "#30272"
 msgid "https://twitchaddon.page.link/benefits"
-msgstr ""
+msgstr "https://twitchaddon.page.link/benefits"
 
 msgctxt "#30273"
 msgid "OAuth Token is expired or invalid"
-msgstr ""
+msgstr "Token OAuth vypršel nebo je neplatný"
+
+msgctxt "#30300"
+msgid "Login (device code)"
+msgstr "Přihlášení pomocí kódu zařízení"
+
+msgctxt "#30301"
+msgid "Go to [B]%s[/B] and enter this code:[CR][CR][B]%s[/B]"
+msgstr "Přejděte na [B]%s[/B] a zadejte tento kód:[CR][CR][B]%s[/B]"
+
+msgctxt "#30302"
+msgid "Waiting for authorization..."
+msgstr "Čekání na autorizaci..."
+
+msgctxt "#30303"
+msgid "Login successful. The access token will now be refreshed automatically."
+msgstr "Přihlášení bylo úspěšné. Přístupový token se nyní bude obnovovat automaticky."
+
+msgctxt "#30304"
+msgid "Login failed or timed out."
+msgstr "Přihlášení se nezdařilo nebo vypršel časový limit."
+
+msgctxt "#30305"
+msgid "Login cancelled."
+msgstr "Přihlášení bylo zrušeno."
+
+msgctxt "#30306"
+msgid "Device login is not available for this Client-ID.[CR]Register your own application (Public type) at dev.twitch.tv/console/apps and set its Client-ID in the add-on settings, then try again."
+msgstr "Přihlášení pomocí kódu zařízení není pro toto ID klienta dostupné.[CR]Zaregistrujte vlastní aplikaci (typ Public) na dev.twitch.tv/console/apps, nastavte její ID klienta v nastavení doplňku a zkuste to znovu."
+
+msgctxt "#30307"
+msgid "Supported codecs"
+msgstr "Podporované kodeky"
+
+msgctxt "#30308"
+msgid "Twitch default"
+msgstr "Výchozí nastavení služby Twitch"
+
+msgctxt "#30309"
+msgid "H.265 (HEVC)"
+msgstr "H.265 (HEVC)"
+
+msgctxt "#30310"
+msgid "Automatic token refresh needs a public Client-ID.[CR]Register your own application (Public type) at dev.twitch.tv/console/apps and set its Client-ID in the add-on settings."
+msgstr "Automatická obnova tokenu vyžaduje ID klienta veřejné aplikace.[CR]Zaregistrujte vlastní aplikaci (typ Public) na dev.twitch.tv/console/apps a nastavte její ID klienta v nastavení doplňku."
+
+msgctxt "#30311"
+msgid "Login: ad-free playback / Turbo (device code)"
+msgstr "Přihlášení pro přehrávání bez reklam / Turbo (kód zařízení)"
+
+msgctxt "#30312"
+msgid "Go to [B]%s[/B] with your [B]Turbo/subscriber account[/B] and enter this code:[CR][CR][B]%s[/B]"
+msgstr "Přihlaste se na [B]%s[/B] pomocí svého [B]účtu s Turbo nebo předplatným[/B] a zadejte tento kód:[CR][CR][B]%s[/B]"
+
+msgctxt "#30313"
+msgid "Turbo / ad-free login successful. The token is renewed automatically. Ad-free playback only applies if the logged-in account has Turbo or is subscribed to the channel."
+msgstr "Přihlášení pro Turbo / přehrávání bez reklam bylo úspěšné. Token se obnovuje automaticky. Přehrávání bez reklam platí pouze v případě, že má přihlášený účet Turbo nebo předplatné daného kanálu."
+
+msgctxt "#30330"
+msgid "Search method"
+msgstr "Způsob hledání"
+
+msgctxt "#30331"
+msgid "Website (twitch.tv, fuzzy)"
+msgstr "Web (twitch.tv, přibližná shoda)"
+
+msgctxt "#30332"
+msgid "Helix API"
+msgstr "API Helix"
 
 #~ msgctxt "#30005"
 #~ msgid "Featured Streams"

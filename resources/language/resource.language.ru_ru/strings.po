@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: 2016-09-18 00:54+0000\n"
-"PO-Revision-Date: 2022-09-16 18:14+0000\n"
+"PO-Revision-Date: 2026-08-19 20:24+0000\n"
 "Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://kodi.weblate.cloud/projects/kodi-add-ons-video/plugin-video-twitch/ru_ru/>\n"
 "Language: ru_ru\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.14\n"
+"X-Generator: Weblate 2026.8.1\n"
 
 msgctxt "Addon Summary"
 msgid "Twitch video plugin"
@@ -1000,6 +1000,74 @@ msgstr "https://twitchaddon.page.link/benefits"
 msgctxt "#30273"
 msgid "OAuth Token is expired or invalid"
 msgstr "Истёкший или неверный токен OAuth"
+
+msgctxt "#30300"
+msgid "Login (device code)"
+msgstr "Вход (код устройства)"
+
+msgctxt "#30301"
+msgid "Go to [B]%s[/B] and enter this code:[CR][CR][B]%s[/B]"
+msgstr "Перейдите на [B]%s[/B] и введите этот код:[CR][CR][B]%s[/B]"
+
+msgctxt "#30302"
+msgid "Waiting for authorization..."
+msgstr "Ожидание авторизации..."
+
+msgctxt "#30303"
+msgid "Login successful. The access token will now be refreshed automatically."
+msgstr "Вход выполнен успешно. Маркер доступа теперь будет обновляться автоматически."
+
+msgctxt "#30304"
+msgid "Login failed or timed out."
+msgstr "Вход не удался или истекло время ожидания."
+
+msgctxt "#30305"
+msgid "Login cancelled."
+msgstr "Вход отменён."
+
+msgctxt "#30306"
+msgid "Device login is not available for this Client-ID.[CR]Register your own application (Public type) at dev.twitch.tv/console/apps and set its Client-ID in the add-on settings, then try again."
+msgstr "Вход по коду устройства недоступен для этого Client-ID.[CR]Зарегистрируйте своё приложение (тип Public) на dev.twitch.tv/console/apps и укажите его Client-ID в настройках дополнения, затем попробуйте снова."
+
+msgctxt "#30307"
+msgid "Supported codecs"
+msgstr "Поддерживаемые кодеки"
+
+msgctxt "#30308"
+msgid "Twitch default"
+msgstr "По умолчанию (Twitch)"
+
+msgctxt "#30309"
+msgid "H.265 (HEVC)"
+msgstr "H.265 (HEVC)"
+
+msgctxt "#30310"
+msgid "Automatic token refresh needs a public Client-ID.[CR]Register your own application (Public type) at dev.twitch.tv/console/apps and set its Client-ID in the add-on settings."
+msgstr "Для автоматического обновления маркера требуется публичный Client-ID.[CR]Зарегистрируйте своё приложение (тип Public) на dev.twitch.tv/console/apps и укажите его Client-ID в настройках дополнения."
+
+msgctxt "#30311"
+msgid "Login: ad-free playback / Turbo (device code)"
+msgstr "Вход: воспроизведение без рекламы / Turbo (код устройства)"
+
+msgctxt "#30312"
+msgid "Go to [B]%s[/B] with your [B]Turbo/subscriber account[/B] and enter this code:[CR][CR][B]%s[/B]"
+msgstr "Перейдите на [B]%s[/B] со своей [B]учётной записью Turbo/подписчика[/B] и введите этот код:[CR][CR][B]%s[/B]"
+
+msgctxt "#30313"
+msgid "Turbo / ad-free login successful. The token is renewed automatically. Ad-free playback only applies if the logged-in account has Turbo or is subscribed to the channel."
+msgstr "Вход Turbo / без рекламы выполнен успешно. Маркер обновляется автоматически. Воспроизведение без рекламы работает только если выполнившая вход учётная запись имеет Turbo или подписана на канал."
+
+msgctxt "#30330"
+msgid "Search method"
+msgstr "Метод поиска"
+
+msgctxt "#30331"
+msgid "Website (twitch.tv, fuzzy)"
+msgstr "Сайт (twitch.tv, нечёткий)"
+
+msgctxt "#30332"
+msgid "Helix API"
+msgstr "Helix API"
 
 #~ msgctxt "#30132"
 #~ msgid "OAuth token is required for access to authorized user functions."

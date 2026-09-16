@@ -3,1000 +3,1068 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-18 00:54+0000\n"
-"PO-Revision-Date: 2022-02-21 15:48+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2025-08-31 09:29+0000\n"
+"Last-Translator: SecularSteve <fairfull.playing@gmail.com>\n"
 "Language-Team: Bosnian (Bosnia and Herzegovina) <https://kodi.weblate.cloud/projects/kodi-add-ons-video/plugin-video-twitch/bs_ba/>\n"
 "Language: bs_ba\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 5.13\n"
 
 msgctxt "Addon Summary"
 msgid "Twitch video plugin"
-msgstr ""
+msgstr "Twitch video dodatak"
 
 msgctxt "Addon Description"
 msgid "Watch your favorite gaming streams!"
-msgstr ""
+msgstr "Gledajte svoje omiljene gejming prijenose!"
 
 msgctxt "#30001"
 msgid "Games"
-msgstr ""
+msgstr "Igre"
 
 msgctxt "#30002"
 msgid "Following"
-msgstr ""
+msgstr "Pod pratnjom"
 
 msgctxt "#30003"
 msgid "Search"
-msgstr ""
+msgstr "Pretraga"
 
 msgctxt "#30004"
 msgid "Settings"
-msgstr ""
+msgstr "Podešavanja"
 
 msgctxt "#30005"
 msgid "Popular Streams"
-msgstr ""
+msgstr "Popularni prijenosi"
 
 msgctxt "#30006"
 msgid "Teams"
-msgstr ""
+msgstr "Timovi"
 
 msgctxt "#30007"
 msgid "Search for channels"
-msgstr ""
+msgstr "Pretraživanje kanala"
 
 msgctxt "#30008"
 msgid "Channels"
-msgstr ""
+msgstr "Kanali"
 
 msgctxt "#30009"
 msgid "Live Channels"
-msgstr ""
+msgstr "Kanali uživo"
 
 msgctxt "#30010"
 msgid "TwitchTV"
-msgstr ""
+msgstr "TwitchTV"
 
 msgctxt "#30011"
 msgid "next page..."
-msgstr ""
+msgstr "sljedeća stranica..."
 
 msgctxt "#30012"
 msgid "-- Currently Live Streams --"
-msgstr ""
+msgstr "-- Trenutni prenosi uživo --"
 
 msgctxt "#30013"
 msgid "-- Followed Channels --"
-msgstr ""
+msgstr "-- Praćeni kanali --"
 
 # empty strings from id 30014 to 30019
 msgctxt "#30020"
 msgid "Http error"
-msgstr ""
+msgstr "HTTP greška"
 
 msgctxt "#30021"
 msgid "No Live Data Found"
-msgstr ""
+msgstr "Nisu pronađeni podaci uživo"
 
 msgctxt "#30022"
 msgid "No archives found for"
-msgstr ""
+msgstr "Nisu pronađene arhive za"
 
 msgctxt "#30023"
 msgid "User Token Error"
-msgstr ""
+msgstr "Greška korisničkog tokena"
 
 msgctxt "#30024"
 msgid "Changed video settings"
-msgstr ""
+msgstr "Promijenjene postavke videa"
 
 msgctxt "#30025"
 msgid "Selected video settings are not available"
-msgstr ""
+msgstr "Odabrane postavke videa nisu dostupne"
 
 msgctxt "#30026"
 msgid "TwitchApi error"
-msgstr ""
+msgstr "Greška TwitchApi-ja"
 
 msgctxt "#30027"
 msgid "JSON error"
-msgstr ""
+msgstr "JSON greška"
 
 msgctxt "#30028"
 msgid "Failed to parse the result set"
-msgstr ""
+msgstr "Nije uspjelo raščlaniti skup rezultata"
 
 msgctxt "#30029"
 msgid "Please check your internet connection"
-msgstr ""
+msgstr "Molimo provjerite svoju internetsku vezu"
 
 # empty strings from id 30030 to 30039
 msgctxt "#30040"
 msgid "Video Quality"
-msgstr ""
+msgstr "Kvalitet videa"
 
 # empty strings from id 30041 to 30044
 msgctxt "#30045"
 msgid "Display titles"
-msgstr ""
+msgstr "Prikaz naslova"
 
 msgctxt "#30046"
 msgid "Streamer - Stream Title"
-msgstr ""
+msgstr "Prenosar - Naslov prijenosa"
 
 msgctxt "#30047"
 msgid "Viewers - Streamer - Stream Title"
-msgstr ""
+msgstr "Gledaoci - Prenosar - Naslov prijenosa"
 
 msgctxt "#30048"
 msgid "Stream Title"
-msgstr ""
+msgstr "Naslov prijenosa"
 
 msgctxt "#30049"
 msgid "Streamer"
-msgstr ""
+msgstr "Prenosar"
 
 msgctxt "#30050"
 msgid "Username"
-msgstr ""
+msgstr "Korisničko ime"
 
 msgctxt "#30051"
 msgid "Streamer - Game Title - Stream Title"
-msgstr ""
+msgstr "Prenosar - Naziv igre - Naziv prijenosa"
 
 msgctxt "#30052"
 msgid "Enable"
-msgstr ""
+msgstr "Omogući"
 
 msgctxt "#30053"
 msgid "Password (OAuth Token)"
-msgstr ""
+msgstr "Lozinka (OAuth token)"
 
 msgctxt "#30054"
 msgid "Language | Streamer - Stream Title"
-msgstr ""
+msgstr "Jezik | Prenosar - Naslov prijenosa"
 
 # empty strings from id 30055 to 30059
 msgctxt "#30060"
 msgid "Unnamed Streamer"
-msgstr ""
+msgstr "Neimenovani prenosar"
 
 msgctxt "#30061"
 msgid "Untitled Stream"
-msgstr ""
+msgstr "Neimenovani prijenos"
 
 msgctxt "#30062"
 msgid "Unknown Number of Viewers"
-msgstr ""
+msgstr "Nepoznat broj gledalaca"
 
 msgctxt "#30063"
 msgid "Unknown Language"
-msgstr ""
+msgstr "Nepoznati jezik"
 
 msgctxt "#30064"
 msgid "Unknown Game"
-msgstr ""
+msgstr "Nepoznata igra"
 
 msgctxt "#30065"
 msgid "Truncate displayed titles"
-msgstr ""
+msgstr "Skrati prikazane naslove"
 
 msgctxt "#30066"
 msgid "Followed Games"
-msgstr ""
+msgstr "Praćene igre"
 
 msgctxt "#30067"
 msgid "Game Title Viewers | Streamer - Stream Title"
-msgstr ""
+msgstr "Gledaoci naslova igre | Prenosar - Naslov prijenosa"
 
 msgctxt "#30068"
 msgid "Content Type"
-msgstr ""
+msgstr "Vrsta sadržaja"
 
 msgctxt "#30069"
 msgid "Files"
-msgstr ""
+msgstr "Datoteke"
 
 msgctxt "#30070"
 msgid "TV Shows"
-msgstr ""
+msgstr "TV emisije"
 
 msgctxt "#30071"
 msgid "Movies"
-msgstr ""
+msgstr "Filmovi"
 
 msgctxt "#30072"
 msgid "Episodes"
-msgstr ""
+msgstr "Epizode"
 
 msgctxt "#30073"
 msgid "Music Videos"
-msgstr ""
+msgstr "Muzički spotovi"
 
 msgctxt "#30074"
 msgid "Automatically refresh live preview cache"
-msgstr ""
+msgstr "Automatsko osvježavanje keš memorije za pregled uživo"
 
 msgctxt "#30075"
 msgid "Install IrcChat (script.ircchat)"
-msgstr ""
+msgstr "Instalirajte IrcChat (script.ircchat)"
 
 msgctxt "#30076"
 msgid "General"
-msgstr ""
+msgstr "Općenito"
 
 msgctxt "#30077"
 msgid "Play (Choose Quality)"
-msgstr ""
+msgstr "Reproduciraj (Odaberi kvalitet)"
 
 msgctxt "#30078"
 msgid "Past Broadcasts"
-msgstr ""
+msgstr "Prošle emisije"
 
 msgctxt "#30079"
 msgid "Video Highlights"
-msgstr ""
+msgstr "Istaknuti video snimci"
 
 msgctxt "#30080"
 msgid "Could not find any playable urls"
-msgstr ""
+msgstr "Nisam mogao pronaći nijedan URL koji se može reproducirati"
 
 msgctxt "#30081"
 msgid "IRC Chat"
-msgstr ""
+msgstr "IRC chat"
 
 msgctxt "#30082"
 msgid "Live Previews"
-msgstr ""
+msgstr "Pregledi uživo"
 
 msgctxt "#30083"
 msgid "Live Preview Settings"
-msgstr ""
+msgstr "Postavke pregleda uživo"
 
 msgctxt "#30084"
 msgid "Clear live preview cache"
-msgstr ""
+msgstr "Obriši keš memoriju za pregled uživo"
 
 msgctxt "#30085"
 msgid "***** WARNING *****"
-msgstr ""
+msgstr "***** UPOZORENJE *****"
 
 msgctxt "#30086"
 msgid "These settings may allow this add-on to delete database entries and images[CR]for cached live previews."
-msgstr ""
+msgstr "Ove postavke mogu dozvoliti ovom dodatku da izbriše unose u bazu podataka i slike[CR]za keširane preglede uživo."
 
 msgctxt "#30087"
 msgid "Notifications"
-msgstr ""
+msgstr "Obavijesti"
 
 msgctxt "#30088"
 msgid "Game"
-msgstr ""
+msgstr "Igra"
 
 msgctxt "#30089"
 msgid "Viewers"
-msgstr ""
+msgstr "Gledaoci"
 
 msgctxt "#30090"
 msgid "Language"
-msgstr ""
+msgstr "Jezik"
 
 msgctxt "#30091"
 msgid "Mature"
-msgstr ""
+msgstr "Zrelo"
 
 msgctxt "#30092"
 msgid "Partner"
-msgstr ""
+msgstr "Partner"
 
 msgctxt "#30093"
 msgid "Delay"
-msgstr ""
+msgstr "Odgađanje"
 
 msgctxt "#30094"
 msgid "Automatic refresh interval (minutes)"
-msgstr ""
+msgstr "Interval automatskog osvježavanja (minute)"
 
 msgctxt "#30095"
 msgid "Username is required"
-msgstr ""
+msgstr "Korisničko ime je obavezno"
 
 msgctxt "#30096"
 msgid "API"
-msgstr ""
+msgstr "API"
 
 msgctxt "#30097"
 msgid "OAuth Client ID"
-msgstr ""
+msgstr "OAuth ID klijenta"
 
 msgctxt "#30098"
 msgid "Select Video by ID or URL"
-msgstr ""
+msgstr "Odaberite video prema ID-u ili URL-u"
 
 msgctxt "#30099"
 msgid "OAuth Token"
-msgstr ""
+msgstr "OAuth token"
 
 msgctxt "#30100"
 msgid "Visit www.twitch.tv/settings/connections and [CR]'Register your application' for an OAuth Client-ID"
-msgstr ""
+msgstr "Posjetite www.twitch.tv/settings/connections i [CR] 'Registrujte svoju aplikaciju' za OAuth Client-ID"
 
 msgctxt "#30101"
 msgid "Visit www.twitchapps.com/tmi to generate an OAuth token"
-msgstr ""
+msgstr "Posjetite www.twitchapps.com/tmi da biste generirali OAuth token"
 
 msgctxt "#30102"
 msgid "Source"
-msgstr ""
+msgstr "Izvor"
 
 msgctxt "#30103"
 msgid "1080p60"
-msgstr ""
+msgstr "1080p60"
 
 msgctxt "#30104"
 msgid "1080p30"
-msgstr ""
+msgstr "1080p30"
 
 msgctxt "#30105"
 msgid "720p60"
-msgstr ""
+msgstr "720p60"
 
 msgctxt "#30106"
 msgid "720p30"
-msgstr ""
+msgstr "720p30"
 
 msgctxt "#30107"
 msgid "540p30"
-msgstr ""
+msgstr "540p30"
 
 msgctxt "#30108"
 msgid "480p30"
-msgstr ""
+msgstr "480p30"
 
 msgctxt "#30109"
 msgid "360p30"
-msgstr ""
+msgstr "360p30"
 
 msgctxt "#30110"
 msgid "240p30"
-msgstr ""
+msgstr "240p30"
 
 msgctxt "#30111"
 msgid "144p30"
-msgstr ""
+msgstr "144p30"
 
 msgctxt "#30112"
 msgid "Quality may result in best match"
-msgstr ""
+msgstr "Kvalitet može rezultirati najboljim podudaranjem"
 
 msgctxt "#30113"
 msgid "Uploads"
-msgstr ""
+msgstr "Otpremanja"
 
 msgctxt "#30114"
 msgid "Confirm"
-msgstr ""
+msgstr "Potvrdi"
 
 msgctxt "#30115"
 msgid "Function cache has been reset"
-msgstr ""
+msgstr "Keš memorije funkcija je resetovan"
 
 msgctxt "#30116"
 msgid "Function cache reset failed"
-msgstr ""
+msgstr "Resetiranje keš memorije funkcije nije uspjelo"
 
 msgctxt "#30117"
 msgid "Reset function cache?"
-msgstr ""
+msgstr "Resetovati keš memoriju funkcija?"
 
 msgctxt "#30118"
 msgid "Developer"
-msgstr ""
+msgstr "Programer"
 
 msgctxt "#30120"
 msgid "Cache"
-msgstr ""
+msgstr "Keš memorija"
 
 msgctxt "#30121"
 msgid "Cache expire time (minutes)"
-msgstr ""
+msgstr "Vrijeme isteka keš memorije (minute)"
 
 msgctxt "#30122"
 msgid "Reset function cache"
-msgstr ""
+msgstr "Resetuj keš memoriju funkcija"
 
 msgctxt "#30123"
 msgid "Items per page"
-msgstr ""
+msgstr "Stavke po stranici"
 
 msgctxt "#30124"
 msgid "Video Id/Url"
-msgstr ""
+msgstr "ID/URL videa"
 
 msgctxt "#30125"
 msgid "Streams"
-msgstr ""
+msgstr "Tokovi"
 
 msgctxt "#30126"
 msgid "Refresh"
-msgstr ""
+msgstr "Osvježi"
 
 msgctxt "#30127"
 msgid "Login"
-msgstr ""
+msgstr "Prijava"
 
 msgctxt "#30128"
 msgid "OAuth token is required"
-msgstr ""
+msgstr "OAuth token je potreban"
 
 msgctxt "#30129"
 msgid "Error"
-msgstr ""
+msgstr "Greška"
 
 msgctxt "#30130"
 msgid "Go to %s"
-msgstr ""
+msgstr "Idi na %s"
 
 msgctxt "#30131"
 msgid "No results returned"
-msgstr ""
+msgstr "Nema rezultata"
 
 msgctxt "#30132"
 msgid "OAuth token is required for access"
-msgstr ""
+msgstr "Za pristup je potreban OAuth token"
 
 msgctxt "#30133"
 msgid "Authorize"
-msgstr ""
+msgstr "Autorizuj"
 
 msgctxt "#30134"
 msgid "Get your OAuth token by logging in/signing up to Twitch.tv here:"
-msgstr ""
+msgstr "Preuzmite svoj OAuth token prijavom/registracijom na Twitch.tv ovdje:"
 
 msgctxt "#30135"
 msgid "Get OAuth token"
-msgstr ""
+msgstr "Preuzmite OAuth token"
 
 msgctxt "#30136"
 msgid "Always ask"
-msgstr ""
+msgstr "Uvijek pitajte"
 
 msgctxt "#30138"
 msgid "*** Do NOT share your OAuth token. ***"
-msgstr ""
+msgstr "*** NE dijelite svoj OAuth token. ***"
 
 msgctxt "#30139"
 msgid "Toggle follow"
-msgstr ""
+msgstr "Prati/Uključi praćenje"
 
 msgctxt "#30140"
 msgid "Now following %s"
-msgstr ""
+msgstr "Sada pratite %s"
 
 msgctxt "#30141"
 msgid "Unfollowed %s"
-msgstr ""
+msgstr "Prestali ste pratiti %s"
 
 msgctxt "#30142"
 msgid "Redirect URI"
-msgstr ""
+msgstr "URI za preusmjeravanje"
 
 msgctxt "#30143"
 msgid "Would you like to follow %s?"
-msgstr ""
+msgstr "Želite li pratiti %s?"
 
 msgctxt "#30144"
 msgid "Are you sure you want to unfollow %s?"
-msgstr ""
+msgstr "Jeste li sigurni da želite prestati pratiti korisnika %s?"
 
 msgctxt "#30145"
 msgid "Toggle block user"
-msgstr ""
+msgstr "Blokiraj korisnika"
 
 msgctxt "#30146"
 msgid "Blocked %s"
-msgstr ""
+msgstr "Blokirano %s"
 
 msgctxt "#30147"
 msgid "Unblocked %s"
-msgstr ""
+msgstr "Deblokirano %s"
 
 msgctxt "#30148"
 msgid "Would you like to block %s?"
-msgstr ""
+msgstr "Želite li blokirati korisnika %s?"
 
 msgctxt "#30149"
 msgid "Are you sure you want to unblock %s?"
-msgstr ""
+msgstr "Jeste li sigurni da želite deblokirati %s?"
 
 msgctxt "#30150"
 msgid "Blacklist %s"
-msgstr ""
+msgstr "Crna lista %s"
 
 msgctxt "#30151"
 msgid "Blacklisted %s"
-msgstr ""
+msgstr "Na crnoj listi %s"
 
 msgctxt "#30152"
 msgid "Lists"
-msgstr ""
+msgstr "Liste"
 
 msgctxt "#30153"
 msgid "Blacklist"
-msgstr ""
+msgstr "Crna lista"
 
 msgctxt "#30154"
 msgid "Remove a user"
-msgstr ""
+msgstr "Uklonite korisnika"
 
 msgctxt "#30155"
 msgid "Remove a game"
-msgstr ""
+msgstr "Ukloni igru"
 
 msgctxt "#30156"
 msgid "Remove all users"
-msgstr ""
+msgstr "Ukloni sve korisnike"
 
 msgctxt "#30157"
 msgid "Remove all games"
-msgstr ""
+msgstr "Ukloni sve igre"
 
 msgctxt "#30158"
 msgid "Remove %s from blacklist"
-msgstr ""
+msgstr "Ukloni %s sa crne liste"
 
 msgctxt "#30159"
 msgid "Removed %s from blacklist"
-msgstr ""
+msgstr "Uklonjeno sa crne liste: %s"
 
 msgctxt "#30160"
 msgid "Cleared %s %s"
-msgstr ""
+msgstr "Obrisano %s %s"
 
 msgctxt "#30161"
 msgid "Are you sure you want to clear %s %s?"
-msgstr ""
+msgstr "Jeste li sigurni da želite obrisati %s %s?"
 
 msgctxt "#30162"
 msgid "Clear list"
-msgstr ""
+msgstr "Rasčisti listu"
 
 msgctxt "#30163"
 msgid "Set default quality"
-msgstr ""
+msgstr "Postavi zadanu kvalitetu"
 
 msgctxt "#30164"
 msgid "Default '%s' quality '%s' set for %s"
-msgstr ""
+msgstr "Zadani kvalitet '%s' '%s' postavljen za %s"
 
 msgctxt "#30165"
 msgid "Removed default '%s' quality for %s"
-msgstr ""
+msgstr "Uklonjen je zadani kvalitet '%s' za %s"
 
 msgctxt "#30166"
 msgid "Remove %s quality"
-msgstr ""
+msgstr "Ukloni %s kvalitet"
 
 msgctxt "#30167"
 msgid "Default Qualities"
-msgstr ""
+msgstr "Zadane kvalitete"
 
 msgctxt "#30168"
 msgid "Clear default quality"
-msgstr ""
+msgstr "Obriši zadani kvalitet"
 
 msgctxt "#30169"
 msgid "Choose Quality"
-msgstr ""
+msgstr "Odaberite kvalitet"
 
 msgctxt "#30170"
 msgid "Playlists"
-msgstr ""
+msgstr "Plejliste"
 
 msgctxt "#30171"
 msgid "Collections"
-msgstr ""
+msgstr "Kolekcije"
 
 msgctxt "#30172"
 msgid "Browse"
-msgstr ""
+msgstr "Pretraži"
 
 msgctxt "#30173"
 msgid "Xbox One"
-msgstr ""
+msgstr "Xbox One"
 
 msgctxt "#30174"
 msgid "Playstation 4"
-msgstr ""
+msgstr "PlayStation 4"
 
 msgctxt "#30175"
 msgid "Videos"
-msgstr "Filmovi"
+msgstr "Videozapisi"
 
 msgctxt "#30176"
 msgid "Clips"
-msgstr ""
+msgstr "Klipovi"
 
 msgctxt "#30177"
 msgid "Invalid OAuth token"
-msgstr ""
+msgstr "Nevažeći OAuth token"
 
 msgctxt "#30178"
 msgid "Missing required scopes: %s"
-msgstr ""
+msgstr "Nedostaju obavezni opsezi: %s"
 
 msgctxt "#30179"
 msgid "Client id mismatch"
-msgstr ""
+msgstr "Nepodudaranje ID-a klijenta"
 
 msgctxt "#30180"
 msgid "Go to '%s' - '%s' - '%s' to generate a new token"
-msgstr ""
+msgstr "Idite na '%s' - '%s' - '%s' da biste generirali novi token"
 
 msgctxt "#30181"
 msgid "Are you sure you want to blacklist %s?"
-msgstr ""
+msgstr "Jeste li sigurni da želite staviti %s na crnu listu?"
 
 msgctxt "#30184"
 msgid "Change sort by"
-msgstr ""
+msgstr "Promijeni sortiranje po"
 
 msgctxt "#30185"
 msgid "Change sort direction"
-msgstr ""
+msgstr "Promijeni smjer sortiranja"
 
 msgctxt "#30186"
 msgid "Change period"
-msgstr ""
+msgstr "Promjena perioda"
 
 msgctxt "#30187"
 msgid "Popular"
-msgstr ""
+msgstr "Popularno"
 
 msgctxt "#30188"
 msgid "Views"
-msgstr ""
+msgstr "Pregledi"
 
 msgctxt "#30189"
 msgid "Add a language"
-msgstr ""
+msgstr "Dodaj jezik"
 
 msgctxt "#30190"
 msgid "Remove a language"
-msgstr ""
+msgstr "Ukloni jezik"
 
 msgctxt "#30191"
 msgid "Remove a stream quality"
-msgstr ""
+msgstr "Ukloni kvalitet prijenosa"
 
 msgctxt "#30192"
 msgid "Remove a video quality"
-msgstr ""
+msgstr "Ukloni kvalitet videa"
 
 msgctxt "#30193"
 msgid "Remove a clip quality"
-msgstr ""
+msgstr "Ukloni kvalitet isječka"
 
 msgctxt "#30194"
 msgid "Remove all stream qualities"
-msgstr ""
+msgstr "Ukloni sve kvalitete prijenosa"
 
 msgctxt "#30195"
 msgid "Remove all video qualities"
-msgstr ""
+msgstr "Ukloni sve video kvalitete"
 
 msgctxt "#30196"
 msgid "Remove all clip qualities"
-msgstr ""
+msgstr "Ukloni sve kvalitete isječka"
 
 msgctxt "#30197"
 msgid "Requires confirmation"
-msgstr ""
+msgstr "Zahtijeva potvrdu"
 
 msgctxt "#30198"
 msgid "Requires subscription to %s"
-msgstr ""
+msgstr "Zahtijeva pretplatu na %s"
 
 msgctxt "#30199"
 msgid "Connection failed"
-msgstr ""
+msgstr "Povezivanje nije uspjelo"
 
 msgctxt "#30200"
 msgid "No %s found"
-msgstr ""
+msgstr "Nema %s pronađeno"
 
 msgctxt "#30201"
 msgid "Bandwidth"
-msgstr ""
+msgstr "Protok"
 
 msgctxt "#30202"
 msgid "Currently Live"
-msgstr ""
+msgstr "Trenutno uživo"
 
 msgctxt "#30203"
 msgid "Went Live"
-msgstr ""
+msgstr "Objavljeno uživo"
 
 msgctxt "#30204"
 msgid "Live notifications"
-msgstr ""
+msgstr "Obavještenja uživo"
 
 msgctxt "#30205"
 msgid "Audible"
-msgstr ""
+msgstr "Čujno"
 
 msgctxt "#30206"
 msgid "Playback failed"
-msgstr ""
+msgstr "Reprodukcija nije uspjela"
 
 msgctxt "#30207"
 msgid "Retrying in %d seconds"
-msgstr ""
+msgstr "Ponovni pokušaj za %d sekundi"
 
 msgctxt "#30208"
 msgid "Attempting to reconnect to %s"
-msgstr ""
+msgstr "Pokušavam ponovno povezivanje s %s"
 
 msgctxt "#30209"
 msgid "Attempt #%d"
-msgstr ""
+msgstr "Pokušaj broj %d"
 
 msgctxt "#30210"
 msgid "Attempt reconnection to live streams"
-msgstr ""
+msgstr "Pokušajte se ponovo povezati s prijenosima uživo"
 
 msgctxt "#30211"
 msgid "Enabled"
-msgstr ""
+msgstr "Omogućeno"
 
 msgctxt "#30212"
 msgid "Failed to connect to Twitch API"
-msgstr ""
+msgstr "Povezivanje sa Twitch API-jem nije uspjelo"
 
 msgctxt "#30213"
 msgid "Followers"
-msgstr ""
+msgstr "Pratitelji"
 
 msgctxt "#30214"
 msgid "Items"
-msgstr ""
+msgstr "Stavke"
 
 msgctxt "#30215"
 msgid "Duration"
-msgstr ""
+msgstr "Trajanje"
 
 msgctxt "#30216"
 msgid "Curated"
-msgstr ""
+msgstr "Odabrano"
 
 msgctxt "#30217"
 msgid "Press OK to resolve"
-msgstr ""
+msgstr "Pritisnite OK za rješavanje"
 
 msgctxt "#30218"
 msgid "Supported video ids: a123435, c123435, v123435, videos123435[CR]Example urls:[CR]https://twitch.tv/gamesdonequick...[CR].../v/113336135[CR].../v/113336135?t=1h52m35s"
-msgstr ""
+msgstr "Podržani ID-ovi videa: a123435, c123435, v123435, videos123435[CR]Primjeri URL-ova:[CR]https://twitch.tv/gamesdonequick...[CR].../v/113336135[CR].../v/113336135?t=1h52m35s"
 
 msgctxt "#30219"
 msgid "Main Menu"
-msgstr ""
+msgstr "Glavni meni"
 
 msgctxt "#30220"
 msgid "Failed to get url, try again shortly."
-msgstr ""
+msgstr "Nije moguće dobiti URL, pokušajte ponovo uskoro."
 
 msgctxt "#30221"
 msgid "Unknown"
-msgstr ""
+msgstr "Nepoznato"
 
 msgctxt "#30222"
 msgid "VODCast highlight color"
-msgstr ""
+msgstr "Boja isticanja VODCast-a"
 
 msgctxt "#30223"
 msgid "Use inputstream.adaptive"
-msgstr ""
+msgstr "Koristite inputprijenos.adaptive"
 
 msgctxt "#30224"
 msgid "Configure inputstream.adaptive"
-msgstr ""
+msgstr "Konfigurišite inputprijenos.adaptive"
 
 msgctxt "#30225"
 msgid "inputstream.adaptive is enabled in the Twitch settings, however inputstream.adaptive appears to be disabled. Would you like to enable inputstream.adaptive now?"
-msgstr ""
+msgstr "inputprijenos.adaptive je omogućen u postavkama Twitcha, međutim, inputprijenos.adaptive izgleda da je onemogućen. Želite li sada omogućiti inputprijenos.adaptive?"
 
 msgctxt "#30226"
 msgid "The installed inputstream.adaptive add-on does not meet the version requirement(%s), and has been disabled in the Twitch add-on settings."
-msgstr ""
+msgstr "Instalirani dodatak inputprijenos.adaptive ne ispunjava zahtjev verzije (%s) i onemogućen je u postavkama dodatka Twitch."
 
 msgctxt "#30227"
 msgid "Revoke Token"
-msgstr ""
+msgstr "Poništi token"
 
 msgctxt "#30228"
 msgid "Are you sure you want to revoke your OAuth token?"
-msgstr ""
+msgstr "Jeste li sigurni da želite opozvati svoj OAuth token?"
 
 msgctxt "#30229"
 msgid "OAuth token has been revoked"
-msgstr ""
+msgstr "OAuth token je opozvan"
 
 msgctxt "#30230"
 msgid "OAuth token has been updated"
-msgstr ""
+msgstr "OAuth token je ažuriran"
 
 msgctxt "#30231"
 msgid "%s started streaming %s"
-msgstr ""
+msgstr "%s je započeo/la prijenos %s"
 
 msgctxt "#30232"
 msgid "Notify at start"
-msgstr ""
+msgstr "Obavijesti na početku"
 
 msgctxt "#30233"
 msgid "Group notifications at start"
-msgstr ""
+msgstr "Grupne obavijesti na početku"
 
 msgctxt "#30234"
 msgid "Reset cache on Refresh"
-msgstr ""
+msgstr "Resetiraj keš memoriju prilikom osvježavanja"
 
 msgctxt "#30235"
 msgid "New search"
-msgstr ""
+msgstr "Nova pretraga"
 
 msgctxt "#30236"
 msgid "Search history size"
-msgstr ""
+msgstr "Veličina historije pretraživanja"
 
 msgctxt "#30237"
 msgid "Clear search history?"
-msgstr ""
+msgstr "Obrisati historiju pretrage?"
 
 msgctxt "#30238"
 msgid "Remove %s from search history?"
-msgstr ""
+msgstr "Ukloniti %s iz historije pretrage?"
 
 msgctxt "#30239"
 msgid "Remove %s"
-msgstr ""
+msgstr "Ukloni %s"
 
 msgctxt "#30240"
 msgid "Clear search history"
-msgstr ""
+msgstr "Obriši historiju pretraživanja"
 
 msgctxt "#30241"
 msgid "Search history cleared"
-msgstr ""
+msgstr "Historija pretraživanja je obrisana"
 
 msgctxt "#30242"
 msgid "Removed %s from search history"
-msgstr ""
+msgstr "Uklonjeno %s iz historije pretrage"
 
 msgctxt "#30243"
 msgid "Maintenance"
-msgstr ""
+msgstr "Održavanje"
 
 msgctxt "#30244"
 msgid "Search History"
-msgstr ""
+msgstr "Historija pretraživanja"
 
 msgctxt "#30245"
 msgid "Delete streams search history"
-msgstr ""
+msgstr "Obriši historiju pretraživanja prijenosa"
 
 msgctxt "#30246"
 msgid "Delete channels search history"
-msgstr ""
+msgstr "Obriši historiju pretraživanja kanala"
 
 msgctxt "#30247"
 msgid "Delete games search history"
-msgstr ""
+msgstr "Obriši historiju pretrage igara"
 
 msgctxt "#30248"
 msgid "Delete video id/url search history"
-msgstr ""
+msgstr "Izbriši historiju pretraživanja ID-a/URL-a videa"
 
 msgctxt "#30249"
 msgid "Other"
-msgstr ""
+msgstr "Ostalo"
 
 msgctxt "#30250"
 msgid "Delete storage.json"
-msgstr ""
+msgstr "Izbriši datoteku storage.json"
 
 msgctxt "#30251"
 msgid "Are you sure you want to delete %s?"
-msgstr ""
+msgstr "Jeste li sigurni da želite izbrisati %s?"
 
 msgctxt "#30252"
 msgid "Deleting %s succeeded"
-msgstr ""
+msgstr "Brisanje %s je uspjelo"
 
 msgctxt "#30253"
 msgid "Deleting %s failed"
-msgstr ""
+msgstr "Brisanje %s nije uspjelo"
 
 msgctxt "#30254"
 msgid "Adaptive"
-msgstr ""
+msgstr "Adaptivno"
 
 msgctxt "#30255"
 msgid "Thumbnail size"
-msgstr ""
+msgstr "Veličina sličice"
 
 msgctxt "#30256"
 msgid "Large"
-msgstr ""
+msgstr "Veliko"
 
 msgctxt "#30257"
 msgid "Medium"
-msgstr ""
+msgstr "Umjereno"
 
 msgctxt "#30258"
 msgid "Small"
-msgstr ""
+msgstr "Malo"
 
 msgctxt "#30259"
 msgid "Live preview refresh interval (minutes)"
-msgstr ""
+msgstr "Interval osvježavanja pregleda uživo (minute)"
 
 msgctxt "#30260"
 msgid "Limit to 30 fps"
-msgstr ""
+msgstr "Ograničenje na 30 fps"
 
 msgctxt "#30261"
 msgid "Private API Credentials"
-msgstr ""
+msgstr "Privatni API akreditivi"
 
 msgctxt "#30262"
 msgid "Change languages"
-msgstr ""
+msgstr "Promijeni jezike"
 
 msgctxt "#30263"
 msgid "Frame rate limit"
-msgstr ""
+msgstr "Ograničenje broja sličica u sekundi"
 
 msgctxt "#30264"
 msgid "Follow"
-msgstr ""
+msgstr "Prati"
 
 msgctxt "#30265"
 msgid "Unfollow"
-msgstr ""
+msgstr "Prestani pratiti"
 
 msgctxt "#30266"
 msgid "Add to queue"
-msgstr ""
+msgstr "Dodaj u red čekanja"
 
 msgctxt "#30267"
 msgid "An OAuth token is required for access, go to '%s' - '%s' - '%s' to generate one"
-msgstr ""
+msgstr "Za pristup je potreban OAuth token, idite na '%s' - '%s' - '%s' da biste ga generirali"
 
 msgctxt "#30268"
 msgid "Private OAuth authentication error"
-msgstr ""
+msgstr "Greška pri privatnoj OAuth autentifikaciji"
 
 msgctxt "#30269"
 msgid "Private OAuth credentials are incorrect, go to '%s' - '%s' - '%s' to correct the issue"
-msgstr ""
+msgstr "Privatni OAuth akreditivi su netačni, idite na '%s' - '%s' - '%s' da biste ispravili problem"
 
 msgctxt "#30270"
 msgid "Subscriber and Turbo Benefits"
-msgstr ""
+msgstr "Pogodnosti za pretplatnike i Turbo"
 
 msgctxt "#30271"
 msgid "For information on how to obtain this token, visit"
-msgstr ""
+msgstr "Za informacije o tome kako dobiti ovaj token, posjetite"
 
 msgctxt "#30272"
 msgid "https://twitchaddon.page.link/benefits"
-msgstr ""
+msgstr "https://twitchaddon.page.link/benefits"
 
 msgctxt "#30273"
 msgid "OAuth Token is expired or invalid"
+msgstr "OAuth token je istekao ili je nevažeći"
+
+msgctxt "#30300"
+msgid "Login (device code)"
+msgstr ""
+
+msgctxt "#30301"
+msgid "Go to [B]%s[/B] and enter this code:[CR][CR][B]%s[/B]"
+msgstr ""
+
+msgctxt "#30302"
+msgid "Waiting for authorization..."
+msgstr ""
+
+msgctxt "#30303"
+msgid "Login successful. The access token will now be refreshed automatically."
+msgstr ""
+
+msgctxt "#30304"
+msgid "Login failed or timed out."
+msgstr ""
+
+msgctxt "#30305"
+msgid "Login cancelled."
+msgstr ""
+
+msgctxt "#30306"
+msgid "Device login is not available for this Client-ID.[CR]Register your own application (Public type) at dev.twitch.tv/console/apps and set its Client-ID in the add-on settings, then try again."
+msgstr ""
+
+msgctxt "#30307"
+msgid "Supported codecs"
+msgstr ""
+
+msgctxt "#30308"
+msgid "Twitch default"
+msgstr ""
+
+msgctxt "#30309"
+msgid "H.265 (HEVC)"
+msgstr ""
+
+msgctxt "#30310"
+msgid "Automatic token refresh needs a public Client-ID.[CR]Register your own application (Public type) at dev.twitch.tv/console/apps and set its Client-ID in the add-on settings."
+msgstr ""
+
+msgctxt "#30311"
+msgid "Login: ad-free playback / Turbo (device code)"
+msgstr ""
+
+msgctxt "#30312"
+msgid "Go to [B]%s[/B] with your [B]Turbo/subscriber account[/B] and enter this code:[CR][CR][B]%s[/B]"
+msgstr ""
+
+msgctxt "#30313"
+msgid "Turbo / ad-free login successful. The token is renewed automatically. Ad-free playback only applies if the logged-in account has Turbo or is subscribed to the channel."
+msgstr ""
+
+msgctxt "#30330"
+msgid "Search method"
+msgstr ""
+
+msgctxt "#30331"
+msgid "Website (twitch.tv, fuzzy)"
+msgstr ""
+
+msgctxt "#30332"
+msgid "Helix API"
 msgstr ""
