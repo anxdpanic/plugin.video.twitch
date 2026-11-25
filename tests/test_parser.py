@@ -11,7 +11,7 @@ def test_live_stream_has_channel_game_and_previews():
     assert item['viewers'] == 42066
     assert item['game'] == 'Celeste'
     assert '-640x360.jpg?t=' in item['thumb']
-    assert '-1280x720.jpg?t=' in item['fanart']
+    assert '-1920x1080.jpg?t=' in item['fanart']
 
 
 def test_live_preview_address_changes_every_few_minutes():

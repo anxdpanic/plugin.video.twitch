@@ -228,6 +228,8 @@ class TVWindow(xbmcgui.WindowXML):
             self._open_channel(item['login'], item['title'])
         elif kind == 'category':
             self._open_category(item['id'], item['title'])
+        elif kind == 'scheduled' and item['game']:
+            self._open_category(item['game'], item['game_title'])
 
     def _open_channel(self, login, title):
         self._push(self._screen({'page': 'channel', 'login': login, 'title': title}))
@@ -257,6 +259,9 @@ class TVWindow(xbmcgui.WindowXML):
             return []
         desc = self.screen.desc if self.screen else {}
         choices = []
+        if item['kind'] == 'live':
+            choices.append((kodi.string(30100), lambda: xbmc.executebuiltin(
+                'PlayMedia(%s)' % router.url_for('play', from_start=item['login']))))
         if item['kind'] != 'channel' and item.get('login') and desc.get('login') != item['login']:
             choices.append((kodi.string(30037), lambda: self._open_channel(item['login'], item['channel'])))
         if item.get('game') and desc.get('name') != item['game']:

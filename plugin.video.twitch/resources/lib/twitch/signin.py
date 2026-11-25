@@ -51,7 +51,7 @@ def _wait_for_approval(code):
 
 def _profile(login):
     """(display name, picture) of a user, for the account list."""
-    data = gql.query('query{user(login:%s){displayName profileImageURL(width:300)}}' % lists.literal(login),
+    data = gql.query('query{user(login:%s){displayName profileImageURL(width:600)}}' % lists.literal(login),
                      anonymous=True)
     user = data.get('user') or {}
     return user.get('displayName') or login, user.get('profileImageURL') or ''

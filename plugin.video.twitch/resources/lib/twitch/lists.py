@@ -6,19 +6,21 @@ for one batch of each, and how to read its items and the cursor for the next bat
 Arguments go into the query text as JSON literals rather than variables, so no query has to name Twitch's
 argument types."""
 import json
+import time
 
-from . import gql, helix, parser
+from . import describe, gql, helix, parser
 
-STREAM = ('id title viewersCount createdAt previewImageURL(width:1280,height:720) game{name displayName} '
-          'broadcaster{login displayName profileImageURL(width:300)}')
-USER_STREAM = 'id title viewersCount createdAt previewImageURL(width:1280,height:720) game{name displayName}'
-VIDEO = ('id title lengthSeconds viewCount publishedAt broadcastType previewThumbnailURL(width:1280,height:720) '
-         'game{name displayName} owner{login displayName profileImageURL(width:300)}')
-CLIP = ('id slug title viewCount createdAt durationSeconds thumbnailURL(width:480,height:272) game{name displayName} '
-        'broadcaster{login displayName profileImageURL(width:300)}')
-USER = ('id login displayName description profileImageURL(width:300) offlineImageURL bannerImageURL '
+# Pictures at full HD for fanart; the tiles use a smaller copy of the same address (see parser).
+USER_STREAM = ('id title viewersCount createdAt language isMature freeformTags{name} '
+               'previewImageURL(width:1920,height:1080) game{name displayName}')
+STREAM = USER_STREAM + ' broadcaster{login displayName profileImageURL(width:600)}'
+VIDEO = ('id title lengthSeconds viewCount publishedAt broadcastType previewThumbnailURL(width:1920,height:1080) '
+         'game{name displayName} owner{login displayName profileImageURL(width:600)}')
+CLIP = ('id slug title viewCount createdAt durationSeconds thumbnailURL(width:1920,height:1080) '
+        'game{name displayName} broadcaster{login displayName profileImageURL(width:600)}')
+USER = ('id login displayName description profileImageURL(width:600) offlineImageURL bannerImageURL '
         'followers{totalCount} stream{viewersCount game{displayName}}')
-GAME = 'id name displayName viewersCount boxArtURL(width:285,height:380) tags(tagType:CONTENT){localizedName}'
+GAME = 'id name displayName viewersCount boxArtURL(width:570,height:760) tags(tagType:CONTENT){localizedName}'
 
 PAGE_SIZE = 24
 VIDEO_TYPES = ('ARCHIVE', 'HIGHLIGHT', 'UPLOAD')
@@ -117,13 +119,13 @@ LISTS = {
                                        % (a, _connection(CLIP))), ('game', 'clips'), parser.clip),
     'game_videos': List(lambda p, a: _game(p['name'], 'videos(%s,sort:VIEWS)%s' % (a, _connection(VIDEO))),
                         ('game', 'videos'), parser.video),
-    'channel_live': List(lambda p, a: _user(p['login'], 'login displayName profileImageURL(width:300) stream{%s}'
+    'channel_live': List(lambda p, a: _user(p['login'], 'login displayName profileImageURL(width:600) stream{%s}'
                                          % USER_STREAM), ('user',), None),
     'channel_videos': List(lambda p, a: _user(p['login'], 'videos(%s,sort:TIME,type:%s)%s'
                                            % (a, p['type'], _connection(VIDEO))), ('user', 'videos'), parser.video),
     'channel_clips': List(lambda p, a: _user(p['login'], 'clips(%s,criteria:{period:ALL_TIME,sort:VIEWS_DESC})%s'
                                           % (a, _connection(CLIP))), ('user', 'clips'), parser.clip),
-    'followed_live': FollowedList('streams/followed', 'login displayName profileImageURL(width:300) stream{%s}'
+    'followed_live': FollowedList('streams/followed', 'login displayName profileImageURL(width:600) stream{%s}'
                                   % USER_STREAM, parser.live_user, live_only=True, first=100),
     'follows': FollowedList('channels/followed', USER, parser.channel),
     'followed_games': List(lambda p, a: 'query{currentUser{followedGames(first:100,type:ALL){nodes{%s}}}}' % GAME,
@@ -137,6 +139,26 @@ LISTS = {
 }
 
 
+SCHEDULE_SIZE = 12
+
+
+def _schedule_query(params, args):
+    return _user(params['login'], 'login displayName profileImageURL(width:600) offlineImageURL '
+                 'channel{schedule{segments{id title startAt endAt isCancelled '
+                 'categories{name displayName boxArtURL(width:570,height:760)}}}}')
+
+
+def _schedule_read(data, now=None):
+    """The channel's coming streams (Twitch's schedule also holds the past week's), soonest first."""
+    user = data.get('user') or {}
+    segments = (((user.get('channel') or {}).get('schedule') or {}).get('segments')) or []
+    now = now or time.time()
+    coming = [s for s in segments if not s.get('isCancelled')
+              and describe.timestamp(s.get('endAt') or s.get('startAt')) > now]
+    coming.sort(key=lambda s: s.get('startAt') or '')
+    return [parser.scheduled(s, user) for s in coming[:SCHEDULE_SIZE]], None
+
+
 def _channel_live_read(data):
     """A channel's own stream, as a one-item list while it is live."""
     user = data.get('user') or {}
@@ -144,6 +166,8 @@ def _channel_live_read(data):
 
 
 LISTS['channel_live'].read = _channel_live_read
+LISTS['channel_schedule'] = List(_schedule_query, (), None)
+LISTS['channel_schedule'].read = _schedule_read
 
 
 def get(key):

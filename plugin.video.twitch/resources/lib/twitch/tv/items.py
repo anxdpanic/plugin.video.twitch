@@ -66,6 +66,16 @@ def category_tile(item):
     return li
 
 
+def scheduled_tile(item):
+    """A coming stream: its category's box art standing upright, or the channel's picture."""
+    li = xbmcgui.ListItem(item['title'], offscreen=True)
+    li.setLabel2(describe.meta_line(item))
+    li.setArt({'thumb': item['thumb'], 'fanart': item['fanart']})
+    li.setProperty('plot', describe.plot(item))
+    li.setProperty('poster' if item['poster'] else 'round', '1')
+    return li
+
+
 def action_tile(item):
     """A thing to do rather than a page (New search, Clear search history): an icon on a plain tile."""
     li = xbmcgui.ListItem(item['title'], offscreen=True)
@@ -84,7 +94,7 @@ def query_tile(item):
 
 
 TILES = {'live': media_tile, 'video': media_tile, 'clip': media_tile, 'channel': channel_tile,
-         'category': category_tile, 'action': action_tile, 'query': query_tile}
+         'category': category_tile, 'scheduled': scheduled_tile, 'action': action_tile, 'query': query_tile}
 
 
 def tile(item):

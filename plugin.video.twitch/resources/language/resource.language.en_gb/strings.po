@@ -330,6 +330,26 @@ msgctxt "#30099"
 msgid "Scan the QR code with your phone to subscribe to %s, or go to [B]%s[/B]."
 msgstr ""
 
+msgctxt "#30100"
+msgid "Play from beginning"
+msgstr ""
+
+msgctxt "#30102"
+msgid "This broadcast isn't being recorded, so it can't be played from the beginning."
+msgstr ""
+
+msgctxt "#30103"
+msgid "Schedule"
+msgstr ""
+
+msgctxt "#30106"
+msgid "Today"
+msgstr ""
+
+msgctxt "#30107"
+msgid "Tomorrow"
+msgstr ""
+
 msgctxt "#30080"
 msgid "General"
 msgstr ""

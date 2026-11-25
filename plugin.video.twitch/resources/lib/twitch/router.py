@@ -36,7 +36,15 @@ def item_url(item):
         return url_for('page', desc={'page': 'channel', 'login': item['login'], 'title': item['title']})
     if item['kind'] == 'category':
         return url_for('page', desc={'page': 'category', 'name': item['id'], 'title': item['title']})
+    if item['kind'] == 'scheduled':  # its category, when the schedule names one
+        if not item['game']:
+            return url_for('noop')
+        return url_for('page', desc={'page': 'category', 'name': item['game'], 'title': item['game_title']})
     return None
+
+
+def is_folder(item):
+    return item['kind'] not in PLAYABLE and not (item['kind'] == 'scheduled' and not item['game'])
 
 
 def error_message(exc):
@@ -68,7 +76,14 @@ def _context_menu(item):
     if item['kind'] in PLAYABLE and item.get('game'):
         menu.append((kodi.string(30038), 'Container.Update(%s)' % url_for(
             'page', desc={'page': 'category', 'name': item['game'], 'title': item['game_title']})))
-    return menu + _follow_entry(item) + _subscribe_entry(item)
+    return _from_start_entry(item) + menu + _follow_entry(item) + _subscribe_entry(item)
+
+
+def _from_start_entry(item):
+    """Play a live stream from the beginning of the broadcast, from its recording."""
+    if item['kind'] != 'live':
+        return []
+    return [(kodi.string(30100), 'PlayMedia(%s)' % url_for('play', from_start=item['login']))]
 
 
 def _subscribe_entry(item):
@@ -100,17 +115,19 @@ def list_item(item):
         label = '%s - %s' % (item['channel'], item['title']) if item['title'] != item['channel'] else label
     li = xbmcgui.ListItem(label, describe.meta_line(item), offscreen=True)
     art = {'thumb': item['thumb'], 'icon': item['thumb'], 'fanart': item.get('fanart') or ''}
-    if item['kind'] == 'category':
+    if item['kind'] == 'category' or item.get('poster'):
         art['poster'] = item['thumb']
     li.setArt(art)
     _set_info(li, item)
     if item['kind'] in PLAYABLE:
         li.setProperty('IsPlayable', 'true')
     li.addContextMenuItems(_context_menu(item))
-    return li, item['kind'] not in PLAYABLE
+    return li, is_folder(item)
 
 
-def _stream_item(url, live):
+def _stream_item(url, live, from_start=False):
+    """An HLS stream for InputStream Adaptive. A broadcast still being recorded is a growing playlist, which
+    ISA plays like a live stream from its end unless told to start at the beginning (from_start)."""
     li = xbmcgui.ListItem(path=url, offscreen=True)
     li.setMimeType(playback.HLS_MIME)
     li.setContentLookup(False)
@@ -119,6 +136,8 @@ def _stream_item(url, live):
         li.setProperty('inputstream.adaptive.stream_selection_type', 'ask-quality')
     if live:
         li.setProperty('inputstream.adaptive.live_delay', '8')
+    if from_start:
+        li.setProperty('inputstream.adaptive.play_timeshift_buffer', 'true')
     return li
 
 
@@ -278,6 +297,9 @@ class Plugin:
             li = _stream_item(playback.live_url(self.params['live']), live=True)
         elif 'video' in self.params:
             li = _stream_item(playback.video_url(self.params['video']), live=False)
+        elif 'from_start' in self.params:
+            li = _stream_item(playback.video_url(playback.recording_id(self.params['from_start'])), live=False,
+                              from_start=True)
         elif 'clip' in self.params:
             li = _clip_item(playback.clip_url(self.params['clip']))
         else:
@@ -290,6 +312,9 @@ class Plugin:
 
     def route_subscribe(self):
         subscribe.show(self.params['login'], self.params.get('name') or self.params['login'])
+
+    def route_noop(self):
+        """An entry with nothing to open (a scheduled stream without a category)."""
 
     def route_tv(self):
         xbmc.executebuiltin('RunScript(%s)' % kodi.ADDON_ID)

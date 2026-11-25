@@ -93,7 +93,43 @@ def meta_line(item):
         return kodi.formatted(30042, short_count(item['followers'])) if item['followers'] else ''
     if kind == 'category':
         return viewers(item['viewers']) if item['viewers'] else ''
+    if kind == 'scheduled':
+        return when(item['start'], item['end'])
     return ''
+
+
+def stream_facts(item):
+    """'18+ • English • Speedrun, Chill' for a live stream; '' when it has none of them."""
+    return _join(['18+' if item.get('mature') else '',
+                  kodi.language_name(item['language']) if item.get('language') else '',
+                  ', '.join(item.get('tags') or [])])
+
+
+def _local(iso):
+    return time.localtime(timestamp(iso))
+
+
+def day_name(iso, now=None):
+    """'Today', 'Tomorrow', or the weekday and date ('Thu 27 Nov') of a time, in local time."""
+    day = time.strftime('%Y-%m-%d', _local(iso))
+    today = time.localtime(now or time.time())
+    if day == time.strftime('%Y-%m-%d', today):
+        return kodi.string(30106)
+    if day == time.strftime('%Y-%m-%d', time.localtime(time.mktime(today) + 86400)):
+        return kodi.string(30107)
+    return time.strftime('%a %d %b', _local(iso))
+
+
+def clock_time(iso):
+    """A time of day in the region's format: '19:00', or '3:30 PM' (no leading zero on 12-hour clocks)."""
+    clock = kodi.time_format()
+    text = time.strftime(clock, _local(iso))
+    return text[1:] if clock.startswith('%I') and text.startswith('0') else text
+
+
+def when(start, end, now=None):
+    """'Tomorrow 19:00 - 03:00' for a scheduled stream."""
+    return '%s %s' % (day_name(start, now), clock_time(start) + (' - ' + clock_time(end) if end else ''))
 
 
 def _video_type(item):
@@ -110,7 +146,10 @@ def plot(item):
         lines = [item['channel'],
                  kodi.formatted(30043, item['game_title']) if item['game_title'] else '',
                  _join([viewers(item['viewers']),
-                        kodi.formatted(30044, uptime(item['started'])) if item['started'] else ''])]
+                        kodi.formatted(30044, uptime(item['started'])) if item['started'] else '']),
+                 stream_facts(item)]
+    elif kind == 'scheduled':
+        lines = [item['channel'], item['game_title'], when(item['start'], item['end'])]
     elif kind in ('video', 'clip'):
         lines = [item['channel'], item['game_title'],
                  _join([_video_type(item), format_time(item['duration']), views(item['views']),

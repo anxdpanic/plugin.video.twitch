@@ -40,14 +40,15 @@ def test_following_signed_out_says_to_sign_in(monkeypatch, english, no_network):
 
 def test_channel_page_has_header_and_drops_empty_shelves(monkeypatch):
     empty = {'user': {'videos': connection([])}}
-    replies = [{'user': dict(USER, stream=None)}, empty, empty, empty, {'user': {'clips': connection([])}},
-               {'user': USER}]
+    no_schedule = {'user': dict(USER, channel={'schedule': {'segments': None}})}
+    replies = [{'user': dict(USER, stream=None)}, no_schedule, empty, empty, empty,
+               {'user': {'clips': connection([])}}, {'user': USER}]
     sent = fake_batch(monkeypatch, replies)
     page = pages.load({'page': 'channel', 'login': 'runner', 'title': 'Runner'})
     assert page['header']['title'] == 'Runner'
     assert page['title'] == 'Runner'
     assert page['shelves'] == []
-    assert 'type:ARCHIVE' in sent[1] and 'type:UPLOAD' in sent[3]
+    assert 'schedule' in sent[1] and 'type:ARCHIVE' in sent[2] and 'type:UPLOAD' in sent[4]
 
 
 def test_pages_are_cached_briefly(monkeypatch):

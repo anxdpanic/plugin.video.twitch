@@ -67,6 +67,22 @@ def setting_int(key):
         return 0
 
 
+def language_name(code):
+    """'en' -> 'English', in English as Kodi names it; the code itself when Kodi doesn't know it."""
+    try:
+        return xbmc.convertLanguage(code, xbmc.ENGLISH_NAME) or code.upper()
+    except (AttributeError, RuntimeError, TypeError):
+        return code.upper()
+
+
+def time_format():
+    """Kodi's time format for the region, without seconds: '%H:%M' or '%I:%M %p'."""
+    try:
+        return xbmc.getRegion('time').replace(':%S', '') or '%H:%M'
+    except (AttributeError, RuntimeError):
+        return '%H:%M'
+
+
 def icon_path(name):
     return os.path.join(ADDON_PATH, 'resources', 'media', name)
 

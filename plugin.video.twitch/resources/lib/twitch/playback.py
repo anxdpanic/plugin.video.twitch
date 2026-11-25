@@ -58,6 +58,18 @@ def video_url(video_id):
     return _checked(USHER_VIDEO % urllib.parse.quote(video_id) + '?' + _usher_query(token))
 
 
+def recording_id(login):
+    """The past broadcast a live stream is being recorded into, to play it from the start."""
+    data = gql.query('query{user(login:%s){stream{id} videos(first:1,type:ARCHIVE,sort:TIME){edges{node{id status}}}}}'
+                     % lists.literal(login))
+    user = data.get('user') or {}
+    edges = ((user.get('videos') or {}).get('edges')) or []
+    video = edges[0]['node'] if edges else {}
+    if not user.get('stream') or video.get('status') != 'RECORDING':
+        raise PlaybackError(kodi.string(30102))
+    return video['id']
+
+
 def _best_quality(qualities):
     """The clip file to play: the highest resolution, the higher frame rate at the same resolution."""
     def rank(q):

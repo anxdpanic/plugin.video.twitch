@@ -2,7 +2,7 @@
 
 STREAM = {
     'id': '318474441316', 'title': 'Speedrun practice', 'viewersCount': 42066, 'createdAt': '2026-11-25T10:00:00Z',
-    'previewImageURL': 'https://static-cdn.jtvnw.net/previews-ttv/live_user_runner-1280x720.jpg',
+    'previewImageURL': 'https://static-cdn.jtvnw.net/previews-ttv/live_user_runner-1920x1080.jpg',
     'game': {'name': 'Celeste', 'displayName': 'Celeste'},
     'broadcaster': {'login': 'runner', 'displayName': 'Runner', 'profileImageURL': 'https://cdn/runner.png'},
 }
@@ -10,7 +10,7 @@ USER_STREAM = {k: v for k, v in STREAM.items() if k != 'broadcaster'}
 VIDEO = {
     'id': '2939600059', 'title': 'Day 2', 'lengthSeconds': 3725, 'viewCount': 228366,
     'publishedAt': '2026-11-24T19:18:20Z', 'broadcastType': 'ARCHIVE',
-    'previewThumbnailURL': 'https://static-cdn.jtvnw.net/cf_vods/x/thumb/thumb0-1280x720.jpg',
+    'previewThumbnailURL': 'https://static-cdn.jtvnw.net/cf_vods/x/thumb/thumb0-1920x1080.jpg',
     'game': {'name': 'Celeste', 'displayName': 'Celeste'},
     'owner': {'login': 'runner', 'displayName': 'Runner', 'profileImageURL': 'https://cdn/runner.png'},
 }
