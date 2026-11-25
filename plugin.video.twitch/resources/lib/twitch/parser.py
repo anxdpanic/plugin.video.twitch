@@ -7,7 +7,7 @@ rest depends on the kind."""
 import re
 import time
 
-from . import fonts
+from . import describe, fonts
 
 PREVIEW_REFRESH = 300  # seconds: a live preview's address changes this often, so Kodi fetches a new frame
 BIG, SMALL = '1920x1080', '640x360'  # fanart, and the tile picture made from it
@@ -100,10 +100,13 @@ def scheduled(segment, user):
     person = _person(user)
     categories = segment.get('categories') or [{}]
     game = categories[0] if categories else {}
-    item = {'kind': 'scheduled', 'id': segment.get('id') or '', 'title': clean(segment.get('title')) or
-            person['channel'], 'thumb': game.get('boxArtURL') or person['avatar'],
+    title = clean(segment.get('title'))
+    start = segment.get('startAt') or ''
+    item = {'kind': 'scheduled', 'id': segment.get('id') or '',
+            'title': title or describe.day_name(start),  # untitled: named by its day, not the channel again
+            'untitled': not title, 'thumb': game.get('boxArtURL') or person['avatar'],
             'poster': bool(game.get('boxArtURL')), 'fanart': user.get('offlineImageURL') or '',
-            'start': segment.get('startAt') or '', 'end': segment.get('endAt') or '',
+            'start': start, 'end': segment.get('endAt') or '',
             'game': game.get('name') or '', 'game_title': clean(game.get('displayName') or game.get('name'))}
     item.update(person)
     return item

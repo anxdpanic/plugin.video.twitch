@@ -23,12 +23,21 @@ def test_schedule_keeps_coming_streams_soonest_first():
     assert [i['id'] for i in items] == ['s1', 'later'] and cursor is None
 
 
-def test_scheduled_item():
+def test_scheduled_item(monkeypatch):
+    monkeypatch.setattr(describe, 'day_name', lambda iso, now=None: 'Tomorrow')
     item = parser.scheduled(dict(SEGMENT, title='', categories=[]), USER)
-    assert (item['title'], item['thumb'], item['poster'], item['game']) == ('Runner', 'https://cdn/runner.png',
-                                                                            False, '')
+    assert (item['title'], item['untitled'], item['thumb'], item['poster'], item['game']) == (
+        'Tomorrow', True, 'https://cdn/runner.png', False, '')
     item = parser.scheduled(SEGMENT, USER)
-    assert (item['title'], item['poster'], item['game_title']) == ('Any% attempts', True, 'Celeste')
+    assert (item['title'], item['untitled'], item['poster'], item['game_title']) == (
+        'Any% attempts', False, True, 'Celeste')
+
+
+def test_untitled_schedule_line_is_only_the_times(monkeypatch):
+    monkeypatch.setattr(describe, 'day_name', lambda iso, now=None: 'Tomorrow')
+    untitled = parser.scheduled(dict(SEGMENT, title=''), USER)
+    assert not describe.meta_line(untitled).startswith('Tomorrow')
+    assert describe.meta_line(parser.scheduled(SEGMENT, USER)).startswith('Tomorrow ')
 
 
 def test_scheduled_item_leads_to_its_category():

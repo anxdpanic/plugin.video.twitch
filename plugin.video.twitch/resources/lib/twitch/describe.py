@@ -93,8 +93,8 @@ def meta_line(item):
         return kodi.formatted(30042, short_count(item['followers'])) if item['followers'] else ''
     if kind == 'category':
         return viewers(item['viewers']) if item['viewers'] else ''
-    if kind == 'scheduled':
-        return when(item['start'], item['end'])
+    if kind == 'scheduled':  # an untitled one already has its day as its title
+        return span(item['start'], item['end']) if item['untitled'] else when(item['start'], item['end'])
     return ''
 
 
@@ -127,9 +127,14 @@ def clock_time(iso):
     return text[1:] if clock.startswith('%I') and text.startswith('0') else text
 
 
+def span(start, end):
+    """'19:00 - 03:00', or the start alone when there is no end."""
+    return clock_time(start) + (' - ' + clock_time(end) if end else '')
+
+
 def when(start, end, now=None):
     """'Tomorrow 19:00 - 03:00' for a scheduled stream."""
-    return '%s %s' % (day_name(start, now), clock_time(start) + (' - ' + clock_time(end) if end else ''))
+    return '%s %s' % (day_name(start, now), span(start, end))
 
 
 def _video_type(item):
