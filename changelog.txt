@@ -1,3 +1,11 @@
+3.0.4
+[fix] Client-ID mismatch: discard the stale OAuth token instead of clearing a custom Client-ID,
+      which sent users back to the bundled (non-refreshable) Client-ID (#712)
+[fix] discard the stored OAuth token as soon as the Client-ID setting changes
+[fix] replace unrenderable emoji with a space so surrounding words stay separated
+[upd] only set inputstream.adaptive.manifest_type for InputStream Adaptive < 21 (deprecated
+      in 21, removed in 22)
+
 3.0.3
 [add] OAuth device-code login with automatic background token refresh (Settings -> "Login (device code)")
     - tokens kept in addon_data/oauth_tokens.json with atomic writes and a cross-process lock,
