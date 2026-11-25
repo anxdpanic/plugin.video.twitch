@@ -12,7 +12,7 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 
-from . import auth, describe, follows, gql, http, kodi, pages, playback, players, signin, subscribe
+from . import auth, compat, describe, follows, gql, http, kodi, pages, playback, players, signin, subscribe
 
 BASE = 'plugin://%s/' % kodi.ADDON_ID
 INLINE_MAX = 1  # a shelf this short is shown in place, not as a folder (a channel's "Live now")
@@ -204,13 +204,22 @@ class Plugin:
         except (KeyError, ValueError):
             return default
 
+    def _take_old_address(self):
+        """An earlier version's ?mode=... address (see compat): run this version's route for it instead."""
+        route, params = compat.translate(self.params)
+        self.route = route
+        self.params = {k: json.dumps(v) if isinstance(v, dict) else str(v)
+                       for k, v in params.items() if v is not None}
+
     def dispatch(self):
         """Run the route; when Twitch fails it, tell the viewer and end the call the way Kodi waits for."""
-        handler = getattr(self, 'route_' + (self.route or 'root'), None)
-        if handler is None:
-            kodi.log('unknown route %r' % self.route)
-            return self._end(False)
         try:
+            if not self.route and self.params.get('mode'):
+                self._take_old_address()
+            handler = getattr(self, 'route_' + (self.route or 'root'), None)
+            if handler is None:
+                kodi.log('unknown route %r' % self.route)
+                return self._end(False)
             return handler()
         except ROUTE_ERRORS as exc:
             self._fail(exc)
@@ -367,8 +376,10 @@ class Plugin:
             xbmc.executebuiltin('Container.Refresh')
 
     def route_play(self):
-        """Resolve a stream, video or clip for Kodi's player."""
+        """Resolve a stream, video or clip for Kodi's player; with t=<seconds>, start a video there."""
         xbmcplugin.setResolvedUrl(self.handle, True, _playable(self.params))
+        if self.params.get('t') and 'video' in self.params:
+            players.start_at(self.params['video'], float(self.params['t']))
 
     def route_follow(self):
         """Follow or unfollow a channel (from a context menu), asking first; the listing shows the change."""

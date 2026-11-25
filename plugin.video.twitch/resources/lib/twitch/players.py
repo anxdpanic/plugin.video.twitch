@@ -23,6 +23,8 @@ FFMPEG_DIRECT = 'inputstream.ffmpegdirect'
 PLAYERS = {0: ADAPTIVE, 1: FFMPEG_DIRECT}  # the player setting -> add-on id
 HLS_MIME = 'application/vnd.apple.mpegurl'
 LIVE_DELAY = 8  # seconds Adaptive stays behind the live edge, so a live stream doesn't stall
+START_WAIT = 30  # seconds start_at waits for the video to begin playing
+START_TICK = 0.5
 
 
 def _enabled(addon_id):
@@ -77,6 +79,28 @@ def _ffmpeg_direct(li):
     li.setProperty('inputstream.ffmpegdirect.open_mode', 'ffmpeg')
     li.setProperty('inputstream.ffmpegdirect.is_realtime_stream', 'true')
     li.setProperty('inputstream.ffmpegdirect.stream_mode', 'timeshift')
+
+
+def _wait_for_video(player, video_id, monitor, seconds):
+    """Wait up to `seconds` for this video to be playing; False when it didn't start (or Kodi is closing)."""
+    for _ in range(int(seconds / START_TICK)):
+        try:
+            if player.isPlayingVideo() and video_id in player.getPlayingFile():
+                return True
+        except RuntimeError:  # between stopping one item and starting the next
+            pass
+        if monitor.waitForAbort(START_TICK):
+            return False
+    return False
+
+
+def start_at(video_id, seconds):
+    """Seek a video that was just resolved to `seconds` once it plays. Kodi ignores a resolved item's start
+    offset when the item it was asked to play didn't carry one (another add-on's, a .strm file), so the
+    plugin call stays to seek itself."""
+    player = xbmc.Player()
+    if _wait_for_video(player, video_id, xbmc.Monitor(), START_WAIT):
+        player.seekTime(seconds)
 
 
 def stream_item(url, live, from_start=False):
