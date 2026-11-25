@@ -19,7 +19,7 @@ def test_schedule_keeps_coming_streams_soonest_first():
     past = dict(SEGMENT, id='old', startAt='2026-11-20T19:00:00Z', endAt='2026-11-20T23:00:00Z')
     later = dict(SEGMENT, id='later', startAt='2026-11-29T19:00:00Z', endAt='2026-11-29T23:00:00Z')
     cancelled = dict(SEGMENT, id='off', isCancelled=True)
-    items, cursor = lists._schedule_read(schedule_reply([later, past, cancelled, SEGMENT]), now=NOW)
+    items, cursor = lists._read_schedule(schedule_reply([later, past, cancelled, SEGMENT]), now=NOW)
     assert [i['id'] for i in items] == ['s1', 'later'] and cursor is None
 
 
