@@ -10,7 +10,7 @@ import traceback
 import xbmc
 import xbmcgui
 
-from .. import auth, follows, gql, http, kodi, pages, playback, router, signin
+from .. import auth, follows, gql, http, kodi, pages, playback, router, signin, subscribe
 from . import items, model
 
 RAIL = 100
@@ -261,7 +261,13 @@ class TVWindow(xbmcgui.WindowXML):
             choices.append((kodi.string(30037), lambda: self._open_channel(item['login'], item['channel'])))
         if item.get('game') and desc.get('name') != item['game']:
             choices.append((kodi.string(30038), lambda: self._open_category(item['game'], item['game_title'])))
-        return choices + self._follow_choice(item)
+        return choices + self._follow_choice(item) + self._subscribe_choice(item)
+
+    @staticmethod
+    def _subscribe_choice(item):
+        if not item.get('login'):
+            return []
+        return [(kodi.string(30097), lambda: subscribe.show(item['login'], item['channel']))]
 
     def _follow_choice(self, item):
         """Follow or Unfollow the tile's channel, as it stands now (one lookup when the menu opens)."""

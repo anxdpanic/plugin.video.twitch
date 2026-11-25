@@ -9,7 +9,7 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 
-from . import auth, describe, follows, gql, http, kodi, pages, playback, signin
+from . import auth, describe, follows, gql, http, kodi, pages, playback, signin, subscribe
 
 BASE = 'plugin://%s/' % kodi.ADDON_ID
 INLINE_MAX = 1  # a shelf this short is shown in place, not as a folder (a channel's "Live now")
@@ -68,7 +68,14 @@ def _context_menu(item):
     if item['kind'] in PLAYABLE and item.get('game'):
         menu.append((kodi.string(30038), 'Container.Update(%s)' % url_for(
             'page', desc={'page': 'category', 'name': item['game'], 'title': item['game_title']})))
-    return menu + _follow_entry(item)
+    return menu + _follow_entry(item) + _subscribe_entry(item)
+
+
+def _subscribe_entry(item):
+    """A QR code of the channel's subscribe page, to subscribe on a phone."""
+    if not item.get('login') or item['kind'] not in PLAYABLE + ('channel',):
+        return []
+    return [(kodi.string(30097), 'RunPlugin(%s)' % url_for('subscribe', login=item['login'], name=item['channel']))]
 
 
 def _set_info(li, item):
@@ -280,6 +287,9 @@ class Plugin:
     def route_follow(self):
         if follows.ask_and_change(self.params['login'], self.params.get('name') or self.params['login']):
             xbmc.executebuiltin('Container.Refresh')
+
+    def route_subscribe(self):
+        subscribe.show(self.params['login'], self.params.get('name') or self.params['login'])
 
     def route_tv(self):
         xbmc.executebuiltin('RunScript(%s)' % kodi.ADDON_ID)

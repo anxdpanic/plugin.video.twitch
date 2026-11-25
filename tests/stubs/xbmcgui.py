@@ -2,6 +2,7 @@
 NOTIFICATION_INFO, NOTIFICATION_WARNING, NOTIFICATION_ERROR = 'info', 'warning', 'error'
 
 NOTIFICATIONS = []
+OKS = []
 _PROPERTIES = {}
 
 
@@ -72,6 +73,10 @@ class Dialog:
 
     def input(self, heading, defaultt='', **kwargs):
         return ''
+
+    def ok(self, heading, message):
+        OKS.append((heading, message))
+        return True
 
     def yesno(self, heading, message, **kwargs):
         return False

@@ -318,6 +318,18 @@ msgctxt "#30096"
 msgid "Unfollow %s?"
 msgstr ""
 
+msgctxt "#30097"
+msgid "Subscribe"
+msgstr ""
+
+msgctxt "#30098"
+msgid "Subscribe to %s"
+msgstr ""
+
+msgctxt "#30099"
+msgid "Scan the QR code with your phone to subscribe to %s, or go to [B]%s[/B]."
+msgstr ""
+
 msgctxt "#30080"
 msgid "General"
 msgstr ""

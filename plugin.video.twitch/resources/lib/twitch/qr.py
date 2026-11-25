@@ -59,12 +59,13 @@ def image(text):
 
 
 class Dialog(xbmcgui.WindowDialog):
-    """Full screen, QR code on the left, the dialog's text and a Cancel button on the right; Back cancels too.
+    """Full screen, QR code on the left, the dialog's text and a button on the right; Back closes it too.
     Used in place of xbmcgui.DialogProgress, so it has the same create/update/iscanceled/close."""
 
-    def __init__(self, qr_png):
+    def __init__(self, qr_png, button=222):
         super().__init__()
         self.qr_png = qr_png
+        self.button_label = button  # Kodi's "Cancel" while waiting for a sign-in; "Close" for a plain code
         self.cancelled = False
         self.text = None
         self.button = None
@@ -79,7 +80,8 @@ class Dialog(xbmcgui.WindowDialog):
         self.text = xbmcgui.ControlTextBox(580, 230, 640, 300, font=fonts['rail'], textColor='0xFFFFFFFF')
         self.addControl(self.text)
         self.text.setText(message)
-        self.button = xbmcgui.ControlButton(580, 540, 240, 56, xbmc.getLocalizedString(222), focusTexture=white,
+        label = xbmc.getLocalizedString(self.button_label)
+        self.button = xbmcgui.ControlButton(580, 540, 240, 56, label, focusTexture=white,
                                             noFocusTexture=white, alignment=6, font=fonts['rail'],
                                             textColor='0xFF0B0F1A', focusedColor='0xFF0B0F1A')
         self.addControl(self.button)
