@@ -367,7 +367,7 @@ msgid "InputStream FFmpeg Direct"
 msgstr ""
 
 msgctxt "#30113"
-msgid "Adaptive switches quality with the connection. FFmpeg Direct buffers with FFmpeg itself, which some devices handle better, and can pause and rewind. Past broadcasts and clips always use Adaptive."
+msgid "Adaptive adjusts quality to the connection. FFmpeg Direct suits some devices and can pause live."
 msgstr ""
 
 msgctxt "#30114"
