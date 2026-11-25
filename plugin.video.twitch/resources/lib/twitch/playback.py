@@ -30,18 +30,22 @@ def _token(field, argument, value):
 
 def _usher_query(token):
     return urllib.parse.urlencode({
-        'sig': token['signature'], 'token': token['value'], 'allow_source': 'true', 'allow_audio_only': 'true',
+        # No audio-only rendition: InputStream Adaptive could drop to it on a slow link and show no picture.
+        'sig': token['signature'], 'token': token['value'], 'allow_source': 'true', 'allow_audio_only': 'false',
         'fast_bread': 'true', 'p': random.randint(0, 9999999), 'player_backend': 'mediaplayer',
         'playlist_include_framerate': 'true', 'supported_codecs': CODECS.get(kodi.setting_int('codecs'), 'h264'),
     })
 
 
-def _checked(url):
+def _checked(url, not_found=None):
     """The playlist address, once Twitch has answered it: an offline channel, a sub-only broadcast or a
-    region block shows up here as an error rather than as a player that never starts."""
+    region block shows up here as an error rather than as a player that never starts. `not_found` is what to
+    say for a 404 instead of Twitch's own words."""
     try:
         http.request(url, timeout=15)
     except http.HTTPError as exc:
+        if exc.status == 404 and not_found:
+            raise PlaybackError(not_found) from exc
         reply = exc.json()
         message = reply[0].get('error') if isinstance(reply, list) and reply and isinstance(reply[0], dict) else ''
         raise PlaybackError(message or 'HTTP %s' % exc.status) from exc
@@ -50,7 +54,9 @@ def _checked(url):
 
 def live_url(login):
     token = _token('streamPlaybackAccessToken', 'channelName', login)
-    return _checked(USHER_LIVE % urllib.parse.quote(login.lower()) + '?' + _usher_query(token))
+    # Twitch answers an offline channel with 404 and "Can not find channel".
+    return _checked(USHER_LIVE % urllib.parse.quote(login.lower()) + '?' + _usher_query(token),
+                    not_found=kodi.string(30071))
 
 
 def video_url(video_id):

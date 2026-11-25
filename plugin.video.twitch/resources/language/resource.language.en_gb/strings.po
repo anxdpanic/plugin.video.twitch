@@ -282,6 +282,10 @@ msgctxt "#30070"
 msgid "Twitch can't be reached. Try again later."
 msgstr ""
 
+msgctxt "#30071"
+msgid "This channel is offline."
+msgstr ""
+
 msgctxt "#30072"
 msgid "This can't be played: %s"
 msgstr ""
