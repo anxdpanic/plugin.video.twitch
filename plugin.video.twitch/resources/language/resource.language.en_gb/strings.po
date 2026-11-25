@@ -1,0 +1,395 @@
+# Kodi Media Center language file
+# Addon Name: Twitch
+# Addon id: plugin.video.twitch
+msgid ""
+msgstr ""
+"Project-Id-Version: plugin.video.twitch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30001"
+msgid "Home"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Following"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Categories"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Search"
+msgstr ""
+
+msgctxt "#30005"
+msgid "TV interface"
+msgstr ""
+
+msgctxt "#30006"
+msgid "Sign in"
+msgstr ""
+
+msgctxt "#30007"
+msgid "Accounts"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Sign out"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Switch account"
+msgstr ""
+
+msgctxt "#30010"
+msgid "Live channels you follow"
+msgstr ""
+
+msgctxt "#30011"
+msgid "Top live channels"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Top categories"
+msgstr ""
+
+msgctxt "#30013"
+msgid "Live"
+msgstr ""
+
+msgctxt "#30015"
+msgid "Channels"
+msgstr ""
+
+msgctxt "#30016"
+msgid "Categories you follow"
+msgstr ""
+
+msgctxt "#30017"
+msgid "Sign in to see the channels you follow."
+msgstr ""
+
+msgctxt "#30018"
+msgid "Live channels"
+msgstr ""
+
+msgctxt "#30019"
+msgid "Top clips this week"
+msgstr ""
+
+msgctxt "#30020"
+msgid "Popular videos"
+msgstr ""
+
+msgctxt "#30021"
+msgid "Live now"
+msgstr ""
+
+msgctxt "#30022"
+msgid "Past broadcasts"
+msgstr ""
+
+msgctxt "#30023"
+msgid "Highlights"
+msgstr ""
+
+msgctxt "#30024"
+msgid "Uploads"
+msgstr ""
+
+msgctxt "#30025"
+msgid "Popular clips"
+msgstr ""
+
+msgctxt "#30027"
+msgid "Nothing to show here."
+msgstr ""
+
+msgctxt "#30028"
+msgid "Next page"
+msgstr ""
+
+msgctxt "#30029"
+msgid "New search"
+msgstr ""
+
+msgctxt "#30030"
+msgid "Clear search history"
+msgstr ""
+
+msgctxt "#30031"
+msgid "Recent searches"
+msgstr ""
+
+msgctxt "#30032"
+msgid "Remove from search history"
+msgstr ""
+
+msgctxt "#30033"
+msgid "Remove all your recent searches?"
+msgstr ""
+
+msgctxt "#30034"
+msgid "Search for channels, live streams and categories."
+msgstr ""
+
+msgctxt "#30035"
+msgid "Search for \"%s\" again."
+msgstr ""
+
+msgctxt "#30036"
+msgid "Loading…"
+msgstr ""
+
+msgctxt "#30037"
+msgid "Go to channel"
+msgstr ""
+
+msgctxt "#30038"
+msgid "Go to category"
+msgstr ""
+
+msgctxt "#30039"
+msgid "LIVE"
+msgstr ""
+
+msgctxt "#30040"
+msgid "%s viewers"
+msgstr ""
+
+msgctxt "#30041"
+msgid "%s views"
+msgstr ""
+
+msgctxt "#30042"
+msgid "%s followers"
+msgstr ""
+
+msgctxt "#30043"
+msgid "Playing %s"
+msgstr ""
+
+msgctxt "#30044"
+msgid "Live for %s"
+msgstr ""
+
+msgctxt "#30045"
+msgid "Past broadcast"
+msgstr ""
+
+msgctxt "#30046"
+msgid "Highlight"
+msgstr ""
+
+msgctxt "#30047"
+msgid "Upload"
+msgstr ""
+
+msgctxt "#30048"
+msgid "Clip"
+msgstr ""
+
+msgctxt "#30049"
+msgid "just now"
+msgstr ""
+
+msgctxt "#30050"
+msgid "%d minutes ago"
+msgstr ""
+
+msgctxt "#30051"
+msgid "1 hour ago"
+msgstr ""
+
+msgctxt "#30052"
+msgid "%d hours ago"
+msgstr ""
+
+msgctxt "#30053"
+msgid "yesterday"
+msgstr ""
+
+msgctxt "#30054"
+msgid "%d days ago"
+msgstr ""
+
+msgctxt "#30055"
+msgid "1 month ago"
+msgstr ""
+
+msgctxt "#30056"
+msgid "%d months ago"
+msgstr ""
+
+msgctxt "#30057"
+msgid "1 year ago"
+msgstr ""
+
+msgctxt "#30058"
+msgid "%d years ago"
+msgstr ""
+
+msgctxt "#30060"
+msgid "Sign in to Twitch"
+msgstr ""
+
+msgctxt "#30061"
+msgid "On your phone or computer, go to [B]%s[/B] and enter this code:[CR][CR][B]%s[/B][CR][CR]Or scan the QR code."
+msgstr ""
+
+msgctxt "#30062"
+msgid "Signed in as %s"
+msgstr ""
+
+msgctxt "#30063"
+msgid "Sign-in failed: %s"
+msgstr ""
+
+msgctxt "#30064"
+msgid "The sign-in code expired. Try again."
+msgstr ""
+
+msgctxt "#30065"
+msgid "Sign out of %s?"
+msgstr ""
+
+msgctxt "#30066"
+msgid "Add an account"
+msgstr ""
+
+msgctxt "#30067"
+msgid "Signed out"
+msgstr ""
+
+msgctxt "#30070"
+msgid "Twitch can't be reached. Try again later."
+msgstr ""
+
+msgctxt "#30071"
+msgid "This channel is offline."
+msgstr ""
+
+msgctxt "#30072"
+msgid "This can't be played: %s"
+msgstr ""
+
+msgctxt "#30073"
+msgid "Your sign-in has expired. Sign in again."
+msgstr ""
+
+msgctxt "#30090"
+msgid "Follow %s"
+msgstr ""
+
+msgctxt "#30091"
+msgid "Unfollow %s"
+msgstr ""
+
+msgctxt "#30092"
+msgid "Following %s"
+msgstr ""
+
+msgctxt "#30093"
+msgid "Unfollowed %s"
+msgstr ""
+
+msgctxt "#30094"
+msgid "Follow or unfollow"
+msgstr ""
+
+msgctxt "#30095"
+msgid "Follow %s?"
+msgstr ""
+
+msgctxt "#30096"
+msgid "Unfollow %s?"
+msgstr ""
+
+msgctxt "#30097"
+msgid "Subscribe"
+msgstr ""
+
+msgctxt "#30098"
+msgid "Subscribe to %s"
+msgstr ""
+
+msgctxt "#30099"
+msgid "Scan the QR code with your phone to subscribe to %s, or go to [B]%s[/B]."
+msgstr ""
+
+msgctxt "#30100"
+msgid "Play from beginning"
+msgstr ""
+
+msgctxt "#30102"
+msgid "This broadcast isn't being recorded, so it can't be played from the beginning."
+msgstr ""
+
+msgctxt "#30103"
+msgid "Schedule"
+msgstr ""
+
+msgctxt "#30106"
+msgid "Today"
+msgstr ""
+
+msgctxt "#30107"
+msgid "Tomorrow"
+msgstr ""
+
+msgctxt "#30110"
+msgid "Player for live streams"
+msgstr ""
+
+msgctxt "#30111"
+msgid "InputStream Adaptive"
+msgstr ""
+
+msgctxt "#30112"
+msgid "InputStream FFmpeg Direct"
+msgstr ""
+
+msgctxt "#30113"
+msgid "Adaptive adjusts quality to the connection. FFmpeg Direct suits some devices and can pause live."
+msgstr ""
+
+msgctxt "#30114"
+msgid "InputStream FFmpeg Direct is installed but turned off. Turn it on? If not, InputStream Adaptive plays this."
+msgstr ""
+
+msgctxt "#30080"
+msgid "General"
+msgstr ""
+
+msgctxt "#30081"
+msgid "Playback"
+msgstr ""
+
+msgctxt "#30082"
+msgid "Video codecs"
+msgstr ""
+
+msgctxt "#30083"
+msgid "H.264 only"
+msgstr ""
+
+msgctxt "#30084"
+msgid "H.265 and H.264"
+msgstr ""
+
+msgctxt "#30085"
+msgid "AV1, H.265 and H.264"
+msgstr ""
+
+msgctxt "#30086"
+msgid "Choose the quality each time"
+msgstr ""
+
+msgctxt "#30087"
+msgid "Higher-quality streams use H.265 or AV1. Only choose these if your device can decode them."
+msgstr ""

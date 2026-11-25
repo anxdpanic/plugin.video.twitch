@@ -1,6 +1,6 @@
-# Based on https://github.com/im85288/service.upnext/blob/master/.github/workflows/release.yml
 name: Make Release
 on:
+  workflow_dispatch:
   push:
     tags:
       - 'v*'
@@ -8,80 +8,62 @@ on:
 
 jobs:
   release:
-    if: github.repository == 'anxdpanic/plugin.video.twitch'
-
+    if: github.repository == 'anxdpanic/plugin.video.twitch' || github.event_name == 'workflow_dispatch'
     name: Make Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
+      - name: Checkout Add-on
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Read Add-on Version and News
+        id: addon
+        run: |
+          python - <<'EOF' >> "$GITHUB_OUTPUT"
+          import xml.etree.ElementTree as ET
+          root = ET.parse('plugin.video.twitch/addon.xml').getroot()
+          news = root.findtext("extension[@point='xbmc.addon.metadata']/news") or ''
+          print('version=' + root.get('version'))
+          print('news<<END_OF_NEWS')
+          print(news.strip())
+          print('END_OF_NEWS')
+          EOF
+
       - name: Release Status
+        # A tag or version marked alpha, beta or dev (v4.0.0-beta1, 4.0.0~beta1, 4.1.0-dev) is a pre-release.
         id: release
         run: |
-          version=${GITHUB_REF/refs\/tags\//}
-          if [[ $version == *-dev ]] ;
+          shopt -s extglob
+          tag=${GITHUB_REF/refs\/tags\//}
+          version='${{ steps.addon.outputs.version }}'
+          if [[ $tag == *[-+~]@(alpha|beta|dev)*([.0-9a-z]) || $version == *[-+~]@(alpha|beta|dev)*([.0-9a-z]) ]];
           then
-            echo ::set-output name=pre-release::true
+            echo "pre-release=true" >> "$GITHUB_OUTPUT"
           else
-            echo ::set-output name=pre-release::false
+            echo "pre-release=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Checkout Add-on
-        uses: actions/checkout@v3
-        with:
-          path: ${{ github.event.repository.name }}
-
-      - name: Install dependencies
+      - name: Create Zip
+        id: zip
         run: |
-          sudo apt-get update
-          sudo apt-get install libxml2-utils xmlstarlet zip
+          python scripts/package.py
+          echo "filename=dist/plugin.video.twitch-${{ steps.addon.outputs.version }}.zip" >> "$GITHUB_OUTPUT"
 
-      - name: Get Changelog
-        id: changelog
-        run: |
-          changes=$(xmlstarlet sel -t -v '//news' -n addon.xml)
-          changes="${changes//'%'/'%25'}"
-          changes="${changes//$'\n'/'%0A'}"
-          changes="${changes//$'\r'/'%0D'}"
-          echo ::set-output name=changes::$changes
-        working-directory: ${{ github.event.repository.name }}
-
-      - name: Create Zip (Nexus)
-        id: zip-nexus
-        run: |
-          git reset
-          git checkout .
-          git clean -fdx
-          mv .git ..
-          rm -rf .??*
-          rm -rf docs
-          rm *.md
-          version=$(xmlstarlet sel -t -v 'string(/addon/@version)' addon.xml)
-          filename=${{ github.event.repository.name }}-${version}.zip
-          cd ..
-          zip -r $filename ${{ github.event.repository.name }}
-          mv .git ${{ github.event.repository.name }}
-          echo ::set-output name=filename::$filename
-        working-directory: ${{ github.event.repository.name }}
-
-      - name: Create Release
-        id: create-release
-        uses: actions/create-release@v1
+      - name: Create Draft Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          body: ${{ steps.changelog.outputs.changes }}
-          draft: false
-          prerelease: ${{ steps.release.outputs.pre-release }}
-
-      - name: Upload Zip (Nexus)
-        id: upload-nexus
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_name: ${{ steps.zip-nexus.outputs.filename }}
-          asset_path: ${{ steps.zip-nexus.outputs.filename }}
-          asset_content_type: application/zip
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEWS: ${{ steps.addon.outputs.news }}
+        run: |
+          prerelease=()
+          if [[ '${{ steps.release.outputs.pre-release }}' == 'true' ]]; then
+            prerelease=(--prerelease)
+          fi
+          gh release create "${GITHUB_REF_NAME}" '${{ steps.zip.outputs.filename }}' \
+            --draft "${prerelease[@]}" --title "${GITHUB_REF_NAME}" --notes "${NEWS}"

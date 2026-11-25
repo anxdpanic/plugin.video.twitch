@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="repository.twitch_development" name="Twitch Development Repository" version="1.0.5" provider-name="anxdpanic">
+    <requires>
+        <import addon="xbmc.python" version="3.0.1"/>
+    </requires>
+	<extension point="xbmc.addon.repository" name="Twitch Development Repository">
+        <dir minversion="20.0.0">
+            <info compressed="false">https://download.osmc.tv/dev/anxdpanic/kodi/twitch/python3/addons.xml</info>
+            <checksum>https://download.osmc.tv/dev/anxdpanic/kodi/twitch/python3/addons.xml.md5</checksum>
+            <datadir zip="true">https://download.osmc.tv/dev/anxdpanic/kodi/twitch/python3/zips/</datadir>
+            <hashes>false</hashes>
+        </dir>        
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary>Repository for in-developement versions of the Twitch add-on</summary>
+		<description>Install in-developement versions of the Twitch add-on for testing</description>
+		<platform>all</platform>
+        <assets>
+			<icon>icon.png</icon>
+        </assets>
+	</extension>
+</addon>

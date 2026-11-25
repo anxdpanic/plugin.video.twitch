@@ -1,74 +1,73 @@
-Twitch on Kodi
-==================
+# Twitch (plugin.video.twitch)
 
-[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fanxdpanic%2Fplugin.video.twitch%2Fbadge&style=flat)](https://actions-badge.atrox.dev/anxdpanic/plugin.video.twitch/goto)
-![License](https://img.shields.io/badge/license-GPL--3.0--only-success.svg)
-![Kodi Version](https://img.shields.io/badge/kodi-nexus%2B-success.svg)
-![Contributors](https://img.shields.io/github/contributors/anxdpanic/plugin.video.twitch.svg)
+A Kodi video add-on for Twitch with a TV layout: live channels, past broadcasts, highlights, uploads
+and clips, in Kodi's own folders or in a full-screen TV interface. It targets Kodi 21 (Omega) and later.
 
-Watch your favorite gaming streams on Kodi.
+## Features
 
-LOGIN
-----------------
+- **Two ways to browse:** the add-on's folders in Kodi's video window, using the skin's views, or the TV
+  interface, a full-screen window with a navigation rail, the focused tile's details and rows of tiles.
+- **Pages:** Home (live channels you follow, top live channels, top categories), Following, Categories,
+  a category's live channels, clips and videos, a channel's live stream, schedule, past broadcasts,
+  highlights, uploads and clips, and search across live channels, channels and categories.
+- **Sign-in:** a code at twitch.tv/activate (with a QR code), as Twitch's TV app. Several accounts can be
+  signed in. Turbo and subscriber benefits come with the sign-in.
+- **From a tile's menu:** play a live stream from the beginning, go to the channel or category, follow or
+  unfollow the channel, and a QR code of its subscribe page to subscribe on a phone.
+- **Playback:** live streams and past broadcasts as HLS, clips as MP4. Live streams play through
+  InputStream Adaptive or, by choice, InputStream FFmpeg Direct; everything else through Adaptive.
+  Optional H.265 and AV1, and an option to choose the quality each time.
+- **Text and art:** full-HD fanart; characters the skin's fonts can't draw (emoji, text faces, scripts the
+  font lacks) are left out of titles instead of showing as boxes.
 
-Set up your own Client ID first, then log in — in that order. The bundled Client ID
-cannot refresh tokens (Twitch treats it as a confidential client), so with it you have
-to log in again every time the token expires.
+## Addresses from earlier versions
 
-1. Register your own application at [dev.twitch.tv/console/apps](https://dev.twitch.tv/console/apps)
-   (OAuth Redirect URL: `http://localhost`, Client Type: __Public__)
-2. Enter its Client ID in __Settings - Developer - OAuth Client ID__
-3. Go to __Settings - Login - Login (device code)__
-4. Visit [twitch.tv/activate](https://www.twitch.tv/activate) on any device, sign in, and enter the code shown in Kodi
+Other add-ons (Eventvods, Rocket Beans), favourites and `.strm` files made with version 3 use
+`plugin://plugin.video.twitch/?mode=...` addresses. These still work:
 
-The add-on stores the tokens and refreshes them automatically from then on.
+| Address | Opens |
+|---|---|
+| `?mode=play&video_id=ID` (`&seek_time=` seconds) | the past broadcast, at that time |
+| `?mode=play&channel_name=NAME` or `&channel_id=ID` | the channel's live stream |
+| `?mode=play&slug=SLUG` | the clip |
+| `?mode=channel_videos&channel_name=NAME` or `&channel_id=ID` | the channel's page |
+| `?mode=channel_video_list&broadcast_type=archive\|highlight\|upload&channel_id=ID` | those videos of the channel |
+| `?mode=clips_list&channel_id=ID` | the channel's clips |
+| `?mode=game_streams&game=NAME`, `?mode=game_lists&game_name=NAME` | the category |
+| `?mode=following`, `followed`, `featured_streams`, `stream_list`, `browse`, `games`, `search`, `settings` | the matching page |
 
-If you logged in before entering your Client ID, simply log in again (step 3) — the
-previous token belongs to the bundled Client ID and cannot be refreshed.
+Other modes open the main menu.
 
-AD-FREE PLAYBACK (TURBO / SUBSCRIPTIONS)
-----------------
+## How it talks to Twitch
 
-If your Twitch account has Turbo, or you are subscribed to a channel, you can use
-__Settings - Subscriber and Turbo Benefits - Login: ad-free playback / Turbo (device code)__
-and authorize with that account to watch without ads (where Twitch grants it).
+Everything goes through Twitch's GraphQL API with the TV app's client, signed in or not. The one
+exception is the lists of followed channels: GraphQL refuses those to this client, so they come from
+the Helix API (which is why the sign-in asks for `user:read:follows`), with the details from GraphQL.
 
-1440P / HEVC (ENHANCED BROADCASTING)
-----------------
+## Development
 
-Twitch offers resolutions above 1080p only on channels that use Enhanced
-Broadcasting, and only as HEVC. Two things are required to receive them:
+```sh
+pip install -r requirements-dev.txt
+ruff check .
+pytest
+```
 
-1. Set __Settings - General - Supported codecs__ to __H.265 (HEVC)__ (the default,
-   __Twitch default__, requests no specific codec and yields H.264)
-2. Use __script.module.python.twitch__ 3.0.3 or newer — the codec is requested by the
-   library, not by this add-on. With an older library the request is dropped silently
-   and playback stays on H.264, whatever the setting says.
+To build an installable zip for Kodi's **Install from zip file**:
 
-Your device also has to be able to decode HEVC at that resolution.
+```sh
+python scripts/package.py
+```
 
-FAQ
-----------------
+`--debug` builds a zip with `reuselanguageinvoker` turned off, so code copied onto a device takes effect
+on the next run.
 
-* I can't find the Twitch.tv add-on in the Kodi add-on manager!
+## Development repository
 
-> Make sure you are using at least Kodi 20 (Nexus).
+Pushing a `v*` or `*-dev` tag runs `.gitea/workflows/release-development-repository.yml`: it zips the add-on
+and `repository.twitch_development` with `.scripts/.prepare_repository.py` and mirrors them over SFTP (the
+`SFTP` secret) to https://download.osmc.tv/dev/anxdpanic/kodi/twitch/python3/, the development
+repository's address.
 
-* I'm having issues with the playback of streams (buffering, dropping, stuttering).
+## License
 
-> This Add-on does not handle any aspect of the playback of Twitch streams (that would be the Kodi Video Player), it simply tells Kodi what to play.
-> The Add-on does however provide Quality Options which may help if your internet connection / computer specs are below requirements for HD streams.
-> Try making sure that the Kodi Add-on "InputStream Adaptive" is installed, and Adaptive Quality is enabled in Twitch.tv's Add-on settings.
-
-What's next?
-----------------
-
-Things that need to be done next:
-
-* Suggestions welcome.
-
-Credit where credit is due.
--------------
-
-Thanks to all the people who contributed to this add-on. 
-For a complete list of the people who have shaped this add-on, visit [CONTRIBUTORS](https://github.com/anxdpanic/plugin.video.twitch/blob/master/CONTRIBUTORS.md)
+GPL-3.0-only. See [LICENSE](LICENSE).
