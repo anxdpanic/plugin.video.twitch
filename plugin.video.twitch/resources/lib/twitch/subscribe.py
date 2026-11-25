@@ -8,9 +8,11 @@ from . import kodi, qr
 
 PAGE = 'twitch.tv/subs/%s'
 CLOSE = 15067  # Kodi's "Close"
+TICK = 0.25  # seconds between looks at whether the dialog was closed
 
 
 def address(login):
+    """The channel's subscribe page, as written for people to type (no scheme)."""
     return PAGE % login.lower()
 
 
@@ -19,8 +21,9 @@ def _message(login, name):
 
 
 def _wait_until_closed(dialog):
+    """Keep the plugin call alive while the dialog shows (it isn't modal), then close it."""
     monitor = xbmc.Monitor()
-    while not dialog.iscanceled() and not monitor.waitForAbort(0.25):
+    while not dialog.iscanceled() and not monitor.waitForAbort(TICK):
         pass
     dialog.close()
 

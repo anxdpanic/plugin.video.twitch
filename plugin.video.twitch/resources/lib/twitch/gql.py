@@ -1,16 +1,20 @@
 # SPDX-License-Identifier: GPL-3.0-only
 # Copyright (C) 2026 plugin.video.twitch
-"""Twitch's GraphQL API (gql.twitch.tv), signed in as the active account when there is one."""
+"""Twitch's GraphQL API (gql.twitch.tv), signed in as the active account when there is one.
+
+Queries are plain text (no persisted-query hashes); GraphQL validates them, so an unknown field is an
+error, while a field Twitch won't answer comes back as null with an error alongside."""
 from . import auth, http
 
 URL = 'https://gql.twitch.tv/gql'
 
 
 class GQLError(Exception):
-    pass
+    """A query Twitch refused as a whole (no data in the reply)."""
 
 
 def _headers(token):
+    """The TV app's client id, and the account's token when signed in."""
     headers = {'Client-ID': auth.CLIENT_ID}
     if token:
         headers['Authorization'] = 'OAuth ' + token
@@ -25,19 +29,24 @@ def _data(reply):
     """The data of one reply; raises GQLError when it has none (the query itself was refused)."""
     if not isinstance(reply, dict):
         raise GQLError('unexpected reply')
-    errors = reply.get('errors') or []
     if reply.get('data') is None:
+        errors = reply.get('errors') or []
         raise GQLError('; '.join(e.get('message', '') for e in errors) or 'no data')
     return reply['data']
 
 
+def _send(body, token):
+    return http.request_json(URL, data={'json': body}, headers=_headers(token))
+
+
 def _post(body, anonymous=False):
+    """Send a query (or a list of them); a refused token gets one more try (see auth.recover_token)."""
     token = None if anonymous else auth.access_token()
     try:
-        return http.request_json(URL, data={'json': body}, headers=_headers(token))
+        return _send(body, token)
     except http.HTTPError as exc:
-        if exc.status == 401 and token:  # see auth.recover_token: kept, refreshed, or signed out
-            return http.request_json(URL, data={'json': body}, headers=_headers(auth.recover_token()))
+        if exc.status == 401 and token:
+            return _send(body, auth.recover_token())
         raise
 
 

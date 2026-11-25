@@ -13,12 +13,17 @@ def _headers(token):
     return {'Client-ID': auth.CLIENT_ID, 'Authorization': 'Bearer ' + token}
 
 
+def _url(path, params):
+    """The endpoint's address with the parameters that are set."""
+    return URL + path + '?' + urllib.parse.urlencode({k: v for k, v in params.items() if v is not None})
+
+
 def get(path, **params):
-    """GET a Helix endpoint as the active account; returns the reply."""
+    """GET a Helix endpoint as the active account; a refused token gets one more try (auth.recover_token)."""
     token = auth.access_token()
     if not token:
         raise auth.AuthError('signed out')
-    url = URL + path + '?' + urllib.parse.urlencode({k: v for k, v in params.items() if v is not None})
+    url = _url(path, params)
     try:
         return http.request_json(url, headers=_headers(token))
     except http.HTTPError as exc:
@@ -28,7 +33,7 @@ def get(path, **params):
 
 
 def page(path, field, first, after):
-    """(values of `field` in the reply's rows, cursor of the next page or None)."""
+    """One page of a list of the account's: (values of `field` in its rows, cursor of the next page or None)."""
     reply = get(path, user_id=auth.user_id(), first=first, after=after)
     rows = reply.get('data') or []
     return [row[field] for row in rows if row.get(field)], (reply.get('pagination') or {}).get('cursor') or None
