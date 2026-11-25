@@ -1,6 +1,10 @@
 # SPDX-License-Identifier: GPL-3.0-only
 # Copyright (C) 2026 plugin.video.twitch
-"""The TV window's tiles and rail entries, from the pages' items."""
+"""The TV window's tiles and rail entries, from the pages' items.
+
+A tile is a ListItem whose properties the window's layout (resources/tv/twitch-tv.xml) reads: 'plot' (the
+details text), 'badge' and 'badge_color' (LIVE or a length), and one of 'round' (a channel's picture),
+'poster' (upright box art), 'icon_tile' or 'text_tile' for how the picture is drawn."""
 import os
 
 import xbmcgui
@@ -13,10 +17,12 @@ ICONS = os.path.join(kodi.ADDON_PATH, 'resources', 'tv', 'media')
 
 
 def icon(name):
+    """One of the TV interface's own icons (resources/tv/media/icon_<name>.png)."""
     return os.path.join(ICONS, 'icon_%s.png' % name)
 
 
 def rail_item(entry):
+    """A rail entry: its icon, or a round picture (the signed-in account's)."""
     li = xbmcgui.ListItem(entry['title'], offscreen=True)
     if entry.get('avatar'):
         li.setArt({'icon': entry['avatar']})
@@ -28,6 +34,7 @@ def rail_item(entry):
 
 
 def _badge(li, text, color=BADGE_COLOR):
+    """The badge in a tile's corner."""
     li.setProperty('badge', text)
     li.setProperty('badge_color', color)
 
@@ -46,6 +53,7 @@ def media_tile(item):
 
 
 def channel_tile(item):
+    """A channel: its picture, round, with a LIVE badge while it streams."""
     li = xbmcgui.ListItem(item['title'], offscreen=True)
     li.setLabel2(describe.meta_line(item))
     li.setArt({'thumb': item['thumb'], 'fanart': item['fanart']})
@@ -98,4 +106,5 @@ TILES = {'live': media_tile, 'video': media_tile, 'clip': media_tile, 'channel':
 
 
 def tile(item):
+    """The tile for an item, by its kind."""
     return TILES[item['kind']](item)

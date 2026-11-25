@@ -52,29 +52,31 @@ def pick_fonts(fonts, roles=None):
     return picked
 
 
+def _font_entry(font, scale):
+    """(name, size at 1080 lines, bold, caps) of a <font> element; None for one that is no use here (no
+    readable size, or a clock, icon or monospace file)."""
+    name = font.findtext('name') or ''
+    filename = (font.findtext('filename') or '').lower()
+    try:
+        size = float(font.findtext('size') or 0) * scale
+    except ValueError:
+        return None
+    if UNSUITABLE.search(filename):
+        return None
+    style = (font.findtext('style') or '').lower()
+    bold = 'bold' in style or 'bold' in filename or name.lower().endswith('bold')
+    return name, size, bold, 'uppercase' in style
+
+
 def read_fonts(font_xml, fontset_id, height):
     """[(name, size at 1080 lines, bold, caps)] from a skin's Font.xml, for the named fontset (or the first)."""
-    root = ET.parse(font_xml).getroot()
-    sets = root.findall('fontset')
+    sets = ET.parse(font_xml).getroot().findall('fontset')
     chosen = next((s for s in sets if s.get('id') == fontset_id), sets[0] if sets else None)
     if chosen is None:
         return []
     scale = 1080.0 / (height or 1080)
-    fonts = []
-    for font in chosen.findall('font'):
-        name = font.findtext('name') or ''
-        try:
-            size = float(font.findtext('size') or 0) * scale
-        except ValueError:
-            continue
-        style = (font.findtext('style') or '').lower()
-        filename = (font.findtext('filename') or '').lower()
-        bold = 'bold' in style or 'bold' in filename or name.lower().endswith('bold')
-        caps = 'uppercase' in style
-        if UNSUITABLE.search(filename):
-            continue
-        fonts.append((name, size, bold, caps))
-    return fonts
+    entries = (_font_entry(font, scale) for font in chosen.findall('font'))
+    return [entry for entry in entries if entry]
 
 
 def _skin_font_xml():
@@ -89,12 +91,14 @@ def _skin_font_xml():
 
 
 def _fontset():
+    """The name of the fontset in use (Kodi's lookandfeel.font setting)."""
     reply = json.loads(xbmc.executeJSONRPC(json.dumps({
         'jsonrpc': '2.0', 'id': 1, 'method': 'Settings.GetSettingValue', 'params': {'setting': 'lookandfeel.font'}})))
     return reply.get('result', {}).get('value', 'Default')
 
 
 def current_fonts():
+    """{role: font name} for the current skin; the one font every skin has when it can't be read."""
     try:
         path, height = _skin_font_xml()
         if path:
@@ -108,7 +112,7 @@ def render(template, fonts, media, icon):
     """The template with its includes pasted in and its fonts, media folder and icon filled in."""
     includes = {}
 
-    def keep_include(match):
+    def keep_include(match):  # an <include> is taken out of the template and kept for pasting
         includes[match.group(1)] = match.group(2)
         return ''
 

@@ -6,6 +6,8 @@ LOOKAHEAD = 2  # rows kept loaded below the focused one
 
 
 class Row:
+    """A row of tiles: a page's shelf, or a cut of a single list (`grid`)."""
+
     def __init__(self, title, items, shelf=None, cursor=None, grid=False, avatars=False):
         self.title = title
         self.items = items
@@ -23,6 +25,7 @@ class Screen:
     tiles and loads more of the list as the focus nears the last row."""
 
     def __init__(self, desc, load, more):
+        """`desc` is the page's description; `load` and `more` are pages.load and pages.more."""
         self.desc = desc
         self._load = load  # desc -> page (pages.load)
         self._more = more  # (shelf, cursor) -> (items, cursor) (pages.more)
@@ -34,6 +37,7 @@ class Screen:
         self.top = 0
 
     def open(self):
+        """Load the page and make its rows; returns the screen."""
         page = self._load(self.desc)
         self.title = page['title']
         self.header = page['header']
@@ -48,6 +52,7 @@ class Screen:
         return self
 
     def can_grow(self):
+        """Whether the screen can get more rows (only a single list can: shelves grow to the right)."""
         return bool(self.grid and self.grid['cursor'])
 
     def ensure(self, index):
@@ -60,21 +65,31 @@ class Screen:
             if len(grid['items']) == before:
                 grid['cursor'] = None  # a batch with nothing new: stop rather than ask again and again
 
-    def _add_grid_items(self, items, cursor):
+    def _merge_grid_items(self, items):
+        """Add a batch to the single list, leaving out items it already has (batches can overlap)."""
         grid = self.grid
         seen = {i['id'] for i in grid['items']}
         for item in items:
             if item['id'] not in seen:
                 grid['items'].append(item)
                 seen.add(item['id'])
-        grid['cursor'] = cursor
-        # Rows already full keep their state; the last, part-filled one is cut again.
+
+    def _cut_grid_rows(self):
+        """Cut the single list into rows of GRID_COLUMNS. Rows already full keep their state (focused tile,
+        built tiles); the last, part-filled one is cut again. Only the first row has the list's title."""
+        grid = self.grid
         full = [r for r in self.rows if len(r.items) == GRID_COLUMNS]
         del self.rows[len(full):]
         title = grid['shelf']['title'] if self.desc.get('page') != 'list' else ''
         for offset in range(len(full) * GRID_COLUMNS, len(grid['items']), GRID_COLUMNS):
             chunk = grid['items'][offset:offset + GRID_COLUMNS]
             self.rows.append(Row(title if offset == 0 else '', chunk, grid=True, avatars=grid['shelf']['avatars']))
+
+    def _add_grid_items(self, items, cursor):
+        """A batch of the single list: merged in, then shown as rows; `cursor` continues the list."""
+        self._merge_grid_items(items)
+        self.grid['cursor'] = cursor
+        self._cut_grid_rows()
 
     def more_items(self, row):
         """The next items of a shelf's row (it scrolls on to the right); [] when it has no more."""
@@ -93,6 +108,7 @@ class LocalScreen(Screen):
     and is asked again whenever the screen comes back into view, so it shows what changed meanwhile."""
 
     def __init__(self, title, build):
+        """`build()` returns the screen's rows."""
         super().__init__({'page': None}, None, None)
         self.title = title
         self._build = build

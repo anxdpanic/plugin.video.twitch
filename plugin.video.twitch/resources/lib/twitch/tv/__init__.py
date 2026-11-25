@@ -4,6 +4,7 @@
 
 
 def open_window():
+    """Write the window's layout for the current skin, then show the window until it is closed."""
     from . import skin
     from .window import TVWindow
 
