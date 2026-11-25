@@ -266,7 +266,9 @@ class Plugin:
         """New search, then the past searches."""
         li = xbmcgui.ListItem(kodi.string(30029), offscreen=True)
         li.setArt({'icon': _media('search.png'), 'thumb': _media('search.png')})
-        self._add(url_for('search'), li, True)
+        # Not a folder: Kodi runs it like a script, so its jump to the results isn't undone by Kodi going back
+        # from a folder that listed nothing.
+        self._add(url_for('search'), li, False)
         for query in pages.searches():
             li = xbmcgui.ListItem(query, offscreen=True)
             li.setArt({'icon': _media('search.png'), 'thumb': _media('search.png')})
@@ -276,12 +278,13 @@ class Plugin:
         self._end()
 
     def route_search(self):
+        """New search: ask, then open the results at an address that holds the query. Listing them here would
+        leave this address (no query) in Kodi's history, and coming back to it would ask again."""
         query = self.params.get('q') or xbmcgui.Dialog().input(kodi.string(30004))
-        if not query:
-            return self._end(False)
-        pages.remember_search(query)
-        self.params['desc'] = json.dumps({'page': 'search', 'q': query})
-        return self.route_page()
+        self._end(False)
+        if query:
+            pages.remember_search(query)
+            xbmc.executebuiltin('Container.Update(%s)' % url_for('page', desc={'page': 'search', 'q': query}))
 
     def route_search_remove(self):
         pages.forget_search(self.params.get('q', ''))
