@@ -57,6 +57,18 @@ jobs:
           git commit -m "Remove unwanted files"
         working-directory: ${{ github.event.repository.name }}
 
+      - name: Check fork push access
+        run: |
+          echo "token length: ${#GH_TOKEN}"
+          case "$GH_TOKEN" in *[[:space:]]*) echo "::error::token contains whitespace";; esac
+          curl -sS -o /dev/null -D - -H "Authorization: token $GH_TOKEN" https://api.github.com/user | grep -iE '^(HTTP|x-oauth-scopes|github-authentication-token-expiration)' || true
+          tmp=$(mktemp -d) && cd "$tmp"
+          git init -q && git commit -q --allow-empty -m probe
+          git push --dry-run "https://$GH_USERNAME:$GH_TOKEN@github.com/$GH_USERNAME/repo-plugins.git" HEAD:refs/heads/push-access-probe
+        env:
+          GH_USERNAME: anxdpanic
+          GH_TOKEN: ${{ secrets.ADDON_SUBMISSION_TOKEN }}
+
       - name: Submit to Official Repository (Nexus)
         id: submit-nexus
         run: |
