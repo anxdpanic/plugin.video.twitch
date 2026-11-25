@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.twitch" name="Twitch" version="4.0.0~alpha1" provider-name="anxdpanic">
+    <requires>
+        <import addon="xbmc.python" version="3.0.1"/>
+        <import addon="inputstream.adaptive" version="21.0.0"/>
+        <import addon="script.module.pyqrcode" version="1.2.1"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.python.script" library="tv.py">
+        <provides>executable</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">Watch Twitch with a TV layout</summary>
+        <description lang="en_GB">Watch live channels, past broadcasts and clips from Twitch, in Kodi's own folders or in a full-screen TV interface. Sign in with a code at twitch.tv/activate to see the channels you follow; Turbo and subscriber benefits come with the sign-in.</description>
+        <platform>all</platform>
+        <license>GPL-3.0-only</license>
+        <website>https://github.com/anxdpanic/plugin.video.twitch</website>
+        <source>https://github.com/anxdpanic/plugin.video.twitch</source>
+        <news>v4.0.0~alpha1
+- New add-on built around a TV layout: Home, Following, Categories, channels and search
+- Sign in with a code at twitch.tv/activate, with multiple accounts
+- Live, past broadcast and clip playback through InputStream Adaptive</news>
+        <assets>
+            <icon>resources/media/icon.png</icon>
+            <fanart>resources/media/fanart.jpg</fanart>
+        </assets>
+        <reuselanguageinvoker>true</reuselanguageinvoker>
+    </extension>
+</addon>

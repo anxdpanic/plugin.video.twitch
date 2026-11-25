@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings version="1">
+    <section id="plugin.video.twitch">
+        <category id="general" label="30080">
+            <group id="general_accounts" label="30007">
+                <setting id="sign_in" type="action" label="30006">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://plugin.video.twitch/sign_in/)</data>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+                </setting>
+                <setting id="switch_account" type="action" label="30009">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://plugin.video.twitch/accounts/)</data>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+                </setting>
+                <setting id="sign_out" type="action" label="30008">
+                    <level>0</level>
+                    <data>RunPlugin(plugin://plugin.video.twitch/sign_out/)</data>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+                </setting>
+            </group>
+        </category>
+        <category id="playback" label="30081">
+            <group id="playback_main">
+                <setting id="codecs" type="integer" label="30082" help="30087">
+                    <level>0</level>
+                    <default>0</default>
+                    <constraints>
+                        <options>
+                            <option label="30083">0</option>
+                            <option label="30084">1</option>
+                            <option label="30085">2</option>
+                        </options>
+                    </constraints>
+                    <control type="spinner" format="string"/>
+                </setting>
+                <setting id="ask_quality" type="boolean" label="30086">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+            </group>
+        </category>
+    </section>
+</settings>
