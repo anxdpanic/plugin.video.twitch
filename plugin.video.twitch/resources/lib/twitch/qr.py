@@ -22,6 +22,7 @@ SELECT_ACTION = 7
 
 
 def _chunk(kind, data):
+    """A PNG chunk: length, kind, data and CRC."""
     return struct.pack('>I', len(data)) + kind + data + struct.pack('>I', zlib.crc32(kind + data) & 0xFFFFFFFF)
 
 
@@ -70,35 +71,50 @@ class Dialog(xbmcgui.WindowDialog):
         self.text = None
         self.button = None
 
-    def create(self, heading, message=''):
-        fonts = skin.current_fonts()
-        white = os.path.join(skin.MEDIA, 'white.png')
+    def _add_picture(self, white):
+        """The dark background and the QR code on the left (coordinates are on a 1280x720 canvas)."""
         self.addControl(xbmcgui.ControlImage(0, 0, 1280, 720, white, colorDiffuse='0xFF0B0F1A'))
         self.addControl(xbmcgui.ControlImage(80, 140, 440, 440, self.qr_png, aspectRatio=2))
+
+    def _add_text(self, heading, message, fonts):
+        """The heading and the instructions on the right, in the skin's fonts."""
         self.addControl(xbmcgui.ControlLabel(580, 150, 640, 50, heading, font=fonts['row_title'],
                                              textColor='0xFFFFFFFF'))
         self.text = xbmcgui.ControlTextBox(580, 230, 640, 300, font=fonts['rail'], textColor='0xFFFFFFFF')
         self.addControl(self.text)
         self.text.setText(message)
+
+    def _add_button(self, white, fonts):
+        """The one button (Cancel or Close), focused so the remote's OK presses it."""
         label = xbmc.getLocalizedString(self.button_label)
         self.button = xbmcgui.ControlButton(580, 540, 240, 56, label, focusTexture=white,
                                             noFocusTexture=white, alignment=6, font=fonts['rail'],
                                             textColor='0xFF0B0F1A', focusedColor='0xFF0B0F1A')
         self.addControl(self.button)
         self.setFocus(self.button)
+
+    def create(self, heading, message=''):
+        """Lay the dialog out and show it (not modal: the caller goes on, polling iscanceled)."""
+        fonts = skin.current_fonts()
+        white = os.path.join(skin.MEDIA, 'white.png')
+        self._add_picture(white)
+        self._add_text(heading, message, fonts)
+        self._add_button(white, fonts)
         self.show()
 
     def update(self, percent, message=''):
-        pass  # the message doesn't change while waiting, and there's no bar to move
+        """DialogProgress's update: nothing to do, the message doesn't change and there's no bar."""
 
     def iscanceled(self):
         return self.cancelled
 
     def onAction(self, action):  # noqa: N802 (Kodi API name)
+        """Back (and the like) cancels; so does OK, which Kodi doesn't pass on to the focused button here."""
         if action.getId() in CANCEL_ACTIONS or action.getId() == SELECT_ACTION:
             self._cancel()
 
     def onControl(self, control):  # noqa: N802
+        """A click on the button (with a mouse or touch) cancels."""
         if control == self.button:
             self._cancel()
 

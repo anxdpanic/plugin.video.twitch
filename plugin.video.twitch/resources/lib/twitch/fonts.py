@@ -30,7 +30,14 @@ def _table(data, tag):
     return None
 
 
+def _segment_codes(data, glyphs_at, start, end):
+    """The codes of a format-4 segment that map through its glyph array to a glyph (0 means none)."""
+    return [(code, code) for code in range(start, end + 1)
+            if struct.unpack_from('>H', data, glyphs_at + 2 * (code - start))[0]]
+
+
 def _format4(data, at):
+    """The (first, last) ranges of a format-4 subtable (16-bit codes, as segments)."""
     count = struct.unpack_from('>H', data, at + 6)[0] // 2
     ends = struct.unpack_from('>%dH' % count, data, at + 14)
     starts = struct.unpack_from('>%dH' % count, data, at + 16 + 2 * count)
@@ -38,44 +45,44 @@ def _format4(data, at):
     offsets = struct.unpack_from('>%dH' % count, data, offsets_at)
     ranges = []
     for i, (start, end) in enumerate(zip(starts, ends)):
-        if start == 0xFFFF:
+        if start == 0xFFFF:  # the closing segment
             continue
-        if offsets[i] == 0:  # every code in the segment maps to a glyph unless the delta lands on 0
+        if offsets[i] == 0:  # mapped by a delta: every code in the segment has a glyph
             ranges.append((start, end))
-            continue
-        for code in range(start, end + 1):  # glyph ids from the array: 0 means no glyph
-            glyph_at = offsets_at + 2 * i + offsets[i] + 2 * (code - start)
-            if struct.unpack_from('>H', data, glyph_at)[0]:
-                ranges.append((code, code))
+        else:  # mapped through an array of glyph ids, which the offset points at from where it is stored
+            ranges += _segment_codes(data, offsets_at + 2 * i + offsets[i], start, end)
     return ranges
 
 
 def _format12(data, at):
+    """The (first, last) ranges of a format-12 subtable (full Unicode, as groups)."""
     count = struct.unpack_from('>I', data, at + 12)[0]
     return [struct.unpack_from('>II', data, at + 16 + 12 * i)[:2] for i in range(count)]
 
 
-def coverage(data):
-    """Merged [(first, last)] code point ranges a font file maps to glyphs; [] when it can't be read."""
-    cmap = _table(data, b'cmap')
-    if not cmap:
-        return []
-    base = cmap[0]
+FULL_UNICODE = ((3, 10), (0, 4), (0, 6))  # (platform, encoding) of subtables covering all of Unicode
+BASIC_PLANE = ((3, 1), (0, 3), (0, 1), (0, 0))  # ... and of those covering the basic plane
+
+
+def _subtable(data, base):
+    """(format, offset) of the cmap subtable to read: a full-Unicode format 12, else a basic-plane format 4;
+    None when the font has neither."""
     count = struct.unpack_from('>H', data, base + 2)[0]
     best = None
     for index in range(count):
         platform, encoding, offset = struct.unpack_from('>HHI', data, base + 4 + 8 * index)
         fmt = struct.unpack_from('>H', data, base + offset)[0]
-        if (platform, encoding) in ((3, 10), (0, 4), (0, 6)) and fmt == 12:
-            best = (12, base + offset)
-            break
-        if (platform, encoding) in ((3, 1), (0, 3), (0, 1), (0, 0)) and fmt == 4 and best is None:
+        if (platform, encoding) in FULL_UNICODE and fmt == 12:
+            return 12, base + offset
+        if (platform, encoding) in BASIC_PLANE and fmt == 4 and best is None:
             best = (4, base + offset)
-    if not best:
-        return []
-    ranges = sorted(_format12(data, best[1]) if best[0] == 12 else _format4(data, best[1]))
+    return best
+
+
+def _merge(ranges):
+    """Ranges sorted, with overlapping and touching ones joined."""
     merged = []
-    for first, last in ranges:
+    for first, last in sorted(ranges):
         if merged and first <= merged[-1][1] + 1:
             merged[-1] = (merged[-1][0], max(merged[-1][1], last))
         else:
@@ -83,14 +90,26 @@ def coverage(data):
     return merged
 
 
+def coverage(data):
+    """Merged [(first, last)] code point ranges a font file maps to glyphs; [] when it can't be read."""
+    cmap = _table(data, b'cmap')
+    subtable = _subtable(data, cmap[0]) if cmap else None
+    if not subtable:
+        return []
+    fmt, at = subtable
+    return _merge(_format12(data, at) if fmt == 12 else _format4(data, at))
+
+
 class Coverage:
     """Tests characters against ranges; with no ranges (unknown font) everything passes."""
 
     def __init__(self, ranges):
+        """`ranges`: merged (first, last) code point ranges, sorted."""
         self.firsts = [first for first, _ in ranges]
         self.ranges = ranges
 
     def __contains__(self, char):
+        """Whether the font draws `char`; spaces always pass, so text keeps its gaps."""
         if not self.ranges or char.isspace():
             return True
         code = ord(char)
@@ -112,18 +131,25 @@ def intersect(first, second):
     return result
 
 
+def _fontset_in_use(font_xml):
+    """The <fontset> element of the skin's Font.xml that is in use (the first one when none matches)."""
+    from .tv import skin
+
+    sets = ET.parse(font_xml).getroot().findall('fontset')
+    fontset_id = skin._fontset()
+    return next((s for s in sets if s.get('id') == fontset_id), sets[0] if sets else None)
+
+
 def _text_font_files():
     """The distinct files of the text fonts in the skin's fontset in use: every one of them draws some of the
     skin's text (Kodi's own windows, the views, the TV window). Clock, icon and monospace fonts are left out."""
     from .tv import skin  # the TV window's skin helpers already find the skin's Font.xml and fontset
 
-    path, _ = skin._skin_font_xml()
-    if not path:
+    font_xml, _ = skin._skin_font_xml()
+    fontset = _fontset_in_use(font_xml) if font_xml else None
+    if fontset is None:
         return []
-    sets = ET.parse(path).getroot().findall('fontset')
-    fontset_id = skin._fontset()
-    chosen = next((s for s in sets if s.get('id') == fontset_id), sets[0] if sets else None)
-    names = [f.findtext('filename') or '' for f in (chosen.findall('font') if chosen is not None else [])]
+    names = [f.findtext('filename') or '' for f in fontset.findall('font')]
     return sorted({n for n in names if n and not skin.UNSUITABLE.search(n)})
 
 
@@ -140,6 +166,7 @@ def _find(filename):
 
 
 def _stamps(paths):
+    """[path, size, modified] of each font file: the cache is only used for exactly the same files."""
     return [[path, os.stat(path).st_size, int(os.stat(path).st_mtime)] for path in paths]
 
 
@@ -169,6 +196,7 @@ RECHECK = 30  # seconds between looks at the skin and fontset in use (a look is 
 
 
 def _skin_in_use():
+    """(skin id, fontset name) in use now."""
     from .tv import skin
 
     return xbmc.getSkinDir(), skin._fontset()
@@ -188,26 +216,41 @@ def _skin_changed():
         return _current is None
 
 
+def _ranges_of(paths):
+    """The characters all these font files draw, from the cache when they are the same files as last time."""
+    stamps = _stamps(paths)
+    ranges = _cached(stamps)
+    if ranges is None:
+        ranges = _read_all(paths)
+        kodi.save_json(CACHE, {'fonts': stamps, 'ranges': ranges})
+    return ranges
+
+
+def _work_out():
+    """The ranges of the skin's text fonts; [] (nothing dropped) when they can't be found or read."""
+    try:
+        paths = [p for p in (_find(name) for name in _text_font_files()) if p]
+        ranges = _ranges_of(paths) if paths else []
+    except (OSError, ET.ParseError, struct.error, ValueError) as exc:
+        kodi.log('could not read the skin fonts of %s: %s' % (xbmc.getSkinDir(), exc))
+        return []
+    kodi.log('skin fonts %s cover %d ranges' % (', '.join(os.path.basename(p) for p in paths), len(ranges)))
+    return ranges
+
+
+def _note_skin():
+    """Remember the skin and fontset the coverage is being worked out for."""
+    global _skin
+    try:
+        _skin = _skin_in_use()
+    except (RuntimeError, ValueError):
+        _skin = None
+
+
 def current():
     """The Coverage of the skin's text fonts, worked out again when the skin or fontset changes."""
-    global _current, _skin
+    global _current
     if _skin_changed():
-        try:
-            _skin = _skin_in_use()
-        except (RuntimeError, ValueError):
-            _skin = None
-        ranges = []
-        try:
-            paths = [p for p in (_find(name) for name in _text_font_files()) if p]
-            if paths:
-                stamps = _stamps(paths)
-                ranges = _cached(stamps)
-                if ranges is None:
-                    ranges = _read_all(paths)
-                    kodi.save_json(CACHE, {'fonts': stamps, 'ranges': ranges})
-                kodi.log('skin fonts %s cover %d ranges' % (', '.join(os.path.basename(p) for p in paths),
-                                                            len(ranges)))
-        except (OSError, ET.ParseError, struct.error, ValueError) as exc:
-            kodi.log('could not read the skin fonts of %s: %s' % (xbmc.getSkinDir(), exc))
-        _current = Coverage(ranges)
+        _note_skin()
+        _current = Coverage(_work_out())
     return _current

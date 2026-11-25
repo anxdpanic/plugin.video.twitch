@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-only
 # Copyright (C) 2026 plugin.video.twitch
-"""Thin helpers around the Kodi API: settings, strings, paths, logging, JSON storage."""
+"""Thin helpers around the Kodi API: settings, strings, paths, logging, JSON storage and a small cache."""
 import hashlib
 import json
 import os
@@ -22,11 +22,12 @@ TEMP_DIR = os.path.join(xbmcvfs.translatePath('special://temp/'), ADDON_ID)
 def refresh():
     """Read settings and strings afresh from here on. With reuselanguageinvoker on, Kodi keeps this module
     loaded between plugin runs, and an Addon object can go on answering with the settings it read when it
-    was made; the long-running service and TV window call this after the settings change."""
+    was made; the TV window calls this after the settings dialog closes."""
     global ADDON
     ADDON = xbmcaddon.Addon(ADDON_ID)
 
 
+# Logging
 def log(msg):
     """Log at debug level, so nothing appears unless Kodi debug logging is on."""
     xbmc.log('[%s] %s' % (ADDON_ID, msg), xbmc.LOGDEBUG)
@@ -37,7 +38,9 @@ def log_error(msg):
     xbmc.log('[%s] %s' % (ADDON_ID, msg), xbmc.LOGERROR)
 
 
+# Strings and settings
 def string(string_id):
+    """The add-on's string in Kodi's language (strings.po)."""
     return ADDON.getLocalizedString(string_id)
 
 
@@ -52,15 +55,12 @@ def formatted(string_id, *args):
         return label
 
 
-def setting(key):
-    return ADDON.getSetting(key)
-
-
 def setting_bool(key):
     return ADDON.getSettingBool(key)
 
 
 def setting_int(key):
+    """An integer setting; 0 when it isn't set or isn't a number."""
     try:
         return ADDON.getSettingInt(key)
     except (RuntimeError, TypeError):
@@ -83,16 +83,14 @@ def time_format():
         return '%H:%M'
 
 
-def icon_path(name):
-    return os.path.join(ADDON_PATH, 'resources', 'media', name)
-
-
+# Files in the add-on's profile
 def _ensure_dir(path):
     if not os.path.isdir(path):
         os.makedirs(path, exist_ok=True)
 
 
 def load_json(name, default=None):
+    """A JSON file of the add-on's profile; `default` (or {}) when it is missing or broken."""
     path = os.path.join(PROFILE, name)
     try:
         with open(path, encoding='utf-8') as handle:
@@ -102,6 +100,7 @@ def load_json(name, default=None):
 
 
 def save_json(name, data):
+    """Write a JSON file of the add-on's profile, through a temporary file so a reader never sees half of it."""
     _ensure_dir(PROFILE)
     path = os.path.join(PROFILE, name)
     tmp = path + '.tmp'
@@ -110,8 +109,22 @@ def save_json(name, data):
     os.replace(tmp, path)
 
 
+def prune_dir(path, max_age):
+    """Delete the files in a folder older than `max_age` seconds (all of them for a negative age)."""
+    if not os.path.isdir(path):
+        return
+    now = time.time()
+    for name in os.listdir(path):
+        try:
+            if now - os.path.getmtime(os.path.join(path, name)) > max_age:
+                os.remove(os.path.join(path, name))
+        except OSError:
+            pass
+
+
 class Cache:
-    """Small file cache so a page fetched for a shelf list can be reused when a shelf is opened."""
+    """A small file cache of JSON values by key, each good for the time-to-live the reader asks for (pages
+    keep what Twitch answered for a couple of minutes)."""
 
     @staticmethod
     def _path(key):
@@ -119,6 +132,7 @@ class Cache:
 
     @classmethod
     def get(cls, key, ttl):
+        """The value stored under `key` less than `ttl` seconds ago, or None."""
         path = cls._path(key)
         try:
             if time.time() - os.path.getmtime(path) > ttl:
@@ -133,24 +147,3 @@ class Cache:
         _ensure_dir(CACHE_DIR)
         with open(cls._path(key), 'w', encoding='utf-8') as handle:
             json.dump(value, handle)
-
-    @staticmethod
-    def prune(max_age=86400):
-        prune_dir(CACHE_DIR, max_age)
-
-
-def prune_dir(path, max_age):
-    if not os.path.isdir(path):
-        return
-    now = time.time()
-    for name in os.listdir(path):
-        try:
-            if now - os.path.getmtime(os.path.join(path, name)) > max_age:
-                os.remove(os.path.join(path, name))
-        except OSError:
-            pass
-
-
-def temp_file(name):
-    _ensure_dir(TEMP_DIR)
-    return os.path.join(TEMP_DIR, name)
