@@ -53,7 +53,7 @@ def _poll_until_approved(code, dialog):
         waited += interval
         token = auth.poll_token(code['device_code'])
         if token == auth.SLOW_DOWN:
-            interval += SLOW_DOWN_STEP  # as the device-code flow asks: poll less often from now on
+            interval += SLOW_DOWN_STEP
         elif token:
             return token
     _notify(kodi.string(30064), error=True)
@@ -148,7 +148,7 @@ def accounts_menu():
     if not auth.accounts():
         return sign_in()
     choices = _account_choices()
-    picked = xbmcgui.Dialog().select(kodi.string(30068), [label for label, _ in choices])
+    picked = xbmcgui.Dialog().select(kodi.string(30007), [label for label, _ in choices])
     if picked < 0:
         return False
     return _run_choice(*choices[picked][1])

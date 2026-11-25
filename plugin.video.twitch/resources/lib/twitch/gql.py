@@ -51,7 +51,6 @@ def _post(body, anonymous=False):
 
 
 def query(text, variables=None, anonymous=False):
-    """Run one query; returns its data."""
     return _data(_post(_payload(text, variables), anonymous))
 
 

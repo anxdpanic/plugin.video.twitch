@@ -29,7 +29,7 @@ SHELVES = {
                 ('channel_videos:ARCHIVE', ('login',), 30022, False),
                 ('channel_videos:HIGHLIGHT', ('login',), 30023, False),
                 ('channel_videos:UPLOAD', ('login',), 30024, False), ('channel_clips', ('login',), 30025, False)],
-    'search': [('search_streams', ('q',), 30026, False), ('search_channels', ('q',), 30015, True),
+    'search': [('search_streams', ('q',), 30018, False), ('search_channels', ('q',), 30015, True),
                ('search_games', ('q',), 30003, False)],
 }
 TITLES = {'home': 30001, 'following': 30002, 'categories': 30003}  # pages whose title isn't in the description
@@ -190,7 +190,6 @@ def _save_history(history):
 
 
 def searches():
-    """The past searches, newest first."""
     return _state().get('search_history', [])
 
 

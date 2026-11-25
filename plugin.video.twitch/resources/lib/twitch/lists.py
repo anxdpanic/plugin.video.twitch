@@ -189,5 +189,4 @@ LISTS = {
 
 
 def get(key):
-    """The list of this name (a key of LISTS)."""
     return LISTS[key]

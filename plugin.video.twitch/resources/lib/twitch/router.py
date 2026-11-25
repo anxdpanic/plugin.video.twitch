@@ -164,7 +164,7 @@ def list_item(item):
     return li, is_folder(item)
 
 
-# What playback resolves to (HLS streams are made by players, for the inputstream add-on chosen)
+# What playback resolves to
 def _clip_item(url):
     """A clip's MP4 file, which Kodi plays on its own."""
     li = xbmcgui.ListItem(path=url, offscreen=True)
@@ -376,7 +376,6 @@ class Plugin:
             xbmc.executebuiltin('Container.Refresh')
 
     def route_subscribe(self):
-        """The QR code of a channel's subscribe page."""
         subscribe.show(self.params['login'], self.params.get('name') or self.params['login'])
 
     def route_noop(self):
@@ -402,7 +401,6 @@ class Plugin:
             xbmc.executebuiltin('Container.Refresh')
 
     def route_settings(self):
-        """The add-on's settings dialog."""
         kodi.ADDON.openSettings()
 
 

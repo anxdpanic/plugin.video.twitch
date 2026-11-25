@@ -34,7 +34,6 @@ def rail_item(entry):
 
 
 def _badge(li, text, color=BADGE_COLOR):
-    """The badge in a tile's corner."""
     li.setProperty('badge', text)
     li.setProperty('badge_color', color)
 
@@ -106,5 +105,4 @@ TILES = {'live': media_tile, 'video': media_tile, 'clip': media_tile, 'channel':
 
 
 def tile(item):
-    """The tile for an item, by its kind."""
     return TILES[item['kind']](item)

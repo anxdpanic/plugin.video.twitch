@@ -67,7 +67,6 @@ def search_rows():
 
 
 def _screen(desc):
-    """A screen of one of the add-on's pages."""
     return model.Screen(desc, pages.load, pages.more)
 
 
@@ -157,7 +156,6 @@ class TVWindow(xbmcgui.WindowXML):
         rail.selectItem(current)  # the rail opens on the page being shown
 
     def _click_rail(self):
-        """OK on the rail: open the selected entry."""
         position = self.getControl(RAIL).getSelectedPosition()
         if 0 <= position < len(self.entries):
             self._guarded(self._open_entry, self.entries[position])
@@ -359,7 +357,6 @@ class TVWindow(xbmcgui.WindowXML):
 
     @staticmethod
     def _from_start_choice(item):
-        """Play a live stream from the start of its broadcast."""
         if item['kind'] != 'live':
             return []
         return [(kodi.string(30100), lambda: xbmc.executebuiltin(
@@ -389,7 +386,6 @@ class TVWindow(xbmcgui.WindowXML):
 
     @staticmethod
     def _subscribe_choice(item):
-        """A QR code of the channel's subscribe page."""
         if not item.get('login'):
             return []
         return [(kodi.string(30097), lambda: subscribe.show(item['login'], item['channel']))]
@@ -428,7 +424,6 @@ class TVWindow(xbmcgui.WindowXML):
             self.top = min(self.top, max(len(screen.rows) - 1, 0))
             self._show_rows()
 
-    # Helpers
     def _busy(self, on):
         """Show or hide the "Loading" badge."""
         self.setProperty('busy', kodi.string(30036) if on else '')

@@ -27,7 +27,6 @@ def refresh():
     ADDON = xbmcaddon.Addon(ADDON_ID)
 
 
-# Logging
 def log(msg):
     """Log at debug level, so nothing appears unless Kodi debug logging is on."""
     xbmc.log('[%s] %s' % (ADDON_ID, msg), xbmc.LOGDEBUG)
@@ -38,7 +37,6 @@ def log_error(msg):
     xbmc.log('[%s] %s' % (ADDON_ID, msg), xbmc.LOGERROR)
 
 
-# Strings and settings
 def string(string_id):
     """The add-on's string in Kodi's language (strings.po)."""
     return ADDON.getLocalizedString(string_id)
@@ -83,7 +81,6 @@ def time_format():
         return '%H:%M'
 
 
-# Files in the add-on's profile
 def _ensure_dir(path):
     if not os.path.isdir(path):
         os.makedirs(path, exist_ok=True)

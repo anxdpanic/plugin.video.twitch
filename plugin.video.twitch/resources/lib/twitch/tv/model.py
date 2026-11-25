@@ -27,8 +27,8 @@ class Screen:
     def __init__(self, desc, load, more):
         """`desc` is the page's description; `load` and `more` are pages.load and pages.more."""
         self.desc = desc
-        self._load = load  # desc -> page (pages.load)
-        self._more = more  # (shelf, cursor) -> (items, cursor) (pages.more)
+        self._load = load
+        self._more = more
         self.title = ''
         self.rows = []
         self.header = None

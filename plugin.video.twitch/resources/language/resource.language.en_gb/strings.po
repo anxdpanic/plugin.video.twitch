@@ -10,10 +10,6 @@ msgstr ""
 "Language: en_GB\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "#30000"
-msgid "Twitch"
-msgstr ""
-
 msgctxt "#30001"
 msgid "Home"
 msgstr ""
@@ -108,10 +104,6 @@ msgstr ""
 
 msgctxt "#30025"
 msgid "Popular clips"
-msgstr ""
-
-msgctxt "#30026"
-msgid "Live channels"
 msgstr ""
 
 msgctxt "#30027"
@@ -272,10 +264,6 @@ msgstr ""
 
 msgctxt "#30067"
 msgid "Signed out"
-msgstr ""
-
-msgctxt "#30068"
-msgid "Accounts"
 msgstr ""
 
 msgctxt "#30070"
