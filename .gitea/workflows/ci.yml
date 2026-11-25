@@ -24,10 +24,12 @@ jobs:
         python-version: ['3.9', '3.12']
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      # setup-python has no 3.9 build for the runner's Ubuntu release; uv downloads a standalone one.
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.python-version }}
-      - run: pip install -r requirements-dev.txt
+          activate-environment: true
+      - run: uv pip install -r requirements-dev.txt
       - name: Compile add-on sources
         run: python -m compileall -q plugin.video.twitch
       - run: pytest -v
