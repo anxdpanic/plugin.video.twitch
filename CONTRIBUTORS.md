@@ -75,17 +75,17 @@
 		</tr>
 		<tr>
             <td align="center">
-                <a href="https://github.com/ingwinlu">
-                    <img src="https://avatars.githubusercontent.com/u/4435962?v=4" width="100;" alt="ingwinlu"/>
-                    <br />
-                    <sub><b>ingwinlu</b></sub>
-                </a>
-            </td>
-            <td align="center">
                 <a href="https://github.com/einanderson">
                     <img src="https://avatars.githubusercontent.com/u/289327658?v=4" width="100;" alt="einanderson"/>
                     <br />
                     <sub><b>einanderson</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/ingwinlu">
+                    <img src="https://avatars.githubusercontent.com/u/4435962?v=4" width="100;" alt="ingwinlu"/>
+                    <br />
+                    <sub><b>ingwinlu</b></sub>
                 </a>
             </td>
             <td align="center">
