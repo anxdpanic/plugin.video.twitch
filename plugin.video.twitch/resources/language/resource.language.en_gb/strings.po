@@ -290,6 +290,34 @@ msgctxt "#30073"
 msgid "Your sign-in has expired. Sign in again."
 msgstr ""
 
+msgctxt "#30090"
+msgid "Follow %s"
+msgstr ""
+
+msgctxt "#30091"
+msgid "Unfollow %s"
+msgstr ""
+
+msgctxt "#30092"
+msgid "Following %s"
+msgstr ""
+
+msgctxt "#30093"
+msgid "Unfollowed %s"
+msgstr ""
+
+msgctxt "#30094"
+msgid "Follow or unfollow"
+msgstr ""
+
+msgctxt "#30095"
+msgid "Follow %s?"
+msgstr ""
+
+msgctxt "#30096"
+msgid "Unfollow %s?"
+msgstr ""
+
 msgctxt "#30080"
 msgid "General"
 msgstr ""

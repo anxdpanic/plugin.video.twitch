@@ -86,6 +86,19 @@ def test_failed_playback_tells_kodi_and_the_user(monkeypatch, english):
     assert "This can't be played: offline" in xbmcgui.NOTIFICATIONS[0][1]
 
 
+def test_follow_entry_only_while_signed_in(english):
+    english(30094)
+    live = parser.live(STREAM)
+    labels = [label for label, _ in router._context_menu(live)]
+    assert 'Follow or unfollow' not in labels
+
+
+def test_follow_entry_when_signed_in(english, signed_in):
+    english(30094)
+    menu = dict(router._context_menu(parser.live(STREAM)))
+    assert 'follow/?login=runner&name=Runner' in menu['Follow or unfollow']
+
+
 def test_search_remembers_the_query(monkeypatch):
     loaded = []
     monkeypatch.setattr(pages, 'load', lambda desc: loaded.append(desc) or page_with([]))

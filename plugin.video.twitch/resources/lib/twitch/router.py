@@ -9,7 +9,7 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 
-from . import auth, describe, gql, http, kodi, pages, playback, signin
+from . import auth, describe, follows, gql, http, kodi, pages, playback, signin
 
 BASE = 'plugin://%s/' % kodi.ADDON_ID
 INLINE_MAX = 1  # a shelf this short is shown in place, not as a folder (a channel's "Live now")
@@ -51,8 +51,16 @@ def _media(name):
     return os.path.join(kodi.ADDON_PATH, 'resources', 'media', name)
 
 
+def _follow_entry(item):
+    """Follow or unfollow the item's channel, while signed in. The listing doesn't know which it is (that would
+    take a request per item), so the entry asks once it is picked."""
+    if not auth.signed_in() or not item.get('login') or item['kind'] not in PLAYABLE + ('channel',):
+        return []
+    return [(kodi.string(30094), 'RunPlugin(%s)' % url_for('follow', login=item['login'], name=item['channel']))]
+
+
 def _context_menu(item):
-    """Go to the channel and the category of a stream, video or clip."""
+    """Go to the channel and the category of a stream, video or clip, and follow or unfollow its channel."""
     menu = []
     if item['kind'] in PLAYABLE and item.get('login'):
         menu.append((kodi.string(30037), 'Container.Update(%s)' % url_for(
@@ -60,7 +68,7 @@ def _context_menu(item):
     if item['kind'] in PLAYABLE and item.get('game'):
         menu.append((kodi.string(30038), 'Container.Update(%s)' % url_for(
             'page', desc={'page': 'category', 'name': item['game'], 'title': item['game_title']})))
-    return menu
+    return menu + _follow_entry(item)
 
 
 def _set_info(li, item):
@@ -268,6 +276,10 @@ class Plugin:
         else:
             raise playback.PlaybackError('nothing to play')
         xbmcplugin.setResolvedUrl(self.handle, True, li)
+
+    def route_follow(self):
+        if follows.ask_and_change(self.params['login'], self.params.get('name') or self.params['login']):
+            xbmc.executebuiltin('Container.Refresh')
 
     def route_tv(self):
         xbmc.executebuiltin('RunScript(%s)' % kodi.ADDON_ID)

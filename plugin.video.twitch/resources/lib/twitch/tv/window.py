@@ -10,7 +10,7 @@ import traceback
 import xbmc
 import xbmcgui
 
-from .. import auth, gql, http, kodi, pages, playback, router, signin
+from .. import auth, follows, gql, http, kodi, pages, playback, router, signin
 from . import items, model
 
 RAIL = 100
@@ -241,7 +241,7 @@ class TVWindow(xbmcgui.WindowXML):
         if not row or not 0 <= position < len(row.items):
             return
         item = row.items[position]
-        choices = self._choices(item)
+        choices = self._guarded(self._choices, item) or []
         if not choices:
             return
         choice = xbmcgui.Dialog().contextmenu([label for label, _ in choices])
@@ -253,15 +253,33 @@ class TVWindow(xbmcgui.WindowXML):
         if item['kind'] == 'query':
             return [(kodi.string(30032), lambda: self._forget(item['title'])),
                     (kodi.string(30030), lambda: self._search_action('clear_searches'))]
-        if item['kind'] not in router.PLAYABLE:
+        if item['kind'] not in router.PLAYABLE + ('channel',):
             return []
         desc = self.screen.desc if self.screen else {}
         choices = []
-        if item.get('login') and desc.get('login') != item['login']:
+        if item['kind'] != 'channel' and item.get('login') and desc.get('login') != item['login']:
             choices.append((kodi.string(30037), lambda: self._open_channel(item['login'], item['channel'])))
         if item.get('game') and desc.get('name') != item['game']:
             choices.append((kodi.string(30038), lambda: self._open_category(item['game'], item['game_title'])))
-        return choices
+        return choices + self._follow_choice(item)
+
+    def _follow_choice(self, item):
+        """Follow or Unfollow the tile's channel, as it stands now (one lookup when the menu opens)."""
+        if not auth.signed_in() or not item.get('login'):
+            return []
+        user_id, following = follows.status(item['login'])
+        label = kodi.formatted(30091 if following else 30090, item['channel'])
+        return [(label, lambda: self._change_follow(user_id, following, item['channel']))]
+
+    def _change_follow(self, user_id, following, name):
+        follows.change(user_id, following, name)
+        screen = self.screen
+        if screen and screen.desc.get('page') in ('following', 'home'):  # their rows list the followed channels
+            fresh = self._screen(screen.desc).open()
+            fresh.ensure(self.top)
+            self.stack[-1] = fresh
+            self.top = min(self.top, max(len(fresh.rows) - 1, 0))
+            self._show_rows()
 
     # Search
     @staticmethod
