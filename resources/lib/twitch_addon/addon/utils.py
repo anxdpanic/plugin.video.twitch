@@ -787,18 +787,20 @@ _TOFU_RE = re.compile(
     u'\U0000FE00-\U0000FE0F'  # variation selectors (emoji presentation)
     u'\U0000200D'             # zero width joiner (emoji sequences)
     u'\U000020E3'             # combining enclosing keycap
-    u']'
+    u']+'
 )
 
 
 def strip_tofu(text):
-    # Remove non-renderable emoji/symbols (would show as tofu boxes). Only collapse
-    # horizontal double spaces -- line breaks are kept (matters for plots).
+    # Replace non-renderable emoji/symbols (would show as tofu boxes) with a single space --
+    # dropping them glues words together ("WEEKEND<emoji>Type" -> "WEEKENDType"). Only
+    # horizontal whitespace is collapsed, line breaks are kept (matters for plots).
     if not isinstance(text, str):
         return text
-    text = _TOFU_RE.sub(u'', text)
+    text = _TOFU_RE.sub(u' ', text)
     text = re.sub(u'[ \\t]{2,}', u' ', text)
-    return text
+    text = re.sub(u'[ \\t]*\\n[ \\t]*', u'\n', text)
+    return text.strip()
 
 
 class TitleBuilder(object):
