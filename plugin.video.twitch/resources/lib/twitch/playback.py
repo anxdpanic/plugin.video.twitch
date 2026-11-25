@@ -13,7 +13,6 @@ from . import gql, http, kodi, lists
 USHER_LIVE = 'https://usher.ttvnw.net/api/channel/hls/%s.m3u8'
 USHER_VIDEO = 'https://usher.ttvnw.net/vod/%s.m3u8'
 TOKEN_PARAMS = '{platform:"android",playerBackend:"mediaplayer",playerType:"site"}'
-HLS_MIME = 'application/vnd.apple.mpegurl'
 CODECS = {0: 'h264', 1: 'h265,h264', 2: 'av1,h265,h264'}  # codecs setting -> what the playlist may offer
 CHECK_TIMEOUT = 15  # seconds to wait for the playlist when checking it
 

@@ -12,7 +12,7 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 
-from . import auth, describe, follows, gql, http, kodi, pages, playback, signin, subscribe
+from . import auth, describe, follows, gql, http, kodi, pages, playback, players, signin, subscribe
 
 BASE = 'plugin://%s/' % kodi.ADDON_ID
 INLINE_MAX = 1  # a shelf this short is shown in place, not as a folder (a channel's "Live now")
@@ -164,23 +164,7 @@ def list_item(item):
     return li, is_folder(item)
 
 
-# What playback resolves to
-def _stream_item(url, live, from_start=False):
-    """An HLS stream for InputStream Adaptive. A broadcast still being recorded is a growing playlist, which
-    ISA plays like a live stream from its end unless told to start at the beginning (from_start)."""
-    li = xbmcgui.ListItem(path=url, offscreen=True)
-    li.setMimeType(playback.HLS_MIME)
-    li.setContentLookup(False)
-    li.setProperty('inputstream', 'inputstream.adaptive')
-    if kodi.setting_bool('ask_quality'):
-        li.setProperty('inputstream.adaptive.stream_selection_type', 'ask-quality')
-    if live:
-        li.setProperty('inputstream.adaptive.live_delay', '8')  # seconds behind the live edge, so it doesn't stall
-    if from_start:
-        li.setProperty('inputstream.adaptive.play_timeshift_buffer', 'true')
-    return li
-
-
+# What playback resolves to (HLS streams are made by players, for the inputstream add-on chosen)
 def _clip_item(url):
     """A clip's MP4 file, which Kodi plays on its own."""
     li = xbmcgui.ListItem(path=url, offscreen=True)
@@ -192,12 +176,12 @@ def _clip_item(url):
 def _playable(params):
     """The resolved item for play/?live=, ?video=, ?from_start= or ?clip=; PlaybackError for anything else."""
     if 'live' in params:
-        return _stream_item(playback.live_url(params['live']), live=True)
+        return players.stream_item(playback.live_url(params['live']), live=True)
     if 'video' in params:
-        return _stream_item(playback.video_url(params['video']), live=False)
+        return players.stream_item(playback.video_url(params['video']), live=False)
     if 'from_start' in params:
-        return _stream_item(playback.video_url(playback.recording_id(params['from_start'])), live=False,
-                            from_start=True)
+        return players.stream_item(playback.video_url(playback.recording_id(params['from_start'])), live=False,
+                                   from_start=True)
     if 'clip' in params:
         return _clip_item(playback.clip_url(params['clip']))
     raise playback.PlaybackError('nothing to play')

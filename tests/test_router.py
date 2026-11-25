@@ -7,7 +7,7 @@ import xbmcgui
 import xbmcplugin
 from samples import GAME, STREAM, VIDEO
 
-from resources.lib.twitch import pages, parser, playback, router
+from resources.lib.twitch import pages, parser, playback, players, router
 
 
 def run(url):
@@ -67,7 +67,7 @@ def test_play_live_resolves_through_inputstream(monkeypatch):
     succeeded, li = xbmcplugin.RESOLVED[0]
     assert succeeded and li.path == 'https://usher/runner.m3u8'
     assert li.getProperty('inputstream') == 'inputstream.adaptive'
-    assert li.mime == playback.HLS_MIME
+    assert li.mime == players.HLS_MIME
 
 
 def test_ask_quality_setting(monkeypatch):

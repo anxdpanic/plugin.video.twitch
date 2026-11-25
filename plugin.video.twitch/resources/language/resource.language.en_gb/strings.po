@@ -354,6 +354,26 @@ msgctxt "#30107"
 msgid "Tomorrow"
 msgstr ""
 
+msgctxt "#30110"
+msgid "Player for live streams"
+msgstr ""
+
+msgctxt "#30111"
+msgid "InputStream Adaptive"
+msgstr ""
+
+msgctxt "#30112"
+msgid "InputStream FFmpeg Direct"
+msgstr ""
+
+msgctxt "#30113"
+msgid "Adaptive switches quality with the connection. FFmpeg Direct buffers with FFmpeg itself, which some devices handle better, and can pause and rewind. Past broadcasts and clips always use Adaptive."
+msgstr ""
+
+msgctxt "#30114"
+msgid "InputStream FFmpeg Direct is installed but turned off. Turn it on? If not, InputStream Adaptive plays this."
+msgstr ""
+
 msgctxt "#30080"
 msgid "General"
 msgstr ""
