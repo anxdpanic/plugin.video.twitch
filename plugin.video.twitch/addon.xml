@@ -22,7 +22,9 @@
         <news>v4.0.0~alpha1
 - New add-on built around a TV layout: Home, Following, Categories, channels and search
 - Sign in with a code at twitch.tv/activate, with multiple accounts
-- Live, past broadcast and clip playback through InputStream Adaptive</news>
+- Live, past broadcast and clip playback through InputStream Adaptive, or FFmpeg Direct for live streams
+- Play live streams from the beginning, channel schedules, follow and unfollow
+- Addresses from earlier versions keep working</news>
         <assets>
             <icon>resources/media/icon.png</icon>
             <fanart>resources/media/fanart.jpg</fanart>
