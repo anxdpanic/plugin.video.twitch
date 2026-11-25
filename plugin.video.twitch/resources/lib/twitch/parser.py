@@ -7,6 +7,8 @@ rest depends on the kind."""
 import re
 import time
 
+from . import fonts
+
 PREVIEW_REFRESH = 300  # seconds: a live preview's address changes this often, so Kodi fetches a new frame
 BIG, SMALL = '1280x720', '640x360'
 # Emoji and pictographs: skin fonts don't have them, so Kodi draws boxes. Joiners and variation selectors go too.
@@ -16,8 +18,11 @@ SPACES = re.compile(r'\s{2,}')
 
 
 def clean(text):
-    """Text without what skin fonts can't draw, and without the runs of spaces left behind."""
-    return SPACES.sub(' ', EMOJI.sub(' ', text or '')).strip()
+    """Text without what the skin's font can't draw (it would show as boxes), and without the runs of spaces
+    left behind."""
+    drawable = fonts.current()
+    text = ''.join(c if c in drawable else ' ' for c in EMOJI.sub(' ', text or ''))
+    return SPACES.sub(' ', text).strip()
 
 
 def _smaller(url):
@@ -68,7 +73,7 @@ def video(node):
     person = _person(node.get('owner'))
     game, game_title = _game(node)
     preview = node.get('previewThumbnailURL') or ''
-    item = {'kind': 'video', 'id': node.get('id') or '', 'title': clean(node.get('title')),
+    item = {'kind': 'video', 'id': node.get('id') or '', 'title': clean(node.get('title')) or person['channel'],
             'thumb': _smaller(preview), 'fanart': preview, 'duration': int(node.get('lengthSeconds') or 0),
             'views': int(node.get('viewCount') or 0), 'published': node.get('publishedAt') or '',
             'broadcast_type': node.get('broadcastType') or '', 'game': game, 'game_title': game_title}
@@ -79,7 +84,8 @@ def video(node):
 def clip(node):
     person = _person(node.get('broadcaster'))
     game, game_title = _game(node)
-    item = {'kind': 'clip', 'id': node.get('slug') or node.get('id') or '', 'title': clean(node.get('title')),
+    item = {'kind': 'clip', 'id': node.get('slug') or node.get('id') or '',
+            'title': clean(node.get('title')) or person['channel'],
             'thumb': node.get('thumbnailURL') or '', 'fanart': node.get('thumbnailURL') or '',
             'duration': int(node.get('durationSeconds') or 0), 'views': int(node.get('viewCount') or 0),
             'published': node.get('createdAt') or '', 'game': game, 'game_title': game_title}

@@ -36,6 +36,13 @@ def signed_in():
 
 
 @pytest.fixture(autouse=True)
+def no_skin_font(monkeypatch):
+    """No skin to read a font from: nothing is dropped from text (test_fonts sets its own coverage)."""
+    from resources.lib.twitch import fonts
+    monkeypatch.setattr(fonts, '_current', fonts.Coverage([]))
+
+
+@pytest.fixture(autouse=True)
 def clean_state():
     """Fresh profile, settings and recorded plugin output for every test."""
     shutil.rmtree(xbmcvfs.ROOT, ignore_errors=True)
