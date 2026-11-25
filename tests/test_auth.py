@@ -53,7 +53,7 @@ def test_refused_refresh_signs_out(monkeypatch):
 @pytest.mark.parametrize('reply, expected', [
     ({'access_token': 't'}, {'access_token': 't'}),
     ({'status': 400, 'message': 'authorization_pending'}, None),
-    ({'status': 400, 'message': 'slow_down'}, None),
+    ({'status': 400, 'message': 'slow_down'}, auth.SLOW_DOWN),
 ])
 def test_poll_token(monkeypatch, reply, expected):
     def answer(url, data=None, **kwargs):

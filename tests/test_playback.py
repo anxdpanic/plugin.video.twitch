@@ -43,11 +43,11 @@ def test_codecs_setting(token, usher):
     assert query['supported_codecs'] == 'av1,h265,h264'
 
 
-def test_offline_channel_is_an_error(token, monkeypatch):
-    def offline(url, **kwargs):
-        raise http.HTTPError(404, b'[{"error":"twirp error not_found: transcode does not exist"}]', url)
-    monkeypatch.setattr(http, 'request', offline)
-    with pytest.raises(playback.PlaybackError, match='transcode does not exist'):
+def test_refused_playlist_says_why(token, monkeypatch):
+    def refused(url, **kwargs):
+        raise http.HTTPError(403, b'[{"error":"Content is restricted to subscribers"}]', url)
+    monkeypatch.setattr(http, 'request', refused)
+    with pytest.raises(playback.PlaybackError, match='restricted to subscribers'):
         playback.live_url('runner')
 
 

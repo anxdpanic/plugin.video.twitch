@@ -2,6 +2,8 @@ import struct
 
 from resources.lib.twitch import fonts, parser
 
+REAL_CURRENT = fonts.current  # taken before conftest stands in for it
+
 
 def font_with(subtable):
     """A font file with only a cmap table holding one (3, 10) or (3, 1) subtable."""
@@ -55,6 +57,25 @@ def test_coverage_membership():
 
 
 def test_clean_drops_what_the_font_lacks(monkeypatch):
-    monkeypatch.setattr(fonts, '_current', fonts.Coverage([(0x20, 0x7E), (0xB0, 0xB0)]))
+    monkeypatch.setattr(fonts, 'current', lambda: fonts.Coverage([(0x20, 0x7E), (0xB0, 0xB0)]))
     assert parser.clean('( ͡° ͜ʖ ͡°) hi 한국어') == '( ° °) hi'
     assert parser.live({'title': '한국어', 'broadcaster': {'login': 'k', 'displayName': 'K'}})['title'] == 'K'
+
+
+def test_coverage_is_worked_out_again_when_the_fontset_changes(monkeypatch):
+    in_use = {'value': ('skin.osmc', 'Default')}
+    reads = []
+    monkeypatch.setattr(fonts, '_skin_in_use', lambda: in_use['value'])
+    monkeypatch.setattr(fonts, '_text_font_files', lambda: reads.append(in_use['value']) or [])
+    monkeypatch.setattr(fonts, '_current', None)
+    monkeypatch.setattr(fonts, '_skin', None)
+    clock = {'now': 1000.0}
+    monkeypatch.setattr(fonts.time, 'time', lambda: clock['now'])
+    REAL_CURRENT()
+    REAL_CURRENT()  # same skin, within RECHECK: not looked at again
+    clock['now'] += fonts.RECHECK + 1
+    REAL_CURRENT()  # looked at, unchanged: not read again
+    in_use['value'] = ('skin.osmc', 'Arial')
+    clock['now'] += fonts.RECHECK + 1
+    REAL_CURRENT()
+    assert reads == [('skin.osmc', 'Default'), ('skin.osmc', 'Arial')]

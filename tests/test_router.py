@@ -1,5 +1,7 @@
 import json
+import urllib.parse
 
+import xbmc
 import xbmcaddon
 import xbmcgui
 import xbmcplugin
@@ -99,10 +101,18 @@ def test_follow_entry_when_signed_in(english, signed_in):
     assert 'follow/?login=runner&name=Runner' in menu['Follow or unfollow']
 
 
-def test_search_remembers_the_query(monkeypatch):
-    loaded = []
-    monkeypatch.setattr(pages, 'load', lambda desc: loaded.append(desc) or page_with([]))
-    run(router.url_for('search', q='chess'))
-    assert loaded == [{'page': 'search', 'q': 'chess'}]
+def test_search_opens_the_results_at_an_address_with_the_query(monkeypatch):
+    monkeypatch.setattr(xbmcgui.Dialog, 'input', lambda self, heading, *a, **kw: 'chess')
+    run(router.url_for('search'))
+    assert xbmcplugin.ENDED == [False]  # the keyboard's own folder is never listed, so Back can't reopen it
+    command = xbmc.BUILTINS[-1]
+    assert command.startswith('Container.Update(') and 'page/?desc=' in command
+    query = urllib.parse.parse_qs(command[:-1].split('?', 1)[1])
+    assert json.loads(query['desc'][0])['q'] == 'chess'
     assert pages.searches() == ['chess']
-    assert json.loads(json.dumps(loaded[0]))['q'] == 'chess'
+
+
+def test_cancelled_search_opens_nothing(monkeypatch):
+    monkeypatch.setattr(xbmcgui.Dialog, 'input', lambda self, heading, *a, **kw: '')
+    run(router.url_for('search'))
+    assert xbmcplugin.ENDED == [False] and not xbmc.BUILTINS and pages.searches() == []
