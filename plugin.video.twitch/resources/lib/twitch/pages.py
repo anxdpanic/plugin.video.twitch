@@ -6,7 +6,7 @@ A page is described by a dict, {'page': 'home'} or {'page': 'channel', 'login': 
 plugin URL. Loading it runs the first batch of every shelf in one request."""
 import json
 
-from . import auth, gql, kodi, lists, parser
+from . import auth, gql, http, kodi, lists, parser
 
 PAGE_TTL = 120  # seconds: back to a listing within this time shows it as it was
 
@@ -90,11 +90,20 @@ def _fetch_batched(specs, header):
     return results, header[1](replies[-1]) if header else None
 
 
+def _fetch_alone(spec):
+    """A shelf fetched on its own (the followed channels, from Helix). If it fails, it is left empty so the
+    rest of the page still shows."""
+    try:
+        return list(lists.get(spec['list']).fetch(spec['params']))
+    except (http.HTTPError, auth.AuthError, gql.GQLError) as exc:
+        kodi.log('shelf %s failed: %s' % (spec['list'], exc))
+        return [[], None]
+
+
 def _fetch(desc, specs):
     """Every shelf's first batch, and the page header."""
     results, header = _fetch_batched(specs, _header_query(desc))
-    batches = [list(results[i]) if i in results else list(lists.get(s['list']).fetch(s['params']))
-               for i, s in enumerate(specs)]
+    batches = [list(results[i]) if i in results else _fetch_alone(s) for i, s in enumerate(specs)]
     return {'batches': batches, 'header': header}
 
 
@@ -120,8 +129,9 @@ def more(shelf, cursor):
     if cached is not None:
         return cached[0], cached[1]
     items, next_cursor = lists.get(shelf['list']).fetch(shelf['params'], after=cursor)
+    next_cursor = next_cursor if next_cursor != cursor else None  # the same again: the list has ended
     kodi.Cache.set(key, [items, next_cursor])
-    return items, next_cursor if next_cursor != cursor else None
+    return items, next_cursor
 
 
 # Search history, newest first.
