@@ -1,0 +1,107 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2026 plugin.video.twitch
+"""Twitch's GraphQL nodes as the add-on's items: plain dicts shared by the plugin listings and the TV window.
+
+Every item has 'kind' (live, video, clip, channel, category), 'id', 'title', 'thumb' and 'fanart'; the
+rest depends on the kind."""
+import re
+import time
+
+PREVIEW_REFRESH = 300  # seconds: a live preview's address changes this often, so Kodi fetches a new frame
+BIG, SMALL = '1280x720', '640x360'
+# Emoji and pictographs: skin fonts don't have them, so Kodi draws boxes. Joiners and variation selectors go too.
+EMOJI = re.compile('[\U0001F000-\U0001FAFF\U00002600-\U000027BF\U00002B00-\U00002BFF\U0000FE0E\U0000FE0F'
+                   '\U0000200D\U000020E3\U000E0020-\U000E007F]+')
+SPACES = re.compile(r'\s{2,}')
+
+
+def clean(text):
+    """Text without what skin fonts can't draw, and without the runs of spaces left behind."""
+    return SPACES.sub(' ', EMOJI.sub(' ', text or '')).strip()
+
+
+def _smaller(url):
+    """The same image at tile size (Twitch puts the size in the address)."""
+    return (url or '').replace(BIG, SMALL)
+
+
+def _live_preview(url, now=None):
+    """A live preview's address with a part that changes every few minutes: Kodi caches images by address,
+    and the image at this one keeps changing."""
+    if not url:
+        return ''
+    stamp = int((now or time.time()) // PREVIEW_REFRESH)
+    return '%s%st=%d' % (url, '&' if '?' in url else '?', stamp)
+
+
+def _game(node):
+    game = node.get('game') or {}
+    return game.get('name') or '', clean(game.get('displayName') or game.get('name'))
+
+
+def _person(user):
+    user = user or {}
+    return {'login': user.get('login') or '', 'channel': clean(user.get('displayName')) or user.get('login') or '',
+            'avatar': user.get('profileImageURL') or ''}
+
+
+def live(stream, user=None):
+    """A live stream; `user` is its broadcaster when the stream node doesn't carry one (followed channels)."""
+    person = _person(user or stream.get('broadcaster'))
+    game, game_title = _game(stream)
+    preview = stream.get('previewImageURL') or ''
+    item = {'kind': 'live', 'id': person['login'], 'title': clean(stream.get('title')) or person['channel'],
+            'thumb': _live_preview(_smaller(preview)), 'fanart': _live_preview(preview),
+            'viewers': int(stream.get('viewersCount') or 0), 'started': stream.get('createdAt') or '',
+            'game': game, 'game_title': game_title}
+    item.update(person)
+    return item
+
+
+def live_user(user):
+    """A followed channel that is live: the user node with its stream inside."""
+    return live(user.get('stream') or {}, user)
+
+
+def video(node):
+    """A past broadcast, highlight or upload."""
+    person = _person(node.get('owner'))
+    game, game_title = _game(node)
+    preview = node.get('previewThumbnailURL') or ''
+    item = {'kind': 'video', 'id': node.get('id') or '', 'title': clean(node.get('title')),
+            'thumb': _smaller(preview), 'fanart': preview, 'duration': int(node.get('lengthSeconds') or 0),
+            'views': int(node.get('viewCount') or 0), 'published': node.get('publishedAt') or '',
+            'broadcast_type': node.get('broadcastType') or '', 'game': game, 'game_title': game_title}
+    item.update(person)
+    return item
+
+
+def clip(node):
+    person = _person(node.get('broadcaster'))
+    game, game_title = _game(node)
+    item = {'kind': 'clip', 'id': node.get('slug') or node.get('id') or '', 'title': clean(node.get('title')),
+            'thumb': node.get('thumbnailURL') or '', 'fanart': node.get('thumbnailURL') or '',
+            'duration': int(node.get('durationSeconds') or 0), 'views': int(node.get('viewCount') or 0),
+            'published': node.get('createdAt') or '', 'game': game, 'game_title': game_title}
+    item.update(person)
+    return item
+
+
+def channel(node):
+    person = _person(node)
+    stream = node.get('stream') or {}
+    item = {'kind': 'channel', 'id': person['login'], 'title': person['channel'], 'thumb': person['avatar'],
+            'fanart': node.get('offlineImageURL') or node.get('bannerImageURL') or '',
+            'description': clean(node.get('description')),
+            'followers': int(((node.get('followers') or {}).get('totalCount')) or 0),
+            'live': bool(stream), 'viewers': int(stream.get('viewersCount') or 0),
+            'game_title': clean((stream.get('game') or {}).get('displayName'))}
+    item.update(person)
+    return item
+
+
+def category(node):
+    name = node.get('name') or ''
+    return {'kind': 'category', 'id': name, 'title': clean(node.get('displayName')) or name,
+            'thumb': node.get('boxArtURL') or '', 'fanart': '', 'viewers': int(node.get('viewersCount') or 0),
+            'tags': [t.get('localizedName') for t in node.get('tags') or [] if t.get('localizedName')]}
