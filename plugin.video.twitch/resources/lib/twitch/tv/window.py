@@ -278,7 +278,11 @@ class TVWindow(xbmcgui.WindowXML):
         """Follow or Unfollow the tile's channel, as it stands now (one lookup when the menu opens)."""
         if not auth.signed_in() or not item.get('login'):
             return []
-        user_id, following = follows.status(item['login'])
+        try:
+            user_id, following = follows.status(item['login'])
+        except ERRORS as exc:  # the rest of the menu still works without it
+            kodi.log('TV interface: no follow status for %s: %s' % (item['login'], exc))
+            return []
         label = kodi.formatted(30091 if following else 30090, item['channel'])
         return [(label, lambda: self._change_follow(user_id, following, item['channel']))]
 

@@ -8,6 +8,7 @@ the fonts the skin uses for its text and leaves out what isn't in all of them.""
 import bisect
 import os
 import struct
+import time
 import xml.etree.ElementTree as ET
 
 import xbmc
@@ -162,12 +163,39 @@ def _read_all(paths):
 
 
 _current = None
+_skin = None  # (skin, fontset) _current was worked out for
+_checked_at = 0.0
+RECHECK = 30  # seconds between looks at the skin and fontset in use (a look is a JSON-RPC call)
+
+
+def _skin_in_use():
+    from .tv import skin
+
+    return xbmc.getSkinDir(), skin._fontset()
+
+
+def _skin_changed():
+    """Whether the skin or fontset changed since the coverage was worked out. With reuselanguageinvoker, this
+    module outlives a skin change, so it looks again every RECHECK seconds."""
+    global _checked_at
+    if _current is not None and time.time() - _checked_at < RECHECK:
+        return False
+    _checked_at = time.time()
+    try:
+        return _skin_in_use() != _skin
+    except (RuntimeError, ValueError) as exc:
+        kodi.log('could not tell the skin in use: %s' % exc)
+        return _current is None
 
 
 def current():
-    """The Coverage of the skin's text fonts, worked out once per process (and kept between runs)."""
-    global _current
-    if _current is None:
+    """The Coverage of the skin's text fonts, worked out again when the skin or fontset changes."""
+    global _current, _skin
+    if _skin_changed():
+        try:
+            _skin = _skin_in_use()
+        except (RuntimeError, ValueError):
+            _skin = None
         ranges = []
         try:
             paths = [p for p in (_find(name) for name in _text_font_files()) if p]
