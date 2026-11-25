@@ -20,17 +20,17 @@ jobs:
 
       fail-fast: false
       matrix:
-        python-version: [ 3.9 ]
+        python-version: [ "3.11" ]
 
     steps:
       - name: Checkout Add-on
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: ${{ github.event.repository.name }}
           ref: ${{ inputs.ref || github.ref }}
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
