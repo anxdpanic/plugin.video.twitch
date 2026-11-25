@@ -9,14 +9,22 @@ from . import auth, http
 URL = 'https://api.twitch.tv/helix/'
 
 
+def _headers(token):
+    return {'Client-ID': auth.CLIENT_ID, 'Authorization': 'Bearer ' + token}
+
+
 def get(path, **params):
     """GET a Helix endpoint as the active account; returns the reply."""
     token = auth.access_token()
     if not token:
         raise auth.AuthError('signed out')
-    query = urllib.parse.urlencode({k: v for k, v in params.items() if v is not None})
-    headers = {'Client-ID': auth.CLIENT_ID, 'Authorization': 'Bearer ' + token}
-    return http.request_json(URL + path + '?' + query, headers=headers)
+    url = URL + path + '?' + urllib.parse.urlencode({k: v for k, v in params.items() if v is not None})
+    try:
+        return http.request_json(url, headers=_headers(token))
+    except http.HTTPError as exc:
+        if exc.status != 401:
+            raise
+        return http.request_json(url, headers=_headers(auth.recover_token()))
 
 
 def page(path, field, first, after):

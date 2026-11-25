@@ -41,7 +41,9 @@ def _wait_for_approval(code):
                     return None
             waited += interval
             token = auth.poll_token(code['device_code'])
-            if token:
+            if token == auth.SLOW_DOWN:
+                interval += 5  # as the device-code flow asks: poll five seconds less often from now on
+            elif token:
                 return token
         _notify(kodi.string(30064), error=True)
         return None

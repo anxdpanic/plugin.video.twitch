@@ -75,8 +75,12 @@ def request_device_code():
     return resp
 
 
+SLOW_DOWN = 'slow_down'
+
+
 def poll_token(device_code):
-    """Returns the token dict, None while still pending, or raises AuthError."""
+    """Returns the token dict, None while still pending, SLOW_DOWN when Twitch asks to poll less often, or
+    raises AuthError."""
     try:
         resp = http.request_json(TOKEN_URL, data={'client_id': CLIENT_ID, 'scopes': SCOPES,
                                                   'device_code': device_code, 'grant_type': DEVICE_GRANT})
@@ -85,7 +89,9 @@ def poll_token(device_code):
     if resp.get('access_token'):
         return resp
     message = str(resp.get('message') or '')
-    if message.lower() in ('authorization_pending', 'slow_down'):
+    if message.lower() == SLOW_DOWN:
+        return SLOW_DOWN
+    if message.lower() == 'authorization_pending':
         return None
     raise AuthError(message or 'no token')
 
@@ -150,6 +156,22 @@ def _refresh(account):
         if exc.status in (400, 401):
             raise AuthError(exc.json().get('message') or 'refresh refused') from exc
         raise
+
+
+def recover_token():
+    """After Twitch refused the token (HTTP 401): the token to try again with. A token that still validates
+    was refused by chance and is kept; only a token Twitch no longer knows is refreshed, and only when that
+    is refused too is the account signed out (AuthError)."""
+    token = access_token()
+    if not token:
+        raise AuthError('signed out')
+    try:
+        validate(token)
+        return token
+    except http.HTTPError as exc:
+        if exc.status != 401:
+            return token  # Twitch couldn't say: keep the account and let the caller fail as it would
+    return access_token(force_refresh=True)
 
 
 def access_token(force_refresh=False):

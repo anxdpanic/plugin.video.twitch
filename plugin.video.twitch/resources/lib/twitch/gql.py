@@ -36,9 +36,8 @@ def _post(body, anonymous=False):
     try:
         return http.request_json(URL, data={'json': body}, headers=_headers(token))
     except http.HTTPError as exc:
-        if exc.status == 401 and token:  # revoked or expired early: refresh once, then sign out
-            token = auth.access_token(force_refresh=True)
-            return http.request_json(URL, data={'json': body}, headers=_headers(token))
+        if exc.status == 401 and token:  # see auth.recover_token: kept, refreshed, or signed out
+            return http.request_json(URL, data={'json': body}, headers=_headers(auth.recover_token()))
         raise
 
 
