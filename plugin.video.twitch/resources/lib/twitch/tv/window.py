@@ -347,13 +347,20 @@ class TVWindow(xbmcgui.WindowXML):
             return self._query_choices(item)
         if item['kind'] not in router.CHANNEL_ITEMS:
             return []
-        return (self._from_start_choice(item) + self._go_to_choices(item) + self._follow_choice(item)
-                + self._subscribe_choice(item))
+        return (self._choose_quality_choice(item) + self._from_start_choice(item) + self._go_to_choices(item)
+                + self._follow_choice(item) + self._subscribe_choice(item))
 
     def _query_choices(self, item):
         """A past search's menu: remove it, or clear them all."""
         return [(kodi.string(30032), lambda: self._forget(item['title'])),
                 (kodi.string(30030), lambda: self._search_action('clear_searches'))]
+
+    @staticmethod
+    def _choose_quality_choice(item):
+        """Play (choose quality): pick the quality this once."""
+        if item['kind'] not in router.PLAYABLE:
+            return []
+        return [(kodi.string(30120), lambda: xbmc.executebuiltin('PlayMedia(%s)' % router.choose_quality_url(item)))]
 
     @staticmethod
     def _from_start_choice(item):

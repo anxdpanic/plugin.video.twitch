@@ -132,3 +132,9 @@ def clip_url(slug):
     """The MP4 file of a clip, at its best quality."""
     qualities, token = _clip(slug)
     return _signed(_best_quality(qualities)['sourceURL'], token)
+
+
+def clip_files(slug):
+    """Every file of a clip, best first: [(its videoQualities entry, signed address)]."""
+    qualities, token = _clip(slug)
+    return [(q, _signed(q['sourceURL'], token)) for q in sorted(qualities, key=_rank, reverse=True)]

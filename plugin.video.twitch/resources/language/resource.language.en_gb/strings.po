@@ -362,6 +362,18 @@ msgctxt "#30114"
 msgid "InputStream FFmpeg Direct is installed but turned off. Turn it on? If not, InputStream Adaptive plays this."
 msgstr ""
 
+msgctxt "#30120"
+msgid "Play (choose quality)"
+msgstr ""
+
+msgctxt "#30121"
+msgid "Choose quality"
+msgstr ""
+
+msgctxt "#30122"
+msgid "source"
+msgstr ""
+
 msgctxt "#30080"
 msgid "General"
 msgstr ""
