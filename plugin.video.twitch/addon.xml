@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.twitch" name="Twitch" version="4.0.0~alpha1" provider-name="anxdpanic">
+<addon id="plugin.video.twitch" name="Twitch" version="4.0.0~alpha2" provider-name="anxdpanic">
     <requires>
         <import addon="xbmc.python" version="3.0.1"/>
         <import addon="inputstream.adaptive" version="21.0.0"/>
@@ -19,7 +19,10 @@
         <license>GPL-3.0-only</license>
         <website>https://github.com/anxdpanic/plugin.video.twitch</website>
         <source>https://github.com/anxdpanic/plugin.video.twitch</source>
-        <news>v4.0.0~alpha1
+        <news>v4.0.0~alpha2
+- Play (choose quality) in the context menu of live streams, past broadcasts and clips
+
+v4.0.0~alpha1
 - New add-on built around a TV layout: Home, Following, Categories, channels and search
 - Sign in with a code at twitch.tv/activate, with multiple accounts
 - Live, past broadcast and clip playback through InputStream Adaptive, or FFmpeg Direct for live streams
