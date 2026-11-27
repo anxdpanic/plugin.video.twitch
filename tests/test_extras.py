@@ -81,9 +81,10 @@ def test_no_recording_to_start_from(monkeypatch, user):
         playback.recording_id('runner')
 
 
-def test_live_menu_starts_with_play_from_beginning(english):
-    english(30100)
-    assert router._context_menu(parser.live(STREAM))[0][0] == 'Play from beginning'
+def test_live_menu_has_play_from_beginning_after_choose_quality(english):
+    english(30100, 30120)
+    labels = [label for label, _ in router._context_menu(parser.live(STREAM))]
+    assert labels[:2] == ['Play (choose quality)', 'Play from beginning']
 
 
 def test_play_from_start_starts_at_the_beginning_of_the_recording(monkeypatch):

@@ -12,7 +12,7 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 
-from . import auth, compat, describe, follows, gql, http, kodi, pages, playback, players, signin, subscribe
+from . import auth, compat, describe, follows, gql, http, kodi, pages, playback, players, quality, signin, subscribe
 
 BASE = 'plugin://%s/' % kodi.ADDON_ID
 INLINE_MAX = 1  # a shelf this short is shown in place, not as a folder (a channel's "Live now")
@@ -81,6 +81,18 @@ def _media(name):
 
 
 # Context menus of listed items
+def choose_quality_url(item):
+    """The address that plays a stream, video or clip after asking for the quality."""
+    return url_for('play', quality='choose', **{item['kind']: item['id']})
+
+
+def _choose_quality_entry(item):
+    """Play (choose quality): pick the quality this once, whatever the player setting."""
+    if item['kind'] not in PLAYABLE:
+        return []
+    return [(kodi.string(30120), 'PlayMedia(%s)' % choose_quality_url(item))]
+
+
 def _from_start_entry(item):
     """Play a live stream from the beginning of the broadcast, from its recording."""
     if item['kind'] != 'live':
@@ -118,7 +130,8 @@ def _subscribe_entry(item):
 
 def _context_menu(item):
     """The context menu of a listed item, in the order the entries are shown."""
-    return _from_start_entry(item) + _go_to_entries(item) + _follow_entry(item) + _subscribe_entry(item)
+    return (_choose_quality_entry(item) + _from_start_entry(item) + _go_to_entries(item) + _follow_entry(item)
+            + _subscribe_entry(item))
 
 
 # Listed items
@@ -173,17 +186,26 @@ def _clip_item(url):
     return li
 
 
+def _stream(master_url, choose, **kwargs):
+    """An HLS stream: the whole playlist, or with `choose` the one rendition the viewer picks."""
+    url = quality.choose_rendition(master_url) if choose else master_url
+    return players.stream_item(url, **kwargs)
+
+
 def _playable(params):
-    """The resolved item for play/?live=, ?video=, ?from_start= or ?clip=; PlaybackError for anything else."""
+    """The resolved item for play/?live=, ?video=, ?from_start= or ?clip=, with &quality=choose to pick the
+    quality first; PlaybackError for anything else, quality.Cancelled when the quality list was closed."""
+    choose = params.get('quality') == 'choose'
     if 'live' in params:
-        return players.stream_item(playback.live_url(params['live']), live=True)
+        return _stream(playback.live_url(params['live']), choose, live=True)
     if 'video' in params:
-        return players.stream_item(playback.video_url(params['video']), live=False)
+        return _stream(playback.video_url(params['video']), choose, live=False)
     if 'from_start' in params:
-        return players.stream_item(playback.video_url(playback.recording_id(params['from_start'])), live=False,
-                                   from_start=True)
+        return _stream(playback.video_url(playback.recording_id(params['from_start'])), choose, live=False,
+                       from_start=True)
     if 'clip' in params:
-        return _clip_item(playback.clip_url(params['clip']))
+        slug = params['clip']
+        return _clip_item(quality.choose_clip(slug) if choose else playback.clip_url(slug))
     raise playback.PlaybackError('nothing to play')
 
 
@@ -376,8 +398,14 @@ class Plugin:
             xbmc.executebuiltin('Container.Refresh')
 
     def route_play(self):
-        """Resolve a stream, video or clip for Kodi's player; with t=<seconds>, start a video there."""
-        xbmcplugin.setResolvedUrl(self.handle, True, _playable(self.params))
+        """Resolve a stream, video or clip for Kodi's player; with t=<seconds>, start a video there. Closing the
+        quality list stops quietly: Kodi is told nothing will play, with no error to show."""
+        try:
+            li = _playable(self.params)
+        except quality.Cancelled:
+            xbmcplugin.setResolvedUrl(self.handle, False, xbmcgui.ListItem(offscreen=True))
+            return
+        xbmcplugin.setResolvedUrl(self.handle, True, li)
         if self.params.get('t') and 'video' in self.params:
             players.start_at(self.params['video'], float(self.params['t']))
 
